@@ -1,0 +1,5 @@
+
+Take a pdb file and create (1) a charmm job for a variety of electrostatic models
+                           (2) a molpro job for energies and wavefunctions
+                           (3) an orbit kit job for electrostatic and polarization jobs
+
