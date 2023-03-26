@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 from multiprocessing.pool import ThreadPool, Pool
 
-import ipywidgets as widgets
+# import ipywidgets as widgets
 # from tqdm.notebook import tqdm
 from itertools import repeat
 from tqdm import tqdm

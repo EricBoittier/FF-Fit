@@ -5,7 +5,7 @@ from ff_energy.structure import Structure
 from ff_energy.job import Job
 from ff_energy.jobmaker import get_structures_pdbs, JobMaker
 from ff_energy.plot import plot_energy_MSE
-from ff_energy.configmaker import *
+from ff_energy.configmaker import ConfigMaker, system_names, THEORY
 
 from pathlib import Path
 import pandas as pd

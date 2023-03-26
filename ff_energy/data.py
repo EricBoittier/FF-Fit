@@ -38,7 +38,15 @@ def plot_ecol(data):
                     elec="ECOL", CMAP="plasma",
                    xlabel="Coulomb integral [kcal/mol]",
                    ylabel="CHM ELEC [kcal/mol]")
-    
+
+def plot_intE(data):
+    data = data.dropna()
+    # data = data[data["ECOL"] < -50]
+    fit = plot_energy_MSE(data, "intE", "NBONDS",
+                    elec="ECOL", CMAP="viridis",
+                   xlabel="intE [kcal/mol]",
+                   ylabel="NBONDS [kcal/mol]")
+
 class Data:
     def __init__(self,output_path):
         self.output_path = output_path
@@ -52,6 +60,6 @@ class Data:
         self.monomers_df = monomers_df
         self.cluster_df = cluster_df
         
-    def data():
+    def data(self):
         return self.data.copy()
 

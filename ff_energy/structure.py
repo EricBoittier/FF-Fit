@@ -4,25 +4,34 @@ import numpy as np
 
 from ff_energy.templates import PSF
 
+
+def valid_atom_key_pairs(atom_keys):
+    atom_key_pairs = list(itertools.combinations(atom_keys, 2))
+    atom_key_pairs = [(a, b) if a < b else (b, a) for a, b in atom_key_pairs]
+    atom_key_pairs.extend([(a, a) for a in atom_keys])
+    atom_key_pairs.sort()
+    return atom_key_pairs
+
+
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
-atom_key_pairs = list(itertools.combinations_with_replacement(atom_keys, 2))
-# atom_key_pairs.extend([(a, a) for a in atom_keys])
+atom_key_pairs = valid_atom_key_pairs(atom_keys)
+print("atom_key_pairs", atom_key_pairs)
 
 atom_types = {
-              ("LIG", "O"): "OG311",
-              ("LIG", "C"): "CG331",
-              ("LIG", "H1"): "HGP1",
-              ("LIG", "H2"): "HGA3",
-              ("LIG", "H3"): "HGA3",
-              ("LIG", "H4"): "HGA3",
-              ("TIP3", "OH2"): "OT",
-              ("TIP3", "H1"): "HT",
-              ("TIP3", "H2"): "HT",
-              # ("LIG", "O"): "OT",
-              # ("LIG", "H1"): "HT",
-              # ("LIG", "H"): "HT",
-              # ("LIG", "H2"): "HT",
-              }
+    ("LIG", "O"): "OG311",
+    ("LIG", "C"): "CG331",
+    ("LIG", "H1"): "HGP1",
+    ("LIG", "H2"): "HGA3",
+    ("LIG", "H3"): "HGA3",
+    ("LIG", "H4"): "HGA3",
+    ("TIP3", "OH2"): "OT",
+    ("TIP3", "H1"): "HT",
+    ("TIP3", "H2"): "HT",
+    # ("LIG", "O"): "OT",
+    # ("LIG", "H1"): "HT",
+    # ("LIG", "H"): "HT",
+    # ("LIG", "H2"): "HT",
+}
 
 
 def dist(a, b):
@@ -61,7 +70,6 @@ class Structure:
 
         self.read_pdb(path)
 
-
     def read_pdb(self, path):
         self.lines = open(path).readlines()
         self.atoms = [_ for _ in self.lines if _.startswith("ATOM")]
@@ -82,10 +90,10 @@ class Structure:
     def load_dcm(self, path):
         with open(path) as f:
             lines = f.readlines()
-        self.dcm = [[float(_) for _ in line.split()[1:]] for line in lines[2:]] # skip first two lines
+        self.dcm = [[float(_) for _ in line.split()[1:]] for line in lines[2:]]  # skip first two lines
         self.dcm_charges = self.dcm[len(self.atoms):]
         pass
-    
+
     def get_psf(self):
         # OM = "OM"
         # CM = "CM"
@@ -96,7 +104,7 @@ class Structure:
         # O = "O"
         # H = "H"
         # H1 = "H1"
-        
+
         OM = ["O"]
         CM = ["C"]
         H1M = ["H1"]
@@ -107,43 +115,42 @@ class Structure:
         O = [_ for _ in O if _ in [x[1] for x in self.atom_types.keys()]]
         H = ["H", "H1"]
         H = [_ for _ in H if _ in [x[1] for x in self.atom_types.keys()]]
-        
+
         if H[0] == "H":
             H1 = ["H1"]
         if H[0] == "H1":
             H1 = ["H2"]
         # H1 = ["H1", "H2"]
         # H1 = [_ for _ in H1 if _ in [x[1] for x in self.atom_types.keys()]]
-        
+
         METHANOL = "MEO"
         WATER = "LIG"
-        
+
         if "TIP3" in [x[0] for x in self.atom_types.keys()]:
             WATER = "TIP3"
             METHANOL = "LIG"
-            
-        # atom_key_dict = {k:v for k,v in self.atom_types}
-              # ("LIG", "O"): "OT",
-              # ("LIG", "H1"): "HT",
-              # ("LIG", "H"): "HT",
-              # ("LIG", "H2"): "HT",
-              # ("TIP3", "OH2"): "OT",
-              # ("TIP3", "H1"): "HT",
-              # ("TIP3", "H2"): "HT",
-              # ("LIG", "O"): "OG311",
-              # ("LIG", "C"): "CG331",
-              # ("LIG", "H1"): "HGP1",
-              # ("LIG", "H2"): "HGA3",
-              # ("LIG", "H3"): "HGA3",
-              # ("LIG", "H4"): "HGA3",
-        
-        return PSF.render(OM=OM[0], 
-                   CM=CM[0], 
-                   H1M=H1M[0],H2M=H2M[0],H3M=H3M[0],H4M=H4M[0],
-                   O=O[0],H=H[0],H1=H1[0],
-                         WATER=WATER,
-                         METHANOL=METHANOL)
 
+        # atom_key_dict = {k:v for k,v in self.atom_types}
+        # ("LIG", "O"): "OT",
+        # ("LIG", "H1"): "HT",
+        # ("LIG", "H"): "HT",
+        # ("LIG", "H2"): "HT",
+        # ("TIP3", "OH2"): "OT",
+        # ("TIP3", "H1"): "HT",
+        # ("TIP3", "H2"): "HT",
+        # ("LIG", "O"): "OG311",
+        # ("LIG", "C"): "CG331",
+        # ("LIG", "H1"): "HGP1",
+        # ("LIG", "H2"): "HGA3",
+        # ("LIG", "H3"): "HGA3",
+        # ("LIG", "H4"): "HGA3",
+
+        return PSF.render(OM=OM[0],
+                          CM=CM[0],
+                          H1M=H1M[0], H2M=H2M[0], H3M=H3M[0], H4M=H4M[0],
+                          O=O[0], H=H[0], H1=H1[0],
+                          WATER=WATER,
+                          METHANOL=METHANOL)
 
     def set_2body(self):
         #  all interacting pairs

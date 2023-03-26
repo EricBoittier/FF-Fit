@@ -5,9 +5,9 @@ system_names = ["water_cluster",
            "water_dimer", 
            "methanol_cluster"]
 
-pdbs = ["/home/boittier/charmm/test/pdbs4/", 
-"/home/boittier/charmm/test/dimer3d/",
-    "/home/boittier/Documents/phd/projectb/meoh/pdbsclean/"]
+pdbs = ["pdbs/pdbs4/",
+"pdbs/dimer3d/",
+    "pdbs/pdbsclean/"]
 
 system_types = ["water", 
                 "water", 

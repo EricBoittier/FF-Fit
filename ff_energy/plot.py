@@ -15,7 +15,7 @@ def plot_energy_MSE(df, key1, key2, FONTSIZE=14,
     # calculate MSE
     ERROR = df[key1] - df[key2]
     MSE = np.mean(ERROR ** 2)
-    df["MSE"] = ERROR ** 2
+    df["SE"] = ERROR ** 2
     # add the MSE to the plot
     import scipy.stats
     slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(
