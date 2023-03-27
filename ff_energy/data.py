@@ -40,7 +40,7 @@ def plot_ecol(data):
                    ylabel="CHM ELEC [kcal/mol]")
 
 def plot_intE(data):
-    data = data.dropna()
+    # data = data.dropna()
     # data = data[data["ECOL"] < -50]
     fit = plot_energy_MSE(data, "intE", "NBONDS",
                     elec="ECOL", CMAP="viridis",

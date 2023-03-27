@@ -9,7 +9,7 @@ def valid_atom_key_pairs(atom_keys):
     atom_key_pairs = list(itertools.combinations(atom_keys, 2))
     atom_key_pairs = [(a, b) if a < b else (b, a) for a, b in atom_key_pairs]
     atom_key_pairs.extend([(a, a) for a in atom_keys])
-    atom_key_pairs.sort()
+    atom_key_pairs.sort(key=lambda x: (x[0], x[1]))
     return atom_key_pairs
 
 
