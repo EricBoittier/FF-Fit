@@ -13,9 +13,7 @@ def p_data(pk):
 
 def pickle_output(output,name="dists"):
     pickle_path = Path(f'pickles/{name}.pkl')
-
     pickle_path.parents[0].mkdir(parents=True, exist_ok=True)
-
     with open(pickle_path, 'wb') as handle:
         pickle.dump(output, handle,
                     protocol=pickle.HIGHEST_PROTOCOL)
@@ -72,11 +70,11 @@ args = [1.7682,0.2245,-0.1521,-0.0460]
 # print(len(ff.all_sig[0]))
 # print(type(ff.all_sig[0]))
 
-# for i in range(1000):
-    # rmse = np.sqrt(ff.get_loss(args))
-    # print("RMSE:", rmse)
+for i in range(2):
+    rmse = np.sqrt(ff.get_loss(args))
+    print("RMSE:", rmse)
 
-# exit()
+exit()
 #
 ff.fit_repeat(10, bounds=LJ_bound)
 pickle_output(ff, "ff/pbe0_dz_mdcm")
