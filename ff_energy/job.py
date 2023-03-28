@@ -326,6 +326,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[-1]), "KEY": k}
                 monomers_df = pd.DataFrame(monomers_data).T
             except Exception as e:
+                print("Failed reading monomer data:", m, e)
                 monomers_df = None
                 
         monomers_sum_df = None 
@@ -335,6 +336,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                                            index=[self.name])
             # print(len(list(set(self.structure.resids))))
             if len(monomers_df) != len(list(set(self.structure.resids))):
+                print("WARNING: number of monomers does not match number of residues")
                 monomers_sum_df = None
 
         #  pairs data

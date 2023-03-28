@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 import itertools
-import numba
-from numba import vectorize, float64
+# import numba
+# from numba import vectorize, float64
 
 from ff_energy.structure import atom_key_pairs, valid_atom_key_pairs
 
@@ -24,6 +24,7 @@ def LJ(sig, ep, r):
 # vfunc_LJ = numba.vectorize([(np.float,)], nopython=True)(LJ)
 # vfunc_LJ = vectorize([(float64,float64,float64)])(LJ)
 vfunc_LJ = LJ
+
 
 def freeLJ(sig, ep, r, a, b, c):
     """
@@ -76,6 +77,7 @@ akp_indx = {akp: i for
 for i, akp in enumerate(atom_key_pairs):
     print(i, akp)
 
+
 def Ecoloumb(q1, q2, r):
     """Calculate the coulombic energy between two charges,
     with atomic units and angstroms for distance"""
@@ -124,6 +126,7 @@ class FF:
                  structure,
                  nobj=4, elec="ELEC"):
         self.data = data
+        self.data_save = data.copy()
 
         self.structure = structure
         self.atom_types = list(set([structure.atom_types[(a, b)]
@@ -142,31 +145,34 @@ class FF:
         self.elec = elec
         self.opt_parm = None
         self.opt_results = []
+        self.opt_results_df = []
         self.mse_df = None
         self.all_dists = None
         self.all_sig = None
         self.all_ep = None
         self.n_dists = []
         self.bounds = bounds
-        if self.do_cache:
-            self.caches(data, epsilons, rminhalfs)
-        # self.caches(data, epsilons, rminhalfs)
 
-        # self.LJ_performace(self.data)
+        for i, akp in enumerate(self.atom_type_pairs):
+            print(i, akp, atom_key_pairs[akp_indx[akp]])
+
+    def __repr__(self):
+        return f"FF: {self.func.__name__}"
 
     def set_dists(self, dists):
         """Overwrite distances"""
         self.dists = dists
 
-    def LJ_(self, epsilons=None, rminhalfs=None):
+    def LJ_(self, epsilons=None, rminhalfs=None, DISTS=None, data=None):
+        if data is None:
+            data = self.data
+        if DISTS is None:
+            DISTS = self.dists
         Es = []
         Keys = []
         sig, ep = combination_rules(self.atom_type_pairs, epsilons, rminhalfs)
-        # print(len(self.dists.values()))
         for k in self.data.index:
-            # print(k)
-            dists = self.dists[k]
-            # print("len(dists):", len(dists))
+            dists = DISTS[k]
             E = 0
             for i, akp in enumerate(self.atom_type_pairs):
                 # print(akp_indx[akp])
@@ -174,101 +180,20 @@ class FF:
                     ddists = np.array(dists[akp_indx[akp]])
                     e = np.sum(vfunc_LJ(sig[i], ep[i], ddists))
                     E += e
-                    # print(e)
             Es.append(E)
             Keys.append(k)
         return pd.DataFrame(Es, index=Keys)
 
-    # @numba.njit
-    def cache_LJ(self, epsilons, rminhalfs):
-        rminhalfs, epsilons = combination_rules(self.atom_type_pairs,
-                                                epsilons,
-                                                rminhalfs)
-        # print((self.all_sig[0]))
-        for di, n_dists in enumerate(self.n_dists):
-            s = 0
-            # print((self.all_sig[di]))
-            # self.all_sig[di] = 0.0 * (self.all_sig[di])
-            # self.all_ep[di] = 0.0 * (self.all_ep[di])
-            for i, akp in enumerate(self.atom_type_pairs):
-                # print("i:", i, akp, n_dists[i], s)
-                for j in range(n_dists[i]):
-                    self.all_sig[di][s] = rminhalfs[i]
-                    self.all_ep[di][s] = epsilons[i]
-                    s += 1
-
-    def caches(self, data, epsilons=None, rminhalfs=None):
-        self.all_dists = []
-        self.all_sig = []
-        self.all_ep = []
-        self.n_dists = []
-        keys = data.index
-        sig, ep = combination_rules(self.atom_type_pairs,
-                                    epsilons,
-                                    rminhalfs)
-
-        for di, key in enumerate(keys):
-            dists = self.dists[key]
-            self.all_dists.append([])
-            self.all_sig.append([])
-            self.all_ep.append([])
-            self.n_dists.append([])
-            # print("di:", di, len(dists))
-            for i, akp in enumerate(self.atom_type_pairs):
-                # print(akp)
-                _dists_ = dists[akp_indx[akp]]
-                n_dists = len(list(itertools.chain.from_iterable(_dists_)))
-                self.n_dists[di].append(n_dists)
-                # print(len(_dists_), n_dists)
-                self.all_dists[di].extend(itertools.chain.from_iterable(_dists_))
-                # print(i, di, n_dists,len([sig[i]]*n_dists))
-                self.all_sig[di].extend([sig[i]] * n_dists)
-                self.all_ep[di].extend([ep[i]] * n_dists)
-
-            self.all_ep[di] = np.array(self.all_ep[di])
-            self.all_sig[di] = np.array(self.all_sig[di])
-            self.all_dists[di] = np.array(self.all_dists[di])
-
-        # print(self.all_sig[0])
-
-    def LJ_performace(self, data, epsilons=None, rminhalfs=None):
-        if self.do_cache:
-            res = [np.sum(LJ(self.all_sig[i],
-                                         self.all_ep[i],
-                                        self.all_dists[i])) for i in range(len(self.all_sig))]
-        else:
-            res = self.LJ_(epsilons, rminhalfs)
+    def LJ_performace(self, res, data=None):
+        if data is None:
+            data = self.data.copy()
         data["LJ"] = res
         # print(res)
         data["VDW_ERROR"] = data["VDW"] - data["LJ"]
-        data["VDW_SE"] = data["VDW_ERROR"]**2
-
+        data["VDW_SE"] = data["VDW_ERROR"] ** 2
         data["nb_intE"] = data[self.elec] + data["LJ"]
         data["SE"] = (data["intE"] - data["nb_intE"]) ** 2
-
-        # print(data[["VDW","LJ","VDW_ERROR", "VDW_SE"]].head())
-        # print("LJ", )
-        # print("LJ", sum(LJ(all_sig[1], all_ep[1], all_dists[1])))
-        # print(self.df["LJ"].head())
-        # print("LJ MSE:", data["SE"].mean())
-        # print("LJ RMSE:", data["SE"].mean()**0.5)
         return data
-
-    """
-    The most optimized pair pot. would:
-    input step:
-         - precompute all distances
-
-     - precompute all combination rules
-     - precompute all terms needed for the LJ MSE terms
-     
-     all_dists *for* all_pair_combos... []
-     all_sigma *for* all_pair_combos... []
-     all_eps *for* all_pair_combos... []
-     
-     LJ ( sig, ep, r_min)
-     
-    """
 
     def eval_func(self, x):
         s = {}
@@ -276,27 +201,22 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        if self.do_cache:
-        # self.caches(self.data, epsilons=e,rminhalfs=s)
-            self.cache_LJ(epsilons=e,rminhalfs=s)
-
-        return self.LJ_performace(self.data, epsilons=e, rminhalfs=s)
+        return self.LJ_(epsilons, rminhalfs)
 
     def get_loss(self, x):
-        tmp = self.eval_func(x)
+        res = self.eval_func(x)
+        tmp = self.LJ_performace(res)
         return tmp["SE"].mean()
 
     def get_best_loss(self):
         results = pd.DataFrame(self.opt_results)
+        results["data"] = [list(_.index) for _ in self.opt_results_df]
         best = results[results["fun"] == results["fun"].min()]
         return best
 
     def get_best_df(self):
         self.set_best_parm()
         tmp = self.eval_func(self.opt_parm)
-        #  get squared error
-        tmp["LJ_SE"] = (tmp["ETOT"] - (tmp[self.elec] + tmp["LJ"])) ** 2
-        loss = tmp["LJ_SE"].mean()
         return tmp
 
     def set_best_parm(self):
@@ -346,12 +266,11 @@ class FF:
 
         self.opt_parm = res.x
         self.opt_results.append(res)
+        # self.opt_results["data"] = self.data.copy() # save the data
+        self.opt_results_df.append(self.eval_func(self.opt_parm))
         # tmp = self.eval_func(self.opt_parm)
 
         if not quiet:
             print("Set optimized parameters to FF object, self.df[\"LJ\"] is updated.")
-
-        # self.df["LJ"] = tmp
-        # self.df["ETOT_LJ"] = self.df["LJ"] + self.df[self.elec]
 
         return res

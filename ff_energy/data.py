@@ -13,7 +13,7 @@ def read_from_pickle(path):
                 yield pickle.load(file)
         except EOFError:
             pass
-# "pickles/water_cluster/pbe0_dz.pc"
+
 
 def load_pickles(path):
     output = []
@@ -22,14 +22,35 @@ def load_pickles(path):
         a = next(a)
         output.append(a)
     return output
-        
+
+
+def validate_data(_):
+    if len(_) == 0:
+        _ = None
+    else:
+        _ = pd.concat(_)
+    return _
+
+
 def unload_data(output):
-    ctot = pd.concat([_["coloumb_total"] for _ in output])
-    chm_df = pd.concat([_["charmm"] for _ in output])
-    monomers_df = pd.concat([_["monomers_sum"] for _ in output])
-    cluster_df = pd.concat(list(itertools.chain([_["cluster"] for _ in output if len(_["cluster"]) > 0])))
+    _ = [_["coloumb_total"] for _ in output
+         if _["coloumb_total"] is not None]
+    ctot = validate_data(_)
+
+
+    chm_df = pd.concat([_["charmm"] for _ in output
+                        if _["charmm"] is not None])
+
+    _ = [_["monomers_sum"] for _ in output
+                             if _["monomers_sum"] is not None]
+    monomers_df = validate_data(_)
+    _ = list(itertools.chain([_["cluster"] for _ in output
+                                                 if len(_["cluster"]) > 0]))
+    cluster_df = validate_data(_)
     data = pd.concat([ctot,chm_df,monomers_df,cluster_df],axis=1)
+
     return data, ctot, chm_df, monomers_df, cluster_df
+
 
 def plot_ecol(data):
     data = data.dropna()
@@ -39,13 +60,15 @@ def plot_ecol(data):
                    xlabel="Coulomb integral [kcal/mol]",
                    ylabel="CHM ELEC [kcal/mol]")
 
+
 def plot_intE(data):
     # data = data.dropna()
     # data = data[data["ECOL"] < -50]
-    fit = plot_energy_MSE(data, "intE", "NBONDS",
+    fit = plot_energy_MSE(data, "intE", "nb_intE",
                     elec="ECOL", CMAP="viridis",
                    xlabel="intE [kcal/mol]",
                    ylabel="NBONDS [kcal/mol]")
+
 
 class Data:
     def __init__(self,output_path):
@@ -53,8 +76,12 @@ class Data:
         self.output = load_pickles(output_path)
         data, ctot, chm_df, monomers_df, cluster_df = unload_data(self.output)
         self.data = data
-        self.data["intE"] = (data["C_ENERGY"] - data["M_ENERGY"])*H2KCALMOL
-        self.data["NBONDS"] = data["ELEC"] + data["VDW"]
+        self.data = self.data.loc[:, ~self.data.columns.duplicated()].copy()
+        if cluster_df is not None:
+            self.data["intE"] = (data["C_ENERGY"] - data["M_ENERGY"])*H2KCALMOL
+        if chm_df is not None:
+            self.data["NBONDS"] = data["ELEC"] + data["VDW"]
+            self.data["nb_intE"] = data["ELEC"] + data["VDW"]
         self.ctot = ctot
         self.chm_df = chm_df
         self.monomers_df = monomers_df
@@ -62,4 +89,12 @@ class Data:
         
     def data(self):
         return self.data.copy()
+
+    def plot_intE(self):
+        plot_intE(self.data)
+
+    def plot_ecol(self):
+        plot_ecol(self.data)
+
+
 

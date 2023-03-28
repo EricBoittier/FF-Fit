@@ -23,6 +23,10 @@ class SlurmJobHandler:
         self.jobs = []
         self.cluster = cluster
 
+    def shuffle_jobs(self):
+        import random
+        random.shuffle(self.jobs)
+
     def add_job(self, job_script):
         self.jobs.append(job_script)
 

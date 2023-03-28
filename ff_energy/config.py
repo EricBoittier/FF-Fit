@@ -1,3 +1,5 @@
+import json
+
 kwargs = {"m_nproc": 8, "m_memory": 150, "m_queue": "short",
           "m_basis": "avdz", "m_method": "hf",
           "chmpath": "/home/boittier/dev-release-dcm/build/cmake/charmm",
@@ -34,7 +36,7 @@ class Config:
         if "c_dcm_command" not in self.__dict__:
             self.c_dcm_command = f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15"
             
-    def kwargs():
+    def kwargs(self):
         return self.__dict__
 
     def __str__(self):
@@ -53,9 +55,20 @@ class Config:
         self.c_files = kmdcm["c_files"]
         self.c_dcm_command = kmdcm["c_dcm_command"]
         
-    def set_theory(theory):
+    def set_theory(self,theory):
         self.m_method = theory[0]
         self.m_basis = theory[1]
+
+    def write_config(self, filename):
+        # filename = f"{self.}"
+        with open(filename, "w") as f:
+            f.write(json.dumps(self.__dict__))
+
+    def read_config(self, filename):
+        with open(filename, "r") as f:
+            self.__dict__.update(json.loads(f.read()))
+
+
 
 
 # print(Config(**kwargs))
