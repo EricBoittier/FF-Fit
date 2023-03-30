@@ -124,6 +124,16 @@ def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj.submit_jobs(Check=Check)
 
 
+def coloumb_submit(cluster, jobmakers, max_jobs=120, Check=True):
+    jobs = []
+    for jm in jobmakers:
+        DRIVE = CLUSTER_DRIVE[cluster[1]]
+        for js in jm.get_coloumb_jobs(DRIVE):
+            jobs.append(js)
+
+    submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
+
+
 def charmm_submit(cluster, jobmakers, max_jobs=120, Check=True):
     jobs = []
     for jm in jobmakers:
@@ -134,13 +144,15 @@ def charmm_submit(cluster, jobmakers, max_jobs=120, Check=True):
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
 
-def cluster_submit(cluster, jobmakers, max_jobs=120, Check=True):
+def molpro_submit(cluster, jobmakers, max_jobs=120, Check=True):
     jobs = []
     for jm in jobmakers:
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         for js in jm.get_monomer_jobs(DRIVE):
             jobs.append(js)
         for js in jm.get_cluster_jobs(DRIVE):
+            jobs.append(js)
+        for js in jm.get_pairs_jobs(DRIVE):
             jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
@@ -180,6 +192,18 @@ def data_jobs(CMS):
         jobmakers.append(jm)
     return jobmakers
 
+def esp_view_jobs(CMS):
+    jobmakers = []
+    for cms in CMS:
+        print(cms)
+        jm = MakeJob(f"{cms.system_name}/{cms.theory_name}_{cms.elec}", cms,
+                     atom_types=cms.atom_types,
+                     system_name=cms.system_name)
+        HOMEDIR = f"/home/boittier/homepcb/"
+        PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
+        COLOUMB = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
+        CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
+        jm.esp_view(HOMEDIR, CHM)
 
 def coloumb_jobs(CMS):
     jobmakers = []
@@ -257,7 +281,7 @@ if __name__ == "__main__":
             if args.submit:
                 if args.verbose:
                     print("Submitting Molpro Jobs")
-                cluster_submit(clusterBACH, jobmakers, max_jobs=120, Check=True)
+                molpro_submit(clusterBACH, jobmakers, max_jobs=400, Check=True)
 
         if args.chm:
             if args.verbose:
@@ -275,7 +299,7 @@ if __name__ == "__main__":
             if args.submit:
                 if args.verbose:
                     print("Submitting Coloumb Jobs")
-                cluster_submit(clusterBEETHOVEN, jobmakers, max_jobs=120, Check=True)
+                coloumb_submit(clusterBEETHOVEN, jobmakers, max_jobs=120, Check=True)
 
         if args.data:
             if args.verbose:

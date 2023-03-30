@@ -1,6 +1,7 @@
 from pathlib import Path
 import subprocess
 import time
+import numpy as np
 
 clusters = {
     "nccr": ("ssh", "boittier@pc-nccr-cluster"),
@@ -30,25 +31,30 @@ class SlurmJobHandler:
     def add_job(self, job_script):
         self.jobs.append(job_script)
 
-    def submit_jobs(self, Check=True):
-        for i, job_script in enumerate(self.jobs):
-            job_path = Path(job_script)
-            
-            job_dir = "/".join(job_path.parts[4:-1])
-            print(job_dir)
-            
-            if Check:
+    def do_check(self, Check=True):
+        if Check:
+            running_jobs = self.get_running_jobs()
+            while running_jobs >= self.max_jobs:
+                time.sleep(60)  # wait for 1 minute before checking again
                 running_jobs = self.get_running_jobs()
-                while running_jobs >= self.max_jobs:
-                    time.sleep(60)  # wait for 1 minute before checking again
-                    running_jobs = self.get_running_jobs()
 
+    def submit_jobs(self, Check=True, NperSubmit=12):
+        jobs = np.array_split(np.array(self.jobs), len(self.jobs)/NperSubmit)
+        for i, jobs in enumerate(jobs):
+            self.do_check(Check)
+            job_str = "f'source .bashrc;"
+            for job_script in jobs:
+                job_path = Path(job_script)
+                job_dir = "/".join(job_path.parts[4:-1])
+                job_str += f"cd {job_dir}; sbatch {job_path.name};"
+                # print(job_dir)
+            print(job_str)
             # subprocess.run(['sbatch', job_path.name], cwd=job_path.parents[0])
             output = subprocess.check_output([self.cluster[0], self.cluster[1],
-                                     f'source .bashrc; cd {job_dir}; sbatch {job_path.name}']).decode(
+                                      job_str]).decode(
                     'utf-8').strip()
-            # print(output)
-            print(f'{i}/{len(self.jobs)} = submitted job {job_script} to Slurm scheduler')
+            print(output)
+            # print(f'{i}/{len(self.jobs)} = submitted job {job_script} to Slurm scheduler')
 
     def get_running_jobs(self):
         output = subprocess.check_output([self.cluster[0], self.cluster[1], 'squeue', '-u', self.username, '-t', 'pending,running']).decode('utf-8')

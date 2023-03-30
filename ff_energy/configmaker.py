@@ -34,10 +34,12 @@ MODELS = {"water": {
          }
           
 THEORY = {
+    "hfdz": {"m_basis": "avdz", "m_method": "gdirect;\n{hf}"},
+    "hftz": {"m_basis": "avtz", "m_method": "gdirect;\n{hf}"},
     "pbe0dz": {"m_basis": "avdz",
-                     "m_method": "{ks,pbe0}"},
+                     "m_method": "gdirect;\n{ks,pbe0}"},
     "pbe0tz": {"m_basis": "avtz",
-                        "m_method": "{ks,pbe0}"},
+                        "m_method": "gdirect;\n{ks,pbe0}"},
     "pno-lccsd-pvtzdf": {"m_basis": """basis={
 default=aug-cc-pvtz-f12
 set,jkfit,context=jkfit

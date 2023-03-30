@@ -1,9 +1,22 @@
 import jinja2
+from jinja2 import Template
+
+with open('ff_energy/template_files/esp_view.sh') as file_:
+    esp_view_template = Template(file_.read())
+# print(esp_view_template.render(KEY="TEST", NCHG=6))
+
+with open('ff_energy/template_files/gaussian.com') as file_:
+    g_template = Template(file_.read())
+# print(g_template.render())
+
+with open('ff_energy/template_files/esp.vmd') as file_:
+    vmd_template = Template(file_.read())
+
 
 molpro_job_template = jinja2.Template("""***,Molpro Input
 gprint,basis,orbitals=50,civector
 gthresh,printci=0.0,energy=1.d-8,orbital=1.d-8,grid=1.d-8
-gdirect
+!gdirect
 symmetry,nosym
 orient,noorient
 

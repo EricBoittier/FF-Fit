@@ -18,7 +18,7 @@ class Config:
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         if "m_nproc" not in self.__dict__:
-            self.m_nproc = 8
+            self.m_nproc = 4
         if "m_memory" not in self.__dict__:
             self.m_memory = 150
         if "m_queue" not in self.__dict__:
