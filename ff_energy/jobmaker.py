@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import subprocess
 from multiprocessing.pool import ThreadPool, Pool
+import multiprocessing
 
 # import ipywidgets as widgets
 # from tqdm.notebook import tqdm
@@ -53,7 +54,7 @@ class JobMaker:
 
     def loop(self, func, args, **kwargs):
         # Create a thread pool
-        pool = Pool()
+        pool = Pool(processes=4) #multiprocessing.Semaphore(4)
         # Start the jobs
         pool.starmap(func,
                      tqdm(zip(self.pdbs, self.structures, repeat(args)),
@@ -167,7 +168,7 @@ class JobMaker:
         clusters = f"{clusters}/""{}/cluster/"
         coloumb = f"{coloumb}/""{}/coloumb/"
         charmm = f"{charmm}/""{}/charmm/"
-        pairs = f"{pairs}""{}/pairs/"
+        pairs = f"{pairs}/""{}/pairs/"
         self.loop(self.make_data_job, [homedir, monomers, clusters,pairs,coloumb,charmm])
 
     def make_charmm(self, homedir):
@@ -194,8 +195,6 @@ class JobMaker:
         
 
     def make_charmm_job(self, p, s, homedir):
-        #  clear the terminal
-        # subprocess.call("clear")
         #  check if the homedir is a tuple
         if isinstance(homedir, tuple):
             homedir = homedir[0]

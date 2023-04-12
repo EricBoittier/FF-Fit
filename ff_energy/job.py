@@ -27,7 +27,7 @@ CHM_FILES_PATH = Path("/home/boittier/Documents/phd/ff_energy/ff_energy/charmm_f
 M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE",
           "hf":"hf",
           "avdz": "aug-cc-pVDZ"}
-
+# aug-cc-pVDZ
 class Job:
     def __init__(self, name, path, structure, kwargs=None):
         self.name = name
@@ -58,7 +58,7 @@ class Job:
         self.esp_view_path = self.path / "esp_view"
 
         if kwargs is None:
-            kwargs = {"m_nproc": 4, "m_memory": 480, "m_queue": "short", "m_basis": "6-31g", "m_method": "hf",
+            kwargs = {"m_nproc": 1, "m_memory": 480, "m_queue": "short", "m_basis": "6-31g", "m_method": "hf",
                       "chmpath": "/home/boittier/dev-release-dcm/build/cmake/charmm",
                       "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
                       "c_files": ["poly_hf.dcm"],
@@ -339,16 +339,8 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         if chm_path is None:
             chm_path = self.charmm_path
         
-        # print(chm_path)
-        # print(coloumb_path)
-        # print(monomers_path)
-        # print(cluster_path)
-        # print(self.charmm_path)
-
         #  charmm data
         charmm_output = [_ for _ in chm_path.glob("*inp.out") if _.is_file()]
-        # print(charmm_output)
-        # print(self.charmm_path)
         TOTAL = None
         ELEC = None
         VDW = None
@@ -364,21 +356,22 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 if line.startswith("ENER EXTERN>"):
                     ELEC = float(line.split()[3])
                     VDW = float(line.split()[2])
-
-        charmm_data = {"TOTAL": TOTAL, "ELEC": ELEC, "VDW": VDW, "KEY": self.name}
+        charmm_data = {"TOTAL": TOTAL, "ELEC": ELEC,
+                "VDW": VDW, "KEY": self.name}
         charmm_df = pd.DataFrame(charmm_data, index=[self.name])
-        # print(charmm_df)
 
         #  monomers data
-        monomers_output = [_ for _ in monomers_path.glob(f"{self.name}*out") if _.is_file()]
+        monomers_output = [_ for _ in 
+                monomers_path.glob(f"{self.name}*out") if _.is_file()]
         monomers_data = {}
         monomers_df = None
         for m in monomers_output:
             with open(m, "r") as f:
                 lines = f.readlines()
-            k = m.name.strip(".out")
+            k = m.stem
             try:
-                monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[-1]), "KEY": k}
+                monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[-1]),
+                        "KEY": k}
                 monomers_df = pd.DataFrame(monomers_data).T
             except Exception as e:
                 print("Failed reading monomer data:", m, e)
@@ -387,26 +380,43 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         monomers_sum_df = None 
         if monomers_df is not None and len(monomers_df) > 0:
             monomers_sum_df = pd.DataFrame({"M_ENERGY": [monomers_df["m_ENERGY"].sum()],
-                                            "KEY": [self.name]},
+                                            "KEY": [self.name],
+                                           "n_monomers": [len(monomers_df)],},
                                            index=[self.name])
-            # print(len(list(set(self.structure.resids))))
             if len(monomers_df) != len(list(set(self.structure.resids))):
-                print("WARNING: number of monomers does not match number of residues")
                 monomers_sum_df = None
 
         #  pairs data
-        pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out") if _.is_file()]
+        pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out")
+                        if _.is_file()]
         pairs_data = {}
         for p in pairs_output:
             with open(p, "r") as f:
                 lines = f.readlines()
-            pairs_data[p.name] = {"p_ENERGY": float(lines[-3].split()[-1])}
-        #  TODO: finish pairs
+            key,a,b = p.stem.split("_")
+            pairs = (int(a), int(b))  
+            pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[-1])}
+            try:
+                pairs_data[p.stem]["p_m1_ENERGY"] = monomers_data["{}_{}".format(key,pairs[0])]["m_ENERGY"] 
+                pairs_data[p.stem]["p_m2_ENERGY"] = monomers_data["{}_{}".format(key,pairs[1])]["m_ENERGY"]
+                pairs_data[p.stem]["p_int_ENERGY"] = pairs_data[p.stem]["p_ENERGY"] \
+                                                     - pairs_data[p.stem]["p_m1_ENERGY"] -  pairs_data[p.stem]["p_m2_ENERGY"]
+            except Exception as e:
+                print(p.stem, e)
 
         pairs_df = pd.DataFrame(pairs_data).T
 
+        pairs_sum_df = None 
+        if pairs_df is not None and len(pairs_df) > 0:
+            pair_sum_df = pd.DataFrame({"P_ENERGY": [pairs_df["p_ENERGY"].sum()],
+                "P_intE": [pairs_df["p_int_ENERGY"].sum()],
+                                            "KEY": [self.name]},
+                                           index=[self.name])
+
         # cluster data
-        cluster_output = [_ for _ in cluster_path.glob(f"{self.name}*out") if _.is_file()]
+        cluster_output = [_ for _ in
+                          cluster_path.glob(f"{self.name}*out")
+                          if _.is_file()]
         cluster_data = {}
         for c in cluster_output:
             with open(c, "r") as f:
@@ -442,9 +452,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         if len(df) != 0:
             df["pol"] = (df["QMMM"] - df["NOFIELD"]) * h2kcalmol
             pol_df = df.copy()
-            # print(pol_df)
             total_pol = df["pol"].sum()
-            # print(total_pol)
             pol_total = pd.DataFrame({"POL": total_pol, "KEY": self.name}, index=[self.name])
 
         #  coloumb data
@@ -453,7 +461,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         for c in coloumb_output:
             with open(c, "r") as f:
                 lines = f.readlines()
-            key = c.name.strip(".py.out")
+            key = c.stem
             try:
                 coloumb_data[key] = {"ECOL": float(lines[-1].split()[0]), "KEY": key}
             except IndexError:
@@ -461,7 +469,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
 
         coloumb_df = pd.DataFrame(coloumb_data).T
         coloumb_total = None
-        if len(coloumb_df) != 0:
+        if len(coloumb_df) == 190:
             coloumb_total = coloumb_df["ECOL"].sum()
         coloumb_total = pd.DataFrame({"ECOL": coloumb_total, "KEY": self.name}, index=[self.name])
         
@@ -475,19 +483,20 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                   "monomers": monomers_df,
                     "monomers_sum": monomers_sum_df,
                   "pairs": pairs_df,
+                  "pairs_sum": pairs_sum_df,
                   "cluster": cluster_df,
                   "polarization": pol_df,
                   "pol_total": pol_total,
                   "coloumb": coloumb_df,
                   "coloumb_total": coloumb_total}
-        
+
         self.pickle_output(output)
         return output
 
     def pickle_output(self,output):
         import pickle
         
-        pickle_path = Path(f'pickles/{self.structure.system_name}/{self.kwargs["c_files"][0]}/{self.name}.pickle')
+        pickle_path = Path(f'pickles/{self.structure.system_name}/{self.kwargs["theory_name"]}/{self.kwargs["c_files"][0]}/{self.name}.pickle')
 
         pickle_path.parents[0].mkdir(parents=True, exist_ok=True)
         
