@@ -118,7 +118,6 @@ class Structure:
             for r in list(set(self.resids))
         }
 
-        pass
 
     def get_psf(self):
         # OM = "OM"

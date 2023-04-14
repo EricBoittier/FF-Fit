@@ -1,9 +1,7 @@
 import os.path
 import os
 from pathlib import Path
-import subprocess
-from multiprocessing.pool import ThreadPool, Pool
-import multiprocessing
+from multiprocessing.pool import Pool
 
 # import ipywidgets as widgets
 # from tqdm.notebook import tqdm

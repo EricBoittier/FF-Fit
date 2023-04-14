@@ -146,7 +146,6 @@ class Job:
                 copy(wfpath, self.coloumb_path)
             except Exception as e:
                 print(e)
-                pass
 
         for pair in pairs:
             orbkit_str = orbkit_ci_template.render(
