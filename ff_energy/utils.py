@@ -1,8 +1,5 @@
 import pickle
 from pathlib import Path
-import pandas as pd
-from ff_energy.data import Data
-
 
 def pickle_output(output, name="dists"):
     pickle_path = Path(f"pickles/{name}.pkl")
