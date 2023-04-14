@@ -72,7 +72,6 @@ def unload_data(output):
 
     data = pd.DataFrame()
     for df in [ctot, chm_df, monomer_df, pairs_sum_df, cluster_df]:
-        # print(df)
         data = pd.concat([data, df], axis=1)
 
     data["n_pairs"] = [len(x["pairs"]) for x in output if x["pairs"] is not None]
@@ -347,7 +346,6 @@ def pairs_data(
         a1 = angle(dcm1[1, :] + bisector1, dcm1[1, :] + dcm2[1, :])
         a2 = angle(dcm2[1, :] + bisector2, dcm1[1, :] + dcm2[1, :])
         if (60 - a1 - a2) < 0:
-            # print(a1, a2, theta)
             theta = theta * -1
 
         # append data

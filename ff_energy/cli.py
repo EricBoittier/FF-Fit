@@ -2,15 +2,11 @@ import sys
 
 sys.path.append("/home/boittier/Documents/phd/ff_energy")
 
-from ff_energy.structure import Structure
-from ff_energy.job import Job
 from ff_energy.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.plot import plot_energy_MSE
+from ff_energy.utils import read_from_pickle, pickle_output
 from ff_energy.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.config import Config
 from pathlib import Path
-import pandas as pd
-import pickle
 from ff_energy.slurm import SlurmJobHandler
 
 clusterBACH = ("ssh", "boittier@pc-bach")
@@ -28,22 +24,6 @@ atom_types = {
     ("TIP3", "H1"): "HT",
     ("TIP3", "H2"): "HT",
 }
-
-
-def pickle_output(output, name="dists"):
-    pickle_path = Path(f"pickles/{name}.pkl")
-    pickle_path.parents[0].mkdir(parents=True, exist_ok=True)
-    with open(pickle_path, "wb") as handle:
-        pickle.dump(output, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-
-def read_from_pickle(path):
-    with open(path, "rb") as file:
-        try:
-            while True:
-                yield pickle.load(file)
-        except EOFError:
-            pass
 
 
 def get_structures(system_name):

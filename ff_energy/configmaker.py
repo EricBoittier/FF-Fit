@@ -58,7 +58,7 @@ explicit,ri_basis=jkfit,df_basis=mp2fit,df_basis_exch=jkfit
 cfit,basis=mp2fit
 """,
         "m_method": "{df-hf,basis=jkfit}\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
-        "m_memory": "2000",
+        "m_memory": "950",
     },
 }
 
@@ -91,20 +91,13 @@ class ConfigMaker:
         self.theory_name = theory
         self.system_tag = system
         self.elec = elec
-
         self.theory = THEORY[theory]
-
         self.pdbs = SYSTEMS[system]["pdbs"]
-
         self.system_name = SYSTEMS[system]["system_name"]
-
         self.system_type = SYSTEMS[system]["system_type"]
         self.atom_types = ATOM_TYPES[self.system_name]
-
         self.model = MODELS[self.system_type][elec]
-
-        self.kwargs = {**self.theory, **self.model}
-        self.kwargs["theory_name"] = theory
+        self.kwargs = {**self.theory, **self.model, "theory_name": theory}
 
         self.config = Config(**self.kwargs)
 

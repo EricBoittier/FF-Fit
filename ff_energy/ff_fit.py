@@ -99,7 +99,7 @@ def plot_best_fits(ff, name=""):
 
     for res, data in zip(ff.opt_results, ff.opt_results_df):
         if res["fun"]:
-            [_ for _ in list(ff.data_save.index) if _ not in data.index]
+            test_keys = [_ for _ in list(ff.data_save.index) if _ not in data.index]
             test_df = ff.data_save.query("index in @test_keys")
             ff.data = test_df.copy()
             test_len = len(ff.data)

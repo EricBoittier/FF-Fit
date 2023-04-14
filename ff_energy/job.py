@@ -1,4 +1,5 @@
 import os
+import pickle
 from pathlib import Path
 from ff_energy.templates import (
     molpro_job_template,
@@ -104,6 +105,7 @@ class Job:
         #  move pdb file
         self.make_dir(self.charmm_path)
         copy(self.structure.path, self.charmm_path)
+        dcm_command = None
         if self.kwargs["c_files"] is not None:
             for file in self.kwargs["c_files"]:
                 copy(CHM_FILES_PATH / file, self.charmm_path)
@@ -448,8 +450,8 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 lines = f.readlines()
             key, a, b = p.stem.split("_")
             pairs = (int(a), int(b))
-            pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[-1])}
             try:
+                pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[-1])}
                 pairs_data[p.stem]["p_m1_ENERGY"] = monomers_data[
                     "{}_{}".format(key, pairs[0])
                 ]["m_ENERGY"]
@@ -573,8 +575,6 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         return output
 
     def pickle_output(self, output):
-        import pickle
-
         pickle_path = Path(
             f'pickles/{self.structure.system_name}/{self.kwargs["theory_name"]}/{self.kwargs["c_files"][0]}/{self.name}.pickle'
         )
