@@ -1,3 +1,5 @@
+import os
+
 from ff_energy.cli import load_config_maker, load_all_theory, charmm_jobs
 from ff_energy.potential import FF, LJ, DE
 import numpy as np
@@ -98,7 +100,8 @@ def plot_best_fits(ff, name=""):
     dfs_ = []
 
     for res, data in zip(ff.opt_results, ff.opt_results_df):
-        if res["fun"]:
+        if res["fun"] <= res["fun"].quantile(0.1):
+            data = data.dropna()
             test_keys = [_ for _ in list(ff.data_save.index) if _ not in data.index]
             test_df = ff.data_save.query("index in @test_keys")
             ff.data = test_df.copy()
@@ -114,12 +117,12 @@ def plot_best_fits(ff, name=""):
             train_len = len(ff.data)
             train_res = ff.LJ_performace(ff.eval_func(res.x))
             plot_LJintE(train_res, ax=ax[1])
-            print(
-                "{:.1f} ({}) {:.1f} ({})".format(
+            results = (
+                "{:.1f}_{}_{:.1f}_{}".format(
                     test_res["SE"].mean(), test_len, train_res["SE"].mean(), train_len
                 )
             )
-
+            print(results)
             res = res.x
             x = np.arange(0.1, 5, 0.05)
             y = LJ(res[0] * 2, res[2], x)
@@ -133,8 +136,10 @@ def plot_best_fits(ff, name=""):
             res_str = "_".join(["{:.2f}".format(x) for x in res])
             save_path = (
                 f"/home/boittier/Documents/phd/ff_energy/figs/ff/"
-                f"{name}_{ff.name}_{ff.intern}_{ff.elec}_{res_str}.png"
+                f"{name}_{ff.name}_{ff.intern}_{ff.elec}/{results}_{res_str}.png"
             )
+            #  make the directory
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
             print("saving image to: ", save_path)
             plt.suptitle(res_str, y=-0.051)
             plt.savefig(save_path, bbox_inches="tight")

@@ -112,6 +112,7 @@ def plot_LJintE(data, ax=None):
     # data["NBONDS"] = data["ELEC"] + data["VDW"]
     data["nb_intE"] = data["ELEC"] + data["LJ"]
     # _ = data[data["ECOL"] < -40].copy()
+    data = data.dropna()
     ax = plot_energy_MSE(
         data,
         "intE",
