@@ -15,7 +15,7 @@ def valid_atom_key_pairs(atom_keys):
 
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
-print("atom_key_pairs", atom_key_pairs)
+# print("atom_key_pairs", atom_key_pairs)
 
 atom_types = {
     ("LIG", "O"): "OG311",
@@ -44,7 +44,7 @@ def sqrt_einsum_T(a, b):
 
 
 class Structure:
-    """ Class for a pdb structure """
+    """Class for a pdb structure"""
 
     def __init__(self, path, atom_types=atom_types, system_name=None):
         self.system_name = system_name
@@ -62,6 +62,7 @@ class Structure:
         self.res_mask = None
         self.pairs = None
         self.distances = None
+        self.distances_pairs = None
         self.distances_mask = None
         self.dcm = None
         self.dcm_charges = None
@@ -76,22 +77,47 @@ class Structure:
         self.atomnames = np.array([_.split()[2] for _ in self.atoms])
         self.keys = [(_[17:21].strip(), _[12:17].strip()) for _ in self.atoms]
         self.resids = [int(_[22:27].strip()) for _ in self.atoms]
+        self.n_res = len(set(self.resids))
         resids_old = list(set(self.resids))
         resids_old.sort()
         resids_new = list(range(1, len(resids_old) + 1))
         self.resids = [resids_new[resids_old.index(_)] for _ in self.resids]
         # print(self.resids)
         self.restypes = [_[16:21].strip() for _ in self.atoms]
-        self.xyzs = np.array([[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms])
-        self.chm_typ = np.array([self.atom_types[(a, b)] for a, b in zip(self.restypes, self.atomnames)])
-        self.chm_typ_mask = {ak: np.array([ak == _ for _ in self.chm_typ]) for ak in atom_keys}
-        self.res_mask = {r: np.array([r == _ for _ in self.resids]) for r in list(set(self.resids))}
+        self.xyzs = np.array(
+            [[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms]
+        )
+        self.chm_typ = np.array(
+            [self.atom_types[(a, b)] for a, b in zip(self.restypes, self.atomnames)]
+        )
+        self.chm_typ_mask = {
+            ak: np.array([ak == _ for _ in self.chm_typ]) for ak in atom_keys
+        }
+        self.res_mask = {
+            r: np.array([r == _ for _ in self.resids]) for r in list(set(self.resids))
+        }
 
     def load_dcm(self, path):
+        self.n_res = len(set(self.resids))
         with open(path) as f:
             lines = f.readlines()
-        self.dcm = [[float(_) for _ in line.split()[1:]] for line in lines[2:]]  # skip first two lines
-        self.dcm_charges = self.dcm[len(self.atoms):]
+        self.dcm = [
+            [float(_) for _ in line.split()[1:]] for line in lines[2:]
+        ]  # skip first two lines
+        self.dcm_charges = self.dcm[len(self.atoms) :]
+        dcm_charges_per_res = len(self.dcm_charges) // self.n_res // 3
+        self.dcm_charges_mask = {
+            r: np.array(
+                [
+                    [True] * dcm_charges_per_res
+                    if r == _
+                    else [False] * dcm_charges_per_res
+                    for _ in self.resids
+                ]
+            ).flatten()
+            for r in list(set(self.resids))
+        }
+
         pass
 
     def get_psf(self):
@@ -145,17 +171,25 @@ class Structure:
         # ("LIG", "H3"): "HGA3",
         # ("LIG", "H4"): "HGA3",
 
-        return PSF.render(OM=OM[0],
-                          CM=CM[0],
-                          H1M=H1M[0], H2M=H2M[0], H3M=H3M[0], H4M=H4M[0],
-                          O=O[0], H=H[0], H1=H1[0],
-                          WATER=WATER,
-                          METHANOL=METHANOL)
+        return PSF.render(
+            OM=OM[0],
+            CM=CM[0],
+            H1M=H1M[0],
+            H2M=H2M[0],
+            H3M=H3M[0],
+            H4M=H4M[0],
+            O=O[0],
+            H=H[0],
+            H1=H1[0],
+            WATER=WATER,
+            METHANOL=METHANOL,
+        )
 
     def set_2body(self):
         #  all interacting pairs
         self.pairs = list(itertools.combinations(range(1, max(self.resids) + 1), 2))
         self.distances = [[] for _ in range(len(atom_key_pairs))]
+        self.distances_pairs = [{} for _ in range(len(atom_key_pairs))]
 
         for res_a, res_b in self.pairs:
             for i, akp in enumerate(atom_key_pairs):
@@ -170,6 +204,10 @@ class Structure:
                 xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
                 if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                     self.distances[i].append(sqrt_einsum_T(xyza.T, xyzb.T))
+                    self.distances_pairs[i][(res_a, res_b)] = []
+                    self.distances_pairs[i][(res_a, res_b)].append(
+                        sqrt_einsum_T(xyza.T, xyzb.T)
+                    )
                 if a != b:
                     b, a = akp
                     mask_a = self.chm_typ_mask[a]
@@ -182,6 +220,9 @@ class Structure:
                     xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
                     if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                         self.distances[i].append(sqrt_einsum_T(xyza.T, xyzb.T))
+                        self.distances_pairs[i][(res_a, res_b)].append(
+                            sqrt_einsum_T(xyza.T, xyzb.T)
+                        )
 
     def get_monomers(self):
         out = list(set(self.resids))
@@ -213,7 +254,9 @@ class Structure:
         """returns a string in the format atomname x y z for all atoms in xyz"""
         xyz_string = ""
         for i, atom in enumerate(atomnames):
-            xyz_string += "{} {:8.3f} {:8.3f} {:8.3f}\n".format(atom[:1], xyz[i, 0], xyz[i, 1], xyz[i, 2])
+            xyz_string += "{} {:8.3f} {:8.3f} {:8.3f}\n".format(
+                atom[:1], xyz[i, 0], xyz[i, 1], xyz[i, 2]
+            )
         return xyz_string
 
     def get_pdb(self):
@@ -240,7 +283,9 @@ REMARK
             _14 = self.atomnames[i]
             _15 = " "
 
-            _ = pdb_format.format(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15)
+            _ = pdb_format.format(
+                _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15
+            )
             _str += _
         _str += "END"
         return _str

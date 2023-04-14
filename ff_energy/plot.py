@@ -3,32 +3,67 @@ import numpy as np
 import pandas as pd
 
 
-def plot_energy_MSE(df, key1, key2, FONTSIZE=14,
-                    xlabel="NBOND energy\n(kcal/mol)",
-                    ylabel="CCSD(T) interaction energy\n(kcal/mol)",
-                    elec="ele",
-                    CMAP="viridis",
-                    cbar_label = "ELEC (kcal/mol)"):
+def plot_energy_MSE(
+    df,
+    key1,
+    key2,
+    FONTSIZE=14,
+    xlabel="NBOND energy\n(kcal/mol)",
+    ylabel="CCSD(T) interaction energy\n(kcal/mol)",
+    elec="ele",
+    CMAP="viridis",
+    cbar_label="ELEC (kcal/mol)",
+    ax=None,
+    bootstrap=True,
+):
     """Plot the energy MSE"""
-
-    fig, ax = plt.subplots()
+    df = df.copy()
+    if ax is None:
+        fig, ax = plt.subplots()
     # calculate MSE
     ERROR = df[key1] - df[key2]
-    MSE = np.mean(ERROR ** 2)
-    df["SE"] = ERROR ** 2
+    MSE = np.mean(ERROR**2)
+    df["SE"] = ERROR.copy() ** 2
+
+    if bootstrap:
+        from scipy.stats import bootstrap
+
+        rng = np.random.default_rng()
+        data = (df["SE"],)  # samples must be in a sequence
+        res = bootstrap(
+            data, np.mean, confidence_level=0.95, random_state=rng, n_resamples=100
+        )
+        seMin, seMax = res.confidence_interval
+        rseMin, rseMax = np.sqrt(seMin), np.sqrt(seMax)
+
+    # get spearman correlation
+    spearman = df[key1].corr(df[key2], method="spearman")
+
     # add the MSE to the plot
     import scipy.stats
-    slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(
-        df[key1], df[key2])
-    # print(slope, intercept, r_value, p_value, std_err)
-    stats_str = f"MSE = {MSE:.2f} kcal/mol\nRMSE = {np.sqrt(MSE):.2f} kcal/mol" \
-                f"\n$R$ = {r_value:.2f}, $R$$^2$ = {r_value**2:.2f}, $p$ = {p_value:.2e}"
-    ax.text(0.00, 1.05, stats_str,
-            transform=ax.transAxes, fontsize=FONTSIZE)
-    # color points by MSE
-    sc = ax.scatter(df[key1], df[key2],
-                    c=df[elec], cmap=CMAP, alpha=0.5)
 
+    try:
+        slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(
+            df[key1], df[key2]
+        )
+    except:
+        slope, intercept, r_value, p_value, std_err = 1, 0, 0, 0, 0
+    if bootstrap:
+        stats_str = (
+            f"MSE = {MSE:.2e}$^{{{seMax:.1e}}}_{{{seMin:.1e}}}$ kcal/mol\n"
+            f"RMSE = {np.sqrt(MSE):.2e}$^{{{rseMax:.1e}}}_{{{rseMin:.1e}}}$ kcal/mol"
+            f"\n$R$ = {r_value:.2e}, $R_\mathrm{{S.}}$ = {spearman:.2f}, $n$ = {len(df)}"
+        )
+    else:
+        stats_str = (
+            f"MSE = {MSE:.2e} kcal/mol\n"
+            f"RMSE = {np.sqrt(MSE):.2e} kcal/mol"
+            f"\n$R$ = {r_value:.2e}, $R_\mathrm{{S.}}$ = {spearman:.2f}, $n$ = {len(df)}"
+        )
+
+    ax.text(0.00, 1.05, stats_str, transform=ax.transAxes, fontsize=FONTSIZE)
+    # color points by MSE
+    sc = ax.scatter(df[key1], df[key2], c=df[elec], cmap=CMAP, alpha=0.5)
 
     #  make the aspect ratio square
     ax.set_aspect("equal")
@@ -40,15 +75,21 @@ def plot_energy_MSE(df, key1, key2, FONTSIZE=14,
     #  plot the diagonal line
     ax.plot(ax.get_xlim(), ax.get_ylim(), ls="--", c=".3", alpha=0.5)
     #  plot line of best fit
-    ax.plot([min,max], [slope*min + intercept,slope*max + intercept],
-            ls="-", c="k", alpha=0.15)
+    ax.plot(
+        [min, max],
+        [slope * min + intercept, slope * max + intercept],
+        ls="-",
+        c="k",
+        alpha=0.15,
+    )
     #  show the grid
     ax.grid(alpha=0.15)
     #  set the labels
     ax.set_xlabel(xlabel, fontsize=FONTSIZE)
     ax.set_ylabel(ylabel, fontsize=FONTSIZE)
-    plt.colorbar(sc, label=cbar_label)
-    #  tight layout
-    plt.tight_layout()
+    if ax is None:
+        plt.colorbar(sc, label=cbar_label)
+        #  tight layout
+        plt.tight_layout()
 
-    return df
+    return ax

@@ -1,19 +1,23 @@
 import jinja2
 from jinja2 import Template
+from pathlib import Path
 
-with open('ff_energy/template_files/esp_view.sh') as file_:
+template_files = Path(__file__).parent / "template_files"
+
+with open(template_files / "esp_view.sh") as file_:
     esp_view_template = Template(file_.read())
 # print(esp_view_template.render(KEY="TEST", NCHG=6))
 
-with open('ff_energy/template_files/gaussian.com') as file_:
+with open(template_files / "gaussian.com") as file_:
     g_template = Template(file_.read())
 # print(g_template.render())
 
-with open('ff_energy/template_files/esp.vmd') as file_:
+with open(template_files / "esp.vmd") as file_:
     vmd_template = Template(file_.read())
 
 
-molpro_job_template = jinja2.Template("""***,Molpro Input
+molpro_job_template = jinja2.Template(
+    """***,Molpro Input
 gprint,basis,orbitals=50,civector
 gthresh,printci=0.0,energy=1.d-8,orbital=1.d-8,grid=1.d-8
 !gdirect
@@ -37,15 +41,17 @@ name='{{NAME}}.molden'
 TEXT,$name
 PUT,molden,$name,NEW
 
-""")
+"""
+)
 
-m_slurm_template = jinja2.Template("""#!/bin/bash
+m_slurm_template = jinja2.Template(
+    """#!/bin/bash
 #SBATCH --job-name={{NAME}}
 ##SBATCH --partition=long
 #SBATCH --nodes=1
 #SBATCH --ntasks={{NPROC}}
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=1200
+#SBATCH --mem-per-cpu=4800
 ##SBATCH --exclude=node[01-04,09-10] 
 
 hostname
@@ -60,9 +66,35 @@ echo $PWD
 # PC-Beethoven
 #module molpro/molpro2022-gcc-9.2.0
 # PC-Bach
-module load molpro/molpro-2022.1
+#module load molpro/molpro-2022.1
 # PC-NCCR
 #module load molpro/molpro-mpp-2022.1
+
+{ # try
+
+    module molpro/molpro2022-gcc-9.2.0 
+    #save your output
+
+} || { # catch
+   echo "module molpro/molpro2022-gcc-9.2.0 (pc-beethoven) not available" # save log for exception 
+}
+
+{ # try
+    module load molpro/molpro-mpp-2022.1 
+    #save your output
+} || { # catch
+   echo "module load molpro/molpro-mpp-2022.1 (nccr) not available" # save log for exception 
+}
+
+
+{ # try
+
+    module load molpro/molpro-2022.1 
+    #save your output
+
+} || { # catch
+   echo "module load molpro/molpro-2022.1 (bach) not available" # save log for exception 
+}
 
 
 # Get available memory from /tmp 
@@ -100,6 +132,7 @@ active_jobs=$(squeue -h -r -u $USER -o "%i")
 # Loop through tmp directories
 for dir in $datadir/$USER/jobs/*
 do
+   if [ -d "$dir" ]; then
   # Extract job ID from directory name
   job_id=$(basename -- $dir | sed 's/tmp.//')
   
@@ -111,6 +144,7 @@ do
     echo "Job $job_id is inactive, removing directory $dir"
     rm -rf $dir
   fi
+    fi
 done
 
 # Get the available disk space
@@ -149,10 +183,12 @@ cp $TMPDIR/$MOLFILE.molden $MAINDIR/$MOLFILE.molden
 # Remove temporary directory
 rm -rf $TMPDIR
 
-""")
+"""
+)
 
 
-orbkit_ci_template = jinja2.Template(r"""import sys
+orbkit_ci_template = jinja2.Template(
+    r"""import sys
 
 sys.path.append("/home/boittier/orbkit-testsuite/orbkit")
 sys.path.append("/opt/cluster/programs/libcint/lib64")
@@ -195,9 +231,11 @@ print('FINAL EEL RESULT:\n',str(Eel),' Hartree')
 
 print(str(Eel*tokcal),' kcal/mol')
 
-""")
+"""
+)
 
-o_slurm_template = jinja2.Template("""#!/bin/bash
+o_slurm_template = jinja2.Template(
+    """#!/bin/bash
 #SBATCH --job-name={{NAME}}
 ##SBATCH --partition=long
 #SBATCH --nodes=1
@@ -211,7 +249,7 @@ hostname
 )
 
 c_slurm_template = jinja2.Template(
-"""#!/bin/bash
+    """#!/bin/bash
 #SBATCH --job-name={{NAME}}
 ##SBATCH --partition=long
 #SBATCH --nodes=1
@@ -225,7 +263,8 @@ charmm={{CHARMMPATH}}
 """
 )
 
-PSF = jinja2.Template("""
+PSF = jinja2.Template(
+    """
 read rtf card
 * methanol
 *
@@ -271,9 +310,11 @@ ACCEPTOR {{O}}
 PATCHING FIRS NONE LAST NONE
 
 END
-""")
+"""
+)
 
-c_job_template = jinja2.Template("""* DCM water/ion params test for energy and forces
+c_job_template = jinja2.Template(
+    """* DCM water/ion params test for energy and forces
 *
 
 set base     /home/boittier/charmm/test
@@ -307,7 +348,8 @@ open unit 15 write card name dcm.xyz
 NBONd CUTNb 100.0 CTONnb 90.0 CTOFnb 94.0 E14FAC 0.0 FSWITch VSWItch CDIElectric EPSilon 1.0 NBXMOD 2
 
 ENERGY
-""")
+"""
+)
 
 PAR = """read parameter card
 * methanol
@@ -390,7 +432,8 @@ HT       0.0    {HT_e}  {HT_s} ! ALLOW WAT
 END
 """
 
-molpro_pol_template = jinja2.Template("""gprint,basis,orbitals=50,civector
+molpro_pol_template = jinja2.Template(
+    """gprint,basis,orbitals=50,civector
 gthresh,printci=0.0,energy=1.d-8,orbital=1.d-8,grid=1.d-8
 symmetry,nosym
 orient,noorient
@@ -409,9 +452,11 @@ edm=energy
 name='{{JOBNAME}}_QMMM.molden'
 TEXT,$name
 PUT,molden,$name,NEW
-""")
+"""
+)
 
-orbkit_pol_template = jinja2.Template("""import sys
+orbkit_pol_template = jinja2.Template(
+    """import sys
 
 sys.path.append("/home/boittier/orbkit-testsuite/orbkit")
 sys.path.append("/opt/cluster/programs/libcint/lib64")
@@ -500,4 +545,5 @@ print('Total interaction with charges: ',str(VTotmm))
 
 Tot = Vtot + VTotmm
 print('TOTAL QM/MM SYSTEM ENERGY: ',str(Tot))
-""")
+"""
+)

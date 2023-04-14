@@ -8,16 +8,17 @@ clusters = {
     "bach": ("ssh", "boittier@pc-bach"),
     "beethoven": ("ssh", "boittier@beethoven"),
     "pc-beethoven": ("ssh", "boittier@pc-beethoven"),
-
 }
 
-class SlurmJobHandler:
-    def __init__(self,
-                 max_jobs=5,
-                 username='boittier',
-                 cluster=('ssh', 'boittier@pc-bach'),
-                 clustername='pc-bach'):
 
+class SlurmJobHandler:
+    def __init__(
+        self,
+        max_jobs=5,
+        username="boittier",
+        cluster=("ssh", "boittier@pc-bach"),
+        clustername="pc-bach",
+    ):
         self.max_jobs = max_jobs
         self.username = username
         self.clustername = clustername
@@ -26,6 +27,7 @@ class SlurmJobHandler:
 
     def shuffle_jobs(self):
         import random
+
         random.shuffle(self.jobs)
 
     def add_job(self, job_script):
@@ -38,50 +40,71 @@ class SlurmJobHandler:
                 time.sleep(60)  # wait for 1 minute before checking again
                 running_jobs = self.get_running_jobs()
 
-    def submit_jobs(self, Check=True, NperSubmit=12):
-        jobs = np.array_split(np.array(self.jobs), len(self.jobs)/NperSubmit)
+    def submit_jobs(self, Check=True, NperSubmit=6):
+        jobs = np.array_split(np.array(self.jobs), len(self.jobs) / NperSubmit)
         for i, jobs in enumerate(jobs):
             self.do_check(Check)
-            job_str = "f'source .bashrc;"
+            job_str = "source .bashrc;"
             for job_script in jobs:
                 job_path = Path(job_script)
                 job_dir = "/".join(job_path.parts[4:-1])
-                job_str += f"cd {job_dir}; sbatch {job_path.name};"
+                job_str += f"cd {job_dir}; sbatch {job_path.name}; cd -; "
                 # print(job_dir)
             print(job_str)
             # subprocess.run(['sbatch', job_path.name], cwd=job_path.parents[0])
-            output = subprocess.check_output([self.cluster[0], self.cluster[1],
-                                      job_str]).decode(
-                    'utf-8').strip()
-            print(output)
+            try:
+                output = (
+                    subprocess.check_output([self.cluster[0], self.cluster[1], job_str])
+                    .decode("utf-8")
+                    .strip()
+                )
+                print(output)
+            except:
+                pass
+            time.sleep(15)
             # print(f'{i}/{len(self.jobs)} = submitted job {job_script} to Slurm scheduler')
 
     def get_running_jobs(self):
-        output = subprocess.check_output([self.cluster[0], self.cluster[1], 'squeue', '-u', self.username, '-t', 'pending,running']).decode('utf-8')
-        return output.count('\n') - 1  # exclude the header line
+        output = subprocess.check_output(
+            [
+                self.cluster[0],
+                self.cluster[1],
+                "squeue",
+                "-u",
+                self.username,
+            ]
+        ).decode("utf-8")
+        print(output)
+        return output.count("\n") - 1  # exclude the header line
 
     def get_job_status(self, job_id):
-        output = subprocess.check_output([self.cluster[0], self.cluster[1], 'squeue', '-j', job_id]).decode('utf-8')
-        status_lines = output.strip().split('\n')[1:]  # exclude the header line
+        output = subprocess.check_output(
+            [self.cluster[0], self.cluster[1], "squeue", "-j", job_id]
+        ).decode("utf-8")
+        status_lines = output.strip().split("\n")[1:]  # exclude the header line
         print(status_lines)
         if len(status_lines) == 0:
-            return 'COMPLETED'
+            return "COMPLETED"
         else:
             return status_lines[0].split()[4]
 
     def monitor_jobs(self, interval=10):
         running_jobs = []
         for job_script in self.jobs:
-            output = subprocess.check_output(['sbatch', '--parsable', job_script]).decode('utf-8').strip()
+            output = (
+                subprocess.check_output(["sbatch", "--parsable", job_script])
+                .decode("utf-8")
+                .strip()
+            )
             job_id = output.split()[-1]
             running_jobs.append((job_script, job_id))
         while len(running_jobs) > 0:
             for job in running_jobs:
                 job_script, job_id = job
                 job_status = self.get_job_status(job_id)
-                if job_status in ('COMPLETED', 'FAILED', 'CANCELLED'):
-                    print(f'Job {job_script} (id {job_id}) has finished with status {job_status}')
+                if job_status in ("COMPLETED", "FAILED", "CANCELLED"):
+                    print(
+                        f"Job {job_script} (id {job_id}) has finished with status {job_status}"
+                    )
                     running_jobs.remove(job)
             time.sleep(interval)
-
-

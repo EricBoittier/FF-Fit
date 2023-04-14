@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from ff_energy.templates import molpro_job_template, m_slurm_template, orbkit_ci_template, o_slurm_template, \
     c_slurm_template, c_job_template, PAR, molpro_pol_template, orbkit_pol_template
+
+from ff_energy.templates import esp_view_template, vmd_template, g_template
 from shutil import copy
 import pandas as pd
 
@@ -22,7 +24,10 @@ h2kcalmol = 627.5095
 
 CHM_FILES_PATH = Path("/home/boittier/Documents/phd/ff_energy/ff_energy/charmm_files")
 
-
+M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE",
+          "hf":"hf",
+          "avdz": "aug-cc-pVDZ"}
+# aug-cc-pVDZ
 class Job:
     def __init__(self, name, path, structure, kwargs=None):
         self.name = name
@@ -50,9 +55,10 @@ class Job:
         self.cluster_path = self.path / "cluster"
         self.pairs_path = self.path / "pairs"
         self.monomers_path = self.path / "monomers"
+        self.esp_view_path = self.path / "esp_view"
 
         if kwargs is None:
-            kwargs = {"m_nproc": 4, "m_memory": 480, "m_queue": "short", "m_basis": "6-31g", "m_method": "hf",
+            kwargs = {"m_nproc": 1, "m_memory": 480, "m_queue": "short", "m_basis": "6-31g", "m_method": "hf",
                       "chmpath": "/home/boittier/dev-release-dcm/build/cmake/charmm",
                       "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
                       "c_files": ["poly_hf.dcm"],
@@ -141,9 +147,58 @@ class Job:
                 f.write(slurm_job)
                 self.slurm_files["coloumb"][f"{self.name}_{pair[0]}_{pair[1]}"] = slurm_file
 
-    def load_dcm(self):
-        dcm_path = self.path / "charmm" / "dcm.xyz"
+    def load_dcm(self, dcm_path=None):
+        if dcm_path is None:
+            dcm_path = self.path / "charmm" / "dcm.xyz"
+
         self.structure.load_dcm(dcm_path)
+
+    def generate_esp_view(self, charmm_path=None):
+        if charmm_path is None:
+            charmm_path = self.charmm_path
+        if type(charmm_path) is str:
+            charmm_path = Path(charmm_path)
+
+        print(self.esp_view_path)
+        self.make_dir(self.esp_view_path)
+        # get the cluster dcm coordinates
+        self.structure.load_dcm(charmm_path / "dcm.xyz")
+        dcm_charges = self.structure.dcm_charges
+        xyz_s = self.structure.get_cluster_xyz()
+        g_theory = M_to_G[self.kwargs["m_method"]]
+        g_basis = M_to_G[self.kwargs["m_basis"]]
+        # generate gaussian input
+        g_com = g_template.render(XYZ_STRING=xyz_s,
+                                  METHOD=g_theory,
+                                  BASIS=g_basis,
+                                  KEY=self.name)
+        g_com_file = self.esp_view_path / f"{self.name}.com"
+        with open(g_com_file, "w") as f:
+            f.write(g_com)
+
+        dcm_file = self.esp_view_path / f"dcm.xyz"
+        with open(dcm_file, "w") as f:
+            f.write(f"{len(dcm_charges)}\n\n")
+            for c in dcm_charges:
+                f.write(f"X {c[0]} {c[1]} {c[2]} {c[3]}\n")
+
+
+        # generate vmd script
+        vmd = vmd_template.render(KEY=self.name,
+                                  ERROR_CUBE="error.cube",
+                                  DENS_CUBE=f"{self.name}_dens.cube",)
+        vmd_file = self.esp_view_path / f"{self.name}.vmd"
+        with open(vmd_file, "w") as f:
+            f.write(vmd)
+
+        # generate slurm file
+        esp_view = esp_view_template.render(KEY=self.name,
+                                            NCHG=len(dcm_charges))
+        esp_view_file = self.esp_view_path / f"{self.name}.sh"
+        with open(esp_view_file, "w") as f:
+            f.write(esp_view)
+            # self.slurm_files["esp_view"][self.name] = esp_view_file
+
 
     def generate_polarization(self, nch_per_monomer=(6, 6), monomers_path=None):
 
@@ -321,11 +376,12 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         for m in monomers_output:
             with open(m, "r") as f:
                 lines = f.readlines()
-            k = m.name.strip(".out")
+            k = m.stem
             try:
                 monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[-1]), "KEY": k}
                 monomers_df = pd.DataFrame(monomers_data).T
             except Exception as e:
+                print("Failed reading monomer data:", m, e)
                 monomers_df = None
                 
         monomers_sum_df = None 
@@ -335,17 +391,17 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                                            index=[self.name])
             # print(len(list(set(self.structure.resids))))
             if len(monomers_df) != len(list(set(self.structure.resids))):
+                print("WARNING: number of monomers does not match number of residues")
                 monomers_sum_df = None
 
         #  pairs data
         pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out") if _.is_file()]
+        print('n pairs output',len(pairs_output),pairs_path)
         pairs_data = {}
         for p in pairs_output:
             with open(p, "r") as f:
                 lines = f.readlines()
-            pairs_data[p.name] = {"p_ENERGY": float(lines[-3].split()[-1])}
-        #  TODO: finish pairs
-
+            pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[-1])}
         pairs_df = pd.DataFrame(pairs_data).T
 
         # cluster data
@@ -423,14 +479,15 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                   "pol_total": pol_total,
                   "coloumb": coloumb_df,
                   "coloumb_total": coloumb_total}
-        
+        # print(output)
+        print(pairs_df)
         self.pickle_output(output)
         return output
 
     def pickle_output(self,output):
         import pickle
         
-        pickle_path = Path(f'pickles/{self.structure.system_name}/{self.kwargs["c_files"][0]}/{self.name}.pickle')
+        pickle_path = Path(f'pickles/{self.structure.system_name}/{self.kwargs["theory_name"]}/{self.kwargs["c_files"][0]}/{self.name}.pickle')
 
         pickle_path.parents[0].mkdir(parents=True, exist_ok=True)
         

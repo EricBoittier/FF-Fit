@@ -1,9 +1,22 @@
 import jinja2
+from jinja2 import Template
+
+with open('ff_energy/template_files/esp_view.sh') as file_:
+    esp_view_template = Template(file_.read())
+# print(esp_view_template.render(KEY="TEST", NCHG=6))
+
+with open('ff_energy/template_files/gaussian.com') as file_:
+    g_template = Template(file_.read())
+# print(g_template.render())
+
+with open('ff_energy/template_files/esp.vmd') as file_:
+    vmd_template = Template(file_.read())
+
 
 molpro_job_template = jinja2.Template("""***,Molpro Input
 gprint,basis,orbitals=50,civector
 gthresh,printci=0.0,energy=1.d-8,orbital=1.d-8,grid=1.d-8
-gdirect
+!gdirect
 symmetry,nosym
 orient,noorient
 
@@ -47,9 +60,35 @@ echo $PWD
 # PC-Beethoven
 #module molpro/molpro2022-gcc-9.2.0
 # PC-Bach
-module load molpro/molpro-2022.1
+#module load molpro/molpro-2022.1
 # PC-NCCR
 #module load molpro/molpro-mpp-2022.1
+
+{ # try
+
+    module molpro/molpro2022-gcc-9.2.0 
+    #save your output
+
+} || { # catch
+   echo "module molpro/molpro2022-gcc-9.2.0 (pc-beethoven) not available" # save log for exception 
+}
+
+{ # try
+    module load molpro/molpro-mpp-2022.1 
+    #save your output
+} || { # catch
+   echo "module load molpro/molpro-mpp-2022.1 (nccr) not available" # save log for exception 
+}
+
+
+{ # try
+
+    module load molpro/molpro-2022.1 
+    #save your output
+
+} || { # catch
+   echo "module load molpro/molpro-2022.1 (bach) not available" # save log for exception 
+}
 
 
 # Get available memory from /tmp 
@@ -87,6 +126,7 @@ active_jobs=$(squeue -h -r -u $USER -o "%i")
 # Loop through tmp directories
 for dir in $datadir/$USER/jobs/*
 do
+   if [ -d "$dir" ]; then
   # Extract job ID from directory name
   job_id=$(basename -- $dir | sed 's/tmp.//')
   
@@ -98,6 +138,7 @@ do
     echo "Job $job_id is inactive, removing directory $dir"
     rm -rf $dir
   fi
+    fi
 done
 
 # Get the available disk space

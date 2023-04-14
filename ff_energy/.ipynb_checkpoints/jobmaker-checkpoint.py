@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 from multiprocessing.pool import ThreadPool, Pool
 
-import ipywidgets as widgets
+# import ipywidgets as widgets
 # from tqdm.notebook import tqdm
 from itertools import repeat
 from tqdm import tqdm
@@ -101,8 +101,30 @@ class JobMaker:
                 if keep:
                     jobs.append(outfilename)
         return jobs
+
+    def get_pairs_jobs(self, homedir):
+        jobs = []
+        for p in self.pdbs:
+            ID = p.split(".")[0]
+            monomers_path = f"{homedir}/{self.jobdir}/{ID}/pairs/"
+            out_jobs = Path(monomers_path).glob(f"{ID}*sh")
+            # print(monomers_path)
+            # print(list(out_jobs))
+            for outfilename in out_jobs:
+                keep = True
+                of = Path(str(outfilename)[:-3]+".out")
+                if of.exists():
+                    if open(of).read().find("terminated"):
+                        keep = False
+                    else:
+                        keep = True
+                else:
+                    keep = True
+                if keep:
+                    jobs.append(outfilename)
+        return jobs
     
-    def get_coulomb_jobs(self, homedir):
+    def get_coloumb_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
             ID = p.split(".")[0]
@@ -135,13 +157,17 @@ class JobMaker:
             slurm_path = f"{homedir}/{self.jobdir}/{ID}/charmm/{ID}.slurm"
             jobs.append(slurm_path)
         return jobs
+
+    def esp_view(self, homedir, chmdir):
+        chmdir = f"{chmdir}/""{}/charmm/"
+        self.loop(self.make_esp_view, [homedir, chmdir])
     
     def gather_data(self, homedir, monomers, clusters, pairs, coloumb, charmm):
         monomers = f"{monomers}/""{}/monomers/"
         clusters = f"{clusters}/""{}/cluster/"
         coloumb = f"{coloumb}/""{}/coloumb/"
         charmm = f"{charmm}/""{}/charmm/"
-        pairs = f"{pairs}""{}/pairs/"
+        pairs = f"{pairs}/""{}/pairs/"
         self.loop(self.make_data_job, [homedir, monomers, clusters,pairs,coloumb,charmm])
 
     def make_charmm(self, homedir):
@@ -168,8 +194,6 @@ class JobMaker:
         
 
     def make_charmm_job(self, p, s, homedir):
-        #  clear the terminal
-        # subprocess.call("clear")
         #  check if the homedir is a tuple
         if isinstance(homedir, tuple):
             homedir = homedir[0]
@@ -178,7 +202,12 @@ class JobMaker:
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_charmm()
         self.charmm_jobs[ID] = j
-        
+
+    def make_esp_view(self, p, s, args):
+        homedir, charm_path = args
+        ID = p.split(".")[0]
+        j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
+        j.generate_esp_view(charmm_path=charm_path.format(ID))
         
     def make_coloumb_job(self, p, s, args):
         homedir, mp = args

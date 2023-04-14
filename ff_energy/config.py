@@ -1,18 +1,33 @@
 import json
 
-kwargs = {"m_nproc": 8, "m_memory": 150, "m_queue": "short",
-          "m_basis": "avdz", "m_method": "hf",
-          "chmpath": "/home/boittier/dev-release-dcm/build/cmake/charmm",
-          "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
-          "c_files": ["pbe0_dz.pc"],
-          "c_dcm_command": f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15",
-          }
+kwargs = {
+    "m_nproc": 8,
+    "m_memory": 150,
+    "m_queue": "short",
+    "m_basis": "avdz",
+    "m_method": "hf",
+    "chmpath": "/home/boittier/dev-release-dcm/build/cmake/charmm",
+    "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
+    "c_files": ["pbe0_dz.pc"],
+    "c_dcm_command": f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15",
+}
+
 
 def DCM_STATES(x):
-    return {"c_files": [x], "c_dcm_command": f"open unit 11 card read name {x} \nDCM IUDCM 11 TSHIFT XYZ 15"}
+    return {
+        "c_files": [x],
+        "c_dcm_command": f"open unit 11 card read name {x} \nDCM IUDCM 11 TSHIFT XYZ 15",
+    }
+
 
 def kMDCM_STATES(x):
-    return {"c_files": x, "c_dcm_command": f"open unit 11 card read name {x[0]} \nDCM IUDCM 11 TSHIFT XYZ 15"}
+    return {
+        "c_files": x,
+        "c_dcm_command": f"open unit 11 card read name {x[0]} \n"
+        f"open unit 12 card read name {x[1].split('/')[-1]} \n"
+        f"DCM KERN 12 IUDCM 11 TSHIFT XYZ 15",
+    }
+
 
 class Config:
     def __init__(self, **kwargs):
@@ -34,8 +49,10 @@ class Config:
         if "c_files" not in self.__dict__:
             self.c_files = ["pbe0_dz.pc"]
         if "c_dcm_command" not in self.__dict__:
-            self.c_dcm_command = f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15"
-            
+            self.c_dcm_command = (
+                f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15"
+            )
+
     def kwargs(self):
         return self.__dict__
 
@@ -54,8 +71,8 @@ class Config:
         kmdcm = kMDCM_STATES(kmdcm)
         self.c_files = kmdcm["c_files"]
         self.c_dcm_command = kmdcm["c_dcm_command"]
-        
-    def set_theory(self,theory):
+
+    def set_theory(self, theory):
         self.m_method = theory[0]
         self.m_basis = theory[1]
 
@@ -67,8 +84,6 @@ class Config:
     def read_config(self, filename):
         with open(filename, "r") as f:
             self.__dict__.update(json.loads(f.read()))
-
-
 
 
 # print(Config(**kwargs))
