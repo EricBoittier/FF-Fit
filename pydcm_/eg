@@ -1,0 +1,167 @@
+system_label
+--------------
+type(str):
+  Label tag of your system for file identification.
+  Each written file includes this label.
+Your input:  water_ccsdt_atz
+
+system_file_coord
+-------------------
+type(str):
+  Path to a cartesian 'xyz' or z-matrix 'zmat' file.
+Your input:  source/water.xyz
+
+system_file_type
+------------------
+type(str): ('xyz', 'zmat'), default 'xyz'
+  Type identifier of your coordinate file as
+  cartesian 'xyz' or z-matrix 'zmat' file.
+Your input:  xyz
+
+system_total_charge
+---------------------
+type(int), optional: default '0'
+  Total charge of your system.
+  Only integer charges are possible.
+Your input:  0
+
+system_spin_multiplicity
+--------------------------
+type(int), optional: default '1'
+  Spin multiplicity of your system.
+  The multiplicity is related to your total spin S by:
+    multiplicity = 2*S + 1
+Your input:  1
+
+scan_dofs
+-----------
+type(list), optional: default 'None'
+  List defining the degrees of freedom to scan over.
+  In case of 'xyz' coordination file format, the list
+  must contain sublists of atom indices. The length of the
+  sublist defines the type 'bond', 'angle', 'dihedral'.
+  To match the parameter value, only the respectively last
+  atom in the list is moved.
+    Example:
+      scan_dofs = [
+          [0, 1],        # <- Bond between atom 0 and 1
+          [1, 0, 2],     # <- Angle between atoms 1<-0->2
+          [2, 0, 1, 3]   # <- Dihedral angle
+      ]
+  In case of 'zmat' coordination file format, the list
+  must contain sublists of the respective variable label
+  in the zmat file and the type definition.
+    Example:
+      Z-matrix file:
+        O
+        O 1 dOO
+        H 1 dHO1 2 aHOO1
+        H 2 dHO2 1 aHOO2 3 dihHOOH
+
+        dOO     = 1.2
+        dHO1    = 1.0
+        dHO2    = 1.0
+        aHOO1   = 60.0
+        aHOO2   = 60.0
+        dihHOOH = 180.0
+      ----
+      scan_dofs = [
+          ['dOO', 'bond'],
+          ['aHOO1', 'angle'],
+          ['dihHOOH', 'dihdral'],
+      ]
+  If scan_dofs is not defined or as None, only the system
+  conformation in the coordinate file is evaluated.
+Your input:  [[0, 1], [0, 2], [1, 0, 2]]
+
+scan_steps
+------------
+type(list), optional: default 'None'
+  List defining the grid steps for the degrees of freedom
+  defined in 'scan_dofs'. Bonds are given in Angstrom and
+  angular parameter in degree.
+    Example (see example coordinates in 'scan_dofs'):
+      scan_steps = [
+          [0.9, 1.0, 1.1],    # <- Bond distances
+          [50, 60, 70, 80],   # <- Angles
+          [0., 90., 180.]     # <- Dihedral angles
+      ]
+  If scan_steps is not defined or as None, only the system
+  conformation in the coordinate file is evaluated.
+Your input:  [[0.909, 0.959, 1.009], [0.909, 0.959, 1.009], array([ 84.45,  86.45,  88.45,  90.45,  92.45,  94.45,  96.45,  98.45,
+       100.45, 102.45, 104.45, 106.45, 108.45, 110.45, 112.45, 114.45,
+       116.45, 118.45, 120.45, 122.45])]
+
+scan_constrained_opt
+----------------------
+type(bool), optional: default 'False'
+  Whether if perform constrained optimization for each
+  grid point in the scan or just single point.
+Your input:  False
+
+scan_write_esp_cube
+---------------------
+type(bool), optional: default 'True'
+  Write a cube file with the electrostatic potential.
+
+scan_write_dens_cube
+----------------------
+type(bool), optional: default 'True'
+  Write a cube file with the electron density.
+
+scan_qm_program
+-----------------
+type(str), optional: default 'Gaussian'
+  QM calculation program for evaluating potential,
+  electron density and ESP.
+Your input:  Gaussian
+
+scan_qm_method
+----------------
+type(str), optional: default 'HF'
+  QM method, see documentation for available methods with
+  the respective QM program.
+Your input:  CCSD(T)
+
+scan_qm_basis_set
+-------------------
+type(str), optional: default 'cc-pVDZ'
+  QM atom centred basis set, see documentation for
+  available basis set in the respective QM program.
+Your input:  aug-cc-pVTZ
+
+scan_parallel_tasks
+---------------------
+type(int), optional: default '1'
+  Number of parallel QM calculations on your machine.
+Your input:  10
+
+scan_cpus_per_task
+--------------------
+type(int), optional: default '1'
+  Number of available CPUs per task.
+Your input:  4
+
+scan_memory_per_task
+----------------------
+type(int), optional: default '1000'
+  Amount of requested memory per single CPU in MB.
+  In general, declared memory available in the QM programm
+  is usually just 90% of the total memory declared in the
+  bash script file.
+Your input:  1600
+
+scan_overwrite
+----------------
+type(bool), optional: default 'False'
+  Whether to recompute the system at grid points even if 
+  all output files are given and viable (successful run).
+Your input:  False
+
+scan_time_check_tasks
+-----------------------
+type(int), optional: default '60'
+  Time delay in seconds to check the status of the tasks
+  and submit next ones.
+Your input:  10
+

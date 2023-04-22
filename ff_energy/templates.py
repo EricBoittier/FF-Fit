@@ -51,7 +51,7 @@ m_slurm_template = jinja2.Template(
 #SBATCH --nodes=1
 #SBATCH --ntasks={{NPROC}}
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=4800
+#SBATCH --mem-per-cpu=8000
 ##SBATCH --exclude=node[01-04,09-10] 
 
 hostname

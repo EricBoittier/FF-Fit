@@ -4,6 +4,7 @@ from scipy.optimize import minimize
 
 from ff_energy.structure import atom_key_pairs, valid_atom_key_pairs
 
+H2KCALMOL = 627.503
 
 # @numba.njit (parallel=True, nopython=True)
 # @numba.njit (nopython=True, parallel=True)
@@ -118,7 +119,7 @@ class DistPrep:
 
 class FF:
     def __init__(
-        self, data, dists, func, bounds, structure, nobj=4, elec="ELEC", intern="Exact"
+        self, data, dists, func, bounds, structure, nobj=4, elec="ELEC", intern="Exact", pairs=False,
     ):
         self.data = data
         self.data_save = data.copy()
@@ -152,9 +153,16 @@ class FF:
         self.bounds = bounds
 
         if self.intern == "Exact":
-            self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["m_E_tot"]
+            if pairs:
+                self.data["intE"] =  self.data["p_int_ENERGY"] * H2KCALMOL
+            else:
+                self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["m_E_tot"]
         elif self.intern == "harmonic":
-            self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+            if pairs:
+                #  TODO: add harmonic
+                self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
+            else:
+                self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
 
     def __repr__(self):
         return f"FF: {self.func.__name__}"
@@ -164,35 +172,44 @@ class FF:
         self.dists = dists
 
     def LJ_(self, epsilons=None, rminhalfs=None, DISTS=None, data=None, args=None):
-        """pairwise interactions"""
-        if data is None:
-            data = self.data
+        """pairwise interactions
+
+        requires:
+        distances is a dictionary of a list distances for each key, and atom pair
+        data is a dataframe of the data, where the index is the key for the distances dictionary
+        """
         if DISTS is None:
             DISTS = self.dists
+        # outputs
         Es = []
-        Keys = []
-        sig, ep = combination_rules(self.atom_type_pairs, epsilons, rminhalfs)
+        #  calculate combination rules
+        sig, ep = combination_rules(
+            self.atom_type_pairs,
+            epsilons,
+            rminhalfs
+        )
         for k in self.data.index:
+            # get the distance
             dists = DISTS[k]
+            # calculate the energy
             E = 0
+            #  loop over atom pairs
             for i, akp in enumerate(self.atom_type_pairs):
-                # print(akp_indx[akp])
+                #  if there are distances for this atom pair
                 if len(dists[akp_indx[akp]]) > 0:
                     ddists = np.array(dists[akp_indx[akp]])
                     e = np.sum(self.func(sig[i], ep[i], ddists, *args))
                     E += e
             Es.append(E)
-            Keys.append(k)
-        return pd.DataFrame(Es, index=Keys)
+        return pd.DataFrame(Es, index=self.data.index)
 
     def LJ_performace(self, res, data=None):
         if data is None:
             data = self.data
         data["LJ"] = res.copy()
-        data["VDW_ERROR"] = data["VDW"] - data["LJ"]
-        data["VDW_SE"] = data["VDW_ERROR"] ** 2
+        # data["VDW_ERROR"] = data["VDW"] - data["LJ"]
+        # data["VDW_SE"] = data["VDW_ERROR"] ** 2
         data["nb_intE"] = data[self.elec] + data["LJ"]
-
         data["SE"] = (data["intE"] - data["nb_intE"]) ** 2
         return data.copy()
 
@@ -202,7 +219,7 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_(e, s, args=x[len(self.atom_types) * 2 :])
+        return self.LJ_(e, s, args=x[len(self.atom_types) * 2:])
 
     def get_loss(self, x):
         res = self.eval_func(x)
@@ -234,6 +251,7 @@ class FF:
         tmp = self.eval_func(self.opt_parm)
         print('Set optimized parameters to FF object, self.df["LJ"] is updated.')
         self.df = tmp
+        return tmp
 
     def fit_repeat(
         self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
@@ -280,9 +298,7 @@ class FF:
 
         self.opt_parm = res.x
         self.opt_results.append(res)
-        # self.opt_results["data"] = self.data.copy() # save the data
         self.opt_results_df.append(self.eval_func(self.opt_parm))
-        # tmp = self.eval_func(self.opt_parm)
 
         if not quiet:
             print('Set optimized parameters to FF object, self.df["LJ"] is updated.')

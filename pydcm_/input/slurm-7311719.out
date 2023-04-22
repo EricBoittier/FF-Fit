@@ -1,0 +1,58 @@
+node101.cluster
+Error: segmentation violation
+   rax 0000000000000000, rbx ffffffffffffffff, rcx ffffffffffffffff
+   rdx 000000000002e58b, rsp 00007ffd5d2da9b8, rbp 00007ffd5d2daf30
+   rsi 000000000000000b, rdi 000000000002e58b, r8  0000000000000020
+   r9  0000000000000401, r10 00007ffd5d2da420, r11 0000000000000206
+   r12 00007ffd5d2daf78, r13 0000000000000000, r14 0000000000000000
+   r15 00000000000003e6
+  /lib64/libpthread.so.0(+0xf6d0) [0x2b22171186d0]
+  /lib64/libc.so.6(kill+0x7) [0x2b221765d547]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x4b8975]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x4f867a]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x4d56ab]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x41d5c6]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x410c4c]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x40d185]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x40cbd7]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x40cb24]
+  /lib64/libc.so.6(__libc_start_main+0xf5) [0x2b2217649445]
+  /opt/cluster/programs/g16-c.01/g16/l1.exe() [0x407269]
+ Read checkpoint file gaussian_21_water_hf_adz2.chk type Unk
+ Write formatted file gaussian_21_water_hf_adz2.fchk
+ Will use up to     0 threads.
+ Top CubeGen          Mon Feb 20 10:09:15 2023
+ Aft UFChkP           Mon Feb 20 10:09:15 2023        0.06 cpu,        0.07 elapsed
+ Could not find " ","Total SCF Density" on formatted checkpoint file.
+ Error termination via Lnk1e at Mon Feb 20 10:09:15 2023.
+Error: segmentation violation
+   rax 0000000000000000, rbx 00000000058b0be0, rcx ffffffffffffffff
+   rdx 000000000002e59d, rsp 00007ffe14d8fb18, rbp 00007ffe14d8fb70
+   rsi 000000000000000b, rdi 000000000002e59d, r8  00002b7ab2ee2ac0
+   r9  00002b7ab2ee2ac0, r10 00007ffe14d8f5a0, r11 0000000000000206
+   r12 00000000058aeb0b, r13 000000000697d288, r14 00000000058aeec0
+   r15 00007ffe14d91db0
+  /lib64/libpthread.so.0(+0xf6d0) [0x2b7ab33dc6d0]
+  /lib64/libc.so.6(kill+0x7) [0x2b7ab3921547]
+  /opt/cluster/programs/g16-c.01/g16/cubegen() [0x40fe24]
+  /lib64/libc.so.6(__libc_start_main+0xf5) [0x2b7ab390d445]
+/var/spool/slurm//job7311719/slurm_script: line 57: 189853 Aborted                 $g16root/g16/cubegen 0 Density $FCKFILE $DNSFILE -2 h
+ Will use up to     0 threads.
+ Top CubeGen          Mon Feb 20 10:09:15 2023
+ Aft UFChkP           Mon Feb 20 10:09:15 2023        0.07 cpu,        0.07 elapsed
+ Could not find " ","Total SCF Density" on formatted checkpoint file.
+ Error termination via Lnk1e at Mon Feb 20 10:09:15 2023.
+Error: segmentation violation
+   rax 0000000000000000, rbx 00000000058b0be0, rcx ffffffffffffffff
+   rdx 000000000002e5a9, rsp 00007ffd90f93b38, rbp 00007ffd90f93b90
+   rsi 000000000000000b, rdi 000000000002e5a9, r8  00002b2a43b48ac0
+   r9  00002b2a43b48ac0, r10 00007ffd90f935a0, r11 0000000000000202
+   r12 00000000058aeb0b, r13 000000000697d288, r14 00000000058aeec0
+   r15 00007ffd90f95dd0
+  /lib64/libpthread.so.0(+0xf6d0) [0x2b2a440426d0]
+  /lib64/libc.so.6(kill+0x7) [0x2b2a44587547]
+  /opt/cluster/programs/g16-c.01/g16/cubegen() [0x40fe24]
+  /lib64/libc.so.6(__libc_start_main+0xf5) [0x2b2a44573445]
+/var/spool/slurm//job7311719/slurm_script: line 60: 189865 Aborted                 $g16root/g16/cubegen 0 Potential $FCKFILE $ESPFILE -2 h
+cp: cannot stat ‘gaussian_21_water_hf_adz2_dens.cube’: No such file or directory
+cp: cannot stat ‘gaussian_21_water_hf_adz2_esp.cube’: No such file or directory

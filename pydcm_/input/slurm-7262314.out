@@ -1,0 +1,23 @@
+node68.cluster
+ Read checkpoint file gaussian_132_water_ccsdt_adz.chk type G16
+ Write formatted file gaussian_132_water_ccsdt_adz.fchk
+ FChkPn:  Coordinates translated and rotated.
+ FChkPn:  Coordinates match /B/ after translation and rotation.
+ Will use up to     0 threads.
+ Top CubeGen          Wed Feb  8 14:50:22 2023
+ Aft UFChkP           Wed Feb  8 14:50:22 2023        0.13 cpu,        0.14 elapsed
+ Aft DecCub           Wed Feb  8 14:50:22 2023        0.01 cpu,        0.01 elapsed
+ Aft Density          Wed Feb  8 14:50:22 2023        0.00 cpu,        0.00 elapsed
+ Bef DoCube           Wed Feb  8 14:50:22 2023        0.00 cpu,        0.00 elapsed
+ There are a total of       29791 grid points.
+ ElSum from          density=        8.1577639970
+ Aft DoCube           Wed Feb  8 14:50:22 2023        0.08 cpu,        0.08 elapsed
+ Will use up to     0 threads.
+ Top CubeGen          Wed Feb  8 14:50:22 2023
+ Aft UFChkP           Wed Feb  8 14:50:22 2023        0.13 cpu,        0.13 elapsed
+ Aft DecCub           Wed Feb  8 14:50:22 2023        0.00 cpu,        0.00 elapsed
+ Aft Density          Wed Feb  8 14:50:22 2023        0.00 cpu,        0.00 elapsed
+ Bef DoCube           Wed Feb  8 14:50:22 2023        0.00 cpu,        0.00 elapsed
+ There are a total of       29791 grid points.
+ ElSum from          density=       13.6110299735
+ Aft DoCube           Wed Feb  8 14:50:22 2023        0.38 cpu,        0.39 elapsed

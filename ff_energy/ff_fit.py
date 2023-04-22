@@ -83,12 +83,11 @@ def load_ff(
     return ff, data_
 
 
-def fit_repeat(ff, n, k, bounds, clip=10, outname="ff/pbe0dz_mdcm"):
+def fit_repeat(ff, n, k, bounds, clip=10, sample=250, outname="ff/pbe0dz_mdcm"):
     ff.data_save["LJX"] = ff.data_save["intE"] - ff.data_save["ELEC"]
     ff.opt_results, ff.opt_results_df = [], []
     for i in range(k):
-        d = ff.data_save.sort_values("LJX")[clip:-clip].sample(250)
-        ff.data = d.copy()
+        ff.data = ff.data_save.copy()
         ff.fit_repeat(n, bounds=bounds)
     pickle_output(ff, outname)
 
@@ -100,23 +99,23 @@ def plot_best_fits(ff, name=""):
     dfs_ = []
 
     for res, data in zip(ff.opt_results, ff.opt_results_df):
-        if res["fun"] <= res["fun"].quantile(0.1):
+        if res["fun"] <= 30:
             data = data.dropna()
             test_keys = [_ for _ in list(ff.data_save.index) if _ not in data.index]
             test_df = ff.data_save.query("index in @test_keys")
             ff.data = test_df.copy()
             test_len = len(ff.data)
-            test_res = ff.LJ_performace(ff.eval_func(res.x))
+            test_res = ff.LJ_performace(ff.eval_func(res.x)).copy()
 
             # fig, ax = plt.subplots(1,3,figsize=(15,15))
             fig, ax = plt.subplot_mosaic([[0, 1], [2, 2]], figsize=(10, 7))
 
-            plot_LJintE(test_res, ax=ax[0])
+            plot_LJintE(test_res, ax=ax[0], elec=ff.elec)
 
             ff.data = ff.data_save.query("index not in @test_keys").copy()
             train_len = len(ff.data)
-            train_res = ff.LJ_performace(ff.eval_func(res.x))
-            plot_LJintE(train_res, ax=ax[1])
+            train_res = ff.LJ_performace(ff.eval_func(res.x)).copy()
+            plot_LJintE(train_res, ax=ax[1], elec=ff.elec)
             results = (
                 "{:.1f}_{}_{:.1f}_{}".format(
                     test_res["SE"].mean(), test_len, train_res["SE"].mean(), train_len
@@ -170,9 +169,10 @@ if __name__ == "__main__":
     )
     parser.add_argument("-k", "--k", help="Number of fits", required=False, default=10)
     parser.add_argument("-ft", "--fftype", help="Forcefield type", required=True)
-    parser.add_argument("-c", "--clip", help="Clip", required=False, default=10)
-    parser.add_argument("-o", "--outname", help="Outname", required=False, default=None)
+    parser.add_argument("-c", "--clip", help="Clip", required=False, default=0, type=int)
+    parser.add_argument("-o", "--outname", help="Outname", required=False, default=False)
     parser.add_argument("-p", "--pk", help="Pickle", required=False, default=None)
+    parser.add_argument("-sa", "--sample", help="Sample", required=False, default=250, type=int)
     parser.add_argument(
         "-dp", "--dp", help="Data Pickle", required=False, default=False
     )
@@ -202,10 +202,16 @@ if __name__ == "__main__":
         intern=args.intern,
         elec=args.elec,
     )
+    if args.outname:
+        outname = f'{args.ff}_{ff.name}_{ff.intern}_{ff.elec}'
+    else:
+        outname = None
 
     # do the fitting
     fit_repeat(
-        ff, int(args.n), int(args.k), bounds, clip=int(args.clip), outname=args.outname
+        ff, int(args.n), int(args.k), bounds,
+        clip=int(args.clip), outname=outname,
+        sample=int(args.sample)
     )
 
     # plot the results

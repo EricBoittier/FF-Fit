@@ -1,0 +1,26 @@
+slurmstepd: error: task/cgroup: unable to add task[pid=15113] to memory cg '(null)'
+slurmstepd: error: xcgroup_instantiate: unable to create cgroup '/sys/fs/cgroup/memory/slurm/uid_2073/job_7425463' : No space left on device
+slurmstepd: error: jobacct_gather/cgroup: unable to instanciate job 7425463 memory cgroup
+node60.cluster
+ Read checkpoint file gaussian_170_water_pbe0_dz.chk type G16
+ Write formatted file gaussian_170_water_pbe0_dz.fchk
+ FChkPn:  Coordinates translated and rotated.
+ FChkPn:  Coordinates match /B/ after translation and rotation.
+ Will use up to     0 threads.
+ Top CubeGen          Mon Mar 20 17:35:55 2023
+ Aft UFChkP           Mon Mar 20 17:35:56 2023        0.10 cpu,        0.11 elapsed
+ Aft DecCub           Mon Mar 20 17:35:56 2023        0.01 cpu,        0.01 elapsed
+ Aft Density          Mon Mar 20 17:35:56 2023        0.00 cpu,        0.00 elapsed
+ Bef DoCube           Mon Mar 20 17:35:56 2023        0.00 cpu,        0.00 elapsed
+ There are a total of       29791 grid points.
+ ElSum from          density=        8.1609855597
+ Aft DoCube           Mon Mar 20 17:35:56 2023        0.05 cpu,        0.05 elapsed
+ Will use up to     0 threads.
+ Top CubeGen          Mon Mar 20 17:35:56 2023
+ Aft UFChkP           Mon Mar 20 17:35:56 2023        0.10 cpu,        0.11 elapsed
+ Aft DecCub           Mon Mar 20 17:35:56 2023        0.00 cpu,        0.00 elapsed
+ Aft Density          Mon Mar 20 17:35:56 2023        0.00 cpu,        0.00 elapsed
+ Bef DoCube           Mon Mar 20 17:35:56 2023        0.00 cpu,        0.00 elapsed
+ There are a total of       29791 grid points.
+ ElSum from          density=       13.6085896963
+ Aft DoCube           Mon Mar 20 17:35:56 2023        0.38 cpu,        0.38 elapsed

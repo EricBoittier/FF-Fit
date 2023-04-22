@@ -155,21 +155,6 @@ class Structure:
             WATER = "TIP3"
             METHANOL = "LIG"
 
-        # atom_key_dict = {k:v for k,v in self.atom_types}
-        # ("LIG", "O"): "OT",
-        # ("LIG", "H1"): "HT",
-        # ("LIG", "H"): "HT",
-        # ("LIG", "H2"): "HT",
-        # ("TIP3", "OH2"): "OT",
-        # ("TIP3", "H1"): "HT",
-        # ("TIP3", "H2"): "HT",
-        # ("LIG", "O"): "OG311",
-        # ("LIG", "C"): "CG331",
-        # ("LIG", "H1"): "HGP1",
-        # ("LIG", "H2"): "HGA3",
-        # ("LIG", "H3"): "HGA3",
-        # ("LIG", "H4"): "HGA3",
-
         return PSF.render(
             OM=OM[0],
             CM=CM[0],
@@ -201,12 +186,14 @@ class Structure:
                 xyzb_ = self.xyzs[mask_b * res_mask_b]
                 xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
                 xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                #  case for same atom types
                 if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                     self.distances[i].append(sqrt_einsum_T(xyza.T, xyzb.T))
                     self.distances_pairs[i][(res_a, res_b)] = []
                     self.distances_pairs[i][(res_a, res_b)].append(
                         sqrt_einsum_T(xyza.T, xyzb.T)
                     )
+                #  case for different atom types
                 if a != b:
                     b, a = akp
                     mask_a = self.chm_typ_mask[a]

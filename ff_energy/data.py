@@ -108,16 +108,16 @@ def plot_intE(data):
     )
 
 
-def plot_LJintE(data, ax=None):
+def plot_LJintE(data, ax=None, elec="ELEC"):
     # data["NBONDS"] = data["ELEC"] + data["VDW"]
-    data["nb_intE"] = data["ELEC"] + data["LJ"]
+    data["nb_intE"] = data[elec] + data["LJ"]
     # _ = data[data["ECOL"] < -40].copy()
     data = data.dropna()
     ax = plot_energy_MSE(
         data,
         "intE",
         "nb_intE",
-        elec="ELEC",
+        elec=elec,
         CMAP="viridis",
         xlabel="intE [kcal/mol]",
         ylabel="NBONDS [kcal/mol]",
@@ -284,7 +284,8 @@ def pairs_data(
     """
 
     structures, pdbs = get_structures("water_cluster")
-    structure_key_pairs = {p.split(".")[0]: s for p, s in zip(pdbs, structures)}
+    structure_key_pairs = {p.split(".")[0]: s
+                           for p, s in zip(pdbs, structures)}
 
     E_col_dcms = []
     dist_dcms = []
@@ -312,6 +313,9 @@ def pairs_data(
             p1, p2 = pair
             mask1 = s.res_mask[p1]
             mask2 = s.res_mask[p2]
+            if 'dcm' in name:
+                mask1 = s.dcm_charges_mask[p1]
+                mask2 = s.dcm_charges_mask[p2]
             dcm1 = dcms[mask1]
             dcm2 = dcms[mask2]
             dcm1c = dcm1.copy()
