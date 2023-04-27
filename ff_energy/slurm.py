@@ -10,7 +10,12 @@ clusters = {
     "pc-beethoven": ("ssh", "boittier@pc-beethoven"),
 }
 
+
 class SlurmJobHandler:
+    """
+    Class to handle slurm jobs
+    """
+
     def __init__(
         self,
         max_jobs=5,
@@ -51,17 +56,14 @@ class SlurmJobHandler:
                 # print(job_dir)
             print(job_str)
             # subprocess.run(['sbatch', job_path.name], cwd=job_path.parents[0])
-            try:
-                output = (
-                    subprocess.check_output([self.cluster[0], self.cluster[1], job_str])
-                    .decode("utf-8")
-                    .strip()
-                )
-                print(output)
-            except:
-                pass
+
+            output = (
+                subprocess.check_output([self.cluster[0], self.cluster[1], job_str])
+                .decode("utf-8")
+                .strip()
+            )
+            print(output)
             time.sleep(15)
-            # print(f'{i}/{len(self.jobs)} = submitted job {job_script} to Slurm scheduler')
 
     def get_running_jobs(self):
         output = subprocess.check_output(
@@ -103,7 +105,8 @@ class SlurmJobHandler:
                 job_status = self.get_job_status(job_id)
                 if job_status in ("COMPLETED", "FAILED", "CANCELLED"):
                     print(
-                        f"Job {job_script} (id {job_id}) has finished with status {job_status}"
+                        f"Job {job_script} (id {job_id})"
+                        f" has finished with status {job_status}"
                     )
                     running_jobs.remove(job)
             time.sleep(interval)

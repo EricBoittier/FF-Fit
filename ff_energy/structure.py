@@ -97,6 +97,7 @@ class Structure:
         }
 
     def load_dcm(self, path):
+        """Load dcm file"""
         self.n_res = len(set(self.resids))
         with open(path) as f:
             lines = f.readlines()
@@ -117,16 +118,16 @@ class Structure:
             for r in list(set(self.resids))
         }
 
-
     def get_psf(self):
+        """Get psf file for structure"""
         OM = ["O"]
         CM = ["C"]
         H1M = ["H1"]
         H2M = ["H2"]
         H3M = ["H3"]
         H4M = ["H4"]
-        O = ["O", "OH2"]
-        O = [_ for _ in O if _ in [x[1] for x in self.atom_types.keys()]]
+        OATOM = ["O", "OH2"]
+        OATOM = [_ for _ in OATOM if _ in [x[1] for x in self.atom_types.keys()]]
         H = ["H", "H1"]
         H = [_ for _ in H if _ in [x[1] for x in self.atom_types.keys()]]
         if H[0] == "H":
@@ -148,7 +149,7 @@ class Structure:
             H2M=H2M[0],
             H3M=H3M[0],
             H4M=H4M[0],
-            O=O[0],
+            O=OATOM[0],
             H=H[0],
             H1=H1[0],
             WATER=WATER,
@@ -156,6 +157,7 @@ class Structure:
         )
 
     def set_2body(self):
+        """Set 2-body distances"""
         #  all interacting pairs
         self.pairs = list(itertools.combinations(range(1, max(self.resids) + 1), 2))
         self.distances = [[] for _ in range(len(atom_key_pairs))]
@@ -234,11 +236,15 @@ class Structure:
     def get_pdb(self):
         header = """HEADER
 TITLE
-REMARK   
+REMARK
 """
-        pdb_format = "{:6s}{:5d} {:^4s}{:1s}{:4s}{:1s}{:4d}{:1s}   {:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}          {:>2s}{:2s}\n"
+        pdb_format = (
+            "{:6s}{:5d} {:^4s}{:1s}{:4s}{:1s}{:4d}{:1s}   "
+            "{:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}"
+            "          {:>2s}{:2s}\n"
+        )
         _str = header
-        for i, l in enumerate(self.atoms):
+        for i, line in enumerate(self.atoms):
             _1 = "ATOM"
             _2 = i + 1
             _3 = self.atomnames[i]
