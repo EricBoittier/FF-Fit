@@ -99,3 +99,8 @@ def dist(a: np.array, b=None) -> float:
     if b is None:
         return np.linalg.norm(a)
     return np.linalg.norm(a - b)
+
+
+def sqrt_einsum_T(a, b):
+    a_min_b = a - b
+    return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))

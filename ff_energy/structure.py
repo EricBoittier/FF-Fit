@@ -3,6 +3,7 @@ import os
 import numpy as np
 
 from ff_energy.templates import PSF
+from ff_energy.geometry import sqrt_einsum_T
 
 
 def valid_atom_key_pairs(atom_keys):
@@ -31,15 +32,6 @@ atom_types = {
     # ("LIG", "H"): "HT",
     # ("LIG", "H2"): "HT",
 }
-
-
-def dist(a, b):
-    return np.linalg.norm(a - b)
-
-
-def sqrt_einsum_T(a, b):
-    a_min_b = a - b
-    return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))
 
 
 class Structure:
@@ -260,7 +252,6 @@ REMARK
             _13 = 0.0
             _14 = self.atomnames[i]
             _15 = " "
-
             _ = pdb_format.format(
                 _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15
             )
