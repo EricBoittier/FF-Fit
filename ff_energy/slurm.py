@@ -10,7 +10,6 @@ clusters = {
     "pc-beethoven": ("ssh", "boittier@pc-beethoven"),
 }
 
-
 class SlurmJobHandler:
     def __init__(
         self,

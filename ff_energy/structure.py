@@ -15,7 +15,6 @@ def valid_atom_key_pairs(atom_keys):
 
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
-# print("atom_key_pairs", atom_key_pairs)
 
 atom_types = {
     ("LIG", "O"): "OG311",
@@ -120,16 +119,6 @@ class Structure:
 
 
     def get_psf(self):
-        # OM = "OM"
-        # CM = "CM"
-        # H1M = "H1M"
-        # H2M = "H2M"
-        # H3M = "H3M"
-        # H4M = "H4M"
-        # O = "O"
-        # H = "H"
-        # H1 = "H1"
-
         OM = ["O"]
         CM = ["C"]
         H1M = ["H1"]
@@ -140,13 +129,10 @@ class Structure:
         O = [_ for _ in O if _ in [x[1] for x in self.atom_types.keys()]]
         H = ["H", "H1"]
         H = [_ for _ in H if _ in [x[1] for x in self.atom_types.keys()]]
-
         if H[0] == "H":
             H1 = ["H1"]
         if H[0] == "H1":
             H1 = ["H2"]
-        # H1 = ["H1", "H2"]
-        # H1 = [_ for _ in H1 if _ in [x[1] for x in self.atom_types.keys()]]
 
         METHANOL = "MEO"
         WATER = "LIG"
