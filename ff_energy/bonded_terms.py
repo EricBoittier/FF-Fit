@@ -38,7 +38,18 @@ def harmonic_angle(x, k, theta0) -> float:
     return 0.5 * k * (x - theta0) ** 2
 
 
-def energy_interal(kb, ka, r0, a0, a, r1, r2):
+def waterlike_energy_interal(kb, ka, r0, a0, a, r1, r2):
+    """
+    Calculate the energy of a molecule with 2 bonds and 1 angle
+    :param kb:
+    :param ka:
+    :param r0:
+    :param a0:
+    :param a:
+    :param r1:
+    :param r2:
+    :return:
+    """
     E = 0
     E += harmonic(r1, kb, r0)
     E += harmonic(r2, kb, r0)
@@ -53,9 +64,7 @@ class FitBonded:
     """
     Takes a DF with monomer energies and internal DoFs,
     and fits the parameters of the internal DoFs
-
     """
-
     def __init__(self, df, min_m_E):
         self.df = df.copy()
         self.min_m_E = min_m_E
@@ -79,11 +88,12 @@ class FitBonded:
         self.sum_monomer_df = sum_monomer_df
 
     def get_loss_df(self, x):
+        """Return the loss function applied to a dataframe"""
         df = self.df.copy()
         E_pred = []
         for a, r1, r2 in zip(df["a"], df["r1"], df["r2"]):
             a = np.deg2rad(a)
-            E_pred.append(energy_interal(*x, a, r1, r2))
+            E_pred.append(waterlike_energy_interal(*x, a, r1, r2))
         df["E_pred"] = E_pred
         df["m_ENERGY"] = df["m_ENERGY"] * H2KCALMOL
         df["m_ENERGY"] = df["m_ENERGY"] - df["m_ENERGY"].min()
@@ -91,6 +101,7 @@ class FitBonded:
         return df
 
     def get_loss(self, x):
+        """Return the loss function"""
         df = self.get_loss_df(x)
         MSE = df["SE"].mean()
         return MSE
