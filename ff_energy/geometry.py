@@ -5,8 +5,8 @@ def kabsch_rmsd(P, Q):
     """Calculate the RMSD between two sets of points using the Kabsch algorithm.
 
     Args:
-        P (np.ndarray): Nx3 array of points
-        Q (np.ndarray): Nx3 array of points
+        P (np.ndarray): Nx3 array of points (to fit)
+        Q (np.ndarray): Nx3 array of points (ref.)
 
     Returns:
         float: RMSD between P and Q

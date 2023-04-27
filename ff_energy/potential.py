@@ -6,8 +6,6 @@ from ff_energy.structure import atom_key_pairs, valid_atom_key_pairs
 
 H2KCALMOL = 627.503
 
-# @numba.njit (parallel=True, nopython=True)
-# @numba.njit (nopython=True, parallel=True)
 def LJ(sig, ep, r):
     """
     Lennard-Jones potential for a pair of atoms
@@ -70,8 +68,6 @@ rminhalfs = {
 }
 
 akp_indx = {akp: i for i, akp in enumerate(atom_key_pairs)}
-# for i, akp in enumerate(atom_key_pairs):
-#     print(i, akp)
 
 
 def Ecoloumb(q1, q2, r):
@@ -102,14 +98,6 @@ def combination_rules(atom_key_pairs, epsilons=None, rminhalfs=None):
         sigs.append(sig)
         eps.append(ep)
     return sigs, eps
-
-
-# epsilons = {"OG311": -0.192, "CG331": -0.078, "HGP1": -0.046, "HGA3": -0.024, "OT": -0.1521, "HT": -0.0460}
-# rminhalfs = {"OG311": 1.765, "CG331": 2.050, "HGP1": 0.225, "HGA3": 1.340, "OT": 1.7682, "HT": 0.2245, }
-
-
-# epsilons = {"OG311": -0.20, "CG331": -0.08, "HGP1":-0.05 ,"HGA3": -0.03,"OT": -0.1521,"HT": -0.0460}
-# rminhalfs = {"OG311": 1.79, "CG331": 2.08, "HGP1": 0.23,"HGA3": 1.36,"OT":1.7682 ,"HT": 0.2245,}
 
 
 class DistPrep:
