@@ -1,9 +1,9 @@
 import os
 
-from ff_energy.cli import load_config_maker, load_all_theory, charmm_jobs
+from ff_energy.cli import load_config_maker, charmm_jobs
 from ff_energy.potential import FF, LJ, DE
 import numpy as np
-from ff_energy.data import Data, plot_ecol, plot_intE, plot_LJintE
+from ff_energy.data import Data, plot_LJintE
 import matplotlib.pyplot as plt
 from pathlib import Path
 from ff_energy.utils import pickle_output, read_from_pickle
@@ -101,7 +101,7 @@ def plot_best_fits(ff, name=""):
     for res, data in zip(ff.opt_results, ff.opt_results_df):
         if res["fun"] <= 30:
             data = data.dropna()
-            test_keys = [_ for _ in list(ff.data_save.index) if _ not in data.index]
+            [_ for _ in list(ff.data_save.index) if _ not in data.index]
             test_df = ff.data_save.query("index in @test_keys")
             ff.data = test_df.copy()
             test_len = len(ff.data)

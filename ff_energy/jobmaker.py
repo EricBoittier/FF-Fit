@@ -187,7 +187,7 @@ class JobMaker:
         # print(p)
         ID = p.split(".")[0]
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
-        o = j.gather_data(
+        j.gather_data(
             monomers_path=Path(mp.format(ID)),
             cluster_path=Path(cp.format(ID)),
             pairs_path=Path(p_p.format(ID)),

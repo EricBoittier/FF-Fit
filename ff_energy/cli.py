@@ -98,7 +98,7 @@ def charmm_jobs(CMS):
             atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        HOMEDIR = f"/home/boittier/homeb/"
+        HOMEDIR = "/home/boittier/homeb/"
         f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
         # jm.gather_data(HOMEDIR, PCBACH, PCBACH)
         jm.make_charmm(HOMEDIR)
@@ -175,8 +175,8 @@ def molpro_jobs_big(CMS, DRY):
             atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        f"/home/boittier/homeb/"
-        PCBACH = f"/home/boittier/pcbach/"  # {cms.system_name}/{cms.theory_name}"
+        "/home/boittier/homeb/"
+        PCBACH = "/home/boittier/pcbach/"  # {cms.system_name}/{cms.theory_name}"
         if not DRY:
             jm.make_molpro(PCBACH)
         jobmakers.append(jm)
@@ -193,8 +193,8 @@ def molpro_jobs_small(CMS, DRY):
             atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        f"/home/boittier/pcnccr/"
-        PCBACH = f"/home/boittier/pcnccr/"  # {cms.system_name}/{cms.theory_name}"
+        "/home/boittier/pcnccr/"
+        PCBACH = "/home/boittier/pcnccr/"  # {cms.system_name}/{cms.theory_name}"
         if not DRY:
             jm.make_molpro(PCBACH)
         jobmakers.append(jm)
@@ -211,7 +211,7 @@ def data_jobs(CMS, molpro_small_path):
             atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        HOMEDIR = f"/home/boittier/homeb/"
+        HOMEDIR = "/home/boittier/homeb/"
         PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
         PCNCCR = f"/home/boittier/pcnccr/{cms.system_name}/{cms.theory_name}"
         COLOUMB = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
@@ -222,7 +222,8 @@ def data_jobs(CMS, molpro_small_path):
         if molpro_small_path is not None:
             PAIRS = molpro_small_path + f"/{cms.system_name}/{cms.theory_name}"
             MONOMERS = molpro_small_path + f"/{cms.system_name}/{cms.theory_name}"
-        print(PAIRS)
+        print("pairs path:", PAIRS)
+        print("monomers path:", MONOMERS)
         jm.gather_data(
             HOMEDIR,
             MONOMERS,  # monomers
@@ -244,7 +245,7 @@ def esp_view_jobs(CMS):
             atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        HOMEDIR = f"/home/boittier/homepcb/"
+        HOMEDIR = "/home/boittier/homepcb/"
         f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
         f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
         CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
@@ -261,7 +262,7 @@ def coloumb_jobs(CMS, DRY, cluster=None):
             atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        HOMEDIR = f"/home/boittier/homeb/"
+        HOMEDIR = "/home/boittier/homeb/"
         PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
         if cluster is not None:
             PCBACH = f"{cluster}/{cms.system_name}/{cms.theory_name}"
@@ -324,6 +325,9 @@ if __name__ == "__main__":
 
     CMS = None
     args = parser.parse_args()
+
+    if args.verbose:
+        print(args)
 
     if args.all:
         if args.verbose:
@@ -389,7 +393,7 @@ if __name__ == "__main__":
         if args.data:
             if args.verbose:
                 print("Gathering Data")
-            print(args.molpro_small_path)
+            print("MSP:", args.molpro_small_path)
             jobmakers = data_jobs(CMS, args.molpro_small_path)
 
     else:

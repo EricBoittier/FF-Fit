@@ -1,8 +1,7 @@
 import os.path
 import os
 from pathlib import Path
-import subprocess
-from multiprocessing.pool import ThreadPool, Pool
+from multiprocessing.pool import Pool
 
 # import ipywidgets as widgets
 # from tqdm.notebook import tqdm
@@ -186,7 +185,7 @@ class JobMaker:
         # print(p)
         ID = p.split(".")[0]
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
-        o = j.gather_data(monomers_path=Path(mp.format(ID)),
+        j.gather_data(monomers_path=Path(mp.format(ID)),
                           cluster_path=Path(cp.format(ID)),
                           pairs_path=Path(p_p.format(ID)),
                           coloumb_path=Path(c_p.format(ID)), 

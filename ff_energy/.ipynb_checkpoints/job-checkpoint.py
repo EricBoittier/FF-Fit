@@ -176,7 +176,7 @@ class Job:
         with open(g_com_file, "w") as f:
             f.write(g_com)
 
-        dcm_file = self.esp_view_path / f"dcm.xyz"
+        dcm_file = self.esp_view_path / "dcm.xyz"
         with open(dcm_file, "w") as f:
             f.write(f"{len(dcm_charges)}\n\n")
             for c in dcm_charges:

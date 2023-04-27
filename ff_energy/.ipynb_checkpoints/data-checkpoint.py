@@ -73,7 +73,7 @@ def unload_data(output):
 def plot_ecol(data):
     data = data.dropna()
     data = data[data["ECOL"] < -50]
-    fit = plot_energy_MSE(data, "ECOL", "ELEC", 
+    plot_energy_MSE(data, "ECOL", "ELEC", 
                     elec="ECOL", CMAP="plasma",
                    xlabel="Coulomb integral [kcal/mol]",
                    ylabel="CHM ELEC [kcal/mol]")
@@ -141,7 +141,7 @@ class Data:
             self.data["NBONDS"] = self.data["ELEC"] + self.data["VDW"]
             self.data["nb_intE"] = self.data["ELEC"] + self.data["VDW"]
             _ = self.data[self.data["ECOL"] < -40].copy()
-            fit = plot_energy_MSE(_, "intE", "nb_intE",
+            plot_energy_MSE(_, "intE", "nb_intE",
                     elec="ECOL", CMAP="viridis",
                    xlabel="intE [kcal/mol]",
                    ylabel="NBONDS [kcal/mol]")

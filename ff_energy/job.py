@@ -197,7 +197,7 @@ class Job:
         with open(g_com_file, "w") as f:
             f.write(g_com)
 
-        dcm_file = self.esp_view_path / f"dcm.xyz"
+        dcm_file = self.esp_view_path / "dcm.xyz"
         with open(dcm_file, "w") as f:
             f.write(f"{len(dcm_charges)}\n\n")
             for c in dcm_charges:
@@ -320,7 +320,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         with open(self.cluster_path / f"{self.name}.sh", "w") as f:
             f.write(slurm_job)
             self.slurm_files["cluster"][self.name] = (
-                self.cluster_path / f"{self.name}.sh"
+                    self.cluster_path / f"{self.name}.sh"
             )
 
     def generate_pairs(self):
@@ -338,16 +338,16 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 MEMORY=self.kwargs["m_memory"],
             )
             with open(
-                self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.inp", "w"
+                    self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.inp", "w"
             ) as f:
                 f.write(molpro_job)
             slurm_job = m_slurm_template.render(NAME=NAME, NPROC=self.kwargs["m_nproc"])
             with open(
-                self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh", "w"
+                    self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh", "w"
             ) as f:
                 f.write(slurm_job)
                 self.slurm_files["pairs"][NAME] = (
-                    self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh"
+                        self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh"
                 )
 
     def generate_monomers(self):
@@ -370,28 +370,10 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             with open(self.monomers_path / f"{self.name}_{monomer}.sh", "w") as f:
                 f.write(slurm_job)
                 self.slurm_files["monomers"][NAME] = (
-                    self.monomers_path / f"{self.name}_{monomer}.sh"
+                        self.monomers_path / f"{self.name}_{monomer}.sh"
                 )
 
-    def gather_data(
-        self,
-        monomers_path=None,
-        cluster_path=None,
-        pairs_path=None,
-        coloumb_path=None,
-        chm_path=None,
-    ):
-        if monomers_path is None:
-            monomers_path = self.monomers_path
-        if cluster_path is None:
-            cluster_path = self.cluster_path
-        if pairs_path is None:
-            pairs_path = self.pairs_path
-        if coloumb_path is None:
-            coloumb_path = self.coloumb_path
-        if chm_path is None:
-            chm_path = self.charmm_path
-
+    def gather_charmm(self, chm_path=None):
         #  charmm data
         charmm_output = [_ for _ in chm_path.glob("*inp.out") if _.is_file()]
         TOTAL = None
@@ -412,6 +394,9 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         charmm_data = {"TOTAL": TOTAL, "ELEC": ELEC, "VDW": VDW, "KEY": self.name}
         charmm_df = pd.DataFrame(charmm_data, index=[self.name])
 
+        return charmm_df
+
+    def gather_monomers(self, monomers_path=None):
         #  monomers data
         monomers_output = [
             _ for _ in monomers_path.glob(f"{self.name}*out") if _.is_file()
@@ -423,7 +408,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 lines = f.readlines()
             k = m.stem
             try:
-                monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[-1]), "KEY": k}
+                monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[0]), "KEY": k}
                 monomers_df = pd.DataFrame(monomers_data).T
             except Exception as e:
                 print("Failed reading monomer data:", m, e)
@@ -442,43 +427,9 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             if len(monomers_df) != len(list(set(self.structure.resids))):
                 monomers_sum_df = None
 
-        #  pairs data
-        pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out") if _.is_file()]
-        pairs_data = {}
-        for p in pairs_output:
-            with open(p, "r") as f:
-                lines = f.readlines()
-            key, a, b = p.stem.split("_")
-            pairs = (int(a), int(b))
-            try:
-                pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[-1])}
-                pairs_data[p.stem]["p_m1_ENERGY"] = monomers_data[
-                    "{}_{}".format(key, pairs[0])
-                ]["m_ENERGY"]
-                pairs_data[p.stem]["p_m2_ENERGY"] = monomers_data[
-                    "{}_{}".format(key, pairs[1])
-                ]["m_ENERGY"]
-                pairs_data[p.stem]["p_int_ENERGY"] = (
-                    pairs_data[p.stem]["p_ENERGY"]
-                    - pairs_data[p.stem]["p_m1_ENERGY"]
-                    - pairs_data[p.stem]["p_m2_ENERGY"]
-                )
-            except Exception as e:
-                print(p.stem, e)
+        return monomers_data, monomers_df, monomers_sum_df
 
-        pairs_df = pd.DataFrame(pairs_data).T
-
-        pairs_sum_df = None
-        if pairs_df is not None and len(pairs_df) > 0:
-            pair_sum_df = pd.DataFrame(
-                {
-                    "P_ENERGY": [pairs_df["p_ENERGY"].sum()],
-                    "P_intE": [pairs_df["p_int_ENERGY"].sum()],
-                    "KEY": [self.name],
-                },
-                index=[self.name],
-            )
-
+    def gather_cluster(self, cluster_path=None):
         # cluster data
         cluster_output = [
             _ for _ in cluster_path.glob(f"{self.name}*out") if _.is_file()
@@ -488,14 +439,88 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             with open(c, "r") as f:
                 lines = f.readlines()
             try:
+                #  get the energy
                 cluster_data[str(c.name).split(".")[0]] = {
-                    "C_ENERGY": float(lines[-3].split()[-1])
+                    "C_ENERGY": float(lines[-3].split()[0])
                 }
             except Exception as e:
                 print(f"{self.name}, {e}")
 
         cluster_df = pd.DataFrame(cluster_data).T
+        return cluster_df
 
+    def gather_pairs(self, pairs_path, monomers_data):
+        #  pairs data
+        pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out") if _.is_file()]
+        pairs_data = {}
+        for p in pairs_output:
+            with open(p, "r") as f:
+                lines = f.readlines()
+            key, a, b = p.stem.split("_")
+            pairs = (int(a), int(b))
+            try:
+                pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[0])}
+                pairs_data[p.stem]["p_m1_ENERGY"] = monomers_data[
+                    "{}_{}".format(key, pairs[0])
+                ]["m_ENERGY"]
+                pairs_data[p.stem]["p_m2_ENERGY"] = monomers_data[
+                    "{}_{}".format(key, pairs[1])
+                ]["m_ENERGY"]
+                pairs_data[p.stem]["p_int_ENERGY"] = (
+                        pairs_data[p.stem]["p_ENERGY"]
+                        - pairs_data[p.stem]["p_m1_ENERGY"]
+                        - pairs_data[p.stem]["p_m2_ENERGY"]
+                )
+            except Exception as e:
+                print(p.stem, e)
+
+        pairs_df = pd.DataFrame(pairs_data).T
+
+        pairs_sum_df = None
+        if pairs_df is not None and len(pairs_df) > 0:
+            pd.DataFrame(
+                {
+                    "P_ENERGY": [pairs_df["p_ENERGY"].sum()],
+                    "P_intE": [pairs_df["p_int_ENERGY"].sum()],
+                    "KEY": [self.name],
+                },
+                index=[self.name],
+            )
+        return pairs_df, pairs_sum_df
+
+
+    def gather_coloumb(self, coloumb_path=None):
+        #  coloumb data
+        coloumb_output = [
+            _ for _ in coloumb_path.glob(f"{self.name}*out") if _.is_file()
+        ]
+        coloumb_data = {}
+        for c in coloumb_output:
+            with open(c, "r") as f:
+                lines = f.readlines()
+            key = c.stem
+            try:
+                coloumb_data[key] = {"ECOL": float(lines[-1].split()[0]), "KEY": key}
+            except IndexError:
+                coloumb_data[key] = {"ECOL": None, "KEY": key}
+
+        coloumb_df = pd.DataFrame(coloumb_data).T
+        coloumb_total = None
+        if len(coloumb_df) == 190:
+            coloumb_total = coloumb_df["ECOL"].sum()
+        coloumb_total = pd.DataFrame(
+            {"ECOL": coloumb_total, "KEY": self.name}, index=[self.name]
+        )
+
+        if "ECOL" in coloumb_df.keys():
+            if None in coloumb_df["ECOL"].values:
+                coloumb_total = None
+        else:
+            coloumb_total = None
+
+        return coloumb_df, coloumb_total
+
+    def gather_polarization(self, polarization_path=None):
         # polarization data
         polarization_data = {}
         polarization_output = [
@@ -529,34 +554,33 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             pol_total = pd.DataFrame(
                 {"POL": total_pol, "KEY": self.name}, index=[self.name]
             )
+        return pol_df, pol_total
 
-        #  coloumb data
-        coloumb_output = [
-            _ for _ in coloumb_path.glob(f"{self.name}*out") if _.is_file()
-        ]
-        coloumb_data = {}
-        for c in coloumb_output:
-            with open(c, "r") as f:
-                lines = f.readlines()
-            key = c.stem
-            try:
-                coloumb_data[key] = {"ECOL": float(lines[-1].split()[0]), "KEY": key}
-            except IndexError:
-                coloumb_data[key] = {"ECOL": None, "KEY": key}
+    def gather_data(
+            self,
+            monomers_path=None,
+            cluster_path=None,
+            pairs_path=None,
+            coloumb_path=None,
+            chm_path=None,
+    ):
+        if monomers_path is None:
+            monomers_path = self.monomers_path
+        if cluster_path is None:
+            cluster_path = self.cluster_path
+        if pairs_path is None:
+            pairs_path = self.pairs_path
+        if coloumb_path is None:
+            coloumb_path = self.coloumb_path
+        if chm_path is None:
+            chm_path = self.charmm_path
 
-        coloumb_df = pd.DataFrame(coloumb_data).T
-        coloumb_total = None
-        if len(coloumb_df) == 190:
-            coloumb_total = coloumb_df["ECOL"].sum()
-        coloumb_total = pd.DataFrame(
-            {"ECOL": coloumb_total, "KEY": self.name}, index=[self.name]
-        )
-
-        if "ECOL" in coloumb_df.keys():
-            if None in coloumb_df["ECOL"].values:
-                coloumb_total = None
-        else:
-            coloumb_total = None
+        charmm_df = self.gather_charmm(chm_path)
+        monomers_data, monomers_df, monomers_sum_df = self.gather_monomers(monomers_path)
+        cluster_df = self.gather_cluster(cluster_path)
+        pairs_df, pairs_sum_df = self.gather_pairs(pairs_path, monomers_data)
+        # pol_df, pol_total = self.gather_polarization(polarization_path)
+        coloumb_df, coloumb_total = self.gather_coloumb(coloumb_path)
 
         output = {
             "charmm": charmm_df,
@@ -565,8 +589,8 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             "pairs": pairs_df,
             "pairs_sum": pairs_sum_df,
             "cluster": cluster_df,
-            "polarization": pol_df,
-            "pol_total": pol_total,
+            # "polarization": pol_df,
+            # "pol_total": pol_total,
             "coloumb": coloumb_df,
             "coloumb_total": coloumb_total,
         }

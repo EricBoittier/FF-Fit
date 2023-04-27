@@ -4,14 +4,11 @@ import pickle
 import itertools
 
 from ff_energy.plot import plot_energy_MSE
-from ff_energy.geometry import kabsch_rmsd, dihedral3, bisector, angle
+from ff_energy.geometry import dihedral3, bisector, angle
 from ff_energy.cli import get_structures
 from ff_energy.potential import Ecoloumb
 from ff_energy.bonded_terms import FitBonded
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import colors
-from matplotlib import cm
 
 H2KCALMOL = 627.503
 
@@ -82,7 +79,7 @@ def unload_data(output):
 def plot_ecol(data):
     data = data.dropna()
     data = data[data["ECOL"] < -50]
-    fit = plot_energy_MSE(
+    plot_energy_MSE(
         data,
         "ECOL",
         "ELEC",
@@ -97,7 +94,7 @@ def plot_intE(data):
     # data["NBONDS"] = data["ELEC"] + data["VDW"]
     data["nb_intE"] = data["ELEC"] + data["VDW"]
     # _ = data[data["ECOL"] < -40].copy()
-    fit = plot_energy_MSE(
+    plot_energy_MSE(
         data,
         "intE",
         "nb_intE",
@@ -237,10 +234,15 @@ class Data:
         self.monomers_df["r2"] = r2_s
 
     def plot_pair_monomer_E(self) -> None:
-        _ = self.data[self.data["n_pairs"] >= 190].copy()
+        _ = self.data[self.data["n_pairs"] == 190].copy()
+        # _ = _[_["n_monomers"] == 20].copy()
         # _ = _[_["ECOL"] < -50].copy()
-        print(len(_))
-        fit = plot_energy_MSE(
+        # _ = _.dropna(subset=["intE"])
+        _ = _[_["P_intE"] < 1]
+        _ = _[_["intE"] < 1]
+        print("n:", len(_))
+
+        plot_energy_MSE(
             _,
             "intE",
             "P_intE",
@@ -255,7 +257,7 @@ class Data:
             self.data["NBONDS"] = self.data["ELEC"] + self.data["VDW"]
             self.data["nb_intE"] = self.data["ELEC"] + self.data["VDW"]
             _ = self.data[self.data["ECOL"] < -40].copy()
-            fit = plot_energy_MSE(
+            plot_energy_MSE(
                 _,
                 "intE",
                 "nb_intE",

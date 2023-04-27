@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 
 def plot_energy_MSE(df, key1, key2, FONTSIZE=14,

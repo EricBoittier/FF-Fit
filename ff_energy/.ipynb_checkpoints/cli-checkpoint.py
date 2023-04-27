@@ -2,14 +2,10 @@ import sys
 
 sys.path.append("/home/boittier/Documents/phd/ff_energy")
 
-from ff_energy.structure import Structure
-from ff_energy.job import Job
 from ff_energy.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.plot import plot_energy_MSE
 from ff_energy.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.config import Config
 from pathlib import Path
-import pandas as pd
 import pickle
 from ff_energy.slurm import SlurmJobHandler
 
@@ -112,8 +108,7 @@ def charmm_jobs(CMS):
         print(cms.elec)
         jm = MakeJob(f"{cms.system_name}/{cms.theory_name}_{cms.elec}", cms,
                      atom_types=cms.atom_types, system_name=cms.system_name)
-        HOMEDIR = f"/home/boittier/homeb/"
-        PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
+        HOMEDIR = "/home/boittier/homeb/"
         # jm.gather_data(HOMEDIR, PCBACH, PCBACH)
         jm.make_charmm(HOMEDIR)
         jobmakers.append(jm)
@@ -185,8 +180,7 @@ def molpro_jobs_big(CMS, DRY):
         jm = MakeJob(f"{cms.system_name}/{cms.theory_name}", cms,
                      atom_types=cms.atom_types,
                      system_name=cms.system_name)
-        HOMEDIR = f"/home/boittier/homeb/"
-        PCBACH = f"/home/boittier/pcbach/"  # {cms.system_name}/{cms.theory_name}"
+        PCBACH = "/home/boittier/pcbach/"  # {cms.system_name}/{cms.theory_name}"
         if not DRY:
 
             jm.make_molpro(PCBACH)
@@ -200,8 +194,7 @@ def molpro_jobs_small(CMS, DRY):
         jm = MakeJob(f"{cms.system_name}/{cms.theory_name}", cms,
                      atom_types=cms.atom_types,
                      system_name=cms.system_name)
-        HOMEDIR = f"/home/boittier/pcnccr/"
-        PCBACH = f"/home/boittier/pcnccr/"  # {cms.system_name}/{cms.theory_name}"
+        PCBACH = "/home/boittier/pcnccr/"  # {cms.system_name}/{cms.theory_name}"
         if not DRY:
             jm.make_molpro(PCBACH)
         jobmakers.append(jm)
@@ -215,7 +208,7 @@ def data_jobs(CMS, molpro_small_path):
         jm = MakeJob(f"{cms.system_name}/{cms.theory_name}_{cms.elec}", cms,
                      atom_types=cms.atom_types,
                      system_name=cms.system_name)
-        HOMEDIR = f"/home/boittier/homeb/"
+        HOMEDIR = "/home/boittier/homeb/"
         PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
         PCNCCR = f"/home/boittier/pcnccr/{cms.system_name}/{cms.theory_name}"
         COLOUMB = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
@@ -237,15 +230,12 @@ def data_jobs(CMS, molpro_small_path):
     return jobmakers
 
 def esp_view_jobs(CMS):
-    jobmakers = []
     for cms in CMS:
         print(cms)
         jm = MakeJob(f"{cms.system_name}/{cms.theory_name}_{cms.elec}", cms,
                      atom_types=cms.atom_types,
                      system_name=cms.system_name)
-        HOMEDIR = f"/home/boittier/homepcb/"
-        PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
-        COLOUMB = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
+        HOMEDIR = "/home/boittier/homepcb/"
         CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
         jm.esp_view(HOMEDIR, CHM)
 
@@ -256,8 +246,7 @@ def coloumb_jobs(CMS):
         jm = MakeJob(f"{cms.system_name}/{cms.theory_name}", cms,
                      atom_types=cms.atom_types,
                      system_name=cms.system_name)
-        HOMEDIR = f"/home/boittier/homeb/"
-        PCBACH = f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
+        HOMEDIR = "/home/boittier/homeb/"
         jm.make_coloumb(HOMEDIR,
                         f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}/""{}/monomers")
         jobmakers.append(jm)

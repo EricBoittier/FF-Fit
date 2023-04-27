@@ -122,6 +122,8 @@ class FF:
         self, data, dists, func, bounds, structure, nobj=4, elec="ELEC", intern="Exact", pairs=False,
     ):
         self.data = data
+        #  make a dummy zero column for the energy
+        self.data["DUMMY"] = len(self.data) * [0]
         self.data_save = data.copy()
 
         self.structure = structure
@@ -152,6 +154,7 @@ class FF:
         self.n_dists = []
         self.bounds = bounds
 
+
         if self.intern == "Exact":
             if pairs:
                 self.data["intE"] =  self.data["p_int_ENERGY"] * H2KCALMOL
@@ -163,6 +166,9 @@ class FF:
                 self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
             else:
                 self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+        else:
+            #  if the internal energy is not supported, raise an error
+            raise ValueError(f"intern = {self.intern} not implemented")
 
     def __repr__(self):
         return f"FF: {self.func.__name__}"
@@ -201,12 +207,12 @@ class FF:
                     e = np.sum(self.func(sig[i], ep[i], ddists, *args))
                     E += e
             Es.append(E)
-        return pd.DataFrame(Es, index=self.data.index)
+        return pd.DataFrame({"LJ": Es}, index=self.data.index)
 
     def LJ_performace(self, res, data=None):
         if data is None:
-            data = self.data
-        data["LJ"] = res.copy()
+            data = self.data.copy()
+        data["LJ"] = res["LJ"].copy()
         # data["VDW_ERROR"] = data["VDW"] - data["LJ"]
         # data["VDW_SE"] = data["VDW_ERROR"] ** 2
         data["nb_intE"] = data[self.elec] + data["LJ"]

@@ -9,7 +9,7 @@ kwargs = {
     "chmpath": "/home/boittier/dev-release-dcm/build/cmake/charmm",
     "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
     "c_files": ["pbe0_dz.pc"],
-    "c_dcm_command": f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15",
+    "c_dcm_command": "open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15",
 }
 
 
@@ -50,7 +50,7 @@ class Config:
             self.c_files = ["pbe0_dz.pc"]
         if "c_dcm_command" not in self.__dict__:
             self.c_dcm_command = (
-                f"open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15"
+                "open unit 11 card read name pbe0_dz.pc \nDCM IUDCM 11 TSHIFT XYZ 15"
             )
 
     def kwargs(self):
