@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+import re
 
 from ff_energy.structure import atom_key_pairs, valid_atom_key_pairs
 
@@ -19,7 +20,7 @@ def LJ(sig, ep, r):
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6 ** b - c * r6)
+    return ep * (r6**b - c * r6)
 
 
 def freeLJ(sig, ep, r, a, b, c):
@@ -36,8 +37,8 @@ def DE(c, e, x, a, b):
     Double exponential potential
     """
     return e * (
-            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+        ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+        - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
     )
 
 
@@ -46,12 +47,12 @@ def DEplus(x, a, b, c, e, f, g):
     Double exponential potential
     """
     return (
-            e
-            * (
-                    ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-                    - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
-            )
-            - f * (c / x) ** g
+        e
+        * (
+            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+        )
+        - f * (c / x) ** g
     )
 
 
@@ -107,28 +108,33 @@ def combination_rules(atom_key_pairs, epsilons=None, rminhalfs=None):
 
 @jit
 def lj(sig, ep, r):
-    """Lennard-Jones potential for a pair of atoms
-    """
+    """Lennard-Jones potential for a pair of atoms"""
     a = 6
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6 ** b - c * r6)
+    return ep * (r6**b - c * r6)
 
 
 @jit
 def LJRUN(dists, indexs, groups, parms):
-    sigma = jnp.take(parms, indexs, unique_indices=False)
-    eps = jnp.take(parms, indexs + 3, unique_indices=False)
-    LJE = lj(sigma, eps, dists)
+    LJE = LJflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(LJE, groups, num_segments=500)
     return OUT
 
 
 @jit
+def LJflat(dists, indexs, parms):
+    sigma = jnp.take(parms, indexs, unique_indices=False)
+    eps = jnp.take(parms, indexs + 3, unique_indices=False)
+    LJE = lj(sigma, eps, dists)
+    return LJE
+
+
+@jit
 def LJRUN_LOSS(dists, indexs, groups, parms, target):
     ERROR = LJRUN(dists, indexs, groups, parms) - target
-    return jnp.sum(ERROR ** 2)
+    return jnp.mean(ERROR**2)
 
 
 class DistPrep:
@@ -138,7 +144,16 @@ class DistPrep:
 
 class FF:
     def __init__(
-            self, data, dists, func, bounds, structure, nobj=4, elec="ELEC", intern="Exact", pairs=False,
+        self,
+        data,
+        dists,
+        func,
+        bounds,
+        structure,
+        nobj=4,
+        elec="ELEC",
+        intern="Exact",
+        pairs=False,
     ):
         self.data = data
         #  make a dummy zero column for the energy
@@ -172,15 +187,23 @@ class FF:
         self.all_ep = None
         self.n_dists = []
         self.bounds = bounds
+        self.out_dists = None
 
-        p = self.get_best_parm()
-        #  Jax arrays
-        out_dists, out_groups, out_akps, \
-            out_ks, out_es, out_sig, out_ep = self.eval_dist(p)
-        self.out_dists = jnp.array(out_dists)
-        self.out_groups = jnp.array(out_groups)
-        self.out_akps = jnp.array(out_akps)
-        self.targets = jnp.array(self.data["intE"].to_numpy())
+        self.out_groups_dict = None
+        self.out_es = None
+        self.out_groups = None
+        self.out_akps = None
+        self.targets = None
+        self.p = None
+
+        self.data["k"] = [int(re.sub("[^0-9]", "", i)) for i in self.data.index]
+        self.data = self.data.sort_values(by="k")
+
+        if len(self.opt_results) > 0:
+            self.p = self.get_best_parm()
+        else:
+            # self.p = self.get_random_parm()
+            self.p = jnp.array([1.764e00, 2.500e-01, 1.687e-01, 6.871e-03])
 
         # Internal energies
         if self.intern == "Exact":
@@ -193,10 +216,43 @@ class FF:
                 #  TODO: add harmonic
                 self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
             else:
-                self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+                self.data["intE"] = (
+                    self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+                )
         else:
             #  if the internal energy is not supported, raise an error
             raise ValueError(f"intern = {self.intern} not implemented")
+
+        self.jax_init()
+
+    def jax_init(self):
+        #  Jax arrays
+        (
+            out_dists,
+            out_groups,
+            out_akps,
+            out_ks,
+            out_es,
+            out_sig,
+            out_ep,
+        ) = self.eval_dist(self.p)
+        self.out_dists = jnp.array(out_dists)
+        #  turn groups (str) into group_keys (int)
+        group_key_dict = {
+            g: int(re.sub("[^0-9]", "", g)) for g in list(set(out_groups))
+        }
+        self.out_groups_dict = group_key_dict
+        out_groups = jnp.array([group_key_dict[g] for g in out_groups])
+        self.out_groups = jnp.array(out_groups)
+        self.out_es = jnp.array(out_es)
+        self.out_akps = jnp.array(out_akps)
+
+        self.targets = jnp.array(
+            jnp.array(
+                self.data[self.elec].to_numpy()
+                + jnp.array(self.data[self.elec].to_numpy())
+            )
+        )
 
     def __repr__(self):
         return f"FF: {self.func.__name__}"
@@ -206,22 +262,13 @@ class FF:
         self.dists = dists
 
     def LJ_(self, epsilons=None, rminhalfs=None, DISTS=None, data=None, args=None):
-        """pairwise interactions
-
-        requires:
-        distances is a dictionary of a list distances for each key, and atom pair
-        data is a dataframe of the data, where the index is the key for the distances dictionary
-        """
+        """pairwise interactions"""
         if DISTS is None:
             DISTS = self.dists
         # outputs
         Es = []
         #  calculate combination rules
-        sig, ep = combination_rules(
-            self.atom_type_pairs,
-            epsilons,
-            rminhalfs
-        )
+        sig, ep = combination_rules(self.atom_type_pairs, epsilons, rminhalfs)
         for k in self.data.index:
             # get the distance
             dists = DISTS[k]
@@ -238,22 +285,12 @@ class FF:
         return pd.DataFrame({"LJ": Es}, index=self.data.index)
 
     def LJ_dists(self, epsilons=None, rminhalfs=None, DISTS=None, data=None, args=None):
-        """pairwise interactions
-
-        requires:
-        distances is a dictionary of a list distances for each key, and atom pair
-        data is a dataframe of the data, where the index is the key for the distances dictionary
-        """
+        """pairwise interactions"""
         if DISTS is None:
             DISTS = self.dists
         # outputs
-        Es = []
         #  calculate combination rules
-        sig, ep = combination_rules(
-            self.atom_type_pairs,
-            epsilons,
-            rminhalfs
-        )
+        sig, ep = combination_rules(self.atom_type_pairs, epsilons, rminhalfs)
         out_dists = []
         out_akps = []
         out_groups = []
@@ -278,8 +315,10 @@ class FF:
                         out_sig.append(sig[i])
                         out_es.append(self.func(sig[i], ep[i], d, *args))
 
-        out = [_ for _ in [out_dists, out_groups, out_akps,
-                           out_ks, out_es, out_sig, out_ep]]
+        out = [
+            _
+            for _ in [out_dists, out_groups, out_akps, out_ks, out_es, out_sig, out_ep]
+        ]
         return out
 
     def LJ_performace(self, res, data=None):
@@ -296,7 +335,7 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_(e, s, args=x[len(self.atom_types) * 2:])
+        return self.LJ_(e, s, args=x[len(self.atom_types) * 2 :])
 
     def eval_dist(self, x):
         s = {}
@@ -304,21 +343,28 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2:])
+        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2 :])
 
     def get_loss(self, x):
+        """
+        get the mean squared error of the LJ potential
+        :param x:
+        :return:
+        """
         res = self.eval_func(x)
         tmp = self.LJ_performace(res)
         loss = tmp["SE"].mean()
         return loss
 
     def get_loss_jax(self, x):
-        loss = LJRUN_LOSS(self.out_dists,
-                          self.out_akps,
-                          self.out_groups,
-                          x,
-                          self.targets
-                          )
+        """
+        get the mean squared error of the LJ potential
+        :param x:
+        :return:
+        """
+        loss = LJRUN_LOSS(
+            self.out_dists, self.out_akps, self.out_groups, x, self.targets
+        )
         return loss
 
     def get_best_loss(self):
@@ -340,6 +386,9 @@ class FF:
             "use FF.opt_parm to get the optimized parameters"
         )
 
+    def get_random_parm(self):
+        return [np.random.uniform(low=a, high=b) for a, b in self.bounds]
+
     def get_best_parm(self):
         best = self.get_best_loss()
         return best["x"].values[0]
@@ -352,7 +401,7 @@ class FF:
         return tmp
 
     def fit_repeat(
-            self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+        self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
     ):
         if bounds is None:
             bounds = self.bounds
@@ -364,7 +413,7 @@ class FF:
         self.eval_best_parm()
 
     def fit_func(
-            self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+        self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
     ):
         if bounds is None:
             bounds = self.bounds

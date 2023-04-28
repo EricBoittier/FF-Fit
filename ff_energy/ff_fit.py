@@ -1,13 +1,8 @@
-import os
-
 from ff_energy.cli import load_config_maker, charmm_jobs
 from ff_energy.potential import FF, LJ, DE
-import numpy as np
-from ff_energy.data import Data, plot_LJintE
-import matplotlib.pyplot as plt
-from pathlib import Path
-from ff_energy.utils import pickle_output, read_from_pickle
 from ff_energy.data import Data
+from pathlib import Path
+from ff_energy.utils import pickle_output, read_from_pickle, PKL_PATH
 
 sig_bound = (0.25, 2.5)
 ep_bound = (0.0001, 0.5)
@@ -20,23 +15,40 @@ func_bounds = {"LJ": (LJ, LJ_bound), "DE": (DE, DE_bound)}
 def load_ff(
     ff_name,
     structure,
-    pickled_ff=False,
-    pickled_dists=False,
     FUNC=LJ,
     BOUNDS=LJ_bound,
+    pickled_ff=False,
+    pickled_dists=False,
     pk=None,
     data_pickle=False,
     intern=False,
     elec=False,
 ):
+    """
+    Load the force field, if the force field is not pickled, it will be created
+    :param ff_name:
+    :param structure:
+    :param FUNC:
+    :param BOUNDS:
+    :param pickled_ff:
+    :param pickled_dists:
+    :param pk:
+    :param data_pickle:
+    :param intern:
+    :param elec:
+    :return:
+    """
     ff = None
     data_ = None
     ff_pkls = Path("pickles/ff")
     ff_pickles = ff_pkls.glob("*.pkl")
     ff_pickles = [_.name for _ in ff_pickles]
-    struct_dist_pkls = Path("pickles/structures")
+    struct_dist_pkls = PKL_PATH / "structures"
     struct_dist_pickles = struct_dist_pkls.glob("*.pkl")
     struct_dist_pickles = [_.name for _ in struct_dist_pickles]
+    if len(struct_dist_pickles) > 0:
+        pickled_dists = True
+        print("Pickled structures/dists found: ", struct_dist_pickles)
 
     #  check if the pickles exists
     if pickled_ff:
@@ -48,29 +60,34 @@ def load_ff(
         print("Pickled FF exists!, loading: ", ff_pkls / f"{ff_name}.pkl")
         try:
             ff = next(read_from_pickle(ff_pkls / f"{ff_name}.pkl"))
+            #  return the ff and the data
+            return ff, ff.data
         except StopIteration:
-            print("Pickle read failed.")
+            print("Pickle read failed...")
             pickled_ff = False
 
     if not pickled_ff:
-        if pickled_dists:
-            print("loading pickled distances/structure")
-            structures, dists = next(
-                read_from_pickle(f"pickles/structures/{structure}.pkl")
-            )
-        else:
+        if pickled_dists:  # load the data
+            print(f"Loading pickled distances/structure: {structure}")
+            structures, dists = next(read_from_pickle(f"structures/{structure}.pkl"))
+        else:  # compute the data
             print("No pickled distances/structure information, calculating:")
             CMS = load_config_maker("pbe0dz", structure, "pc")
             jobs = charmm_jobs(CMS)
             dists = {_.name.split(".")[0]: _.distances for _ in jobs[0].structures}
             structures = [_ for _ in jobs[0].structures]
             pickle_output((structures, dists), name=f"structures/{structure}")
+
         s = structures[0]
         if data_pickle:
+            #  read the data directly from the pickle
+            print(f"loading data from pickle: {pk}")
             data_ = next(read_from_pickle(pk))
         else:
+            #  load all the small pickles
             data_ = Data(pk)
 
+        #  create the FF object
         ff = FF(
             data_.data,
             dists,
@@ -84,6 +101,17 @@ def load_ff(
 
 
 def fit_repeat(ff, n, k, bounds, clip=10, sample=250, outname="ff/pbe0dz_mdcm"):
+    """
+    Fit the force field multiple times
+    :param ff:
+    :param n:
+    :param k:
+    :param bounds:
+    :param clip:
+    :param sample:
+    :param outname:
+    :return:
+    """
     ff.data_save["LJX"] = ff.data_save["intE"] - ff.data_save["ELEC"]
     ff.opt_results, ff.opt_results_df = [], []
     for i in range(k):
@@ -92,73 +120,16 @@ def fit_repeat(ff, n, k, bounds, clip=10, sample=250, outname="ff/pbe0dz_mdcm"):
     pickle_output(ff, outname)
 
 
-def plot_best_fits(ff, name=""):
-    test_ = []
-    train_ = []
-    args_ = []
-    dfs_ = []
-
-    for res, data in zip(ff.opt_results, ff.opt_results_df):
-        if res["fun"] <= 30:
-            data = data.dropna()
-            [_ for _ in list(ff.data_save.index) if _ not in data.index]
-            test_df = ff.data_save.query("index in @test_keys")
-            ff.data = test_df.copy()
-            test_len = len(ff.data)
-            test_res = ff.LJ_performace(ff.eval_func(res.x)).copy()
-
-            # fig, ax = plt.subplots(1,3,figsize=(15,15))
-            fig, ax = plt.subplot_mosaic([[0, 1], [2, 2]], figsize=(10, 7))
-
-            plot_LJintE(test_res, ax=ax[0], elec=ff.elec)
-
-            ff.data = ff.data_save.query("index not in @test_keys").copy()
-            train_len = len(ff.data)
-            train_res = ff.LJ_performace(ff.eval_func(res.x)).copy()
-            plot_LJintE(train_res, ax=ax[1], elec=ff.elec)
-            results = (
-                "{:.1f}_{}_{:.1f}_{}".format(
-                    test_res["SE"].mean(), test_len, train_res["SE"].mean(), train_len
-                )
-            )
-            print(results)
-            res = res.x
-            x = np.arange(0.1, 5, 0.05)
-            y = LJ(res[0] * 2, res[2], x)
-            ax[2].plot(x, y, c="grey")
-            y = LJ(res[1] * 2, res[3], x)
-            ax[2].plot(x, y, c="firebrick")
-            y = LJ(res[1] + res[1], np.sqrt(res[3] * res[2]), x)
-            ax[2].plot(x, y, c="k")
-            ax[2].axhline(0, c="k")
-            ax[2].set_ylim(-1, 1)
-            res_str = "_".join(["{:.2f}".format(x) for x in res])
-            save_path = (
-                f"/home/boittier/Documents/phd/ff_energy/figs/ff/"
-                f"{name}_{ff.name}_{ff.intern}_{ff.elec}/{results}_{res_str}.png"
-            )
-            #  make the directory
-            os.makedirs(os.path.dirname(save_path), exist_ok=True)
-            print("saving image to: ", save_path)
-            plt.suptitle(res_str, y=-0.051)
-            plt.savefig(save_path, bbox_inches="tight")
-
-            # append data
-            test_.append(test_res["SE"].mean())
-            train_.append(train_res["SE"].mean())
-            args_.append(res)
-            dfs_.append(test_res)
-
-    return {"test": test_, "train": train_, "args": args_, "dfs": dfs_}
-
-
 if __name__ == "__main__":
+    """
+    Run the program from the command line
+    """
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog="ProgramName",
-        description="What the program does",
-        epilog="Text at the bottom of help",
+        prog="FFfit",
+        description="Fit a force field to a set of data",
+        epilog="...",
     )
     print("----")
 
@@ -169,10 +140,16 @@ if __name__ == "__main__":
     )
     parser.add_argument("-k", "--k", help="Number of fits", required=False, default=10)
     parser.add_argument("-ft", "--fftype", help="Forcefield type", required=True)
-    parser.add_argument("-c", "--clip", help="Clip", required=False, default=0, type=int)
-    parser.add_argument("-o", "--outname", help="Outname", required=False, default=False)
+    parser.add_argument(
+        "-c", "--clip", help="Clip", required=False, default=0, type=int
+    )
+    parser.add_argument(
+        "-o", "--outname", help="Outname", required=False, default=False
+    )
     parser.add_argument("-p", "--pk", help="Pickle", required=False, default=None)
-    parser.add_argument("-sa", "--sample", help="Sample", required=False, default=250, type=int)
+    parser.add_argument(
+        "-sa", "--sample", help="Sample", required=False, default=250, type=int
+    )
     parser.add_argument(
         "-dp", "--dp", help="Data Pickle", required=False, default=False
     )
@@ -194,7 +171,7 @@ if __name__ == "__main__":
     ff, data = load_ff(
         args.ff,
         args.structure,
-        args.fftype,
+        # args.fftype,
         FUNC=func,
         BOUNDS=bounds,
         pk=args.pk,
@@ -202,18 +179,15 @@ if __name__ == "__main__":
         intern=args.intern,
         elec=args.elec,
     )
-    if args.outname:
-        outname = f'{args.ff}_{ff.name}_{ff.intern}_{ff.elec}'
-    else:
-        outname = None
+    outname = f"{args.ff}_{ff.name}_{ff.intern}_{ff.elec}"
 
     # do the fitting
     fit_repeat(
-        ff, int(args.n), int(args.k), bounds,
-        clip=int(args.clip), outname=outname,
-        sample=int(args.sample)
+        ff,
+        int(args.n),
+        int(args.k),
+        bounds,
+        clip=int(args.clip),
+        outname=outname,
+        sample=int(args.sample),
     )
-
-    # plot the results
-    print("Plotting results")
-    plot_best_fits(ff, name=args.ff)
