@@ -1,5 +1,6 @@
 from ff_energy.cli import load_config_maker, charmm_jobs
-from ff_energy.potential import FF, LJ, DE
+from ff_energy.potential import LJ, DE
+from ff_energy.ff import FF
 from ff_energy.data import Data
 from pathlib import Path
 from ff_energy.utils import pickle_output, read_from_pickle, PKL_PATH
