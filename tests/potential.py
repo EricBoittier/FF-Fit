@@ -2,7 +2,7 @@ import unittest
 
 import jax.numpy
 
-from ff_energy.utils import read_from_pickle
+from ff_energy.utils import read_from_pickle, pickle_output
 from ff_energy.potential import FF
 import jax.numpy as jnp
 
@@ -61,10 +61,7 @@ class test_potential(unittest.TestCase):
 
         test_ff.fit_func(parm, loss="standard")
         test_ff.fit_func(parm, loss="jax")
-        for i in range(3):
-            parm = jnp.array(test_ff.get_random_parm())
-            test_ff.fit_func(parm, loss="standard")
-            test_ff.fit_func(parm, loss="jax")
+        pickle_output(test_ff, test_ff_fn)
 
 
     def get_test_ff(self) -> FF:

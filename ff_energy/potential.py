@@ -446,7 +446,7 @@ class FF:
         self.eval_best_parm()
 
     def fit_func(
-            self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", loss="standard", quiet=False
+            self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", loss="jax", quiet=False
     ):
         if bounds is None:
             bounds = self.bounds
@@ -467,14 +467,14 @@ class FF:
                 f"maxfev: {maxfev}\n"
                 f"initial guess: {x0}"
             )
-
         res = minimize(
             func,
             x0,
             method=method,
             tol=1e-6,
             bounds=bounds,
-            options={"maxfev": maxfev},
+            # jac=jac,
+            options={"maxfev": maxfev, "pgtol": 1e-8},
         )
 
         if not quiet:
