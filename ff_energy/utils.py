@@ -1,6 +1,8 @@
 import pickle
 from pathlib import Path
 
+H2KCALMOL = 627.503
+
 #  dynamic path to pickle folder
 PKL_PATH = Path(__file__).parents[1] / "pickles"
 

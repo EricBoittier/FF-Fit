@@ -3,7 +3,7 @@ import unittest
 import jax.numpy
 
 from ff_energy.utils import read_from_pickle, pickle_output
-from ff_energy.potential import FF
+from ff_energy.ff import FF
 import jax.numpy as jnp
 
 # load the data
