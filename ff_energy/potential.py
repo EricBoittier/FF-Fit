@@ -6,6 +6,7 @@ import re
 from ff_energy.structure import atom_key_pairs, valid_atom_key_pairs
 
 import jax
+from jax import grad
 from jax import jit
 import jax.numpy as jnp
 
@@ -20,7 +21,7 @@ def LJ(sig, ep, r):
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6**b - c * r6)
+    return ep * (r6 ** b - c * r6)
 
 
 def freeLJ(sig, ep, r, a, b, c):
@@ -37,8 +38,8 @@ def DE(c, e, x, a, b):
     Double exponential potential
     """
     return e * (
-        ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-        - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
     )
 
 
@@ -47,12 +48,12 @@ def DEplus(x, a, b, c, e, f, g):
     Double exponential potential
     """
     return (
-        e
-        * (
-            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
-        )
-        - f * (c / x) ** g
+            e
+            * (
+                    ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+                    - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+            )
+            - f * (c / x) ** g
     )
 
 
@@ -113,18 +114,20 @@ def lj(sig, ep, r):
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6**b - c * r6)
+    return ep * (r6 ** b - c * r6)
 
 
 @jit
 def LJRUN(dists, indexs, groups, parms):
     LJE = LJflat(dists, indexs, parms)
-    OUT = jax.ops.segment_sum(LJE, groups, num_segments=10)
+    OUT = jax.ops.segment_sum(LJE, groups, num_segments=500)
     return OUT
 
 
 @jit
 def LJflat(dists, indexs, parms):
+    parms = jnp.array([2 * parms[0], parms[0] + parms[1], 2 * parms[1],
+                       parms[2], jnp.sqrt((parms[2] * parms[3])), parms[3]])
     sigma = jnp.take(parms, indexs, unique_indices=False)
     eps = jnp.take(parms, indexs + 3, unique_indices=False)
     LJE = lj(sigma, eps, dists)
@@ -134,8 +137,11 @@ def LJflat(dists, indexs, parms):
 @jit
 def LJRUN_LOSS(dists, indexs, groups, parms, target):
     ERROR = LJRUN(dists, indexs, groups, parms) - target
-    return jnp.mean(ERROR**2)
+    return jnp.mean(ERROR ** 2)
 
+@jit
+def LJRUN_LOSS_GRAD(dists, indexs, groups, parms, target):
+    return grad(LJRUN_LOSS(dists, indexs, groups, parms, target))
 
 class DistPrep:
     def __init__(self, dists):
@@ -144,16 +150,16 @@ class DistPrep:
 
 class FF:
     def __init__(
-        self,
-        data,
-        dists,
-        func,
-        bounds,
-        structure,
-        nobj=4,
-        elec="ELEC",
-        intern="Exact",
-        pairs=False,
+            self,
+            data,
+            dists,
+            func,
+            bounds,
+            structure,
+            nobj=4,
+            elec="ELEC",
+            intern="Exact",
+            pairs=False,
     ):
         self.data = data
         #  make a dummy zero column for the energy
@@ -196,7 +202,6 @@ class FF:
         self.targets = None
         self.p = None
 
-
         self.sort_data()
 
         if len(self.opt_results) > 0:
@@ -216,7 +221,7 @@ class FF:
                 self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
             else:
                 self.data["intE"] = (
-                    self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+                        self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
                 )
         else:
             #  if the internal energy is not supported, raise an error
@@ -224,7 +229,7 @@ class FF:
 
         self.jax_init()
 
-    def jax_init(self, p = None):
+    def jax_init(self, p=None):
         if p is None:
             p = self.p
         #  Jax arrays
@@ -249,12 +254,11 @@ class FF:
         self.out_es = jnp.array(out_es)
         self.out_akps = jnp.array(out_akps)
 
-
     def set_targets(self):
         self.targets = jnp.array(
             jnp.array(
-                self.data[self.elec].to_numpy()
-                + jnp.array(self.data[self.elec].to_numpy())
+                self.data["intE"].to_numpy()
+                - jnp.array(self.data[self.elec].to_numpy())
             )
         )
 
@@ -343,7 +347,7 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_(e, s, args=x[len(self.atom_types) * 2 :])
+        return self.LJ_(e, s, args=x[len(self.atom_types) * 2:])
 
     def eval_dist(self, x):
         s = {}
@@ -351,7 +355,7 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2 :])
+        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2:])
 
     def get_loss(self, x):
         """
@@ -370,17 +374,31 @@ class FF:
         )
         return LJE
 
+    def eval_jax_flat(self, x):
+        return LJflat(self.out_dists, self.out_akps, x)
+
     def get_loss_jax(self, x):
         """
         get the mean squared error of the LJ potential
         :param x:
         :return:
         """
-        loss = LJRUN_LOSS(
+        return LJRUN_LOSS(
             self.out_dists, self.out_akps, self.out_groups, x,
             self.targets,
         )
-        return loss
+
+
+    def get_loss_grad(self, x):
+        """
+        get the mean squared error of the LJ potential
+        :param x:
+        :return:
+        """
+        return grad(LJRUN_LOSS,3)(
+            self.out_dists, self.out_akps, self.out_groups, x,
+            self.targets,
+        )
 
     def get_best_loss(self):
         results = pd.DataFrame(self.opt_results)
@@ -416,7 +434,7 @@ class FF:
         return tmp
 
     def fit_repeat(
-        self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+            self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
     ):
         if bounds is None:
             bounds = self.bounds
@@ -428,11 +446,16 @@ class FF:
         self.eval_best_parm()
 
     def fit_func(
-        self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+            self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", loss="standard", quiet=False
     ):
         if bounds is None:
             bounds = self.bounds
 
+        # set which func we're using
+        whichLoss = {"standard": self.get_loss, "jax": self.get_loss_jax}
+        func = whichLoss[loss]
+
+        # make a uniform random guess if no x0 value is provided
         if x0 is None and bounds is not None:
             x0 = [np.random.uniform(low=a, high=b) for a, b in bounds]
 
@@ -446,7 +469,7 @@ class FF:
             )
 
         res = minimize(
-            self.get_loss,
+            func,
             x0,
             method=method,
             tol=1e-6,
