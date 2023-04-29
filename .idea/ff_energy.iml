@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../../jax/ff_energy">
+      <sourceFolder url="file://$MODULE_DIR$/../../jax/ff_energy" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/2" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/3" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/4" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/6" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/9" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/d" />
-      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/f" />
-      <excludeFolder url="file://$MODULE_DIR$/figs/ff/.ipynb_checkpoints" />
-      <excludeFolder url="file://$MODULE_DIR$/pickles/ff/.ipynb_checkpoints" />
-      <excludeFolder url="file://$MODULE_DIR$/pickles/methanol_cluster/.ipynb_checkpoints" />
-      <excludeFolder url="file://$MODULE_DIR$/pickles/water_cluster/.ipynb_checkpoints" />
-      <excludeFolder url="file://$MODULE_DIR$/pickles/water_dimer/.ipynb_checkpoints" />
-      <excludeFolder url="file://$MODULE_DIR$/.ruff_cache" />
       <excludeFolder url="file://$MODULE_DIR$/.ruff_cache/content" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/d" />
+      <excludeFolder url="file://$MODULE_DIR$/pickles/methanol_cluster/.ipynb_checkpoints" />
+      <excludeFolder url="file://$MODULE_DIR$/pickles/ff/.ipynb_checkpoints" />
+      <excludeFolder url="file://$MODULE_DIR$/.ruff_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/pickles/water_dimer/.ipynb_checkpoints" />
+      <excludeFolder url="file://$MODULE_DIR$/pickles/water_cluster/.ipynb_checkpoints" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/3" />
+      <excludeFolder url="file://$MODULE_DIR$/figs/ff/.ipynb_checkpoints" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/9" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/2" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/f" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/sonarlint/issuestore/6" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (pycharmm)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="jax" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

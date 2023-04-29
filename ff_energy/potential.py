@@ -119,7 +119,7 @@ def lj(sig, ep, r):
 @jit
 def LJRUN(dists, indexs, groups, parms):
     LJE = LJflat(dists, indexs, parms)
-    OUT = jax.ops.segment_sum(LJE, groups, num_segments=500)
+    OUT = jax.ops.segment_sum(LJE, groups, num_segments=10)
     return OUT
 
 
@@ -196,13 +196,12 @@ class FF:
         self.targets = None
         self.p = None
 
-        self.data["k"] = [int(re.sub("[^0-9]", "", i)) for i in self.data.index]
-        self.data = self.data.sort_values(by="k")
+
+        self.sort_data()
 
         if len(self.opt_results) > 0:
             self.p = self.get_best_parm()
         else:
-            # self.p = self.get_random_parm()
             self.p = jnp.array([1.764e00, 2.500e-01, 1.687e-01, 6.871e-03])
 
         # Internal energies
@@ -225,8 +224,11 @@ class FF:
 
         self.jax_init()
 
-    def jax_init(self):
+    def jax_init(self, p = None):
+        if p is None:
+            p = self.p
         #  Jax arrays
+        self.set_targets()
         (
             out_dists,
             out_groups,
@@ -235,7 +237,7 @@ class FF:
             out_es,
             out_sig,
             out_ep,
-        ) = self.eval_dist(self.p)
+        ) = self.eval_dist(p)
         self.out_dists = jnp.array(out_dists)
         #  turn groups (str) into group_keys (int)
         group_key_dict = {
@@ -247,6 +249,8 @@ class FF:
         self.out_es = jnp.array(out_es)
         self.out_akps = jnp.array(out_akps)
 
+
+    def set_targets(self):
         self.targets = jnp.array(
             jnp.array(
                 self.data[self.elec].to_numpy()
@@ -260,6 +264,10 @@ class FF:
     def set_dists(self, dists):
         """Overwrite distances"""
         self.dists = dists
+
+    def sort_data(self):
+        self.data["k"] = [int(re.sub("[^0-9]", "", i)) for i in self.data.index]
+        self.data = self.data.sort_values(by="k")
 
     def LJ_(self, epsilons=None, rminhalfs=None, DISTS=None, data=None, args=None):
         """pairwise interactions"""
@@ -356,6 +364,12 @@ class FF:
         loss = tmp["SE"].mean()
         return loss
 
+    def eval_jax(self, x):
+        LJE = LJRUN(
+            self.out_dists, self.out_akps, self.out_groups, x,
+        )
+        return LJE
+
     def get_loss_jax(self, x):
         """
         get the mean squared error of the LJ potential
@@ -363,7 +377,8 @@ class FF:
         :return:
         """
         loss = LJRUN_LOSS(
-            self.out_dists, self.out_akps, self.out_groups, x, self.targets
+            self.out_dists, self.out_akps, self.out_groups, x,
+            self.targets,
         )
         return loss
 
