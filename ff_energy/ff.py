@@ -163,7 +163,7 @@ class FF:
         assert self.nTargets == len(self.targets)
         assert isinstance(self.nTargets, typing.Hashable) is True
 
-    def eval_coulomb(self, scale=1.0):
+    def eval_coulombE(self, scale=1.0):
         """Evaluate the coulomb energy for each element in the dist. array"""
         outE = ecol(scale * self.dcm_c1s, scale * self.dcm_c2s, self.dcm_dists)
         return outE
@@ -308,6 +308,21 @@ class FF:
             self.nTargets,
         )
 
+    def get_loss_coulomb(self, x) -> float:
+        """
+        :param x:
+        :return:
+        """
+        # the charge scale will be the final parameter
+        scale = x[0]
+        # set the elec column
+        self.data[self.elec] = self.get_coulomb(scale=scale)
+        # update the targets
+        self.set_targets()
+        # get the loss as usual
+        parms = self.p
+        return self.get_loss_jax(parms)
+
     def get_loss_lj_coulomb(self, x) -> float:
         """
         :param x:
@@ -336,6 +351,21 @@ class FF:
         self.set_targets()
         # get the loss as usual
         parms = x[:-1]
+        return self.eval_jax(parms)
+
+    def eval_coulomb(self, x) -> float:
+        """
+        :param x:
+        :return:
+        """
+        # the charge scale will be the final parameter
+        scale = x[0]
+        # set the elec column
+        self.data[self.elec] = self.get_coulomb(scale=scale)
+        # update the targets
+        self.set_targets()
+        # get the loss as usual
+        parms = self.p
         return self.eval_jax(parms)
 
     def get_loss_grad(self, x) -> float:

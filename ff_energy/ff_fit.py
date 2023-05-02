@@ -139,6 +139,7 @@ def fit_func(
         "standard": (ff.get_loss, ff.eval_func),
         "jax": (ff.get_loss_jax, ff.eval_jax),
         "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
+        "ecol": (ff.get_loss_coulomb, ff.eval_coulomb),
     }
     func, eval = whichLoss[loss]
 
@@ -226,7 +227,6 @@ if __name__ == "__main__":
     ff, data = load_ff(
         args.ff,
         args.structure,
-        # args.fftype,
         FUNC=func,
         BOUNDS=bounds,
         pk=args.pk,
