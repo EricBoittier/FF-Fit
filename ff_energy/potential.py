@@ -112,7 +112,7 @@ def Ecoloumb(q1, q2, r):
 def ecol(q1, q2, r):
     """Calculate the coulombic energy between two charges,
     with atomic units and angstroms for distance"""
-    return coloumns_constant * q1 * q2 / r
+    return coloumns_constant * ((q1 * q2) / r)
 
 
 @jit

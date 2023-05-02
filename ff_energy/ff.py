@@ -88,11 +88,13 @@ class FF:
             self.p = jnp.array([1.764e00, 2.500e-01, 1.687e-01, 6.871e-03])
 
         # Internal energies
+        #  ab initio reference energies
         if self.intern == "Exact":
             if pairs:
                 self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
             else:
                 self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["m_E_tot"]
+        #  harmonic fit
         elif self.intern == "harmonic":
             if pairs:
                 #  TODO: add harmonic
@@ -101,6 +103,7 @@ class FF:
                 self.data["intE"] = (
                     self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
                 )
+        #  error
         else:
             #  if the internal energy is not supported, raise an error
             raise ValueError(f"intern = {self.intern} not implemented")
@@ -114,7 +117,7 @@ class FF:
             f" {self.structure.system_name}"
             f" {self.elec}"
             f" {self.intern}"
-            f"jax_coloumb: {self.coloumb_init}"
+            f"(jax_coloumb: {self.coloumb_init})"
         )
 
     def init_jax_col(self, col_dict):
@@ -126,6 +129,7 @@ class FF:
         self.coloumb_init = True
 
     def jax_init(self, p=None):
+        """Initialize the jax arrays"""
         if p is None:
             p = self.p
         #  Jax arrays
@@ -149,12 +153,11 @@ class FF:
         self.out_akps = jnp.array(out_akps)
 
     def set_targets(self):
+        """Set the targets for the objective function"""
         self.targets = jnp.array(
-            jnp.array(
-                self.data["intE"].to_numpy()
-                - jnp.array(self.data[self.elec].to_numpy())
-            )
+            self.data["intE"].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )
+
         self.nTargets = int(len(self.targets))
         # assert nTargets is hashable
         assert self.nTargets == len(self.targets)
@@ -168,7 +171,7 @@ class FF:
     def get_coulomb(self, scale=1.0):
         """Get the coulomb energy for each segment"""
         outE = self.eval_coulomb(scale=scale)
-        return ecol_seg(outE, self.dcm_dists_labels, num_segments=self.nTargets)
+        return ecol_seg(outE, self.cluster_labels, num_segments=self.nTargets)
 
     def set_dists(self, dists):
         """Overwrite distances"""
