@@ -1,5 +1,9 @@
 import sys
 
+import numpy as np
+
+from scipy.optimize import minimize
+
 from ff_energy.cli import load_config_maker, charmm_jobs
 from ff_energy.potential import LJ, DE
 from ff_energy.ff import FF
@@ -106,24 +110,63 @@ def load_ff(
     return ff, data_
 
 
-def fit_repeat(ff, n, k, bounds, clip=10, sample=250, outname="ff/pbe0dz_mdcm"):
-    """
-    Fit the force field multiple times
-    :param ff:
-    :param n:
-    :param k:
-    :param bounds:
-    :param clip:
-    :param sample:
-    :param outname:
-    :return:
-    """
-    ff.data_save["LJX"] = ff.data_save["intE"] - ff.data_save["ELEC"]
-    ff.opt_results, ff.opt_results_df = [], []
-    for i in range(k):
-        ff.data = ff.data_save.copy()
-        ff.fit_repeat(n, bounds=bounds)
+def fit_repeat(ff, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False):
+    if bounds is None:
+        bounds = ff.bounds
+    for i in range(N):
+        fit_func(ff, None, bounds=bounds, maxfev=maxfev, method=method, quiet=quiet)
+    ff.get_best_loss()
+    ff.eval_best_parm()
     pickle_output(ff, outname)
+
+
+def fit_func(
+    ff,
+    x0,
+    bounds=None,
+    maxfev=10000,
+    method="Nelder-Mead",
+    loss="jax",
+    quiet=False,
+):
+    if bounds is None:
+        bounds = ff.bounds
+
+    # set which func we're using
+    whichLoss = {"standard": ff.get_loss, "jax": ff.get_loss_jax}
+    func = whichLoss[loss]
+
+    # make a uniform random guess if no x0 value is provided
+    if x0 is None and bounds is not None:
+        x0 = [np.random.uniform(low=a, high=b) for a, b in bounds]
+
+    if not quiet:
+        print(
+            f"Optimizing LJ parameters...\n"
+            f"function: {ff.func.__name__}\n"
+            f"bounds: {bounds}\n"
+            f"maxfev: {maxfev}\n"
+            f"initial guess: {x0}"
+        )
+    res = minimize(
+        func,
+        x0,
+        method=method,
+        tol=1e-6,
+        bounds=bounds,
+        # jac=jac,
+        options={"maxfev": maxfev, "pgtol": 1e-8},
+    )
+
+    if not quiet:
+        print("final_loss_fn: ", res.fun)
+        print(res)
+
+    ff.opt_parm = res.x
+    ff.opt_results.append(res)
+    ff.opt_results_df.append(ff.eval_func(ff.opt_parm))
+
+    return res
 
 
 if __name__ == "__main__":

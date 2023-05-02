@@ -1,7 +1,6 @@
 import typing
 
 import pandas as pd
-from scipy.optimize import minimize
 import re
 import numpy as np
 from ff_energy.utils import H2KCALMOL, str2int
@@ -78,6 +77,7 @@ class FF:
         self.dcm_dists = None
         self.dcm_dists_labels = None
         self.cluster_labels = None
+        self.coloumb_init = False
 
         self.sort_data()
 
@@ -111,6 +111,7 @@ class FF:
         """Initialize jax arrays from a dictionary"""
         for k, v in col_dict.items():
             setattr(self, k, v)
+        self.coloumb_init = True
 
     def jax_init(self, p=None):
         if p is None:
@@ -153,6 +154,7 @@ class FF:
             f" {self.structure.system_name}"
             f" {self.elec}"
             f" {self.intern}"
+            f"jax_coloumb: {self.coloumb_init}"
         )
 
     def set_dists(self, dists):
@@ -331,66 +333,3 @@ class FF:
         tmp = self.eval_func(self.opt_parm)
         self.df = tmp
         return tmp
-
-    def fit_repeat(
-        self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
-    ):
-        if bounds is None:
-            bounds = self.bounds
-        for i in range(N):
-            self.fit_func(
-                None, bounds=bounds, maxfev=maxfev, method=method, quiet=quiet
-            )
-        self.get_best_loss()
-        self.eval_best_parm()
-
-    def fit_func(
-        self,
-        x0,
-        bounds=None,
-        maxfev=10000,
-        method="Nelder-Mead",
-        loss="jax",
-        quiet=False,
-    ):
-        if bounds is None:
-            bounds = self.bounds
-
-        # set which func we're using
-        whichLoss = {"standard": self.get_loss, "jax": self.get_loss_jax}
-        func = whichLoss[loss]
-
-        # make a uniform random guess if no x0 value is provided
-        if x0 is None and bounds is not None:
-            x0 = [np.random.uniform(low=a, high=b) for a, b in bounds]
-
-        if not quiet:
-            print(
-                f"Optimizing LJ parameters...\n"
-                f"function: {self.func.__name__}\n"
-                f"bounds: {bounds}\n"
-                f"maxfev: {maxfev}\n"
-                f"initial guess: {x0}"
-            )
-        res = minimize(
-            func,
-            x0,
-            method=method,
-            tol=1e-6,
-            bounds=bounds,
-            # jac=jac,
-            options={"maxfev": maxfev, "pgtol": 1e-8},
-        )
-
-        if not quiet:
-            print("final_loss_fn: ", res.fun)
-            print(res)
-
-        self.opt_parm = res.x
-        self.opt_results.append(res)
-        self.opt_results_df.append(self.eval_func(self.opt_parm))
-
-        if not quiet:
-            print('Set optimized parameters to FF object, self.df["LJ"] is updated.')
-
-        return res
