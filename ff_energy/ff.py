@@ -1,3 +1,5 @@
+import typing
+
 import pandas as pd
 from scipy.optimize import minimize
 import re
@@ -64,6 +66,7 @@ class FF:
         self.out_groups = None
         self.out_akps = None
         self.targets = None
+        self.nTargets = None
         self.p = None
         #  for jax ecol
         self.dcm_ecols = None
@@ -139,6 +142,10 @@ class FF:
                 - jnp.array(self.data[self.elec].to_numpy())
             )
         )
+        self.nTargets = int(len(self.targets))
+        # assert nTargets is hashable
+        assert self.nTargets == len(self.targets)
+        assert isinstance(self.nTargets, typing.Hashable) is True
 
     def __repr__(self):
         return (
@@ -275,6 +282,7 @@ class FF:
             self.out_groups,
             x,
             self.targets,
+            self.nTargets,
         )
 
     def get_loss_grad(self, x):
@@ -289,6 +297,7 @@ class FF:
             self.out_groups,
             x,
             self.targets,
+            self.nTargets,
         )
 
     def get_best_loss(self):

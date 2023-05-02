@@ -1,3 +1,5 @@
+from functools import partial
+
 import numpy as np
 
 from ff_energy.structure import atom_key_pairs
@@ -123,10 +125,10 @@ def lj(sig, ep, r):
     return ep * (r6**b - c * r6)
 
 
-@jit
-def LJRUN(dists, indexs, groups, parms):
+@partial(jit, static_argnames=["num_segments"])
+def LJRUN(dists, indexs, groups, parms, num_segments=500):
     LJE = LJflat(dists, indexs, parms)
-    OUT = jax.ops.segment_sum(LJE, groups, num_segments=500)
+    OUT = jax.ops.segment_sum(LJE, groups, num_segments=num_segments)
     return OUT
 
 
@@ -148,12 +150,12 @@ def LJflat(dists, indexs, parms):
     return LJE
 
 
-@jit
-def LJRUN_LOSS(dists, indexs, groups, parms, target):
-    ERROR = LJRUN(dists, indexs, groups, parms) - target
+@partial(jit, static_argnames=["num_segments"])
+def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
+    ERROR = LJRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
     return jnp.mean(ERROR**2)
 
 
-@jit
-def LJRUN_LOSS_GRAD(dists, indexs, groups, parms, target):
-    return grad(LJRUN_LOSS(dists, indexs, groups, parms, target))
+@partial(jit, static_argnames=["num_segments"])
+def LJRUN_LOSS_GRAD(dists, indexs, groups, parms, target, num_segments):
+    return grad(LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments))
