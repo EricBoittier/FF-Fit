@@ -1,3 +1,5 @@
+import sys
+
 from ff_energy.cli import load_config_maker, charmm_jobs
 from ff_energy.potential import LJ, DE
 from ff_energy.ff import FF
@@ -21,7 +23,6 @@ def load_ff(
     pickled_ff=False,
     pickled_dists=False,
     pk=None,
-    data_pickle=False,
     intern=False,
     elec=False,
 ):
@@ -34,7 +35,6 @@ def load_ff(
     :param pickled_ff:
     :param pickled_dists:
     :param pk:
-    :param data_pickle:
     :param intern:
     :param elec:
     :return:
@@ -80,10 +80,15 @@ def load_ff(
             pickle_output((structures, dists), name=f"structures/{structure}")
 
         s = structures[0]
-        if data_pickle:
+        data_pickle = (PKL_PATH / pk).exists()
+        if data_pickle and pk is not None:
             #  read the data directly from the pickle
             print(f"loading data from pickle: {pk}")
             data_ = next(read_from_pickle(pk))
+        elif pk is None:
+            # error
+            print("Data pickle requested but no pickle provided")
+            sys.exit(1)
         else:
             #  load all the small pickles
             data_ = Data(pk)
