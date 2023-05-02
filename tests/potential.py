@@ -10,6 +10,7 @@ import jax.numpy as jnp
 test_ff_fn = "pbe0_dz_kmdcm_LJ_water_cluster_ELEC_harmonic_ELEC.pkl"
 test_ff = next(read_from_pickle(test_ff_fn))
 
+
 class test_potential(unittest.TestCase):
     def test_ljrun(self):
         N = 500
@@ -63,9 +64,9 @@ class test_potential(unittest.TestCase):
         test_ff.fit_func(parm, loss="jax")
         pickle_output(test_ff, test_ff_fn)
 
-
     def get_test_ff(self) -> FF:
         return test_ff
+
 
 if __name__ == '__main__':
     unittest.main()
