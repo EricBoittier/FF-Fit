@@ -1,25 +1,19 @@
 import pandas as pd
 from pathlib import Path
-import pickle
 import itertools
 
+import jax.numpy as jnp
+
+from ff_energy.utils import read_from_pickle, str2int
 from ff_energy.plot import plot_energy_MSE
-from ff_energy.geometry import dihedral3, bisector, angle
+from ff_energy.geometry import dihedral3, bisector, angle, dist
 from ff_energy.cli import get_structures
 from ff_energy.potential import Ecoloumb
 from ff_energy.bonded_terms import FitBonded
+
 import numpy as np
 
 H2KCALMOL = 627.503
-
-
-def read_from_pickle(path):
-    with open(path, "rb") as file:
-        try:
-            while True:
-                yield pickle.load(file)
-        except EOFError:
-            pass
 
 
 def load_pickles(path):
@@ -123,9 +117,6 @@ def plot_LJintE(data, ax=None, elec="ELEC"):
     return ax
 
 
-from ff_energy.geometry import angle, dist
-
-
 class Data:
     def __init__(self, output_path, system="water_cluster", min_m_E=None):
         self.system = system
@@ -199,8 +190,9 @@ class Data:
                 bE = _m[_m["monomer"] == b]["m_ENERGY"]
                 # print(aE,bE)
                 return float(aE) + float(bE)
-            except:
-                pass
+            except Exception as e:
+                print(e)
+                return None
         return None
 
     def data(self) -> pd.DataFrame:
@@ -286,9 +278,9 @@ def pairs_data(
     """
 
     structures, pdbs = get_structures("water_cluster")
-    structure_key_pairs = {p.split(".")[0]: s
-                           for p, s in zip(pdbs, structures)}
+    structure_key_pairs = {p.split(".")[0]: s for p, s in zip(pdbs, structures)}
 
+    #  lists for the dataframe
     E_col_dcms = []
     dist_dcms = []
     min_hbond = []
@@ -298,10 +290,23 @@ def pairs_data(
     angle_1 = []
     angle_2 = []
 
+    #  arrays for jax
+    dcm_c_idx1 = []  # dcm charge idx1
+    dcm_c_idx2 = []  # dcm charge idx2
+    dcm_c1s = []  # dcm charges1
+    dcm_c2s = []  # dcm charges1
+    dcm_pairs_idx = []  # dcm distance idx
+    dcm_dists = []  # dcm distances
+    dcm_dists_labels = []  # dcm distances labels
+    dcm_ecols = []  # dcm ecol
+    cluster_labels = []  # cluster labels
+
+    #  loop through the DF by index (slow)
     for idx, fnkey in enumerate(data.index):
         k = fnkey.split("_")[0]
         kab = fnkey.split(".")[0]
         s = structure_key_pairs[k]
+
         dcm_path = dcm_path_.format(k)
         s.load_dcm(dcm_path)
         dcms = np.array(s.dcm_charges)
@@ -309,13 +314,12 @@ def pairs_data(
         # calculate electrostatic energy
         E = 0
         dists = []
-        # print(kab)
         pairs = [(int(kab.split("_")[1]), int(kab.split("_")[2]))]
         for pair in pairs:
             p1, p2 = pair
             mask1 = s.res_mask[p1]
             mask2 = s.res_mask[p2]
-            if 'dcm' in name:
+            if "dcm" in name:
                 mask1 = s.dcm_charges_mask[p1]
                 mask2 = s.dcm_charges_mask[p2]
             dcm1 = dcms[mask1]
@@ -325,10 +329,22 @@ def pairs_data(
             dcm1 = dcm1[:, :-1]
             dcm2 = dcm2[:, :-1]
 
+            #  loop through all combinations of charge pairs
             for i, a in enumerate(dcm1c):
                 for j, b in enumerate(dcm2c):
                     dist = np.linalg.norm(a[:-1] - b[:-1])
                     Ec = Ecoloumb(a[-1], b[-1], dist)
+                    #  append the distance,c1 and c2
+                    dcm_ecols.append(Ec)
+                    dcm_c_idx1.append(i)
+                    dcm_c_idx2.append(j)
+                    dcm_c1s.append(a[-1])
+                    dcm_c2s.append(b[-1])
+                    dcm_dists.append(dist)
+                    dcm_dists_labels.append(idx)
+                    dcm_pairs_idx.append(pairs)
+                    cluster_labels.append(str2int(k))
+
                     E += Ec
                     if i == 1 and (j == 0 or j == 2):
                         dists.append(dist)
@@ -365,6 +381,7 @@ def pairs_data(
         angle_2.append(a2)
         dcms_.append([dcm1, dcm2])
 
+    #  add data to the dataframe
     data[f"ECOL_{name}"] = E_col_dcms
     data["angle_1"] = angle_1
     data["angle_2"] = angle_2
@@ -374,4 +391,17 @@ def pairs_data(
     data["min_hbond"] = min_hbond
     data["dcms"] = dcms_
 
-    return data
+    #  prepare data for jax as dictionary
+    jax_data = {
+        "dcm_ecols": jnp.array(dcm_ecols),
+        "dcm_c_idx1": jnp.array(dcm_c_idx1),
+        "dcm_c_idx2": jnp.array(dcm_c_idx2),
+        "dcm_c1s": jnp.array(dcm_c1s),
+        "dcm_c2s": jnp.array(dcm_c2s),
+        "dcm_pairs_idx": jnp.array(dcm_pairs_idx),
+        "dcm_dists": jnp.array(dcm_dists),
+        "dcm_dists_labels": jnp.array(dcm_dists_labels),
+        "cluster_labels": jnp.array(cluster_labels),
+    }
+
+    return data, jax_data

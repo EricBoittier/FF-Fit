@@ -1,6 +1,5 @@
 import numpy as np
 
-
 from ff_energy.structure import atom_key_pairs
 
 import jax
@@ -8,50 +7,11 @@ from jax import grad
 from jax import jit
 import jax.numpy as jnp
 
-
-def LJ(sig, ep, r):
-    """
-    Lennard-Jones potential for a pair of atoms
-    """
-    a = 6
-    b = 2
-    c = 2
-    r6 = (sig / r) ** a
-    return ep * (r6 ** b - c * r6)
-
-
-def freeLJ(sig, ep, r, a, b, c):
-    """
-    Lennard-Jones potential for a pair of atoms
-    """
-    return ep * ((sig / r) ** a - c * (sig / r) ** b)
-
-
-#  double exp. pot.
-#  https://chemrxiv.org/engage/chemrxiv/article-details/6401c0a163e8d44e594addea
-def DE(c, e, x, a, b):
-    """
-    Double exponential potential
-    """
-    return e * (
-            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
-    )
-
-
-def DEplus(x, a, b, c, e, f, g):
-    """
-    Double exponential potential
-    """
-    return (
-            e
-            * (
-                    ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-                    - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
-            )
-            - f * (c / x) ** g
-    )
-
+"""
+SimTK_COULOMB_CONSTANT_IN_KCAL_ANGSTROM   3.32063711e+2L
+Coulomb's constant kappa = 1/(4*pi*e0) in kcal-Angstroms/e^2.
+"""
+coloumns_constant = 3.32063711e2
 
 epsilons = {
     "OG311": -0.192,
@@ -71,13 +31,6 @@ rminhalfs = {
 }
 
 akp_indx = {akp: i for i, akp in enumerate(atom_key_pairs)}
-
-
-def Ecoloumb(q1, q2, r):
-    """Calculate the coulombic energy between two charges,
-    with atomic units and angstroms for distance"""
-    coloumns_constant = 3.32063711e2
-    return coloumns_constant * q1 * q2 / r
 
 
 def LJ_akp(r, akp, epsilons=None, rminhalfs=None):
@@ -103,6 +56,63 @@ def combination_rules(atom_key_pairs, epsilons=None, rminhalfs=None):
     return sigs, eps
 
 
+def LJ(sig, ep, r):
+    """
+    Lennard-Jones potential for a pair of atoms
+    """
+    a = 6
+    b = 2
+    c = 2
+    r6 = (sig / r) ** a
+    return ep * (r6**b - c * r6)
+
+
+def freeLJ(sig, ep, r, a, b, c):
+    """
+    Lennard-Jones potential for a pair of atoms
+    """
+    return ep * ((sig / r) ** a - c * (sig / r) ** b)
+
+
+#  double exp. pot.
+#  https://chemrxiv.org/engage/chemrxiv/article-details/6401c0a163e8d44e594addea
+def DE(c, e, x, a, b):
+    """
+    Double exponential potential
+    """
+    return e * (
+        ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+        - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+    )
+
+
+def DEplus(x, a, b, c, e, f, g):
+    """
+    Double exponential potential
+    """
+    return (
+        e
+        * (
+            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+        )
+        - f * (c / x) ** g
+    )
+
+
+def Ecoloumb(q1, q2, r):
+    """Calculate the coulombic energy between two charges,
+    with atomic units and angstroms for distance"""
+    return coloumns_constant * q1 * q2 / r
+
+
+@jit
+def ecol(q1, q2, r):
+    """Calculate the coulombic energy between two charges,
+    with atomic units and angstroms for distance"""
+    return coloumns_constant * q1 * q2 / r
+
+
 @jit
 def lj(sig, ep, r):
     """Lennard-Jones potential for a pair of atoms"""
@@ -110,7 +120,7 @@ def lj(sig, ep, r):
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6 ** b - c * r6)
+    return ep * (r6**b - c * r6)
 
 
 @jit
@@ -122,8 +132,16 @@ def LJRUN(dists, indexs, groups, parms):
 
 @jit
 def LJflat(dists, indexs, parms):
-    parms = jnp.array([2 * parms[0], parms[0] + parms[1], 2 * parms[1],
-                       parms[2], jnp.sqrt((parms[2] * parms[3])), parms[3]])
+    parms = jnp.array(
+        [
+            2 * parms[0],
+            parms[0] + parms[1],
+            2 * parms[1],
+            parms[2],
+            jnp.sqrt((parms[2] * parms[3])),
+            parms[3],
+        ]
+    )
     sigma = jnp.take(parms, indexs, unique_indices=False)
     eps = jnp.take(parms, indexs + 3, unique_indices=False)
     LJE = lj(sigma, eps, dists)
@@ -133,9 +151,9 @@ def LJflat(dists, indexs, parms):
 @jit
 def LJRUN_LOSS(dists, indexs, groups, parms, target):
     ERROR = LJRUN(dists, indexs, groups, parms) - target
-    return jnp.mean(ERROR ** 2)
+    return jnp.mean(ERROR**2)
+
 
 @jit
 def LJRUN_LOSS_GRAD(dists, indexs, groups, parms, target):
     return grad(LJRUN_LOSS(dists, indexs, groups, parms, target))
-

@@ -2,27 +2,27 @@ import pandas as pd
 from scipy.optimize import minimize
 import re
 import numpy as np
-from ff_energy.utils import H2KCALMOL
+from ff_energy.utils import H2KCALMOL, str2int
 
-import jax
 from jax import grad
-from jax import jit
 import jax.numpy as jnp
 
-from ff_energy.structure import atom_key_pairs, valid_atom_key_pairs
-from ff_energy.potential import LJ, LJflat, LJRUN_LOSS, LJRUN, LJRUN_LOSS_GRAD, lj, combination_rules, akp_indx
+from ff_energy.structure import valid_atom_key_pairs
+from ff_energy.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, akp_indx
+
+
 class FF:
     def __init__(
-            self,
-            data,
-            dists,
-            func,
-            bounds,
-            structure,
-            nobj=4,
-            elec="ELEC",
-            intern="Exact",
-            pairs=False,
+        self,
+        data,
+        dists,
+        func,
+        bounds,
+        structure,
+        nobj=4,
+        elec="ELEC",
+        intern="Exact",
+        pairs=False,
     ):
         self.data = data
         #  make a dummy zero column for the energy
@@ -84,7 +84,7 @@ class FF:
                 self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
             else:
                 self.data["intE"] = (
-                        self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+                    self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
                 )
         else:
             #  if the internal energy is not supported, raise an error
@@ -108,9 +108,7 @@ class FF:
         ) = self.eval_dist(p)
         self.out_dists = jnp.array(out_dists)
         #  turn groups (str) into group_keys (int)
-        group_key_dict = {
-            g: int(re.sub("[^0-9]", "", g)) for g in list(set(out_groups))
-        }
+        group_key_dict = {g: str2int(g) for g in list(set(out_groups))}
         self.out_groups_dict = group_key_dict
         out_groups = jnp.array([group_key_dict[g] for g in out_groups])
         self.out_groups = jnp.array(out_groups)
@@ -210,7 +208,7 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_(e, s, args=x[len(self.atom_types) * 2:])
+        return self.LJ_(e, s, args=x[len(self.atom_types) * 2 :])
 
     def eval_dist(self, x):
         s = {}
@@ -218,7 +216,7 @@ class FF:
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2:])
+        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2 :])
 
     def get_loss(self, x):
         """
@@ -233,7 +231,10 @@ class FF:
 
     def eval_jax(self, x):
         LJE = LJRUN(
-            self.out_dists, self.out_akps, self.out_groups, x,
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
         )
         return LJE
 
@@ -247,10 +248,12 @@ class FF:
         :return:
         """
         return LJRUN_LOSS(
-            self.out_dists, self.out_akps, self.out_groups, x,
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
             self.targets,
         )
-
 
     def get_loss_grad(self, x):
         """
@@ -258,8 +261,11 @@ class FF:
         :param x:
         :return:
         """
-        return grad(LJRUN_LOSS,3)(
-            self.out_dists, self.out_akps, self.out_groups, x,
+        return grad(LJRUN_LOSS, 3)(
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
             self.targets,
         )
 
@@ -292,12 +298,11 @@ class FF:
     def eval_best_parm(self):
         self.set_best_parm()
         tmp = self.eval_func(self.opt_parm)
-        print('Set optimized parameters to FF object, self.df["LJ"] is updated.')
         self.df = tmp
         return tmp
 
     def fit_repeat(
-            self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+        self, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
     ):
         if bounds is None:
             bounds = self.bounds
@@ -309,7 +314,13 @@ class FF:
         self.eval_best_parm()
 
     def fit_func(
-            self, x0, bounds=None, maxfev=10000, method="Nelder-Mead", loss="jax", quiet=False
+        self,
+        x0,
+        bounds=None,
+        maxfev=10000,
+        method="Nelder-Mead",
+        loss="jax",
+        quiet=False,
     ):
         if bounds is None:
             bounds = self.bounds

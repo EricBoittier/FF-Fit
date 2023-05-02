@@ -1,10 +1,20 @@
 import pickle
 from pathlib import Path
+import re
 
 H2KCALMOL = 627.503
 
 #  dynamic path to pickle folder
 PKL_PATH = Path(__file__).parents[1] / "pickles"
+
+
+def str2int(g):
+    """
+    Convert a string to an integer
+    :param g:
+    :return:
+    """
+    return int(re.sub("[^0-9]", "", g))
 
 
 def pickle_output(output, name="dists"):
