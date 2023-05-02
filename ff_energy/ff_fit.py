@@ -135,8 +135,12 @@ def fit_func(
         bounds = ff.bounds
 
     # set which func we're using
-    whichLoss = {"standard": ff.get_loss, "jax": ff.get_loss_jax}
-    func = whichLoss[loss]
+    whichLoss = {
+        "standard": (ff.get_loss, ff.eval_func),
+        "jax": (ff.get_loss_jax, ff.eval_jax),
+        "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
+    }
+    func, eval = whichLoss[loss]
 
     # make a uniform random guess if no x0 value is provided
     if x0 is None and bounds is not None:
@@ -166,7 +170,7 @@ def fit_func(
 
     ff.opt_parm = res.x
     ff.opt_results.append(res)
-    ff.opt_results_df.append(ff.eval_func(ff.opt_parm))
+    ff.opt_results_df.append(eval(ff.opt_parm))
 
     return res
 
@@ -199,7 +203,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("-p", "--pk", help="Pickle", required=False, default=None)
     parser.add_argument(
-        "-sa", "--sample", help="Sample", required=False, default=250, type=int
+        "-sa", "--sample", help="Sample", required=False, default=500, type=int
     )
     parser.add_argument(
         "-dp", "--dp", help="Data Pickle", required=False, default=False
@@ -226,7 +230,6 @@ if __name__ == "__main__":
         FUNC=func,
         BOUNDS=bounds,
         pk=args.pk,
-        data_pickle=args.dp,
         intern=args.intern,
         elec=args.elec,
     )
@@ -236,7 +239,6 @@ if __name__ == "__main__":
     fit_repeat(
         ff,
         int(args.n),
-        int(args.k),
-        bounds,
         outname,
+        bounds=bounds,
     )

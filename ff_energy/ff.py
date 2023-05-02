@@ -165,7 +165,7 @@ class FF:
         outE = ecol(scale * self.dcm_c1s, scale * self.dcm_c2s, self.dcm_dists)
         return outE
 
-    def get_couloumb(self, scale=1.0):
+    def get_coulomb(self, scale=1.0):
         """Get the coulomb energy for each segment"""
         outE = self.eval_coulomb(scale=scale)
         return ecol_seg(outE, self.dcm_dists_labels, num_segments=self.nTargets)
@@ -248,7 +248,7 @@ class FF:
         data["SE"] = (data["intE"] - data["nb_intE"]) ** 2
         return data.copy()
 
-    def eval_func(self, x, func=None, args=None):
+    def eval_func(self, x, func=None):
         """convert the input x into the parameters for the LJ potential
         and run some function [default func is self.LJ_]
         """
@@ -265,7 +265,7 @@ class FF:
         """wrapper to evaluate the LJ potential and get the distances"""
         return self.eval_func(x, func=self.LJ_dists)
 
-    def get_loss(self, x):
+    def get_loss(self, x) -> float:
         """
         get the mean squared error of the LJ potential
         :param x:
@@ -290,7 +290,7 @@ class FF:
         """evaluate the LJ potential over all distances"""
         return LJflat(self.out_dists, self.out_akps, x)
 
-    def get_loss_jax(self, x):
+    def get_loss_jax(self, x) -> float:
         """
         get the mean squared error of the LJ potential
         :param x:
@@ -305,7 +305,37 @@ class FF:
             self.nTargets,
         )
 
-    def get_loss_grad(self, x):
+    def get_loss_lj_coulomb(self, x) -> float:
+        """
+        :param x:
+        :return:
+        """
+        # the charge scale will be the final parameter
+        scale = x[-1]
+        # set the elec column
+        self.data[self.elec] = self.get_coulomb(scale=scale)
+        # update the targets
+        self.set_targets()
+        # get the loss as usual
+        parms = x[:-1]
+        return self.get_loss_jax(parms)
+
+    def eval_lj_coulomb(self, x) -> float:
+        """
+        :param x:
+        :return:
+        """
+        # the charge scale will be the final parameter
+        scale = x[-1]
+        # set the elec column
+        self.data[self.elec] = self.get_coulomb(scale=scale)
+        # update the targets
+        self.set_targets()
+        # get the loss as usual
+        parms = x[:-1]
+        return self.eval_jax(parms)
+
+    def get_loss_grad(self, x) -> float:
         """
         get the mean squared error of the LJ potential
         :param x:
@@ -320,20 +350,20 @@ class FF:
             self.nTargets,
         )
 
-    def get_best_loss(self):
+    def get_best_loss(self) -> pd.DataFrame:
         """get the best loss"""
         results = pd.DataFrame(self.opt_results)
         results["data"] = [list(_.index) for _ in self.opt_results_df]
         best = results[results["fun"] == results["fun"].min()]
         return best
 
-    def get_best_df(self):
+    def get_best_df(self) -> pd.DataFrame:
         """get the best dataframe"""
         self.set_best_parm()
         tmp = self.eval_func(self.opt_parm)
         return tmp
 
-    def set_best_parm(self):
+    def set_best_parm(self) -> None:
         """set the optimized parameters to the FF object"""
         best = self.get_best_loss()
         self.opt_parm = best["x"].values[0]
@@ -342,16 +372,16 @@ class FF:
             "use FF.opt_parm to get the optimized parameters"
         )
 
-    def get_random_parm(self):
+    def get_random_parm(self) -> list:
         """get a random set of parameters"""
         return [np.random.uniform(low=a, high=b) for a, b in self.bounds]
 
-    def get_best_parm(self):
+    def get_best_parm(self) -> list:
         """get the best parameters"""
         best = self.get_best_loss()
         return best["x"].values[0]
 
-    def eval_best_parm(self):
+    def eval_best_parm(self) -> pd.DataFrame:
         """evaluate the best parameters"""
         self.set_best_parm()
         tmp = self.eval_func(self.opt_parm)
