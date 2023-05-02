@@ -151,6 +151,11 @@ def LJflat(dists, indexs, parms):
 
 
 @partial(jit, static_argnames=["num_segments"])
+def ecol_seg(outE, dcm_dists_labels, num_segments=500):
+    return jax.ops.segment_sum(outE, dcm_dists_labels, num_segments=num_segments)
+
+
+@partial(jit, static_argnames=["num_segments"])
 def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
     ERROR = LJRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
     return jnp.mean(ERROR**2)

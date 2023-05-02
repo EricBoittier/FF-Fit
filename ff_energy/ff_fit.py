@@ -110,7 +110,9 @@ def load_ff(
     return ff, data_
 
 
-def fit_repeat(ff, N, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False):
+def fit_repeat(
+    ff, N, outname, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+):
     if bounds is None:
         bounds = ff.bounds
     for i in range(N):
@@ -236,7 +238,5 @@ if __name__ == "__main__":
         int(args.n),
         int(args.k),
         bounds,
-        clip=int(args.clip),
-        outname=outname,
-        sample=int(args.sample),
+        outname,
     )

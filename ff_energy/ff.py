@@ -10,6 +10,7 @@ import jax.numpy as jnp
 
 from ff_energy.structure import valid_atom_key_pairs
 from ff_energy.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, akp_indx
+from ff_energy.potential import ecol, ecol_seg
 
 
 class FF:
@@ -107,10 +108,21 @@ class FF:
         #  initialize the jax arrays
         self.jax_init()
 
+    def __repr__(self):
+        return (
+            f"FF: {self.func.__name__}"
+            f" {self.structure.system_name}"
+            f" {self.elec}"
+            f" {self.intern}"
+            f"jax_coloumb: {self.coloumb_init}"
+        )
+
     def init_jax_col(self, col_dict):
         """Initialize jax arrays from a dictionary"""
         for k, v in col_dict.items():
             setattr(self, k, v)
+        #  set the attribute to identify that the coulomb
+        #  arrays have been initialized
         self.coloumb_init = True
 
     def jax_init(self, p=None):
@@ -148,20 +160,22 @@ class FF:
         assert self.nTargets == len(self.targets)
         assert isinstance(self.nTargets, typing.Hashable) is True
 
-    def __repr__(self):
-        return (
-            f"FF: {self.func.__name__}"
-            f" {self.structure.system_name}"
-            f" {self.elec}"
-            f" {self.intern}"
-            f"jax_coloumb: {self.coloumb_init}"
-        )
+    def eval_coulomb(self, scale=1.0):
+        """Evaluate the coulomb energy for each element in the dist. array"""
+        outE = ecol(scale * self.dcm_c1s, scale * self.dcm_c2s, self.dcm_dists)
+        return outE
+
+    def get_couloumb(self, scale=1.0):
+        """Get the coulomb energy for each segment"""
+        outE = self.eval_coulomb(scale=scale)
+        return ecol_seg(outE, self.dcm_dists_labels, num_segments=self.nTargets)
 
     def set_dists(self, dists):
         """Overwrite distances"""
         self.dists = dists
 
     def sort_data(self):
+        """Sort the data by some integer in the index"""
         self.data["k"] = [int(re.sub("[^0-9]", "", i)) for i in self.data.index]
         self.data = self.data.sort_values(by="k")
 
@@ -188,7 +202,7 @@ class FF:
             Es.append(E)
         return pd.DataFrame({"LJ": Es}, index=self.data.index)
 
-    def LJ_dists(self, epsilons=None, rminhalfs=None, DISTS=None, data=None, args=None):
+    def LJ_dists(self, epsilons=None, rminhalfs=None, DISTS=None, args=None):
         """pairwise interactions"""
         if DISTS is None:
             DISTS = self.dists
@@ -226,6 +240,7 @@ class FF:
         return out
 
     def LJ_performace(self, res, data=None):
+        """evaluate the performance of the LJ potential"""
         if data is None:
             data = self.data.copy()
         data["LJ"] = res["LJ"].copy()
@@ -233,21 +248,22 @@ class FF:
         data["SE"] = (data["intE"] - data["nb_intE"]) ** 2
         return data.copy()
 
-    def eval_func(self, x):
+    def eval_func(self, x, func=None, args=None):
+        """convert the input x into the parameters for the LJ potential
+        and run some function [default func is self.LJ_]
+        """
+        if func is None:
+            func = self.LJ_
         s = {}
         e = {}
         for i, atp in enumerate(self.atom_types):
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_(e, s, args=x[len(self.atom_types) * 2 :])
+        return func(e, s, args=x[len(self.atom_types) * 2 :])
 
     def eval_dist(self, x):
-        s = {}
-        e = {}
-        for i, atp in enumerate(self.atom_types):
-            s[atp] = x[i]
-            e[atp] = x[i + len(self.atom_types)]
-        return self.LJ_dists(e, s, args=x[len(self.atom_types) * 2 :])
+        """wrapper to evaluate the LJ potential and get the distances"""
+        return self.eval_func(x, func=self.LJ_dists)
 
     def get_loss(self, x):
         """
@@ -261,6 +277,7 @@ class FF:
         return loss
 
     def eval_jax(self, x):
+        """evaluate the LJ potential"""
         LJE = LJRUN(
             self.out_dists,
             self.out_akps,
@@ -270,6 +287,7 @@ class FF:
         return LJE
 
     def eval_jax_flat(self, x):
+        """evaluate the LJ potential over all distances"""
         return LJflat(self.out_dists, self.out_akps, x)
 
     def get_loss_jax(self, x):
@@ -303,17 +321,20 @@ class FF:
         )
 
     def get_best_loss(self):
+        """get the best loss"""
         results = pd.DataFrame(self.opt_results)
         results["data"] = [list(_.index) for _ in self.opt_results_df]
         best = results[results["fun"] == results["fun"].min()]
         return best
 
     def get_best_df(self):
+        """get the best dataframe"""
         self.set_best_parm()
         tmp = self.eval_func(self.opt_parm)
         return tmp
 
     def set_best_parm(self):
+        """set the optimized parameters to the FF object"""
         best = self.get_best_loss()
         self.opt_parm = best["x"].values[0]
         print(
@@ -322,13 +343,16 @@ class FF:
         )
 
     def get_random_parm(self):
+        """get a random set of parameters"""
         return [np.random.uniform(low=a, high=b) for a, b in self.bounds]
 
     def get_best_parm(self):
+        """get the best parameters"""
         best = self.get_best_loss()
         return best["x"].values[0]
 
     def eval_best_parm(self):
+        """evaluate the best parameters"""
         self.set_best_parm()
         tmp = self.eval_func(self.opt_parm)
         self.df = tmp
