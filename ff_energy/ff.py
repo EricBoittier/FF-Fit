@@ -38,7 +38,7 @@ class FF:
                 ]
             )
         )
-        # print(self.atom_types)
+
         self.atom_type_pairs = valid_atom_key_pairs(self.atom_types)
         self.df = data.copy()
         self.dists = dists
@@ -58,12 +58,23 @@ class FF:
         self.bounds = bounds
         self.out_dists = None
 
+        #  for jax
         self.out_groups_dict = None
         self.out_es = None
         self.out_groups = None
         self.out_akps = None
         self.targets = None
         self.p = None
+        #  for jax ecol
+        self.dcm_ecols = None
+        self.dcm_c_idx1 = None
+        self.dcm_c_idx2 = None
+        self.dcm_c1s = None
+        self.dcm_c2s = None
+        self.dcm_pairs_idx = None
+        self.dcm_dists = None
+        self.dcm_dists_labels = None
+        self.cluster_labels = None
 
         self.sort_data()
 
@@ -90,7 +101,13 @@ class FF:
             #  if the internal energy is not supported, raise an error
             raise ValueError(f"intern = {self.intern} not implemented")
 
+        #  initialize the jax arrays
         self.jax_init()
+
+    def init_jax_col(self, col_dict):
+        """Initialize jax arrays from a dictionary"""
+        for k, v in col_dict.items():
+            setattr(self, k, v)
 
     def jax_init(self, p=None):
         if p is None:
@@ -124,7 +141,12 @@ class FF:
         )
 
     def __repr__(self):
-        return f"FF: {self.func.__name__}"
+        return (
+            f"FF: {self.func.__name__}"
+            f" {self.structure.system_name}"
+            f" {self.elec}"
+            f" {self.intern}"
+        )
 
     def set_dists(self, dists):
         """Overwrite distances"""
