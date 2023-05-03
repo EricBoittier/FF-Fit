@@ -3,7 +3,7 @@ import typing
 import pandas as pd
 import re
 import numpy as np
-from ff_energy.utils import H2KCALMOL, str2int
+from ff_energy.utils import str2int
 
 from jax import grad
 import jax.numpy as jnp
@@ -24,6 +24,7 @@ class FF:
         nobj=4,
         elec="ELEC",
         intern="Exact",
+        intE="intE",
         pairs=False,
     ):
         self.data = data
@@ -48,6 +49,7 @@ class FF:
         self.func = func
         self.nobj = nobj
         self.elec = elec
+        self.intE = intE
         self.intern = intern
         self.opt_parm = None
         self.opt_results = []
@@ -87,26 +89,8 @@ class FF:
         else:
             self.p = jnp.array([1.764e00, 2.500e-01, 1.687e-01, 6.871e-03])
 
-        # Internal energies
-        #  ab initio reference energies
-        if self.intern == "Exact":
-            if pairs:
-                self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
-            else:
-                self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["m_E_tot"]
-        #  harmonic fit
-        elif self.intern == "harmonic":
-            if pairs:
-                #  TODO: add harmonic
-                self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
-            else:
-                self.data["intE"] = (
-                    self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
-                )
-        #  error
-        else:
-            #  if the internal energy is not supported, raise an error
-            raise ValueError(f"intern = {self.intern} not implemented")
+        #  initialize the interaction energies
+        self.set_intE()
 
         #  initialize the jax arrays
         self.jax_init()
@@ -119,6 +103,29 @@ class FF:
             f" {self.intern}"
             f"(jax_coloumb: {self.coloumb_init})"
         )
+
+    def set_intE(self, pairs=False):
+        # Internal energies
+        #  ab initio reference energies
+        if self.intern == "Exact":
+            if pairs:
+                # self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
+                self.data["intE"] = self.data["P_intE"]
+            else:
+                self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["m_E_tot"]
+        #  harmonic fit
+        elif self.intern == "harmonic":
+            if pairs:
+                #  TODO: add harmonic
+                self.data["intE"] = self.data["P_intE"]
+            else:
+                self.data["intE"] = (
+                    self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+                )
+        #  error
+        else:
+            #  if the internal energy is not supported, raise an error
+            raise ValueError(f"intern = {self.intern} not implemented")
 
     def init_jax_col(self, col_dict):
         """Initialize jax arrays from a dictionary"""
@@ -155,7 +162,7 @@ class FF:
     def set_targets(self):
         """Set the targets for the objective function"""
         self.targets = jnp.array(
-            self.data["intE"].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
+            self.data[self.intE].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )
 
         self.nTargets = int(len(self.targets))
@@ -163,7 +170,7 @@ class FF:
         assert self.nTargets == len(self.targets)
         assert isinstance(self.nTargets, typing.Hashable) is True
 
-    def eval_coulombE(self, scale=1.0):
+    def eval_coulomb(self, scale=1.0):
         """Evaluate the coulomb energy for each element in the dist. array"""
         outE = ecol(scale * self.dcm_c1s, scale * self.dcm_c2s, self.dcm_dists)
         return outE
@@ -353,9 +360,9 @@ class FF:
         parms = x[:-1]
         return self.eval_jax(parms)
 
-    def eval_coulomb(self, x) -> float:
+    def eval_coulomb_nb(self, x) -> float:
         """
-        :param x:
+        :param x: scale of the charges
         :return:
         """
         # the charge scale will be the final parameter
@@ -386,7 +393,7 @@ class FF:
     def get_best_loss(self) -> pd.DataFrame:
         """get the best loss"""
         results = pd.DataFrame(self.opt_results)
-        results["data"] = [list(_.index) for _ in self.opt_results_df]
+        # results["data"] = [list(_.index) for _ in self.opt_results_df]
         best = results[results["fun"] == results["fun"].min()]
         return best
 

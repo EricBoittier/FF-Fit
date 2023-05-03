@@ -111,12 +111,27 @@ def load_ff(
 
 
 def fit_repeat(
-    ff, N, outname, bounds=None, maxfev=10000, method="Nelder-Mead", quiet=False
+    ff,
+    N,
+    outname,
+    bounds=None,
+    maxfev=10000,
+    method="Nelder-Mead",
+    quiet=False,
+    loss=None,
 ):
     if bounds is None:
         bounds = ff.bounds
     for i in range(N):
-        fit_func(ff, None, bounds=bounds, maxfev=maxfev, method=method, quiet=quiet)
+        fit_func(
+            ff,
+            None,
+            bounds=bounds,
+            maxfev=maxfev,
+            method=method,
+            quiet=quiet,
+            loss=loss,
+        )
     ff.get_best_loss()
     ff.eval_best_parm()
     pickle_output(ff, outname)
@@ -139,7 +154,7 @@ def fit_func(
         "standard": (ff.get_loss, ff.eval_func),
         "jax": (ff.get_loss_jax, ff.eval_jax),
         "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
-        "ecol": (ff.get_loss_coulomb, ff.eval_coulomb),
+        "ecol": (ff.get_loss_coulomb, ff.eval_coulomb_nb),
     }
     func, eval = whichLoss[loss]
 
