@@ -91,7 +91,6 @@ class FF:
 
         #  initialize the interaction energies
         self.set_intE()
-
         #  initialize the jax arrays
         self.jax_init()
 
@@ -101,7 +100,8 @@ class FF:
             f" {self.structure.system_name}"
             f" {self.elec}"
             f" {self.intern}"
-            f"(jax_coloumb: {self.coloumb_init})"
+            f" {self.intE}"
+            f" (jax_coloumb: {self.coloumb_init})"
         )
 
     def set_intE(self, pairs=False):
@@ -420,6 +420,7 @@ class FF:
         """get the best parameters"""
         best = self.get_best_loss()
         return best["x"].values[0]
+
 
     def eval_best_parm(self) -> pd.DataFrame:
         """evaluate the best parameters"""

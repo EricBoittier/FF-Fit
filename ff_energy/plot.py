@@ -18,6 +18,7 @@ def plot_energy_MSE(
     bootstrap=True,
     title=True,
     bounds=None,
+        s=1,
     cbar_bounds=(-120, 0),
 ):
     """Plot the energy MSE"""
@@ -76,7 +77,7 @@ def plot_energy_MSE(
     if title:
         ax.text(0.00, 1.05, stats_str, transform=ax.transAxes, fontsize=FONTSIZE)
     # color points by MSE
-    sc = ax.scatter(df[key1], df[key2], c=df[elec], cmap=CMAP, alpha=0.5, s=1)
+    sc = ax.scatter(df[key1], df[key2], c=df[elec], cmap=CMAP, alpha=0.5, s=s)
     print(p_value)
     #  make the aspect ratio square
     ax.set_aspect("equal")
