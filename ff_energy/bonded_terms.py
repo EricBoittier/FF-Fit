@@ -65,6 +65,7 @@ class FitBonded:
     Takes a DF with monomer energies and internal DoFs,
     and fits the parameters of the internal DoFs
     """
+
     def __init__(self, df, min_m_E):
         self.df = df.copy()
         self.min_m_E = min_m_E

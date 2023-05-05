@@ -18,7 +18,7 @@ def plot_energy_MSE(
     bootstrap=True,
     title=True,
     bounds=None,
-        s=1,
+    s=1,
     cbar_bounds=(-120, 0),
 ):
     """Plot the energy MSE"""
@@ -54,7 +54,11 @@ def plot_energy_MSE(
         )
     except Exception:
         print("Error in linregress")
-        slope, intercept, r_value, = (
+        (
+            slope,
+            intercept,
+            r_value,
+        ) = (
             np.nan,
             np.nan,
             0,
