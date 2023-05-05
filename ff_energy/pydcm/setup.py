@@ -21,8 +21,6 @@ setuptools.setup(
     python_requires='>=3.6',
 )
 
-
-
 ext1 = Extension(
     name="dcm_fortran",
     sources=["dcm_fortran.F90"])
