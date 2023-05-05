@@ -2,10 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-import simreports.utils
-
-# from simreports.utils import
-
+import ff_energy.simulations.utils
 from ff_energy.simulations.utils import get_rdf_peaks
 
 time_label = "$t$ (ps)"
@@ -194,72 +191,10 @@ def make_plots(df, save=False, skips=None, psf="water.2000.psf", ind=False):
             plot_filenames.append(trim_filename(plot_filename))
 
 
-#         psf_path = os.path.join(dir_name, psf)
-#         dcd_path = os.path.join(dir_name, dcd_name)
-#         u = mda.Universe(psf_path, dcd_path)
-
-#         angles = get_angles(u, step=1)
-
-#         fig, ax = plt.subplots(4, 1, figsize=(12, 12),
-#                                gridspec_kw={"hspace": 0.75, "wspace": 0.5})
-
-#         # print("plotting rdf")
-#         plot_rdf(ax[0], u, title = df_["title"].iloc[0], step=1)
-
-#         ax[1].hist(angles.flatten(), bins=100, color=color_dict["angle"])
-#         ax[1].set_xlabel("angle [deg]", fontsize=font_size)
-#         ax[1].set_ylabel("count", fontsize=font_size)
-#         ax[1].set_title("angle distribution", fontsize=font_size, fontweight="bold")
-
-# # angle timeseries ax[2].plot(np.arange(len(angles[0])), angles.mean(axis=0),
-# c=color_dict["angle"]) ax[2].set_xlabel("frame", fontsize=font_size) ax[
-# 2].set_ylabel("angle [deg]", fontsize=font_size) ax[2].set_title("angle timeseries
-# [{:.0f} deg]".format(angles.flatten().mean()), fontsize=font_size, fontweight="bold")
-
-#         # print("plotting hbonds")
-#         hbonds = hb_analysis(u, step=10)
-#         mean_hbonds = hbonds.count_by_time().mean()
-
-#         ax[3].axhline(mean_hbonds, c="k", ls="--")
-
-#         ax[3].plot(hbonds.times, hbonds.count_by_time(), c=color_dict["angle"])
-#         ax[3].set_xlabel(time_label, fontsize=font_size)
-#         ax[3].set_ylabel("# H bonds", fontsize=font_size)
-
-# ax[3].set_title("H bond timeseries [{:.0f}]".format(mean_hbonds),
-# fontsize=font_size, fontweight="bold")
-
-#         time_period = (df_["time"].iloc[-1] - df_["time"].iloc[0]) // 1
-#         title = df_["title"].iloc[0]
-#         dyna_name = df_["dyna"].iloc[0]
-#         suptitle = f"{title}\n{dyna_name} [{time_period} ps]"
-#         fig.suptitle(suptitle, fontsize=font_size, fontweight="bold")
-
-# if save: plot_filename = f"/home/boittier/Documents/simreports/figures/figs/{
-# title}_{i}_md.pdf" fig.savefig(plot_filename, dpi=300) plot_filenames.append(
-# trim_filename(plot_filename))
-
-#     #  write latex code to display the plots
-#     if save:
-#         with open(f"{title}_plots.tex", "w") as f:
-#             latex_str = ""
-#             for plot_filename in plot_filenames:
-#                 strLatex = f"""
-# \\begin{{figure}}[b]
-# \centering
-# \includegraphics[width=0.7\pagewidth]{{ {plot_filename} }}
-# \caption{{  }}
-# \label{{fig:  }}
-# \end{{figure}}\n"""
-#                 latex_str += strLatex
-
-#             f.write(latex_str)
-
-
 def plot_rdf(ax, u, title=False, step=100):
     """Plot the rdf"""
     # get the rdf
-    irdf = simreports.utils.g_rdf(u, step=step)
+    irdf = ff_energy.simulations.utils.g_rdf(u, step=step)
     peaks = get_rdf_peaks(irdf)
 
     # plot the rdf
