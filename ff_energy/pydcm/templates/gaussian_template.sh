@@ -6,6 +6,7 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=%MEMCPU%MB
 #SBATCH --partition=vshort
+#SBATCH --exclude=node[109-124]
 #$ -S /bin/bash
 
 # Define Parameters

@@ -262,29 +262,6 @@ def load_content(configfile, marker="--", marker2="$"):
             config[key] = read_item(sitm)
             sitm = []
 
-        ## Check for further subkeys
-        #if marker2 in contentline:
-
-            ## Initialize subconfig dictionary
-            #subconfig = {}
-
-            ## Split keys
-            #subconfigtxt = contentline.split(marker2)
-
-            ## Assign key
-            #key = subconfigtxt[0].strip()
-
-            #for subcontentline in subconfigtxt[1:]:
-
-                ## Get key and item
-                #subkey, subitem = read_item(subcontentline)
-
-                ## Add content to config dictionary
-                #subconfigdict[subkey] = subitem
-
-            ## Add content to config dictionary
-            #config[key] = subconfigdict
-
     return config
 
 def read_item(sitm):
