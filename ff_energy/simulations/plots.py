@@ -150,6 +150,8 @@ def plot_fluctuations(df, skip=None, filename=None):
 
 def make_plots(df, save=False, skips=None, psf="water.2000.psf", ind=False):
     dyna_keys = list(set(df["dyna"]))
+    if np.nan in dyna_keys:
+        dyna_keys.remove(np.nan)
     # sort the dyna keys by the first number in the string
     print("plotting")
     print(dyna_keys)

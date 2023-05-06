@@ -4,7 +4,7 @@ import pandas as pd
 DYNASTART = "CHARMM>    DYNA"
 DYNAEXTERN = "DYNA EXTERN>"
 DYNA = "DYNA>"
-DYNAPRESS = "DYNA PRESS>"
+DYNAPRESS = "A PRESS>"
 
 
 def read_charmm_log(path, title=None):
@@ -25,7 +25,7 @@ def read_charmm_log(path, title=None):
 def read_pressures(pressures):
     try:
         x = pressures
-        volume = float(x[67:])
+        volume = float(x[67:73])
         pressi = float(x[55:68])
         presse = float(x[40:53])
         return volume, pressi, presse
