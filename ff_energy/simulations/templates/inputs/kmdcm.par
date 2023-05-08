@@ -1,0 +1,38 @@
+read parameter card
+* methanol
+*
+ATOMS
+MASS     5  HT        1.00800 ! TIPS3P WATER HYDROGEN
+MASS    75  OT       15.99940 ! TIPS3P WATER OXYGEN
+MASS  1  CG331     12.01100 ! aliphatic C for methyl group (-CH3)
+MASS  2  HGP1       1.00800 ! polar H
+MASS  3  HGA3       1.00800 ! alphatic proton, CH3
+MASS  4  OG311     15.99940 ! hydroxyl oxygen
+
+BONDS
+CG331  OG311  428.0     1.420
+CG331  HGA3   322.0     1.111
+OG311  HGP1   545.0     0.960
+OT  HT  1042.0 0.963 ! ALLOW WAT
+HT  HT    0.0 1.5139 ! ALLOW WAT
+
+ANGLES
+OG311  CG331 HGA3 45.90  108.8900
+HGA3   CG331 HGA3 35.50  108.4000
+CG331  OG311 HGP1 57.50  106.0000
+HT  OT  HT   97.0 104.3 ! ALLOW WAT
+OT  HT  HT   97.0 104.3 ! ALLOW WAT
+
+DIHEDRALS
+HGA3 CG331 OG311 HGP1     0.18        3     0.0000
+
+IMPROPERS
+
+NONBONDED
+OG311    0.0       -0.192   1.765                  ! og MeOH and EtOH 1/06 (was -0.1521 1.7682)
+CG331    0.0       -0.078   2.050   0.0 -0.01 1.9 ! alkane (CT3), 4/98, yin, adm jr; Rmin/2 modified from 2.04 to 2.05
+HGP1     0.0       -0.046    0.225                 ! polar H
+HGA3     0.0       -0.024    1.340                 ! alkane, yin and mackerell, 4/98
+OT     0.00  -0.1822  1.7231 ! ALLOW WAT
+HT     0.00  -0.1160  0.2500 ! ALLOW WAT
+END

@@ -2,8 +2,8 @@ import itertools
 import os
 import numpy as np
 
-from ff_energy.templates import PSF
-from ff_energy.geometry import sqrt_einsum_T
+from ff_energy.ffe.templates import PSF
+from ff_energy.ffe.geometry import sqrt_einsum_T
 
 
 def valid_atom_key_pairs(atom_keys):

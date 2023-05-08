@@ -2,7 +2,7 @@ from functools import partial
 
 import numpy as np
 
-from ff_energy.structure import atom_key_pairs
+from ff_energy.ffe.structure import atom_key_pairs
 
 import jax
 from jax import grad

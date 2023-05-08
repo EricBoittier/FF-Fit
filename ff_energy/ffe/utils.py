@@ -7,6 +7,15 @@ H2KCALMOL = 627.503
 #  dynamic path to pickle folder
 PKL_PATH = Path(__file__).parents[1] / "pickles"
 
+def makeDir(path: Path):
+    """
+    Make a directory if it doesn't exist
+    :param path:
+    :return:
+    """
+    if not path.exists():
+        path.mkdir(parents=True, exist_ok=True)
+
 
 def str2int(g):
     """

@@ -3,13 +3,14 @@ import typing
 import pandas as pd
 import re
 import numpy as np
-from ff_energy.utils import str2int
+from ff_energy.ffe.utils import str2int
 
 from jax import grad
 import jax.numpy as jnp
 
-from ff_energy.structure import valid_atom_key_pairs
-from ff_energy.ffe.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, akp_indx
+from ff_energy.ffe.structure import valid_atom_key_pairs
+from ff_energy.ffe.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, \
+    akp_indx
 from ff_energy.ffe.potential import ecol, ecol_seg
 
 

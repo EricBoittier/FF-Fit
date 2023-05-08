@@ -8,6 +8,7 @@ set min {{min}}
 set heat {{heat}}
 set equi {{equi}}
 set dyna {{dyna}}
+set dt = {{dt}}
 set n {{N}}
 
 !============================================================
@@ -82,7 +83,7 @@ if @min .eq. 0 then
 !! Strucuture optimization
 mini sd nstep 20 nprint 1000
 ! Save optimized structure
-open write unit 10 card name @base/water.2000.mini.pdb
+open write unit 10 card name {{fn}}.mini.pdb
 write coor unit 10 pdb
 CLOSE UNIT 10
 ENDIF
@@ -92,8 +93,8 @@ ENDIF
 ! Heating Simulation
 !============================================================
 
-OPEN WRITE UNIT 31 CARD NAME @base/{{fn}}.heat.res      ! Restart file
-OPEN WRITE UNIT 32 FILE NAME @base/{{fn}}.heat.dcd      ! Coordinates file
+OPEN WRITE UNIT 31 CARD NAME {{fn}}.heat.res      ! Restart file
+OPEN WRITE UNIT 32 FILE NAME {{fn}}.heat.dcd      ! Coordinates file
 
 set nstep = {{NSTEPHEAT}}
 
@@ -121,6 +122,10 @@ CLOSE UNIT 1
 !============================================================
 label EQUILLOOP
 if @equi .eq. 0 then
+
+set nstep = 5000000
+set dt = 0.0002
+set temp = 300.0
 
 OPEN READ  UNIT 30 CARD NAME {{fn}}.heat.res      ! Restart file
 OPEN WRITE UNIT 31 CARD NAME {{fn}}.equi.res      ! Restart file
@@ -156,13 +161,13 @@ CLOSE UNIT 1
 label DYNALOOP
 if @dyna .eq. 0 then
 
-set nstep {{NSTEPDYN}}
-set dt {{DT}}
-set temp {{TEMP}}
+set nstep = {{NSTEPDYN}}
+set dt = {{dt}}
+set temp = {{TEMP}}
 
 if @n .eq. 0 then
   set m @n
-  open read unit 33 card name equi.res     ! Restart file
+  open read unit 33 card name {{fn}}.equi.res     ! Restart file
   open write unit 34 card name {{fn}}.dyna.@n.res ! Restart file
   open write unit 35 file name {{fn}}.dyna.@n.dcd ! Coordinates file
 else
@@ -192,7 +197,7 @@ close unit 34
 close unit 35
 
 increase n by 1
-if n lt 10 goto DYNALOOP
+if n lt 100 goto DYNALOOP
 
 endif
 !============================================================
