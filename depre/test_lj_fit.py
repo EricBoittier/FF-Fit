@@ -1,6 +1,6 @@
 from ff_energy.cli import load_config_maker, load_all_theory, charmm_jobs
 # from ff_energy.structure import
-from ff_energy.potential import FF, LJ
+from ff_energy.ffe.potential import FF, LJ
 import numpy as np
 from ff_energy.data import Data, plot_ecol, plot_intE
 import matplotlib.pyplot as plt

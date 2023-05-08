@@ -2,6 +2,7 @@ from pathlib import Path
 import subprocess
 import time
 import numpy as np
+import random
 
 clusters = {
     "nccr": ("ssh", "boittier@pc-nccr-cluster"),
@@ -30,8 +31,6 @@ class SlurmJobHandler:
         self.cluster = cluster
 
     def shuffle_jobs(self):
-        import random
-
         random.shuffle(self.jobs)
 
     def add_job(self, job_script):

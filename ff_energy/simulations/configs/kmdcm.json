@@ -1,0 +1,18 @@
+{
+  "TOP": "kmdcm",
+  "PAR": "kmdcm",
+  "BASEPATHNAME": "/cluster/home/boittier/sims/kmdcm/water/K300",
+  "min": 0,
+  "equi": 0,
+  "dyna": 0,
+  "N": 0,
+  "STREAM": "",
+  "PSFNAME": "water.2000.psf",
+  "CRDNAME": "water.2000.crd",
+  "SHAKE": "",
+  "NSTEPHEAT": 10,
+  "NSTEPEQUI": 10,
+  "NSTEPDYN": 10,
+  "fn": "water.2000",
+  "CHARGEMODEL": "open unit 11 card read name water.kmdcm\nopen unit 12 card read name water.kern\n!open unit 15 write card name dcm.xyz\nDCM KERN 12 IUDCM 11 TSHIFT !XYZ 15"
+}
