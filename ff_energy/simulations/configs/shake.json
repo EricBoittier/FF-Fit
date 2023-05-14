@@ -1,0 +1,23 @@
+{
+  "TOP": "shake.top",
+  "PAR": "shake.par",
+  "BASEPATHNAME": "/cluster/home/boittier/sims4/shake/water/",
+  "job_path": "/home/boittier/pcbach/sims4/shake/water/",
+  "JOBNAME": "s",
+  "min": 0,
+  "equi": 0,
+  "dyna": 0,
+  "TEMP": 300,
+  "dt": 0.002,
+  "extrafiles": ["crystal_image.str"],
+  "N": 0,
+  "STREAM": "",
+  "PSFNAME": "water.2000.psf",
+  "CRDNAME": "water.2000.crd",
+  "SHAKE": "SHAKE BONH TOLErance 1.0e-8 PARAMeter",
+  "NSTEPHEAT": 500000,
+  "NSTEPEQUI": 500000,
+  "NSTEPDYN": 500000,
+  "fn": "water.2000",
+  "CHARGEMODEL": "! NO CHARGE MODEL"
+}

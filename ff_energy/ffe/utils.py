@@ -5,7 +5,19 @@ import re
 H2KCALMOL = 627.503
 
 #  dynamic path to pickle folder
-PKL_PATH = Path(__file__).parents[1] / "pickles"
+PKL_PATH = Path(__file__).parents[2] / "pickles"
+
+
+def get_structures(system_name):
+    pickle_exists = Path(PKL_PATH / f"{system_name}.pkl").exists()
+    if pickle_exists:
+        print("Strcuture,PDB already already exists, loading structure from pickle")
+        structures, pdbs = next(read_from_pickle(PKL_PATH / f"{system_name}.pkl"))
+        return structures, pdbs
+    else:
+        # raise FileNotFoundError(f"Pickle {system_name} does not exist")
+        return False, False
+
 
 def makeDir(path: Path):
     """

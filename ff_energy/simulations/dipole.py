@@ -183,10 +183,11 @@ def calc_spectra(total_dipole_vectors, NSKIP=0, filename=None, effective_timeste
 
 
 def plot_spectra(freq, spectra, filename=None, csv=False,
-                 Nsmooth=10, xlim=None, ylim=None, axvlines=False):
+                 ax = None,
+                 Nsmooth=10, xlim=None, ylim=None, plot_methanol=False, plot_water=False, axvlines=False):
     if csv:
         df = pd.read_csv(csv)
-        df = df[df["freq"] > 500]
+        df = df[df["freq"] > 800]
         freq = df["freq"].values
         spectra = df["spectra"].values  # - df["spectra"].min()
     # else:
@@ -196,30 +197,41 @@ def plot_spectra(freq, spectra, filename=None, csv=False,
     window = np.ones(Nsmooth) / Nsmooth
     spectra = np.convolve(spectra, window, 'same')
     spectra = spectra / spectra.max()
-    plt.plot(methanol_exp_spectrum[0], methanol_exp_spectrum[1],
-             linewidth=1, color="k", label="Exp. (Methanol)")
-    plt.plot(freq, spectra, linewidth=1)
-    plt.xlabel("Frequency (cm$^{-1}$)", fontsize=20, fontweight="bold")
+    
+    if ax is None:
+        ax = plt.gca()
+    
+    if plot_methanol:
+        ax.plot(methanol_exp_spectrum[0], methanol_exp_spectrum[1],
+                 linewidth=1, color="k", label="Exp. (Methanol)")
+    if plot_water:
+        ax.plot(freq, spectra, linewidth=1)
+        
+        ax.set_xlabel("Frequency (cm$^{-1}$)", fontsize=20, fontweight="bold")
+        
+    ax.plot(freq, spectra, linewidth=1)
+    ax.set_xlabel("Frequency (cm$^{-1}$)", fontsize=20, fontweight="bold")
+        
     if xlim is None:
-        plt.xlim(500, 4000)
+        ax.set_xlim(500, 4000)
     else:
-        plt.xlim(xlim[0], xlim[1])
+        ax.set_xlim(xlim[0], xlim[1])
 
     if ylim is None:
-        plt.ylim(0, np.max(spectra))
-        plt.ylim(0, 1)
+        ax.set_ylim(0, np.max(spectra))
+        ax.set_ylim(0, 1)
     else:
         plt.ylim(ylim[0], ylim[1])
 
     # reverse the y axis
     # plt.gca().invert_yaxis()
-    plt.ylabel("Intensity (a.u.)", fontsize=20, fontweight="bold")
+    ax.set_ylabel("Intensity (a.u.)", fontsize=20, fontweight="bold")
     # reverse the x axis
     # plt.gca().invert_xaxis()
 
     if axvlines:
         for x in axvlines:
-            plt.axvline(x, color="k", linestyle="--")
+            ax.axvline(x, color="k", linestyle="--")
 
     # tight layout
     plt.tight_layout()
@@ -227,8 +239,8 @@ def plot_spectra(freq, spectra, filename=None, csv=False,
         filename = filename + "_spectra" + ".pdf"
         plt.savefig(filename, bbox_inches="tight")
 
-    plt.show()
-
+    #plt.show()
+    return ax
 
 def dipole_dcm(filename, dcm, NSKIP=0, effective_timestep=1.0, nsmooth=10):
     total_dipole_vectors, Ds = load_from_dcm(dcm)

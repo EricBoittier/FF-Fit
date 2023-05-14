@@ -61,10 +61,11 @@ def hb_analysis(u, start=0, stop=-1, step=1):
 
 def g_rdf(u, sel='resname TIP3 and type OT', step=1, start=0, stop=-1):
     selection = u.select_atoms(sel)
+    print(selection)
 
     irdf = rdf.InterRDF(selection, selection,
-                        nbins=75,  # default
-                        range=(0.0, 15.0),  # distance in angstroms
+                        nbins=int(10//0.1),  # default
+                        range=(0.0, 10.0),  # distance in angstroms
                         exclusion_block=(1, 1),
                         )
     irdf.run(step=step, start=start, stop=stop)

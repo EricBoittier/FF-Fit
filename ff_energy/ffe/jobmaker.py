@@ -7,8 +7,8 @@ from multiprocessing.pool import Pool
 # from tqdm.notebook import tqdm
 from itertools import repeat
 from tqdm import tqdm
-from ff_energy.job import Job
-from ff_energy.structure import Structure
+from ff_energy.ffe.job import Job
+from ff_energy.ffe.structure import Structure
 
 atom_types = {
     # ("LIG", "O"): "OG311",

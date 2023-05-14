@@ -4,12 +4,12 @@ import itertools
 
 import jax.numpy as jnp
 
-from ff_energy.utils import read_from_pickle, str2int
-from ff_energy.plot import plot_energy_MSE
-from ff_energy.geometry import dihedral3, bisector, angle, dist
-from ff_energy.cli import get_structures
+from ff_energy.ffe.utils import read_from_pickle, str2int
+from ff_energy.ffe.plot import plot_energy_MSE
+from ff_energy.ffe.geometry import dihedral3, bisector, angle, dist
+from ff_energy.ffe.utils import get_structures
 from ff_energy.ffe.potential import Ecoloumb
-from ff_energy.bonded_terms import FitBonded
+from ff_energy.ffe.bonded_terms import FitBonded
 
 import numpy as np
 
@@ -19,16 +19,14 @@ H2KCALMOL = 627.503
 def load_pickles(path):
     output = []
     print("loading pickles from ", path)
-    for x in Path(path).glob("*pickle"):
+    for x in Path(path).glob("*"):
         a = read_from_pickle(x)
         a = next(a)
         output.append(a)
-    # print(output)
     return output
 
 
 def validate_data(_):
-    # print(_)
     if len(_) == 0:
         _ = None
     else:
@@ -121,7 +119,9 @@ class Data:
     def __init__(self, output_path, system="water_cluster", min_m_E=None):
         self.system = system
         self.output_path = output_path
+        print("output_path", output_path)
         self.output = load_pickles(output_path)
+        # print("output", self.output)
         (
             data,
             ctot,
@@ -150,7 +150,6 @@ class Data:
         self.monomer_df = monomer_df
         self.cluster_df = cluster_df
         self.pairs_df = pairs_df
-
         index = self.monomers_df.index
         self.monomers_df["key"] = [x.split("_")[0] for x in index]
         self.monomers_df["monomer"] = [int(x.split("_")[1]) for x in index]

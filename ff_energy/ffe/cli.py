@@ -1,13 +1,12 @@
-import sys
-
-sys.path.append("/home/boittier/Documents/phd/ff_energy")
-
-from ff_energy.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.utils import read_from_pickle, pickle_output
-from ff_energy.configmaker import ConfigMaker, system_names, THEORY
+from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
+from ff_energy.ffe.utils import pickle_output, get_structures
+from ff_energy.ffe.utils import PKL_PATH
+from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
+from ff_energy.ffe.data import Data
 from pathlib import Path
-from ff_energy.slurm import SlurmJobHandler
+from ff_energy.ffe.slurm import SlurmJobHandler
+import sys 
 
 clusterBACH = ("ssh", "boittier@pc-bach")
 clusterBEETHOVEN = ("ssh", "boittier@beethoven")
@@ -26,26 +25,21 @@ atom_types = {
 }
 
 
-def get_structures(system_name):
-    pickle_files = Path("/home/boittier/Documents/phd/ff_energy/pickles")
-    pickle_exists = Path(pickle_files / f"{system_name}.pkl").exists()
-    if pickle_exists:
-        print("Strcuture,PDB already already exists, loading structure from pickle")
-        structures, pdbs = next(read_from_pickle(pickle_files / f"{system_name}.pkl"))
-        return structures, pdbs
-    else:
-        return False, False
+def MakeJob(name,
+            ConfigMaker,
+            _atom_types=None,
+            system_name=None
+            ):
+    if _atom_types is None:
+        _atom_types = atom_types
 
-
-def MakeJob(name, ConfigMaker, atom_types=atom_types, system_name=None):
     pickle_exists = get_structures(system_name)
-    if pickle_exists:
+    if pickle_exists[0]:
         structures, pdbs = pickle_exists
-
     else:
-        print("pickle does not exist")
+        print(f"pickle ({system_name}) does not exist")
         structures, pdbs = get_structures_pdbs(
-            Path(ConfigMaker.pdbs), atom_types=atom_types, system_name=system_name
+            Path(ConfigMaker.pdbs), atom_types=_atom_types, system_name=system_name
         )
         pickle_output((structures, pdbs), name=system_name)
 
@@ -61,9 +55,9 @@ def load_config_from_input(filenames) -> []:
     CMS = []
     filenames = filenames.split()
     for filename in filenames:
-        c = Config()
-        c.read_config(CONFIG_PATH + filename)
-        CMS.append(c)
+        conf = Config()
+        conf.read_config(CONFIG_PATH + filename)
+        CMS.append(conf)
     return CMS
 
 
@@ -72,7 +66,6 @@ def load_all_theory_and_elec():
     for system in system_names:
         for theory in THEORY.keys():
             for elec in ["pc", "mdcm"]:
-                # print(system, theory, elec)
                 cm = ConfigMaker(theory, system, elec)
                 CMS.append(cm)
     return CMS
@@ -95,7 +88,7 @@ def charmm_jobs(CMS):
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
             cms,
-            atom_types=cms.atom_types,
+            _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
         HOMEDIR = "/home/boittier/homeb/"
@@ -113,7 +106,6 @@ def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
         shj.add_job(j)
 
     print("Jobs: ", len(shj.jobs))
-    # print(shj.jobs)
     print(len(shj.jobs))
     shj.shuffle_jobs()
     shj.submit_jobs(Check=Check)
@@ -172,7 +164,7 @@ def molpro_jobs_big(CMS, DRY):
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
-            atom_types=cms.atom_types,
+            _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
         "/home/boittier/homeb/"
@@ -190,7 +182,7 @@ def molpro_jobs_small(CMS, DRY):
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
-            atom_types=cms.atom_types,
+            _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
         "/home/boittier/pcnccr/"
@@ -203,12 +195,14 @@ def molpro_jobs_small(CMS, DRY):
 
 def data_jobs(CMS, molpro_small_path):
     jobmakers = []
+    cms = None
+    jm = None
     for cms in CMS:
         print(cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
             cms,
-            atom_types=cms.atom_types,
+            _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
         HOMEDIR = "/home/boittier/homeb/"
@@ -233,6 +227,13 @@ def data_jobs(CMS, molpro_small_path):
             CHM,
         )  # charmm
         jobmakers.append(jm)
+
+    #  convert data to data object
+    pp = Path(PKL_PATH / f"{cms.system_name}/{cms.theory_name}/"
+                         f"{jm.kwargs['c_files'][0]}")
+    print("Saving data to: ", pp)
+    data = Data(pp)
+    pickle_output(data, PKL_PATH / f"{cms.system_name}_{cms.theory_name}_{cms.elec}")
     return jobmakers
 
 
@@ -242,7 +243,7 @@ def esp_view_jobs(CMS):
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
             cms,
-            atom_types=cms.atom_types,
+            _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
         HOMEDIR = "/home/boittier/homepcb/"
@@ -259,7 +260,7 @@ def coloumb_jobs(CMS, DRY, cluster=None):
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
-            atom_types=cms.atom_types,
+            _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
         HOMEDIR = "/home/boittier/homeb/"

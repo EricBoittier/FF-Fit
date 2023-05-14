@@ -4,6 +4,7 @@ from pathlib import Path
 template_files = Path(__file__).parent / "templates"
 config_files = Path(__file__).parent / "configs"
 input_files = template_files / "inputs"
+print(input_files)
 
 with open(template_files / "simulation") as file_:
     sim_template = Template(file_.read())
