@@ -93,6 +93,17 @@ def angle(u, v) -> float:
     return theta
 
 
+def angle3(a, b, c) -> float:
+    u = a - b
+    v = c - b
+    """calculate the angle between three points,
+    return the angle in degrees"""
+    # Calculate polar angle (theta) between u and v
+    cos_theta = np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v))
+    theta = np.degrees(np.arccos(cos_theta))
+    return theta
+
+
 def dist(a: np.array, b=None) -> float:
     """calculate the length of a vector
     or the distance between two vectors"""

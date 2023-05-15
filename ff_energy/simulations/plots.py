@@ -249,25 +249,25 @@ water_rdf_2 = """2.412776412776413 0.03828650785172538
 9.93120393120393 1.01440017092191
 """
 
-def plot_rdf_exp(ax):
+def plot_rdf_exp(ax, shift=0, c="k", lw=1):
     # exp. data
     ex = []
     ey = []
     for _ in water_rdf_1.split("\n"):
         if _:
             ex.append(float(_.split(" ")[0]))
-            ey.append(float(_.split(" ")[1]))
+            ey.append(float(_.split(" ")[1]) + shift)
 
-    ax.plot(ex, ey, "--", c="gray", label="Exp. 1")
+    ax.plot(ex, ey, "--", c=c, label="Exp. 1", linewidth=lw)
     # exp. data
     ex = []
     ey = []
     for _ in water_rdf_2.split("\n"):
         if _:
             ex.append(float(_.split(" ")[0]))
-            ey.append(float(_.split(" ")[1]))
+            ey.append(float(_.split(" ")[1]) + shift)
 
-    ax.plot(ex, ey, "--x", c="gray", label="Exp. 2")
+    ax.plot(ex, ey, "--", c=c, label="Exp. 2", linewidth=lw)
     return ax
 
 
