@@ -119,7 +119,7 @@ class Data:
     def __init__(self, output_path, system="water_cluster", min_m_E=None):
         self.system = system
         self.output_path = output_path
-        print("output_path", output_path)
+        # print("output_path", output_path)
         self.output = load_pickles(output_path)
         # print("output", self.output)
         (
@@ -200,7 +200,6 @@ class Data:
     def get_internals_water(self, key, res):
         mask = self.structure_key_pairs[key].res_mask[res]
         water_mol = self.structure_key_pairs[key].xyzs[mask]
-        water_mol
         b1 = water_mol[0] - water_mol[1]
         b2 = water_mol[0] - water_mol[2]
         a = angle(b1, b2)

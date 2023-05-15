@@ -10,7 +10,7 @@ import jax.numpy as jnp
 
 from ff_energy.ffe.structure import valid_atom_key_pairs
 from ff_energy.ffe.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, \
-    akp_indx
+    akp_indx, DERUN, DERUN_LOSS
 from ff_energy.ffe.potential import ecol, ecol_seg
 
 
@@ -297,6 +297,16 @@ class FF:
         )
         return LJE
 
+    def eval_jax_de(self, x):
+        """evaluate the LJ potential"""
+        LJE = DERUN(
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
+        )
+        return LJE
+
     def eval_jax_flat(self, x):
         """evaluate the LJ potential over all distances"""
         return LJflat(self.out_dists, self.out_akps, x)
@@ -307,7 +317,22 @@ class FF:
         :param x:
         :return:
         """
-        return LJRUN_LOSS(
+        return DERUN_LOSS(
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
+            self.targets,
+            self.nTargets,
+        )
+
+    def get_loss_jax_de(self, x) -> float:
+        """
+        get the mean squared error of the LJ potential
+        :param x:
+        :return:
+        """
+        return DERUN_LOSS(
             self.out_dists,
             self.out_akps,
             self.out_groups,

@@ -2,24 +2,32 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib import rcParams
+
+#  set font to Arial
+
+plt.style.use(['science', 'ieee', ])
+
+rcParams['font.family'] = 'sans-serif'
+rcParams['font.sans-serif'] = ['Arial']
 
 
 def plot_energy_MSE(
-    df,
-    key1,
-    key2,
-    FONTSIZE=14,
-    xlabel="NBOND energy\n(kcal/mol)",
-    ylabel="CCSD(T) interaction energy\n(kcal/mol)",
-    elec="ele",
-    CMAP="viridis",
-    cbar_label="ELEC (kcal/mol)",
-    ax=None,
-    bootstrap=True,
-    title=True,
-    bounds=None,
-    s=1,
-    cbar_bounds=(-120, 0),
+        df,
+        key1,
+        key2,
+        FONTSIZE=10,
+        xlabel="NBOND energy\n(kcal/mol)",
+        ylabel="CCSD(T) interaction energy\n(kcal/mol)",
+        elec="ele",
+        CMAP="viridis",
+        cbar_label="ELEC (kcal/mol)",
+        ax=None,
+        bootstrap=True,
+        title=True,
+        bounds=None,
+        s=1,
+        cbar_bounds=(-120, 0),
 ):
     """Plot the energy MSE"""
     df = df.copy()
@@ -28,7 +36,7 @@ def plot_energy_MSE(
         fig, ax = plt.subplots()
     # calculate MSE
     ERROR = df[key1] - df[key2]
-    MSE = np.mean(ERROR**2)
+    MSE = np.mean(ERROR ** 2)
     df["SE"] = ERROR.copy() ** 2
 
     if bootstrap:
@@ -141,7 +149,7 @@ def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
     bins = np.arange(key_min, key_max, key_range / NBINS)
     ff_pairs.data[f"{key}_bin"] = np.digitize(ff_pairs.data[key], bins=bins)
     ff_pairs.data[f"{key}_bin"] = (
-        key_min + ff_pairs.data[f"{key}_bin"] * key_range / NBINS
+            key_min + ff_pairs.data[f"{key}_bin"] * key_range / NBINS
     )
     ff_pairs.elec = ecol
     ff_pairs.func = ff_fit.func
@@ -151,8 +159,9 @@ def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
     """
     ff_pairs.data["DUMMY"] = [0] * len(ff_pairs.data)
     MSE = (
-        (ff_pairs.data.groupby("key")[ecol].sum() - ff_fit.data.sort_index()["ELEC"])
-        ** 2
+            (ff_pairs.data.groupby("key")[ecol].sum() - ff_fit.data.sort_index()[
+                "ELEC"])
+            ** 2
     ).mean()
     RMSE = np.sqrt(MSE)
     print(MSE, RMSE)
@@ -243,8 +252,8 @@ def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
         axes = [axs["e)"], axs["d)"], axs["f)"]]
         stats = [spp, spc, scc]
         for (
-            ax_,
-            s,
+                ax_,
+                s,
         ) in zip(axes, stats):
             ax_.text(
                 1.0,
@@ -391,71 +400,3 @@ def cor_cluster(fit, ax):
         bounds=(-100, -20),
     )
     return ax, stats
-
-
-#
-# def plot_best_fits(ff, name=""):
-#     """
-#     Plot the best fits
-#     :param ff:
-#     :param name:
-#     :return:
-#     """
-#     test_ = []
-#     train_ = []
-#     args_ = []
-#     dfs_ = []
-#
-#     for res, data in zip(ff.opt_results, ff.opt_results_df):
-#         if res["fun"] <= 30:
-#             data = data.dropna()
-#             test_keys = [_ for _ in list(ff.data_save.index) if _ not in data.index]
-#             print("N test:", len(test_keys))
-#             test_df = ff.data_save.query("index in @test_keys")
-#             ff.data = test_df.copy()
-#             test_len = len(ff.data)
-#             test_res = ff.LJ_performace(ff.eval_func(res.x)).copy()
-#
-#             # fig, ax = plt.subplots(1,3,figsize=(15,15))
-#             fig, ax = plt.subplot_mosaic([[0, 1], [2, 2]], figsize=(10, 7))
-#
-#             plot_LJintE(test_res, ax=ax[0], elec=ff.elec)
-#
-#             ff.data = ff.data_save.query("index not in @test_keys").copy()
-#             train_len = len(ff.data)
-#             train_res = ff.LJ_performace(ff.eval_func(res.x)).copy()
-#             plot_LJintE(train_res, ax=ax[1], elec=ff.elec)
-#             results = (
-#                 "{:.1f}_{}_{:.1f}_{}".format(
-#                     test_res["SE"].mean(), test_len, train_res["SE"].mean(), train_len
-#                 )
-#             )
-#             print(results)
-#             res = res.x
-#             x = np.arange(0.1, 5, 0.05)
-#             y = LJ(res[0] * 2, res[2], x)
-#             ax[2].plot(x, y, c="grey")
-#             y = LJ(res[1] * 2, res[3], x)
-#             ax[2].plot(x, y, c="firebrick")
-#             y = LJ(res[1] + res[1], np.sqrt(res[3] * res[2]), x)
-#             ax[2].plot(x, y, c="k")
-#             ax[2].axhline(0, c="k")
-#             ax[2].set_ylim(-1, 1)
-#             res_str = "_".join(["{:.2f}".format(x) for x in res])
-#             save_path = (
-#                 f"/home/boittier/Documents/phd/ff_energy/figs/ff/"
-#                 f"{name}_{ff.name}_{ff.intern}_{ff.elec}/{results}_{res_str}.png"
-#             )
-#             #  make the directory
-#             os.makedirs(os.path.dirname(save_path), exist_ok=True)
-#             print("saving image to: ", save_path)
-#             plt.suptitle(res_str, y=-0.051)
-#             plt.savefig(save_path, bbox_inches="tight")
-#
-#             # append data
-#             test_.append(test_res["SE"].mean())
-#             train_.append(train_res["SE"].mean())
-#             args_.append(res)
-#             dfs_.append(test_res)
-#
-#     return {"test": test_, "train": train_, "args": args_, "dfs": dfs_}

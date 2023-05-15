@@ -603,7 +603,9 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
 
     def pickle_output(self, output):
         pickle_path = Path(
-            f'pickles/{self.structure.system_name}/{self.kwargs["theory_name"]}/{self.kwargs["c_files"][0]}/{self.name}.pickle'
+            f'pickles/{self.structure.system_name}/'
+            f'{self.kwargs["theory_name"]}/'
+            f'{self.kwargs["c_files"][0]}/{self.name}.pickle'
         )
 
         pickle_path.parents[0].mkdir(parents=True, exist_ok=True)

@@ -6,7 +6,7 @@ from ff_energy.ffe.config import Config
 from ff_energy.ffe.data import Data
 from pathlib import Path
 from ff_energy.ffe.slurm import SlurmJobHandler
-import sys 
+import sys
 
 clusterBACH = ("ssh", "boittier@pc-bach")
 clusterBEETHOVEN = ("ssh", "boittier@beethoven")
@@ -223,9 +223,9 @@ def data_jobs(CMS, molpro_small_path):
             MONOMERS,  # monomers
             PCBACH,  # cluster
             PAIRS,  # pairs
-            COLOUMB,  # coloumn
-            CHM,
-        )  # charmm
+            COLOUMB,  # coulomb
+            CHM, # charmm
+        )
         jobmakers.append(jm)
 
     #  convert data to data object

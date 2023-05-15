@@ -133,7 +133,7 @@ def fit_repeat(
             loss=loss,
         )
     ff.get_best_loss()
-    ff.eval_best_parm()
+    # ff.eval_best_parm()
     pickle_output(ff, outname)
 
 
@@ -153,6 +153,7 @@ def fit_func(
     whichLoss = {
         "standard": (ff.get_loss, ff.eval_func),
         "jax": (ff.get_loss_jax, ff.eval_jax),
+        "jax_de": (ff.get_loss_jax_de, ff.eval_jax_de),
         "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
         "ecol": (ff.get_loss_coulomb, ff.eval_coulomb_nb),
     }
@@ -165,7 +166,7 @@ def fit_func(
     if not quiet:
         print(
             f"Optimizing LJ parameters...\n"
-            f"function: {ff.func.__name__}\n"
+            f"function: {func.__name__}\n"
             f"bounds: {bounds}\n"
             f"maxfev: {maxfev}\n"
             f"initial guess: {x0}"

@@ -68,25 +68,44 @@ class FitBonded:
 
     def __init__(self, df, min_m_E):
         self.df = df.copy()
+        #  make sure the keys are the correct type
+        self.df["m_ENERGY"] = self.df["m_ENERGY"].astype(np.float64)
+        # print(self.df.keys())
+
         self.min_m_E = min_m_E
-        self.x0 = np.array([1, 1, 1, 2])
-        print("Fitting parameters: kb, ka, r0, a0")
-        self.res = minimize(self.get_loss, self.x0, tol=1e-6)
-        self.x = self.res.x
-        self.kb, self.ka, self.r0, self.a0 = self.x
-        self.df = self.get_loss_df(self.x)
-        self.df["m_ENERGY"] = self.df["m_ENERGY"].astype(np.float64).interpolate()
 
         sum_monomer_df = self.df.groupby(
             "key", group_keys=True
         ).sum()  # .apply(lambda x: x)
-        sum_monomer_df["m_E_tot"] = (
-            sum_monomer_df["m_ENERGY"] + self.min_m_E * H2KCALMOL * 20
-        )
-        sum_monomer_df["p_m_E_tot"] = (
-            sum_monomer_df["E_pred"] + self.min_m_E * H2KCALMOL * 20
-        )
+
+        # print(sum_monomer_df.keys())
+
         self.sum_monomer_df = sum_monomer_df
+
+        print("Fitting parameters: kb, ka, r0, a0")
+        self.x0 = np.array([1, 1, 1, 2])
+
+        self.res = minimize(self.get_loss, self.x0, tol=1e-6)
+
+        self.x = self.res.x
+
+        self.kb, self.ka, self.r0, self.a0 = self.x
+
+        self.sum_monomer_df = self.get_loss_df(self.x).groupby(
+            "key", group_keys=True
+        ).sum()  # .apply(lambda x: x)
+
+        self.sum_monomer_df["m_ENERGY"] = self.sum_monomer_df["m_ENERGY"] \
+            .astype(np.float64).interpolate()
+
+        self.sum_monomer_df["m_E_tot"] = (
+                self.sum_monomer_df["m_ENERGY"] - self.min_m_E * H2KCALMOL * 20
+        )
+
+        self.sum_monomer_df["p_m_E_tot"] = (
+                self.sum_monomer_df["E_pred"] + self.min_m_E * H2KCALMOL * 20
+        )
+
 
     def get_loss_df(self, x):
         """Return the loss function applied to a dataframe"""
@@ -97,7 +116,7 @@ class FitBonded:
             E_pred.append(waterlike_energy_interal(*x, a, r1, r2))
         df["E_pred"] = E_pred
         df["m_ENERGY"] = df["m_ENERGY"] * H2KCALMOL
-        df["m_ENERGY"] = df["m_ENERGY"] - df["m_ENERGY"].min()
+        df["m_ENERGY"] = df["m_ENERGY"] - self.min_m_E * H2KCALMOL
         df["SE"] = (df["E_pred"] - df["m_ENERGY"]) ** 2
         return df
 

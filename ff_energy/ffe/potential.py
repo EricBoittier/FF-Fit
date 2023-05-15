@@ -1,13 +1,12 @@
 from functools import partial
 
-import numpy as np
-
 from ff_energy.ffe.structure import atom_key_pairs
 
 import jax
 from jax import grad
 from jax import jit
 import jax.numpy as jnp
+import jax.numpy as np
 
 """
 SimTK_COULOMB_CONSTANT_IN_KCAL_ANGSTROM   3.32063711e+2L
@@ -66,7 +65,7 @@ def LJ(sig, ep, r):
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6**b - c * r6)
+    return ep * (r6 ** b - c * r6)
 
 
 def freeLJ(sig, ep, r, a, b, c):
@@ -83,8 +82,8 @@ def DE(c, e, x, a, b):
     Double exponential potential
     """
     return e * (
-        ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-        - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
     )
 
 
@@ -93,12 +92,12 @@ def DEplus(x, a, b, c, e, f, g):
     Double exponential potential
     """
     return (
-        e
-        * (
-            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
-            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
-        )
-        - f * (c / x) ** g
+            e
+            * (
+                    ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+                    - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+            )
+            - f * (c / x) ** g
     )
 
 
@@ -122,13 +121,31 @@ def lj(sig, ep, r):
     b = 2
     c = 2
     r6 = (sig / r) ** a
-    return ep * (r6**b - c * r6)
+    return ep * (r6 ** b - c * r6)
+
+
+@jit
+def de(c, e, a, b, x):
+    """
+    Double exponential potential
+    """
+    return e * (
+            ((b * np.exp(a)) / (a - b)) * np.exp(-a * (x / c))
+            - ((a * np.exp(b)) / (a - b)) * np.exp(-b * (x / c))
+    )
 
 
 @partial(jit, static_argnames=["num_segments"])
 def LJRUN(dists, indexs, groups, parms, num_segments=500):
     LJE = LJflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(LJE, groups, num_segments=num_segments)
+    return OUT
+
+
+@partial(jit, static_argnames=["num_segments"])
+def DERUN(dists, indexs, groups, parms, num_segments=500):
+    DEE = DEflat(dists, indexs, parms)
+    OUT = jax.ops.segment_sum(DEE, groups, num_segments=num_segments)
     return OUT
 
 
@@ -150,6 +167,24 @@ def LJflat(dists, indexs, parms):
     return LJE
 
 
+@jit
+def DEflat(dists, indexs, parms):
+    pparms = jnp.array(
+        [
+            2 * parms[0],
+            parms[0] + parms[1],
+            2 * parms[1],
+            parms[2],
+            jnp.sqrt((parms[2] * parms[3])),
+            parms[3],
+        ]
+    )
+    sigma = jnp.take(pparms, indexs, unique_indices=False)
+    eps = jnp.take(pparms, indexs + 3, unique_indices=False)
+    DEE = de(sigma, eps, parms[4], parms[5], dists)
+    return DEE
+
+
 @partial(jit, static_argnames=["num_segments"])
 def ecol_seg(outE, dcm_dists_labels, num_segments=500):
     return jax.ops.segment_sum(outE, dcm_dists_labels, num_segments=num_segments)
@@ -158,7 +193,13 @@ def ecol_seg(outE, dcm_dists_labels, num_segments=500):
 @partial(jit, static_argnames=["num_segments"])
 def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
     ERROR = LJRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
-    return jnp.mean(ERROR**2)
+    return jnp.mean(ERROR ** 2)
+
+
+@partial(jit, static_argnames=["num_segments"])
+def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
+    ERROR = DERUN(dists, indexs, groups, parms, num_segments=num_segments) - target
+    return jnp.mean(ERROR ** 2)
 
 
 @partial(jit, static_argnames=["num_segments"])
