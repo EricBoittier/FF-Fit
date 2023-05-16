@@ -177,7 +177,6 @@ def fit_func(
         method=method,
         tol=1e-6,
         bounds=bounds,
-        # jac=jac,
         options={"maxfev": maxfev, "pgtol": 1e-8},
     )
 
