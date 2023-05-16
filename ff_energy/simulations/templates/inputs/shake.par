@@ -1,0 +1,26 @@
+read parameter card
+* tip3p shake
+*
+ATOMS
+MASS     1  HT        1.00800 ! TIPS3P WATER HYDROGEN
+MASS     2  OT       15.99940 ! TIPS3P WATER OXYGEN
+
+
+BONDS
+OT  HT  1042.0 0.963 ! ALLOW WAT
+HT  HT    0.0 1.5139 ! ALLOW WAT
+
+ANGLES
+HT  OT  HT   55.0      104.52 ! ALLOW WAT
+OT  HT  HT   55.0      104.52 ! ALLOW WAT
+
+DIHEDRALS
+
+IMPROPERS
+
+NONBONDED
+!TIP3P LJ parameters
+HT       0.0       -0.046     0.2245
+OT       0.0       -0.1521    1.7682
+
+END

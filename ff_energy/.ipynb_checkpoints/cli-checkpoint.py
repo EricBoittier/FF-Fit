@@ -4,7 +4,7 @@ sys.path.append("/home/boittier/Documents/phd/ff_energy")
 
 from ff_energy.jobmaker import get_structures_pdbs, JobMaker
 from ff_energy.configmaker import ConfigMaker, system_names, THEORY
-from ff_energy.config import Config
+from ff_energy.ffe.config import Config
 from pathlib import Path
 import pickle
 from ff_energy.slurm import SlurmJobHandler

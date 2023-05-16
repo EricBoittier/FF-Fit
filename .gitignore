@@ -1,6 +1,11 @@
 pickles/water_cluster/*
-
+pickles/*
 .idea/*
+ff_energy/reports/out_pdfs
+ff_energy/reports/out_pdfs/*
+ff_energy/reports/out_notebooks/
+ff_energy/reports/out_notebooks/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

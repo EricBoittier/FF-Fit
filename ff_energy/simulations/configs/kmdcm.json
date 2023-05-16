@@ -1,0 +1,23 @@
+{
+  "TOP": "kmdcm.top",
+  "PAR": "kmdcm.par",
+  "BASEPATHNAME": "/cluster/home/boittier/sims4/kmdcm/water/",
+  "job_path": "/home/boittier/pcbach/sims4/kmdcm/water/",
+  "JOBNAME": "k",
+  "min": 0,
+  "equi": 0,
+  "dyna": 0,
+  "TEMP": 300,
+  "dt": 0.0002,
+  "extrafiles": ["crystal_image.str", "water.kmdcm", "water.kern"],
+  "N": 0,
+  "STREAM": "",
+  "PSFNAME": "water.2000.psf",
+  "CRDNAME": "water.2000.crd",
+  "SHAKE": "",
+  "NSTEPHEAT": 500000,
+  "NSTEPEQUI": 1000000,
+  "NSTEPDYN": 1000000,
+  "fn": "water.2000",
+  "CHARGEMODEL": "open unit 11 card read name water.kmdcm\nopen unit 12 card read name water.kern\n!open unit 15 write card name dcm.xyz\nDCM KERN 12 IUDCM 11 TSHIFT !XYZ 15"
+}

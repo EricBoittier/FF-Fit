@@ -1,0 +1,23 @@
+{
+  "TOP": "optpc.top",
+  "PAR": "optpc.par",
+  "BASEPATHNAME": "/cluster/home/boittier/sims4/optpc/water/",
+  "job_path": "/home/boittier/pcbach/sims4/optpc/water/",
+  "JOBNAME": "c",
+  "min": 0,
+  "equi": 0,
+  "dyna": 0,
+  "TEMP": 300,
+  "dt": 0.0002,
+  "extrafiles": ["crystal_image.str", "water.kmdcm", "water.kern"],
+  "N": 0,
+  "STREAM": "",
+  "PSFNAME": "water.2000.psf",
+  "CRDNAME": "water.2000.crd",
+  "SHAKE": "",
+  "NSTEPHEAT": 500000,
+  "NSTEPEQUI": 1000000,
+  "NSTEPDYN": 1000000,
+  "fn": "water.2000",
+  "CHARGEMODEL": ""
+}
