@@ -10,7 +10,7 @@ import jax.numpy as jnp
 
 from ff_energy.ffe.structure import valid_atom_key_pairs
 from ff_energy.ffe.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, \
-    akp_indx, DERUN, DERUN_LOSS
+    akp_indx, DERUN, DERUN_LOSS, CHGPENRUN, CHGPEN_LOSS
 from ff_energy.ffe.potential import ecol, ecol_seg
 
 
@@ -110,10 +110,9 @@ class FF:
         #  ab initio reference energies
         if self.intern == "Exact":
             if pairs:
-                # self.data["intE"] = self.data["p_int_ENERGY"] * H2KCALMOL
                 self.data["intE"] = self.data["P_intE"]
             else:
-                self.data["intE"] = self.data["C_ENERGY_kcalmol"] - self.data["m_E_tot"]
+                self.data["intE"] = self.data["C_ENERGY_kcalmol"] + self.data["m_E_tot"]
         #  harmonic fit
         elif self.intern == "harmonic":
             if pairs:
@@ -287,6 +286,14 @@ class FF:
         loss = tmp["SE"].mean()
         return loss
 
+    def eval_jax_chgpen(self, x):
+        return CHGPENRUN(
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
+        )
+
     def eval_jax(self, x):
         """evaluate the LJ potential"""
         LJE = LJRUN(
@@ -317,7 +324,7 @@ class FF:
         :param x:
         :return:
         """
-        return DERUN_LOSS(
+        return LJRUN_LOSS(
             self.out_dists,
             self.out_akps,
             self.out_groups,
@@ -333,6 +340,21 @@ class FF:
         :return:
         """
         return DERUN_LOSS(
+            self.out_dists,
+            self.out_akps,
+            self.out_groups,
+            x,
+            self.targets,
+            self.nTargets,
+        )
+
+    def get_loss_chgpen(self, x) -> float:
+        """
+        get the mean squared error of the LJ potential
+        :param x:
+        :return:
+        """
+        return CHGPEN_LOSS(
             self.out_dists,
             self.out_akps,
             self.out_groups,

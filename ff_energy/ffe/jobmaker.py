@@ -3,8 +3,6 @@ import os
 from pathlib import Path
 from multiprocessing.pool import Pool
 
-# import ipywidgets as widgets
-# from tqdm.notebook import tqdm
 from itertools import repeat
 from tqdm import tqdm
 from ff_energy.ffe.job import Job

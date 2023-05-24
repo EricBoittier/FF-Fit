@@ -135,12 +135,10 @@ def molpro_submit_big(cluster, jobmakers, max_jobs=120, Check=True):
     jobs = []
     for jm in jobmakers:
         DRIVE = CLUSTER_DRIVE[cluster[1]]
-        # for js in jm.get_monomer_jobs(DRIVE):
-        #     jobs.append(js)
+
         for js in jm.get_cluster_jobs(DRIVE):
             jobs.append(js)
-        # for js in jm.get_pairs_jobs(DRIVE):
-        #     jobs.append(js)
+
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
 

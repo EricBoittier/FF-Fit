@@ -11,10 +11,14 @@ from ff_energy.ffe.data import Data
 from pathlib import Path
 from ff_energy.ffe.utils import pickle_output, read_from_pickle, PKL_PATH
 
-sig_bound = (0.25, 2.5)
-ep_bound = (0.0001, 0.5)
+sig_bound = (0.001, 2.5)
+ep_bound = (0.001, 2.5)
+chg_bound = (100,2000)
+
+CHGPEN_bound = [(chg_bound),(chg_bound),(chg_bound),(chg_bound),(0,2000)]
 LJ_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound))
-DE_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound), (4, 16), (4, 16))
+DE_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound),
+            (1, 8), (6, 20))
 
 func_bounds = {"LJ": (LJ, LJ_bound), "DE": (DE, DE_bound)}
 
@@ -156,6 +160,7 @@ def fit_func(
         "jax_de": (ff.get_loss_jax_de, ff.eval_jax_de),
         "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
         "ecol": (ff.get_loss_coulomb, ff.eval_coulomb_nb),
+        "chgpen": (ff.get_loss_chgpen, ff.eval_jax_chgpen),
     }
     func, eval = whichLoss[loss]
 

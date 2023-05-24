@@ -135,6 +135,24 @@ def de(c, e, a, b, x):
     )
 
 
+@jit
+# def charge_penetration(cpt,r):
+def charge_penetration(a1,a2,b1,b2,q1,q2,z1,z2,r):
+    """
+    https://pubs.acs.org/doi/10.1021/ct7000182
+    """
+    inv_r = 1 / r
+    a1_term = (1 - jnp.exp(-a1 * r))
+    a2_term = (1 - jnp.exp(-a2 * r))
+    b1_term = (1 - jnp.exp(-b1 * r))
+    b2_term = (1 - jnp.exp(-b2 * r))
+    z1z2 = z1*z2
+    z1minq1 = z1 - q1
+    z2minq2 = z2 - q2
+    return (z1z2 - (z1*z2minq2*a2_term + z2*z1minq1*a1_term)
+           + z1minq1*z2minq2*b1_term*b2_term)*inv_r
+
+
 @partial(jit, static_argnames=["num_segments"])
 def LJRUN(dists, indexs, groups, parms, num_segments=500):
     LJE = LJflat(dists, indexs, parms)
@@ -147,6 +165,74 @@ def DERUN(dists, indexs, groups, parms, num_segments=500):
     DEE = DEflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(DEE, groups, num_segments=num_segments)
     return OUT
+
+@partial(jit, static_argnames=["num_segments"])
+def CHGPENRUN(dists, indexs, groups, parms, num_segments=500):
+    CP = CHGPENflat(dists, indexs, parms)
+    OUT = jax.ops.segment_sum(CP, groups, num_segments=num_segments)
+    return OUT
+
+
+@jit
+def CHGPENflat(dists, indexs, p):
+
+    z2 = 18.0
+    z1 = 1.0
+
+    q2 = -0.67597213
+    q1 = 0.33798606
+
+    parms = p
+
+    scale = jnp.array([p[4]])
+
+    parms = jnp.array(
+        [
+            parms[0],
+            parms[0],
+            parms[1],
+
+            parms[0],
+            parms[1],
+            parms[1],
+
+            parms[2],
+            parms[2],
+            parms[3],
+
+            parms[2],
+            parms[3],
+            parms[3],
+
+            q1,
+            q1,
+            q2,
+
+            q1,
+            q2,
+            q2,
+
+            z1,
+            z1,
+            z2,
+
+            z1,
+            z2,
+            z2,
+        ]
+    )
+
+    a1s = jnp.take(parms, indexs+3*0, unique_indices=False)
+    a2s = jnp.take(parms, indexs+3*1, unique_indices=False)
+    b1s = jnp.take(parms, indexs+3*2, unique_indices=False)
+    b2s = jnp.take(parms, indexs+3*3, unique_indices=False)
+    q1s = jnp.take(parms, indexs+3*4, unique_indices=False)
+    q2s = jnp.take(parms, indexs+3*5, unique_indices=False)
+    z1s = jnp.take(parms, indexs+3*6, unique_indices=False)
+    z2s = jnp.take(parms, indexs+3*7, unique_indices=False)
+
+    return scale[0] * charge_penetration(a1s,a2s,b1s,b2s,q1s,q2s,z1s,z2s,dists)
+
 
 
 @jit
@@ -199,6 +285,12 @@ def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
 @partial(jit, static_argnames=["num_segments"])
 def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
     ERROR = DERUN(dists, indexs, groups, parms, num_segments=num_segments) - target
+    return jnp.mean(ERROR ** 2)
+
+
+@partial(jit, static_argnames=["num_segments"])
+def CHGPEN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
+    ERROR = CHGPENRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
     return jnp.mean(ERROR ** 2)
 
 

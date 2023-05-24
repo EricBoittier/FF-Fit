@@ -3,9 +3,7 @@ from ff_energy.ffe.config import DCM_STATES, kMDCM_STATES
 from pathlib import Path
 
 system_names = ["water_cluster", "water_dimer", "methanol_cluster"]
-
 pdbs = ["pdbs/pdbs4/", "pdbs/dimer3d/", "pdbs/pdbsclean/"]
-
 system_types = ["water", "water", "methanol"]
 
 SYSTEMS = {
@@ -24,13 +22,11 @@ MODELS = {
         "pc": DCM_STATES("pbe0_dz.pc"),
         "mdcm": DCM_STATES("pbe0_dz.mdcm"),
         "kmdcm": kMDCM_STATES(water_kmdcm),
-        # "f-mdcm": DCM_STATES("")
+        "tip3": DCM_STATES("tip3.pc"),
     },
     "methanol": {
         "pc": DCM_STATES("meoh_pbe0dz.pc"),
         "mdcm": DCM_STATES("meoh_pbe0dz.pc"),
-        # "k-mdcm": kDCM_STATES(""),
-        # "f-mdcm": DCM_STATES("")},
     },
 }
 
@@ -57,7 +53,8 @@ explicit,ri_basis=jkfit,df_basis=mp2fit,df_basis_exch=jkfit
 ! density fitting parameters
 cfit,basis=mp2fit
 """,
-        "m_method": "{df-hf,basis=jkfit}\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
+        "m_method": "{df-hf,basis=jkfit}"
+                    "\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
         "m_memory": "950",
     },
 }

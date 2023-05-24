@@ -18,22 +18,10 @@ from shutil import copy
 import pandas as pd
 
 h2kcalmol = 627.5095
-
-"""
-#  job types
-#  molpro
-   -  cluster energies
-   -  dimer energies
-   -  monomer energies
-#  charmm
-   -  create DCM positions, ref charmm energies
-#  orbkit
-   -  ref electrostatics (2body)
-   -  ref polarization energies
-"""
-
-CHM_FILES_PATH = Path("/home/boittier/Documents/phd/ff_energy/ff_energy/charmm_files")
-
+# path to the charmm files
+CHM_FILES_PATH = Path("/home/boittier/Documents/"
+                      "phd/ff_energy/ff_energy/ffe/charmm_files")
+#  dictionary to convert from molpro commands to gaussian
 M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE", "hf": "hf", "avdz": "aug-cc-pVDZ"}
 
 
@@ -41,10 +29,7 @@ M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE", "hf": "hf", "avdz": "aug-cc-pVDZ"}
 class Job:
     def __init__(self, name, path, structure, kwargs=None):
         self.name = name
-        # self.type = type
         self.path = Path(path)
-        # print(self.path)
-
         self.make_dir(self.path)
 
         self.structure = structure
@@ -582,7 +567,6 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         )
         cluster_df = self.gather_cluster(cluster_path)
         pairs_df, pairs_sum_df = self.gather_pairs(pairs_path, monomers_data)
-        # pol_df, pol_total = self.gather_polarization(polarization_path)
         coloumb_df, coloumb_total = self.gather_coloumb(coloumb_path)
 
         output = {
@@ -592,8 +576,6 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             "pairs": pairs_df,
             "pairs_sum": pairs_sum_df,
             "cluster": cluster_df,
-            # "polarization": pol_df,
-            # "pol_total": pol_total,
             "coloumb": coloumb_df,
             "coloumb_total": coloumb_total,
         }
