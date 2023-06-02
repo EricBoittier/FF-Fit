@@ -124,7 +124,7 @@ export OUTFILE=$MOLFILE.out
 # Get active job IDs
 active_jobs=$(squeue -h -r -u $USER -o "%i")
 # Loop through tmp directories
-for dir in $datadir/$USER/jobs/*
+for dir in $datadir/$USER/jobs.py/*
 do
    if [ -d "$dir" ]; then
   # Extract job ID from directory name
@@ -156,7 +156,7 @@ done
 
 
 # Make temporary directory
-export TMPDIR=$datadir/$USER/jobs/tmp.$SLURM_JOBID
+export TMPDIR=$datadir/$USER/jobs.py/tmp.$SLURM_JOBID
 if [ -d $TMPDIR ]; then
   echo "$TMPDIR exists; double job start; exit"
   exit 1

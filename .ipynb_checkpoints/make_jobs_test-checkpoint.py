@@ -10,7 +10,7 @@ from ff_energy.configmaker import *
 from pathlib import Path
 import pandas as pd
 
-# s = Structure("/home/boittier/charmm/mix3/jobs/pdbs/mix0.pdb")
+# s = Structure("/home/boittier/charmm/mix3/jobs.py/pdbs/mix0.pdb")
 
 atom_types = {
               ("TIP3", "OH2"): "OT",
@@ -67,7 +67,7 @@ def cluster_submit(cluster,jm,max_jobs=120,Check=True):
     from ff_energy.slurm import SlurmJobHandler
 
     shj = SlurmJobHandler(max_jobs=max_jobs,cluster=cluster)
-    print("Running jobs: ", shj.get_running_jobs())
+    print("Running jobs.py: ", shj.get_running_jobs())
 
     for jm in jobmakers:
         # for js in jm.get_charmm_jobs(HOMEDIR):
@@ -77,7 +77,7 @@ def cluster_submit(cluster,jm,max_jobs=120,Check=True):
             shj.add_job(js)
 
     print("Jobs: ", len(shj.jobs))
-    # print(shj.jobs)
+    # print(shj.jobs.py)
     print(len(shj.jobs))
 
     shj.submit_jobs(Check=Check)

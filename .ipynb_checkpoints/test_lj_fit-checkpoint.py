@@ -27,9 +27,9 @@ def read_from_pickle(path):
             pass
 
 # CMS = load_config_maker("pbe0dz", "water_cluster", "mdcm")
-# jobs = charmm_jobs(CMS)
-# dists = {_.name.split(".")[0]: _.distances for _ in jobs[0].structures}
-# structures = [_ for _ in jobs[0].structures]
+# jobs.py = charmm_jobs(CMS)
+# dists = {_.name.split(".")[0]: _.distances for _ in jobs.py[0].structures}
+# structures = [_ for _ in jobs.py[0].structures]
 # pickle_output(structures, name="structures")
 # pickle_output(dists)
 
@@ -39,7 +39,7 @@ structures = next(read_from_pickle("pickles/structures/structures.pkl"))
 # dists = next(dists)
 # print(dists.keys())
 # exit()
-# keys = [_.name for _ in jobs[0].structures]
+# keys = [_.name for _ in jobs.py[0].structures]
 # print(keys[:10])
 pk = "pickles/water_cluster/pbe0_dz.mdcm"
 pbe0_dz_mdcm = p_data(pk)

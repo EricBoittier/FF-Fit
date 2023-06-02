@@ -53,7 +53,7 @@ class JobMaker:
     def loop(self, func, args, **kwargs):
         # Create a thread pool
         pool = Pool()
-        # Start the jobs
+        # Start the jobs.py
         pool.starmap(func,
                      tqdm(zip(self.pdbs, self.structures, repeat(args)),
                           total=len(self.pdbs)),

@@ -14,7 +14,7 @@ clusters = {
 
 class SlurmJobHandler:
     """
-    Class to handle slurm jobs
+    Class to handle slurm jobs.py
     """
 
     def __init__(

@@ -38,7 +38,7 @@ export g16root=/opt/cluster/programs/g16-c.01
 source $g16root/g16/bsd/g16.profile
 export GAUSS_SCRDIR=$STMPDIR
 
-# Execute Gaussian jobs
+# Execute Gaussian jobs.py
 $g16root/g16/g16 $STMPDIR/$INPFILE $STMPDIR/$OUTFILE
 
 # Copy result file to output directory

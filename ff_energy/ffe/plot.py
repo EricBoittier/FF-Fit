@@ -17,8 +17,8 @@ def plot_energy_MSE(
         key1,
         key2,
         FONTSIZE=10,
-        xlabel="NBOND energy\n(kcal/mol)",
-        ylabel="CCSD(T) interaction energy\n(kcal/mol)",
+        xlabel="",
+        ylabel="",
         elec="ele",
         CMAP="viridis",
         cbar_label="ELEC (kcal/mol)",
@@ -355,51 +355,25 @@ def plot_dists(fit, ax):
 
 # from ff_energy.plot import plot_energy_MSE
 def cor_pairs(fit, ax):
-    ax, _, stats = plot_energy_MSE(
-        fit.groupby("key").sum(),
-        "intE",
-        "nb_intE",
-        elec="ECOL_PC",
-        bootstrap=True,
-        xlabel="$E_{DFT}$ [kcal/mol]",
-        ylabel="$E_{Model}$ [kcal/mol]",
-        ax=ax,
-        title=False,
-        FONTSIZE=10,
-        bounds=(-100, -20),
-    )
+    ax, _, stats = plot_energy_MSE(fit.groupby("key").sum(), "intE", "nb_intE",
+                                   FONTSIZE=10, xlabel="$E_{DFT}$ [kcal/mol]",
+                                   ylabel="$E_{Model}$ [kcal/mol]", elec="ECOL_PC",
+                                   ax=ax, bootstrap=True, title=False,
+                                   bounds=(-100, -20))
     return ax, stats
 
 
 def cor_pairs_cluster(fit, ax):
-    ax, _, stats = plot_energy_MSE(
-        fit,
-        "intE",
-        "P_intE",
-        elec="ECOL",
-        bootstrap=True,
-        xlabel="$E_{Clusters}$ [kcal/mol]",
-        ylabel="$E_{Pairs}$ [kcal/mol]",
-        ax=ax,
-        title=False,
-        FONTSIZE=10,
-        bounds=(-100, -20),
-    )
+    ax, _, stats = plot_energy_MSE(fit, "intE", "P_intE", FONTSIZE=10,
+                                   xlabel="$E_{Clusters}$ [kcal/mol]",
+                                   ylabel="$E_{Pairs}$ [kcal/mol]", elec="ECOL", ax=ax,
+                                   bootstrap=True, title=False, bounds=(-100, -20))
     return ax, stats
 
 
 def cor_cluster(fit, ax):
-    ax, _, stats = plot_energy_MSE(
-        fit,
-        "intE",
-        "nb_intE",
-        elec="ECOL",
-        bootstrap=True,
-        xlabel="$E_{DFT}$ [kcal/mol]",
-        ylabel="$E_{Model}$ [kcal/mol]",
-        ax=ax,
-        title=False,
-        FONTSIZE=10,
-        bounds=(-100, -20),
-    )
+    ax, _, stats = plot_energy_MSE(fit, "intE", "nb_intE", FONTSIZE=10,
+                                   xlabel="$E_{DFT}$ [kcal/mol]",
+                                   ylabel="$E_{Model}$ [kcal/mol]", elec="ECOL", ax=ax,
+                                   bootstrap=True, title=False, bounds=(-100, -20))
     return ax, stats

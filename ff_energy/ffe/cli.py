@@ -1,5 +1,7 @@
-from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.ffe.utils import pickle_output, get_structures
+from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
+    clusterNCCR, clusterBEETHOVEN
+from ff_energy.ffe.utils import MakeJob, charmm_jobs
+from ff_energy.ffe.utils import pickle_output
 from ff_energy.ffe.utils import PKL_PATH
 from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
@@ -8,42 +10,6 @@ from pathlib import Path
 from ff_energy.ffe.slurm import SlurmJobHandler
 import sys
 
-clusterBACH = ("ssh", "boittier@pc-bach")
-clusterBEETHOVEN = ("ssh", "boittier@beethoven")
-clusterNCCR = ("ssh", "boittier@pc-nccr-cluster")
-CLUSTER_DRIVE = {
-    "boittier@pc-bach": "/home/boittier/pcbach",
-    "boittier@beethoven": "/home/boittier/homeb",
-    "boittier@pc-nccr-cluster": "/home/boittier/pcnccr",
-}
-
-CONFIG_PATH = "/home/boittier/Documents/phd/ff_energy/configs/"
-atom_types = {
-    ("TIP3", "OH2"): "OT",
-    ("TIP3", "H1"): "HT",
-    ("TIP3", "H2"): "HT",
-}
-
-
-def MakeJob(name,
-            ConfigMaker,
-            _atom_types=None,
-            system_name=None
-            ):
-    if _atom_types is None:
-        _atom_types = atom_types
-
-    pickle_exists = get_structures(system_name)
-    if pickle_exists[0]:
-        structures, pdbs = pickle_exists
-    else:
-        print(f"pickle ({system_name}) does not exist")
-        structures, pdbs = get_structures_pdbs(
-            Path(ConfigMaker.pdbs), atom_types=_atom_types, system_name=system_name
-        )
-        pickle_output((structures, pdbs), name=system_name)
-
-    return JobMaker(name, pdbs, structures, ConfigMaker.make().__dict__)
 
 
 def load_config_maker(theory, system, elec):
@@ -81,27 +47,12 @@ def load_all_theory():
     return CMS
 
 
-def charmm_jobs(CMS):
-    jobmakers = []
-    for cms in CMS:
-        print(cms.elec)
-        jm = MakeJob(
-            f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
-            cms,
-            _atom_types=cms.atom_types,
-            system_name=cms.system_name,
-        )
-        HOMEDIR = "/home/boittier/homeb/"
-        f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
-        # jm.gather_data(HOMEDIR, PCBACH, PCBACH)
-        jm.make_charmm(HOMEDIR)
-        jobmakers.append(jm)
-    return jobmakers
+
 
 
 def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj = SlurmJobHandler(max_jobs=max_jobs, cluster=cluster)
-    print("Running jobs: ", shj.get_running_jobs())
+    print("Running jobs.py: ", shj.get_running_jobs())
     for j in jobs:
         shj.add_job(j)
 
@@ -148,8 +99,7 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         for js in jm.get_monomer_jobs(DRIVE):
             jobs.append(js)
-        # for js in jm.get_cluster_jobs(DRIVE):
-        #     jobs.append(js)
+
         for js in jm.get_pairs_jobs(DRIVE):
             jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)

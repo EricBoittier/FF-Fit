@@ -2,33 +2,19 @@ import os.path
 import os
 from pathlib import Path
 from multiprocessing.pool import Pool
-
 from itertools import repeat
 from tqdm import tqdm
+
 from ff_energy.ffe.job import Job
 from ff_energy.ffe.structure import Structure
-
-atom_types = {
-    # ("LIG", "O"): "OG311",
-    # ("LIG", "C"): "CG331",
-    # ("LIG", "H1"): "HGP1",
-    # ("LIG", "H2"): "HGA3",
-    # ("LIG", "H3"): "HGA3",
-    # ("LIG", "H4"): "HGA3",
-    # ("TIP3", "OH2"): "OT",
-    # ("TIP3", "H1"): "HT",
-    # ("TIP3", "H2"): "HT",
-    ("LIG", "O"): "OT",
-    ("LIG", "H1"): "HT",
-    ("LIG", "H"): "HT",
-    ("LIG", "H2"): "HT",
-}
+from ff_energy.ffe.constants import atom_types
 
 
 def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
     structures = []
     pdbs = [_ for _ in os.listdir(PDBPATH) if _.endswith("pdb")]
     for p in pdbs:
+        print(p)
         s_path = PDBPATH / p
         s = Structure(s_path, atom_types=atom_types, system_name=system_name)
         s.set_2body()
@@ -51,7 +37,7 @@ class JobMaker:
     def loop(self, func, args, **kwargs):
         # Create a thread pool
         pool = Pool(processes=4)  # multiprocessing.Semaphore(4)
-        # Start the jobs
+        # Start the jobs.py
         pool.starmap(
             func,
             tqdm(zip(self.pdbs, self.structures, repeat(args)), total=len(self.pdbs)),

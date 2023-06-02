@@ -117,12 +117,12 @@ def charmm_jobs(CMS):
 
 def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj = SlurmJobHandler(max_jobs=max_jobs, cluster=cluster)
-    print("Running jobs: ", shj.get_running_jobs())
+    print("Running jobs.py: ", shj.get_running_jobs())
     for j in jobs:
         shj.add_job(j)
 
     print("Jobs: ", len(shj.jobs))
-    # print(shj.jobs)
+    # print(shj.jobs.py)
     print(len(shj.jobs))
     shj.shuffle_jobs()
     shj.submit_jobs(Check=Check)
@@ -153,11 +153,11 @@ def molpro_submit_big(cluster, jobmakers, max_jobs=120, Check=True):
     for jm in jobmakers:
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         # for js in jm.get_monomer_jobs(DRIVE):
-        #     jobs.append(js)
+        #     jobs.py.append(js)
         for js in jm.get_cluster_jobs(DRIVE):
             jobs.append(js)
         # for js in jm.get_pairs_jobs(DRIVE):
-        #     jobs.append(js)
+        #     jobs.py.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
     
 def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
@@ -167,7 +167,7 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
         for js in jm.get_monomer_jobs(DRIVE):
             jobs.append(js)
         # for js in jm.get_cluster_jobs(DRIVE):
-        #     jobs.append(js)
+        #     jobs.py.append(js)
         for js in jm.get_pairs_jobs(DRIVE):
             jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)

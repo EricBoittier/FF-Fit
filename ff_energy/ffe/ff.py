@@ -112,7 +112,8 @@ class FF:
             if pairs:
                 self.data["intE"] = self.data["P_intE"]
             else:
-                self.data["intE"] = self.data["C_ENERGY_kcalmol"] + self.data["m_E_tot"]
+                self.data["intE"] = (self.data["C_ENERGY"]
+                                     - self.data["M_ENERGY"]) * 627.509
         #  harmonic fit
         elif self.intern == "harmonic":
             if pairs:
@@ -160,13 +161,13 @@ class FF:
         self.out_akps = jnp.array(out_akps)
 
     def set_targets(self):
-        """Set the targets for the objective function"""
+        """Set the targets for the objective function: intE - elec = targets
+        """
         self.targets = jnp.array(
             self.data[self.intE].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )
 
         self.nTargets = int(len(self.targets))
-        # assert nTargets is hashable
         assert self.nTargets == len(self.targets)
         assert isinstance(self.nTargets, typing.Hashable) is True
 

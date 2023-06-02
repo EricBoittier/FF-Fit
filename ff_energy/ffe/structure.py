@@ -64,7 +64,8 @@ class Structure:
 
     def read_pdb(self, path):
         self.lines = open(path).readlines()
-        self.atoms = [_ for _ in self.lines if _.startswith("ATOM")]
+        self.atoms = [_ for _ in self.lines if _.startswith("ATOM")
+                      or _.startswith("HETATM")]
         self.atomnames = np.array([_.split()[2] for _ in self.atoms])
         self.keys = [(_[17:21].strip(), _[12:17].strip()) for _ in self.atoms]
         self.resids = [int(_[22:27].strip()) for _ in self.atoms]
@@ -133,6 +134,9 @@ class Structure:
         if "TIP3" in [x[0] for x in self.atom_types.keys()]:
             WATER = "TIP3"
             METHANOL = "LIG"
+        if "HOH" in [x[0] for x in self.atom_types.keys()]:
+            WATER = "TIP3"
+            METHANOL = "LIG"
 
         return PSF.render(
             OM=OM[0],
@@ -151,6 +155,7 @@ class Structure:
     def set_2body(self):
         """Set 2-body distances"""
         #  all interacting pairs
+        print(self.resids)
         self.pairs = list(itertools.combinations(range(1, max(self.resids) + 1), 2))
         self.distances = [[] for _ in range(len(atom_key_pairs))]
         self.distances_pairs = [{} for _ in range(len(atom_key_pairs))]
