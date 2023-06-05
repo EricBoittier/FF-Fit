@@ -1,9 +1,6 @@
-from ff_energy.cli import load_config_maker, load_all_theory, charmm_jobs
 # from ff_energy.structure import
 from ff_energy.potential import FF, LJ
-import numpy as np
-from ff_energy.data import Data, plot_ecol, plot_intE
-import matplotlib.pyplot as plt
+from ff_energy.data import Data
 import pickle
 from pathlib import Path
 
@@ -80,7 +77,3 @@ ff.fit_repeat(10, bounds=LJ_bound)
 pickle_output(ff, "ff/pbe0_dz_mdcm")
 # plot_intE(ff.mse_df)
 # plt.show()
-
-
-
-

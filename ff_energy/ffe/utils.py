@@ -2,7 +2,6 @@ import pickle
 from pathlib import Path
 import re
 
-from ff_energy.ffe.configmaker import ConfigMaker
 from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
 from ff_energy.ffe.constants import atom_types
 

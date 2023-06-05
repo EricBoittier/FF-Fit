@@ -16,6 +16,8 @@ from ff_energy.ffe.templates import (
 from ff_energy.ffe.templates import esp_view_template, vmd_template, g_template
 from shutil import copy
 import pandas as pd
+import ff_energy.ffe.constants as constants
+
 
 h2kcalmol = 627.5095
 # path to the charmm files
@@ -88,8 +90,12 @@ class Job:
             self.generate_polarization()
 
     def generate_charmm(self):
-        #  move pdb file
         self.make_dir(self.charmm_path)
+        self.structure.atom_types = constants.atom_types
+        self.structure.read_pdb(self.structure.path)
+        with open(self.structure.path, "w") as f:
+            f.write(self.structure.get_pdb())
+        #  move pdb file to charmm directory
         copy(self.structure.path, self.charmm_path)
         dcm_command = None
         if self.kwargs["c_files"] is not None:
@@ -109,12 +115,14 @@ class Job:
             f.write(charmm_job)
 
         command = f"$charmm < {charmm_file.name} > {charmm_file.name}.out"
+        #  render the slurm template
         slurm_str = c_slurm_template.render(
             NAME=self.name,
             COMMAND=command,
             CHARMMPATH=self.kwargs["chmpath"],
             MODULES=self.kwargs["modules"],
         )
+        #  make the slurm file
         slurm_file = self.path / "charmm" / f"{self.name}.slurm"
         with open(slurm_file, "w") as f:
             f.write(slurm_str)

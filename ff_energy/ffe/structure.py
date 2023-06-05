@@ -4,7 +4,7 @@ import numpy as np
 
 from ff_energy.ffe.templates import PSF
 from ff_energy.ffe.geometry import sqrt_einsum_T
-
+import ff_energy.ffe.constants as constants
 
 def valid_atom_key_pairs(atom_keys):
     atom_key_pairs = list(itertools.combinations(atom_keys, 2))
@@ -17,27 +17,17 @@ def valid_atom_key_pairs(atom_keys):
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 
-atom_types = {
-    ("LIG", "O"): "OG311",
-    ("LIG", "C"): "CG331",
-    ("LIG", "H1"): "HGP1",
-    ("LIG", "H2"): "HGA3",
-    ("LIG", "H3"): "HGA3",
-    ("LIG", "H4"): "HGA3",
-    ("TIP3", "OH2"): "OT",
-    ("TIP3", "H1"): "HT",
-    ("TIP3", "H2"): "HT",
-    # ("LIG", "O"): "OT",
-    # ("LIG", "H1"): "HT",
-    # ("LIG", "H"): "HT",
-    # ("LIG", "H2"): "HT",
-}
-
 
 class Structure:
     """Class for a pdb structure"""
 
-    def __init__(self, path, atom_types=atom_types, system_name=None):
+    def __init__(self, path, _atom_types=None, system_name=None):
+        #  assign atom types
+        if _atom_types is None:
+            atom_types = constants.atom_types
+        else:
+            atom_types = _atom_types
+
         self.system_name = system_name
         self.path = path
         self.name = os.path.basename(path)
@@ -74,7 +64,6 @@ class Structure:
         resids_old.sort()
         resids_new = list(range(1, len(resids_old) + 1))
         self.resids = [resids_new[resids_old.index(_)] for _ in self.resids]
-        # print(self.resids)
         self.restypes = [_[16:21].strip() for _ in self.atoms]
         self.xyzs = np.array(
             [[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms]
@@ -88,6 +77,8 @@ class Structure:
         self.res_mask = {
             r: np.array([r == _ for _ in self.resids]) for r in list(set(self.resids))
         }
+        self.restypes = ["TIP3" if "HOH" in _ else _ for _ in self.restypes]
+
 
     def load_dcm(self, path):
         """Load dcm file"""
@@ -123,6 +114,7 @@ class Structure:
         OATOM = [_ for _ in OATOM if _ in [x[1] for x in self.atom_types.keys()]]
         H = ["H", "H1"]
         H = [_ for _ in H if _ in [x[1] for x in self.atom_types.keys()]]
+        H1 = ["H", "H1"]
         if H[0] == "H":
             H1 = ["H1"]
         if H[0] == "H1":
@@ -146,8 +138,8 @@ class Structure:
             H3M=H3M[0],
             H4M=H4M[0],
             O=OATOM[0],
-            H=H[0],
-            H1=H1[0],
+            H="H1",
+            H1="H2",
             WATER=WATER,
             METHANOL=METHANOL,
         )

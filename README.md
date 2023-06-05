@@ -12,6 +12,11 @@ Make CHARMM jobs to calculate energies
 python ff_energy/ffe/cli.py  -m water_cluster -t pbe0dz -e tip3 -chmj
 ```
 
+Make Molpro jobs to calculate energies
+```bash
+python ff_energy/ffe/cli.py -m water_tests -t pbe0dz -e tip3 -mj -s
+```
+
 Gather data
 ```bash
 python ff_energy/ffe/cli.py -d -m water_cluster -t pbe0dz -e tip3

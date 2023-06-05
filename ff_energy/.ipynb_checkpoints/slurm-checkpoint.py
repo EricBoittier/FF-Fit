@@ -86,5 +86,3 @@ class SlurmJobHandler:
                     print(f'Job {job_script} (id {job_id}) has finished with status {job_status}')
                     running_jobs.remove(job)
             time.sleep(interval)
-
-

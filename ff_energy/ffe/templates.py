@@ -52,7 +52,7 @@ m_slurm_template = jinja2.Template(
 #SBATCH --ntasks={{NPROC}}
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=8000
-##SBATCH --exclude=node[01-04,09-10] 
+##SBATCH --exclude=node[01-04,09-10]
 
 hostname
 echo $PWD
@@ -72,32 +72,32 @@ echo $PWD
 
 { # try
 
-    module molpro/molpro2022-gcc-9.2.0 
+    module molpro/molpro2022-gcc-9.2.0
     #save your output
 
 } || { # catch
-   echo "module molpro/molpro2022-gcc-9.2.0 (pc-beethoven) not available" # save log for exception 
+   echo "module molpro/molpro2022-gcc-9.2.0 (pc-beethoven) not available" # save log for exception
 }
 
 { # try
-    module load molpro/molpro-mpp-2022.1 
+    module load molpro/molpro-mpp-2022.1
     #save your output
 } || { # catch
-   echo "module load molpro/molpro-mpp-2022.1 (nccr) not available" # save log for exception 
+   echo "module load molpro/molpro-mpp-2022.1 (nccr) not available" # save log for exception
 }
 
 
 { # try
 
-    module load molpro/molpro-2022.1 
+    module load molpro/molpro-2022.1
     #save your output
 
 } || { # catch
-   echo "module load molpro/molpro-2022.1 (bach) not available" # save log for exception 
+   echo "module load molpro/molpro-2022.1 (bach) not available" # save log for exception
 }
 
 
-# Get available memory from /tmp 
+# Get available memory from /tmp
 tmp_mem=$(df -k /tmp | awk '{print $4}' | tail -1)
 # Get available memory from /scratch
 scratch_mem=$(df -k /scratch | awk '{print $4}' | tail -1)
@@ -107,7 +107,7 @@ then
     echo "Available memory in /tmp is greater than /scratch"
     datadir=/tmp
 elif [ $tmp_mem -lt $scratch_mem ]
-then 
+then
     echo "Available memory in /scratch is greater than /tmp"
     datadir=/scratch
 else
@@ -135,7 +135,7 @@ do
    if [ -d "$dir" ]; then
   # Extract job ID from directory name
   job_id=$(basename -- $dir | sed 's/tmp.//')
-  
+
   # Check if job ID is active
   if [[ $active_jobs =~ $job_id ]]
   then
@@ -243,7 +243,7 @@ o_slurm_template = jinja2.Template(
 #SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=10200
 
-hostname 
+hostname
 {{COMMAND}}
 """
 )
