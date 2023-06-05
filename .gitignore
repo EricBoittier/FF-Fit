@@ -5,7 +5,7 @@ ff_energy/reports/out_pdfs
 ff_energy/reports/out_pdfs/*
 ff_energy/reports/out_notebooks/
 ff_energy/reports/out_notebooks/*
-
+*pdf
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -87,7 +87,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-
+.ipynb_checkpoints/*
 # IPython
 profile_default/
 ipython_config.py
