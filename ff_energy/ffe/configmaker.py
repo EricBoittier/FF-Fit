@@ -2,11 +2,24 @@ from ff_energy.ffe.config import Config
 from ff_energy.ffe.config import DCM_STATES, kMDCM_STATES
 from pathlib import Path
 
-system_names = ["water_cluster", "water_dimer", "methanol_cluster"]
-
-pdbs = ["pdbs/pdbs4/", "pdbs/dimer3d/", "pdbs/pdbsclean/"]
-
-system_types = ["water", "water", "methanol"]
+system_names = ["water_cluster",
+                "water_dimer",
+                "methanol_cluster",
+                "water_tests",
+                "lithium",
+                "ions"]
+pdbs = ["pdbs/pdbs4/",
+        "pdbs/dimer3d/",
+        "pdbs/pdbsclean/",
+        "pdbs/water_tests/",
+        "pdbs/lithium/",
+        "pdbs/ions/"]
+system_types = ["water",
+                "water",
+                "methanol",
+                "water",
+                "water",
+                "water"]
 
 SYSTEMS = {
     k: {"system_name": k, "pdbs": p, "system_type": s}
@@ -24,13 +37,11 @@ MODELS = {
         "pc": DCM_STATES("pbe0_dz.pc"),
         "mdcm": DCM_STATES("pbe0_dz.mdcm"),
         "kmdcm": kMDCM_STATES(water_kmdcm),
-        # "f-mdcm": DCM_STATES("")
+        "tip3": DCM_STATES("tip3.pc"),
     },
     "methanol": {
         "pc": DCM_STATES("meoh_pbe0dz.pc"),
         "mdcm": DCM_STATES("meoh_pbe0dz.pc"),
-        # "k-mdcm": kDCM_STATES(""),
-        # "f-mdcm": DCM_STATES("")},
     },
 }
 
@@ -57,7 +68,8 @@ explicit,ri_basis=jkfit,df_basis=mp2fit,df_basis_exch=jkfit
 ! density fitting parameters
 cfit,basis=mp2fit
 """,
-        "m_method": "{df-hf,basis=jkfit}\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
+        "m_method": "{df-hf,basis=jkfit}"
+                    "\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
         "m_memory": "950",
     },
 }
@@ -82,6 +94,24 @@ ATOM_TYPES = {
         ("LIG", "H2"): "HGA3",
         ("LIG", "H3"): "HGA3",
         ("LIG", "H4"): "HGA3",
+    },
+    "water_tests": {
+        ("HOH", "O"): "OT",
+        ("HOH", "H1"): "HT",
+        ("HOH", "H2"): "HT",
+    },
+    "lithium": {
+        ("UNL", "LI"): "LI",
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
+    "ions": {
+        ("CLA", "CLA"): "CLA",
+        ("POT", "POT"): "POT",
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
     },
 }
 

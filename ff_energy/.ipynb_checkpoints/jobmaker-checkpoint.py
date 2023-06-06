@@ -35,7 +35,7 @@ def get_structures_pdbs(PDBPATH, atom_types=atom_types,
         s = Structure(s_path, atom_types=atom_types, system_name=system_name)
         s.set_2body()
         structures.append(s)
-        
+
     return structures, pdbs
 
 
@@ -53,7 +53,7 @@ class JobMaker:
     def loop(self, func, args, **kwargs):
         # Create a thread pool
         pool = Pool()
-        # Start the jobs
+        # Start the jobs.py
         pool.starmap(func,
                      tqdm(zip(self.pdbs, self.structures, repeat(args)),
                           total=len(self.pdbs)),
@@ -74,7 +74,7 @@ class JobMaker:
             else:
                 jobs.append(slurm_path)
         return jobs
-    
+
     def get_monomer_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
@@ -122,7 +122,7 @@ class JobMaker:
                 if keep:
                     jobs.append(outfilename)
         return jobs
-    
+
     def get_coloumb_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
@@ -148,7 +148,7 @@ class JobMaker:
                 if keep:
                     jobs.append(outfilename)
         return jobs
-    
+
     def get_charmm_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
@@ -160,7 +160,7 @@ class JobMaker:
     def esp_view(self, homedir, chmdir):
         chmdir = f"{chmdir}/""{}/charmm/"
         self.loop(self.make_esp_view, [homedir, chmdir])
-    
+
     def gather_data(self, homedir, monomers, clusters, pairs, coloumb, charmm):
         monomers = f"{monomers}/""{}/monomers/"
         clusters = f"{clusters}/""{}/cluster/"
@@ -174,10 +174,10 @@ class JobMaker:
 
     def make_molpro(self, homedir):
         self.loop(self.make_molpro_job, homedir)
-        
+
     def make_coloumb(self, homedir, mp):
         self.loop(self.make_coloumb_job, [homedir, mp])
-        
+
     def make_data_job(self, p, s, args):
         homedir, mp, cp, p_p, c_p, chm_p = args
         if isinstance(homedir, tuple):
@@ -188,9 +188,9 @@ class JobMaker:
         j.gather_data(monomers_path=Path(mp.format(ID)),
                           cluster_path=Path(cp.format(ID)),
                           pairs_path=Path(p_p.format(ID)),
-                          coloumb_path=Path(c_p.format(ID)), 
+                          coloumb_path=Path(c_p.format(ID)),
                           chm_path=Path(chm_p.format(ID)))
-        
+
 
     def make_charmm_job(self, p, s, homedir):
         #  check if the homedir is a tuple
@@ -207,7 +207,7 @@ class JobMaker:
         ID = p.split(".")[0]
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_esp_view(charmm_path=charm_path.format(ID))
-        
+
     def make_coloumb_job(self, p, s, args):
         homedir, mp = args
         ID = p.split(".")[0]

@@ -71,47 +71,21 @@ def unload_data(output):
 def plot_ecol(data):
     data = data.dropna()
     data = data[data["ECOL"] < -50]
-    plot_energy_MSE(
-        data,
-        "ECOL",
-        "ELEC",
-        elec="ECOL",
-        CMAP="plasma",
-        xlabel="Coulomb integral [kcal/mol]",
-        ylabel="CHM ELEC [kcal/mol]",
-    )
+    plot_energy_MSE(data, "ECOL", "ELEC", xlabel="Coulomb integral [kcal/mol]",
+                    ylabel="CHM ELEC [kcal/mol]", elec="ECOL", CMAP="plasma")
 
 
 def plot_intE(data):
-    # data["NBONDS"] = data["ELEC"] + data["VDW"]
     data["nb_intE"] = data["ELEC"] + data["VDW"]
-    # _ = data[data["ECOL"] < -40].copy()
-    plot_energy_MSE(
-        data,
-        "intE",
-        "nb_intE",
-        elec="ELEC",
-        CMAP="viridis",
-        xlabel="intE [kcal/mol]",
-        ylabel="NBONDS [kcal/mol]",
-    )
+    plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
+                    ylabel="NBONDS [kcal/mol]", elec="ELEC", CMAP="viridis")
 
 
 def plot_LJintE(data, ax=None, elec="ELEC"):
-    # data["NBONDS"] = data["ELEC"] + data["VDW"]
     data["nb_intE"] = data[elec] + data["LJ"]
-    # _ = data[data["ECOL"] < -40].copy()
     data = data.dropna()
-    ax = plot_energy_MSE(
-        data,
-        "intE",
-        "nb_intE",
-        elec=elec,
-        CMAP="viridis",
-        xlabel="intE [kcal/mol]",
-        ylabel="NBONDS [kcal/mol]",
-        ax=ax,
-    )
+    ax = plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
+                         ylabel="NBONDS [kcal/mol]", elec=elec, CMAP="viridis", ax=ax)
     return ax
 
 
@@ -150,33 +124,43 @@ class Data:
         self.monomer_df = monomer_df
         self.cluster_df = cluster_df
         self.pairs_df = pairs_df
-        index = self.monomers_df.index
-        self.monomers_df["key"] = [x.split("_")[0] for x in index]
-        self.monomers_df["monomer"] = [int(x.split("_")[1]) for x in index]
 
-        index = list(self.pairs_df.index)
-        self.pairs_df["key"] = [x.split("_")[0] for x in index]
-        self.pairs_df["pair"] = [
-            (int(x.split("_")[1]), int(x.split("_")[2])) for x in index
-        ]
+        if self.monomers_df is not None:
+            index = self.monomers_df.index
+            self.monomers_df["key"] = [x.split("_")[0] for x in index]
+            self.monomers_df["monomer"] = [int(x.split("_")[1]) for x in index]
 
-        sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
-        self.data["P_intE"] = [sum_pairs[i] * 627.5 for i in self.data.index]
+            index = list(self.pairs_df.index)
+            self.pairs_df["key"] = [x.split("_")[0] for x in index]
+            self.pairs_df["pair"] = [
+                (int(x.split("_")[1]), int(x.split("_")[2])) for x in index
+            ]
 
-        self.structures, self.pdbs = get_structures(self.system)
-        self.structure_key_pairs = {
-            p.split(".")[0]: s for p, s in zip(self.pdbs, self.structures)
-        }
+            sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
+            self.data["P_intE"] = [sum_pairs[i] * 627.5 for i in self.data.index]
 
-        if min_m_E is None:
-            self.min_m_E = self.monomers_df["m_ENERGY"].min()
+            self.structures, self.pdbs = get_structures(self.system)
+            self.structure_key_pairs = {
+                p.split(".")[0]: s for p, s in zip(self.pdbs, self.structures)
+            }
 
-        self.add_internal_dof()
-        self.bonded_fit = FitBonded(self.monomers_df, self.min_m_E)
-        self.data["m_E_tot"] = self.bonded_fit.sum_monomer_df["m_E_tot"]
-        self.data["p_m_E_tot"] = self.bonded_fit.sum_monomer_df["p_m_E_tot"]
+            if min_m_E is None:
+                self.min_m_E = self.monomers_df["m_ENERGY"].min()
 
-        self.data["C_ENERGY_kcalmol"] = self.data["C_ENERGY"] * H2KCALMOL
+            self.add_internal_dof()
+            self.bonded_fit = FitBonded(self.monomers_df, self.min_m_E)
+            self.data["m_E_tot"] = self.bonded_fit.sum_monomer_df["m_E_tot"]
+            self.data["p_m_E_tot"] = self.bonded_fit.sum_monomer_df["p_m_E_tot"]
+            if "C_ENERGY" in self.data.keys():
+                self.data["C_ENERGY_kcalmol"] = self.data["C_ENERGY"] * H2KCALMOL
+
+    def __str__(self):
+        s = f"{self.system} {self.output_path} {list(self.data.keys())}"
+        return s
+
+    def __repr__(self):
+        return self.__str__()
+
 
     def pair_monomer_E(self, x):
         pair = x.pair
@@ -232,30 +216,16 @@ class Data:
         _ = _[_["intE"] < 1]
         print("n:", len(_))
 
-        plot_energy_MSE(
-            _,
-            "intE",
-            "P_intE",
-            elec="intE",
-            CMAP="viridis",
-            xlabel="intE [kcal/mol]",
-            ylabel="pair_monomer_E [kcal/mol]",
-        )
+        plot_energy_MSE(_, "intE", "P_intE", xlabel="intE [kcal/mol]",
+                        ylabel="pair_monomer_E [kcal/mol]", elec="intE", CMAP="viridis")
 
     def plot_intE(self) -> None:
         if self.chm_df is not None:
             self.data["NBONDS"] = self.data["ELEC"] + self.data["VDW"]
             self.data["nb_intE"] = self.data["ELEC"] + self.data["VDW"]
             _ = self.data[self.data["ECOL"] < -40].copy()
-            plot_energy_MSE(
-                _,
-                "intE",
-                "nb_intE",
-                elec="ECOL",
-                CMAP="viridis",
-                xlabel="intE [kcal/mol]",
-                ylabel="NBONDS [kcal/mol]",
-            )
+            plot_energy_MSE(_, "intE", "nb_intE", xlabel="intE [kcal/mol]",
+                            ylabel="NBONDS [kcal/mol]", elec="ECOL", CMAP="viridis")
         else:
             print("Data not available")
 

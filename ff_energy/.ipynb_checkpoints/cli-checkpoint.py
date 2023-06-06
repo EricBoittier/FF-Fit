@@ -13,7 +13,7 @@ clusterBACH = ('ssh', 'boittier@pc-bach')
 clusterBEETHOVEN = ('ssh', 'boittier@beethoven')
 clusterNCCR = ('ssh', 'boittier@pc-nccr-cluster')
 CLUSTER_DRIVE = {"boittier@pc-bach": "/home/boittier/pcbach",
-                 "boittier@beethoven": "/home/boittier/homeb", 
+                 "boittier@beethoven": "/home/boittier/homeb",
                  "boittier@pc-nccr-cluster":"/home/boittier/pcnccr"}
 
 CONFIG_PATH = "/home/boittier/Documents/phd/ff_energy/configs/"
@@ -53,7 +53,7 @@ def MakeJob(name, ConfigMaker, atom_types=atom_types, system_name=None):
     pickle_exists = get_structures(system_name)
     if pickle_exists:
         structures, pdbs = pickle_exists
-    
+
     else:
         print("pickle does not exist")
         structures, pdbs = get_structures_pdbs(
@@ -117,12 +117,12 @@ def charmm_jobs(CMS):
 
 def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj = SlurmJobHandler(max_jobs=max_jobs, cluster=cluster)
-    print("Running jobs: ", shj.get_running_jobs())
+    print("Running jobs.py: ", shj.get_running_jobs())
     for j in jobs:
         shj.add_job(j)
 
     print("Jobs: ", len(shj.jobs))
-    # print(shj.jobs)
+    # print(shj.jobs.py)
     print(len(shj.jobs))
     shj.shuffle_jobs()
     shj.submit_jobs(Check=Check)
@@ -153,13 +153,13 @@ def molpro_submit_big(cluster, jobmakers, max_jobs=120, Check=True):
     for jm in jobmakers:
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         # for js in jm.get_monomer_jobs(DRIVE):
-        #     jobs.append(js)
+        #     jobs.py.append(js)
         for js in jm.get_cluster_jobs(DRIVE):
             jobs.append(js)
         # for js in jm.get_pairs_jobs(DRIVE):
-        #     jobs.append(js)
+        #     jobs.py.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
-    
+
 def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
     jobs = []
     for jm in jobmakers:
@@ -167,7 +167,7 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
         for js in jm.get_monomer_jobs(DRIVE):
             jobs.append(js)
         # for js in jm.get_cluster_jobs(DRIVE):
-        #     jobs.append(js)
+        #     jobs.py.append(js)
         for js in jm.get_pairs_jobs(DRIVE):
             jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
@@ -213,7 +213,7 @@ def data_jobs(CMS, molpro_small_path):
         PCNCCR = f"/home/boittier/pcnccr/{cms.system_name}/{cms.theory_name}"
         COLOUMB = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
         CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
-        
+
         PAIRS = PCNCCR
         MONOMERS = PCNCCR
         if molpro_small_path is not None:
@@ -318,7 +318,7 @@ if __name__ == "__main__":
                 if args.verbose:
                     print("Submitting Molpro Jobs")
                 molpro_submit_big(clusterBACH, jobmakers, max_jobs=400, Check=True)
-                
+
         if args.molpro_small:
             if args.verbose:
                 print("Making small Molpro Jobs")
@@ -327,7 +327,7 @@ if __name__ == "__main__":
                 if args.verbose:
                     print("Submitting Molpro Jobs")
                 molpro_submit_small(clusterNCCR, jobmakers, max_jobs=400, Check=True)
-                
+
         if args.chm:
             if args.verbose:
                 print("Making CHARMM Jobs")

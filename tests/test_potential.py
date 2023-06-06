@@ -8,7 +8,7 @@ import jax.numpy as jnp
 
 # load the data
 # test_ff_fn = "pbe0_dz_kmdcm_LJ_water_cluster_ELEC_harmonic_ELEC.pkl"
-test_ff_fn = "test_ff.pkl"
+test_ff_fn = "ff/template.ff.pkl"
 test_ff = next(read_from_pickle(test_ff_fn))
 
 

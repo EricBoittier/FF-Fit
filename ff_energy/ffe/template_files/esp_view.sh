@@ -25,7 +25,7 @@ export ESPFILE={{KEY}}_esp.cube
 export g16root=/opt/cluster/programs/g16-c.01
 source $g16root/g16/bsd/g16.profile
 export GAUSS_SCRDIR=""
-# Execute Gaussian jobs
+# Execute Gaussian jobs.py
 $g16root/g16/g16 $INPFILE $OUTFILE
 
 # Write formchk file

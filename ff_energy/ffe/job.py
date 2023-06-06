@@ -16,24 +16,14 @@ from ff_energy.ffe.templates import (
 from ff_energy.ffe.templates import esp_view_template, vmd_template, g_template
 from shutil import copy
 import pandas as pd
+import ff_energy.ffe.constants as constants
+
 
 h2kcalmol = 627.5095
-
-"""
-#  job types
-#  molpro
-   -  cluster energies
-   -  dimer energies
-   -  monomer energies
-#  charmm
-   -  create DCM positions, ref charmm energies
-#  orbkit
-   -  ref electrostatics (2body)
-   -  ref polarization energies
-"""
-
-CHM_FILES_PATH = Path("/home/boittier/Documents/phd/ff_energy/ff_energy/charmm_files")
-
+# path to the charmm files
+CHM_FILES_PATH = Path("/home/boittier/Documents/"
+                      "phd/ff_energy/ff_energy/ffe/charmm_files")
+#  dictionary to convert from molpro commands to gaussian
 M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE", "hf": "hf", "avdz": "aug-cc-pVDZ"}
 
 
@@ -41,10 +31,7 @@ M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE", "hf": "hf", "avdz": "aug-cc-pVDZ"}
 class Job:
     def __init__(self, name, path, structure, kwargs=None):
         self.name = name
-        # self.type = type
         self.path = Path(path)
-        # print(self.path)
-
         self.make_dir(self.path)
 
         self.structure = structure
@@ -103,8 +90,12 @@ class Job:
             self.generate_polarization()
 
     def generate_charmm(self):
-        #  move pdb file
         self.make_dir(self.charmm_path)
+        self.structure.atom_types = constants.atom_types
+        self.structure.read_pdb(self.structure.path)
+        with open(self.structure.path, "w") as f:
+            f.write(self.structure.get_pdb())
+        #  move pdb file to charmm directory
         copy(self.structure.path, self.charmm_path)
         dcm_command = None
         if self.kwargs["c_files"] is not None:
@@ -124,12 +115,14 @@ class Job:
             f.write(charmm_job)
 
         command = f"$charmm < {charmm_file.name} > {charmm_file.name}.out"
+        #  render the slurm template
         slurm_str = c_slurm_template.render(
             NAME=self.name,
             COMMAND=command,
             CHARMMPATH=self.kwargs["chmpath"],
             MODULES=self.kwargs["modules"],
         )
+        #  make the slurm file
         slurm_file = self.path / "charmm" / f"{self.name}.slurm"
         with open(slurm_file, "w") as f:
             f.write(slurm_str)
@@ -307,12 +300,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
     def generate_cluster(self):
         self.make_dir(self.cluster_path)
         XYZSTR = self.structure.get_cluster_xyz()
+        CHARGE = self.structure.get_cluster_charge()
         molpro_job = molpro_job_template.render(
             XYZ=XYZSTR,
             NAME=self.name,
             BASIS=self.kwargs["m_basis"],
             RUN=self.kwargs["m_method"],
             MEMORY=self.kwargs["m_memory"],
+            CHARGE=CHARGE,
         )
         with open(self.cluster_path / f"{self.name}.inp", "w") as f:
             f.write(molpro_job)
@@ -332,12 +327,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         for pair in pairs:
             XYZSTR = self.structure.get_pair_xyz(*pair)
             NAME = f"{self.name}_{pair[0]}_{pair[1]}"
+            CHARGE = self.structure.get_pair_charge(*pair)
             molpro_job = molpro_job_template.render(
                 XYZ=XYZSTR,
                 NAME=NAME,
                 BASIS=self.kwargs["m_basis"],
                 RUN=self.kwargs["m_method"],
                 MEMORY=self.kwargs["m_memory"],
+                CHARGE=CHARGE,
             )
             with open(
                 self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.inp", "w"
@@ -359,12 +356,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         for monomer in monomers:
             XYZSTR = self.structure.get_monomer_xyz(monomer)
             NAME = f"{self.name}_{monomer}"
+            CHARGE = self.structure.get_monomer_charge(monomer)
             molpro_job = molpro_job_template.render(
                 XYZ=XYZSTR,
                 BASIS=self.kwargs["m_basis"],
                 NAME=NAME,
                 RUN=self.kwargs["m_method"],
                 MEMORY=self.kwargs["m_memory"],
+                CHARGE=CHARGE,
             )
             with open(self.monomers_path / f"{self.name}_{monomer}.inp", "w") as f:
                 f.write(molpro_job)
@@ -582,7 +581,6 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         )
         cluster_df = self.gather_cluster(cluster_path)
         pairs_df, pairs_sum_df = self.gather_pairs(pairs_path, monomers_data)
-        # pol_df, pol_total = self.gather_polarization(polarization_path)
         coloumb_df, coloumb_total = self.gather_coloumb(coloumb_path)
 
         output = {
@@ -592,8 +590,6 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             "pairs": pairs_df,
             "pairs_sum": pairs_sum_df,
             "cluster": cluster_df,
-            # "polarization": pol_df,
-            # "pol_total": pol_total,
             "coloumb": coloumb_df,
             "coloumb_total": coloumb_total,
         }

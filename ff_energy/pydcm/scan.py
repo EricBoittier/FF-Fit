@@ -961,7 +961,7 @@ def execute_scan(self, steps=None):
         self.scan_tids.append(int(task.stdout.decode().split()[-1]))
         os.chdir(self.dirs_main)
 
-    # Wait until all jobs are done
+    # Wait until all jobs.py are done
     while len(self.scan_tids):
 
         # Get active tasks

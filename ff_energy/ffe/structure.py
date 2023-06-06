@@ -4,7 +4,7 @@ import numpy as np
 
 from ff_energy.ffe.templates import PSF
 from ff_energy.ffe.geometry import sqrt_einsum_T
-
+import ff_energy.ffe.constants as constants
 
 def valid_atom_key_pairs(atom_keys):
     atom_key_pairs = list(itertools.combinations(atom_keys, 2))
@@ -17,27 +17,28 @@ def valid_atom_key_pairs(atom_keys):
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 
-atom_types = {
-    ("LIG", "O"): "OG311",
-    ("LIG", "C"): "CG331",
-    ("LIG", "H1"): "HGP1",
-    ("LIG", "H2"): "HGA3",
-    ("LIG", "H3"): "HGA3",
-    ("LIG", "H4"): "HGA3",
-    ("TIP3", "OH2"): "OT",
-    ("TIP3", "H1"): "HT",
-    ("TIP3", "H2"): "HT",
-    # ("LIG", "O"): "OT",
-    # ("LIG", "H1"): "HT",
-    # ("LIG", "H"): "HT",
-    # ("LIG", "H2"): "HT",
-}
+atom_name_fix = {"CL": "Cl", "PO": "K"}
+def get_atom_names(atoms):
+    ans = np.array([_.split()[2] for _ in atoms])
+    for i, _ in enumerate(ans):
+        for k in atom_name_fix.keys():
+            if k in _:
+                ans[i] = atom_name_fix[k]
+    return ans
+
+
 
 
 class Structure:
     """Class for a pdb structure"""
 
-    def __init__(self, path, atom_types=atom_types, system_name=None):
+    def __init__(self, path, _atom_types=None, system_name=None):
+        #  assign atom types
+        if _atom_types is None:
+            atom_types = constants.atom_types
+        else:
+            atom_types = _atom_types
+
         self.system_name = system_name
         self.path = path
         self.name = os.path.basename(path)
@@ -62,18 +63,63 @@ class Structure:
 
         self.read_pdb(path)
 
+    def get_cluster_charge(self):
+        chg = 0
+        for i, _ in enumerate(self.restypes):
+            if _ == "CLA":
+                chg -= 1
+            elif _ == "POT":
+                chg += 1
+        return chg
+
+    #  TODO:  fix this so only the monomer/dimer charges are calculated
+    def get_monomer_charge(self, n):
+        chg = 0
+        restypes = np.array(self.restypes)
+        for i, _ in enumerate(restypes[self.res_mask[n]]):
+            if _ == "CLA":
+                chg -= 1
+            elif _ == "POT":
+                chg += 1
+        return chg
+
+    def get_pair_charge(self, res_a, res_b):
+
+        restypes = np.array(self.restypes)
+        res_types = restypes[self.res_mask[res_a] + self.res_mask[res_b]]
+        chg = 0
+        for i, _ in enumerate(res_types):
+            if _ == "CLA":
+                chg -= 1
+            elif _ == "POT":
+                chg += 1
+        return chg
+
+
     def read_pdb(self, path):
         self.lines = open(path).readlines()
-        self.atoms = [_ for _ in self.lines if _.startswith("ATOM")]
-        self.atomnames = np.array([_.split()[2] for _ in self.atoms])
+        self.atoms = [_ for _ in self.lines if _.startswith("ATOM")
+                      or _.startswith("HETATM")]
+        self.atomnames = get_atom_names(self.atoms)
         self.keys = [(_[17:21].strip(), _[12:17].strip()) for _ in self.atoms]
         self.resids = [int(_[22:27].strip()) for _ in self.atoms]
+
+        # openbabel sometimes gives resids of 0
+        # this is a hack to fix that
+        for i, _ in enumerate(self.resids):
+            if _ == 0:
+                self.resids[i] = self.resids[i - 1]
+
         self.n_res = len(set(self.resids))
         resids_old = list(set(self.resids))
         resids_old.sort()
         resids_new = list(range(1, len(resids_old) + 1))
+
+
+        print(self.resids)
         self.resids = [resids_new[resids_old.index(_)] for _ in self.resids]
-        # print(self.resids)
+        print(self.resids)
+
         self.restypes = [_[16:21].strip() for _ in self.atoms]
         self.xyzs = np.array(
             [[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms]
@@ -87,6 +133,16 @@ class Structure:
         self.res_mask = {
             r: np.array([r == _ for _ in self.resids]) for r in list(set(self.resids))
         }
+        #  give the water molecules a consistent name
+        self.restypes = ["TIP3" if "HOH" in _ else _ for _ in self.restypes]
+
+        for i, (resid, atmname) in enumerate(zip(self.restypes, self.atomnames)):
+            if resid == "TIP3":
+                print("**", i, resid, atmname)
+                if atmname == "H" and self.atomnames[i - 1] == "O":
+                    self.atomnames[i] = "H1"
+                    self.atomnames[i + 1] = "H2"
+
 
     def load_dcm(self, path):
         """Load dcm file"""
@@ -122,6 +178,7 @@ class Structure:
         OATOM = [_ for _ in OATOM if _ in [x[1] for x in self.atom_types.keys()]]
         H = ["H", "H1"]
         H = [_ for _ in H if _ in [x[1] for x in self.atom_types.keys()]]
+        H1 = ["H", "H1"]
         if H[0] == "H":
             H1 = ["H1"]
         if H[0] == "H1":
@@ -133,6 +190,9 @@ class Structure:
         if "TIP3" in [x[0] for x in self.atom_types.keys()]:
             WATER = "TIP3"
             METHANOL = "LIG"
+        if "HOH" in [x[0] for x in self.atom_types.keys()]:
+            WATER = "TIP3"
+            METHANOL = "LIG"
 
         return PSF.render(
             OM=OM[0],
@@ -142,8 +202,8 @@ class Structure:
             H3M=H3M[0],
             H4M=H4M[0],
             O=OATOM[0],
-            H=H[0],
-            H1=H1[0],
+            H="H1",
+            H1="H2",
             WATER=WATER,
             METHANOL=METHANOL,
         )
@@ -151,6 +211,7 @@ class Structure:
     def set_2body(self):
         """Set 2-body distances"""
         #  all interacting pairs
+        print(self.resids)
         self.pairs = list(itertools.combinations(range(1, max(self.resids) + 1), 2))
         self.distances = [[] for _ in range(len(atom_key_pairs))]
         self.distances_pairs = [{} for _ in range(len(atom_key_pairs))]
@@ -191,6 +252,7 @@ class Structure:
                         )
 
     def get_monomers(self):
+        """returns list of monomers"""
         out = list(set(self.resids))
         out.sort()
         return out
@@ -220,8 +282,10 @@ class Structure:
         """returns a string in the format atomname x y z for all atoms in xyz"""
         xyz_string = ""
         for i, atom in enumerate(atomnames):
+            #  TODO: general way of getting around elements with two letters
+            a = atom[:2] if (atom.startswith("Cl")) else atom[:1]
             xyz_string += "{} {:8.3f} {:8.3f} {:8.3f}\n".format(
-                atom[:1], xyz[i, 0], xyz[i, 1], xyz[i, 2]
+                a, xyz[i, 0], xyz[i, 1], xyz[i, 2]
             )
         return xyz_string
 
@@ -237,6 +301,7 @@ REMARK
         )
         _str = header
         for i, line in enumerate(self.atoms):
+            print(i, self.atomnames[i], self.restypes[i], self.resids[i])
             _1 = "ATOM"
             _2 = i + 1
             _3 = self.atomnames[i]

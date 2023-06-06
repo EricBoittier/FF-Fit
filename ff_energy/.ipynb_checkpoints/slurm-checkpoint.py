@@ -57,7 +57,7 @@ class SlurmJobHandler:
                 print(output)
             except:
                 pass
-            # print(f'{i}/{len(self.jobs)} = submitted job {job_script} to Slurm scheduler')
+            # print(f'{i}/{len(self.jobs.py)} = submitted job {job_script} to Slurm scheduler')
 
     def get_running_jobs(self):
         output = subprocess.check_output([self.cluster[0], self.cluster[1], 'squeue', '-u', self.username,]).decode('utf-8')
@@ -86,5 +86,3 @@ class SlurmJobHandler:
                     print(f'Job {job_script} (id {job_id}) has finished with status {job_status}')
                     running_jobs.remove(job)
             time.sleep(interval)
-
-

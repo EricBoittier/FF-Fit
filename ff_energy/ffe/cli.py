@@ -1,5 +1,7 @@
-from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.ffe.utils import pickle_output, get_structures
+from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
+    clusterNCCR, clusterBEETHOVEN
+from ff_energy.ffe.utils import MakeJob, charmm_jobs
+from ff_energy.ffe.utils import pickle_output
 from ff_energy.ffe.utils import PKL_PATH
 from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
@@ -8,42 +10,6 @@ from pathlib import Path
 from ff_energy.ffe.slurm import SlurmJobHandler
 import sys
 
-clusterBACH = ("ssh", "boittier@pc-bach")
-clusterBEETHOVEN = ("ssh", "boittier@beethoven")
-clusterNCCR = ("ssh", "boittier@pc-nccr-cluster")
-CLUSTER_DRIVE = {
-    "boittier@pc-bach": "/home/boittier/pcbach",
-    "boittier@beethoven": "/home/boittier/homeb",
-    "boittier@pc-nccr-cluster": "/home/boittier/pcnccr",
-}
-
-CONFIG_PATH = "/home/boittier/Documents/phd/ff_energy/configs/"
-atom_types = {
-    ("TIP3", "OH2"): "OT",
-    ("TIP3", "H1"): "HT",
-    ("TIP3", "H2"): "HT",
-}
-
-
-def MakeJob(name,
-            ConfigMaker,
-            _atom_types=None,
-            system_name=None
-            ):
-    if _atom_types is None:
-        _atom_types = atom_types
-
-    pickle_exists = get_structures(system_name)
-    if pickle_exists[0]:
-        structures, pdbs = pickle_exists
-    else:
-        print(f"pickle ({system_name}) does not exist")
-        structures, pdbs = get_structures_pdbs(
-            Path(ConfigMaker.pdbs), atom_types=_atom_types, system_name=system_name
-        )
-        pickle_output((structures, pdbs), name=system_name)
-
-    return JobMaker(name, pdbs, structures, ConfigMaker.make().__dict__)
 
 
 def load_config_maker(theory, system, elec):
@@ -81,27 +47,12 @@ def load_all_theory():
     return CMS
 
 
-def charmm_jobs(CMS):
-    jobmakers = []
-    for cms in CMS:
-        print(cms.elec)
-        jm = MakeJob(
-            f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
-            cms,
-            _atom_types=cms.atom_types,
-            system_name=cms.system_name,
-        )
-        HOMEDIR = "/home/boittier/homeb/"
-        f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
-        # jm.gather_data(HOMEDIR, PCBACH, PCBACH)
-        jm.make_charmm(HOMEDIR)
-        jobmakers.append(jm)
-    return jobmakers
+
 
 
 def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj = SlurmJobHandler(max_jobs=max_jobs, cluster=cluster)
-    print("Running jobs: ", shj.get_running_jobs())
+    print("Running jobs.py: ", shj.get_running_jobs())
     for j in jobs:
         shj.add_job(j)
 
@@ -117,7 +68,14 @@ def coloumb_submit(cluster, jobmakers, max_jobs=120, Check=True):
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         for js in jm.get_coloumb_jobs(DRIVE):
             jobs.append(js)
+    submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
+def esp_view_submit(cluster, jobmakers, max_jobs=120, Check=True):
+    jobs = []
+    for jm in jobmakers:
+        DRIVE = CLUSTER_DRIVE[cluster[1]]
+        for js in jm.get_esp_view_jobs(DRIVE):
+            jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
 
@@ -135,12 +93,10 @@ def molpro_submit_big(cluster, jobmakers, max_jobs=120, Check=True):
     jobs = []
     for jm in jobmakers:
         DRIVE = CLUSTER_DRIVE[cluster[1]]
-        # for js in jm.get_monomer_jobs(DRIVE):
-        #     jobs.append(js)
+
         for js in jm.get_cluster_jobs(DRIVE):
             jobs.append(js)
-        # for js in jm.get_pairs_jobs(DRIVE):
-        #     jobs.append(js)
+
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
 
@@ -150,8 +106,7 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         for js in jm.get_monomer_jobs(DRIVE):
             jobs.append(js)
-        # for js in jm.get_cluster_jobs(DRIVE):
-        #     jobs.append(js)
+
         for js in jm.get_pairs_jobs(DRIVE):
             jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
@@ -160,14 +115,14 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
 def molpro_jobs_big(CMS, DRY):
     jobmakers = []
     for cms in CMS:
-        print(cms)
+        print("ConfigManager:", cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
             _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        "/home/boittier/homeb/"
+        # "/home/boittier/homeb/"
         PCBACH = "/home/boittier/pcbach/"  # {cms.system_name}/{cms.theory_name}"
         if not DRY:
             jm.make_molpro(PCBACH)
@@ -237,7 +192,8 @@ def data_jobs(CMS, molpro_small_path):
     return jobmakers
 
 
-def esp_view_jobs(CMS):
+def esp_view_jobs(CMS, DRY):
+    jobmakers = []
     for cms in CMS:
         print(cms)
         jm = MakeJob(
@@ -251,6 +207,10 @@ def esp_view_jobs(CMS):
         f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
         CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
         jm.esp_view(HOMEDIR, CHM)
+        jobmakers.append(jm)
+    if not DRY:
+        submit_jobs(jobmakers, max_jobs=1)
+    return jobmakers
 
 
 def coloumb_jobs(CMS, DRY, cluster=None):
@@ -277,9 +237,10 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog="ProgramName",
-        description="What the program does",
-        epilog="Text at the bottom of help",
+        prog="Force Field Energy",
+        description="Manages jobs and data for force field"
+                    " energy calculations and fitting",
+        epilog="more info: https://github.com/EricBoittier/ff_energy",
     )
     print("----")
 
@@ -315,6 +276,9 @@ if __name__ == "__main__":
         "-mj", "--molpro", required=False, default=False, action="store_true"
     )
     parser.add_argument(
+        "-esp", "--esp_view", required=False, default=False, action="store_true"
+    )
+    parser.add_argument(
         "-mjs", "--molpro_small", required=False, default=False, action="store_true"
     )
     parser.add_argument("-msp", "--molpro_small_path", required=False, default=None)
@@ -343,7 +307,7 @@ if __name__ == "__main__":
             print("Making Configs: ", args.config)
         CMS = load_config_from_input(args.config)
     else:
-        print(args.theory, args.model, args.elec)
+        print("parameters:", args.theory, args.model, args.elec)
         if args.theory and args.model and args.elec:
             CMS = load_config_maker(args.theory, args.model, args.elec)
         else:
@@ -352,6 +316,7 @@ if __name__ == "__main__":
             sys.exit(1)
 
     if CMS is not None:
+        #  save the config files as a record
         for c in CMS:
             c.write_config()
 
@@ -372,6 +337,15 @@ if __name__ == "__main__":
                 if args.verbose:
                     print("Submitting Molpro Jobs")
                 molpro_submit_small(clusterNCCR, jobmakers, max_jobs=400, Check=True)
+
+        if args.esp_view:
+            if args.verbose:
+                print("Making ESP View Jobs")
+            jobmakers = esp_view_jobs(CMS, args.dry)
+            if args.submit:
+                if args.verbose:
+                    print("Submitting ESP View Jobs")
+                esp_view_submit(clusterNCCR, jobmakers, max_jobs=400, Check=True)
 
         if args.chm:
             if args.verbose:

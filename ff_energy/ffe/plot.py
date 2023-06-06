@@ -17,8 +17,8 @@ def plot_energy_MSE(
         key1,
         key2,
         FONTSIZE=10,
-        xlabel="NBOND energy\n(kcal/mol)",
-        ylabel="CCSD(T) interaction energy\n(kcal/mol)",
+        xlabel="",
+        ylabel="",
         elec="ele",
         CMAP="viridis",
         cbar_label="ELEC (kcal/mol)",
@@ -26,6 +26,7 @@ def plot_energy_MSE(
         bootstrap=True,
         title=True,
         bounds=None,
+        alpha=0.5,
         s=1,
         cbar_bounds=(-120, 0),
 ):
@@ -66,9 +67,11 @@ def plot_energy_MSE(
             slope,
             intercept,
             r_value,
+            p_value,
         ) = (
             np.nan,
             np.nan,
+            0,
             0,
         )
 
@@ -89,7 +92,7 @@ def plot_energy_MSE(
     if title:
         ax.text(0.00, 1.05, stats_str, transform=ax.transAxes, fontsize=FONTSIZE)
     # color points by MSE
-    sc = ax.scatter(df[key1], df[key2], c=df[elec], cmap=CMAP, alpha=0.5, s=s)
+    sc = ax.scatter(df[key1], df[key2], c=df[elec], cmap=CMAP, alpha=alpha, s=s)
     print(p_value)
     #  make the aspect ratio square
     ax.set_aspect("equal")
@@ -117,12 +120,12 @@ def plot_energy_MSE(
     ax.set_xlabel(xlabel, fontsize=FONTSIZE)
     ax.set_ylabel(ylabel, fontsize=FONTSIZE)
     cbar = None
-    if _ax is None:
-        cbar = fig.colorbar(sc, label=cbar_label)
-        # cbar.set_clim(*cbar_bounds)
-        #  tight layout
-        # fig.set_clim(*cbar_bounds)
-        plt.tight_layout()
+    # if _ax is None:
+    cbar = plt.gcf().colorbar(sc, label=cbar_label)
+    # cbar.set_clim(*cbar_bounds)
+    #  tight layout
+    # fig.set_clim(*cbar_bounds)
+    plt.tight_layout()
 
     stats = {
         "MSE": MSE,
@@ -352,51 +355,25 @@ def plot_dists(fit, ax):
 
 # from ff_energy.plot import plot_energy_MSE
 def cor_pairs(fit, ax):
-    ax, _, stats = plot_energy_MSE(
-        fit.groupby("key").sum(),
-        "intE",
-        "nb_intE",
-        elec="ECOL_PC",
-        bootstrap=True,
-        xlabel="$E_{DFT}$ [kcal/mol]",
-        ylabel="$E_{Model}$ [kcal/mol]",
-        ax=ax,
-        title=False,
-        FONTSIZE=10,
-        bounds=(-100, -20),
-    )
+    ax, _, stats = plot_energy_MSE(fit.groupby("key").sum(), "intE", "nb_intE",
+                                   FONTSIZE=10, xlabel="$E_{DFT}$ [kcal/mol]",
+                                   ylabel="$E_{Model}$ [kcal/mol]", elec="ECOL_PC",
+                                   ax=ax, bootstrap=True, title=False,
+                                   bounds=(-100, -20))
     return ax, stats
 
 
 def cor_pairs_cluster(fit, ax):
-    ax, _, stats = plot_energy_MSE(
-        fit,
-        "intE",
-        "P_intE",
-        elec="ECOL",
-        bootstrap=True,
-        xlabel="$E_{Clusters}$ [kcal/mol]",
-        ylabel="$E_{Pairs}$ [kcal/mol]",
-        ax=ax,
-        title=False,
-        FONTSIZE=10,
-        bounds=(-100, -20),
-    )
+    ax, _, stats = plot_energy_MSE(fit, "intE", "P_intE", FONTSIZE=10,
+                                   xlabel="$E_{Clusters}$ [kcal/mol]",
+                                   ylabel="$E_{Pairs}$ [kcal/mol]", elec="ECOL", ax=ax,
+                                   bootstrap=True, title=False, bounds=(-100, -20))
     return ax, stats
 
 
 def cor_cluster(fit, ax):
-    ax, _, stats = plot_energy_MSE(
-        fit,
-        "intE",
-        "nb_intE",
-        elec="ECOL",
-        bootstrap=True,
-        xlabel="$E_{DFT}$ [kcal/mol]",
-        ylabel="$E_{Model}$ [kcal/mol]",
-        ax=ax,
-        title=False,
-        FONTSIZE=10,
-        bounds=(-100, -20),
-    )
+    ax, _, stats = plot_energy_MSE(fit, "intE", "nb_intE", FONTSIZE=10,
+                                   xlabel="$E_{DFT}$ [kcal/mol]",
+                                   ylabel="$E_{Model}$ [kcal/mol]", elec="ECOL", ax=ax,
+                                   bootstrap=True, title=False, bounds=(-100, -20))
     return ax, stats
