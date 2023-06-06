@@ -72,14 +72,10 @@ class JobMaker:
                 of = Path(str(outfilename)[:-3] + ".out")
                 if of.exists():
                     if open(of).read().find("terminated"):
-                        # print("**", outfilename, of)
                         keep = False
                     else:
-                        # print("-", outfilename, of)
                         keep = True
                 else:
-                    # slurm_path = outfilename[:-4]+".sh
-                    # print(outfilename, of)
                     keep = True
                 if keep:
                     jobs.append(outfilename)
@@ -91,8 +87,6 @@ class JobMaker:
             ID = p.split(".")[0]
             monomers_path = f"{homedir}/{self.jobdir}/{ID}/pairs/"
             out_jobs = Path(monomers_path).glob(f"{ID}*sh")
-            # print(monomers_path)
-            # print(list(out_jobs))
             for outfilename in out_jobs:
                 keep = True
                 of = Path(str(outfilename)[:-3] + ".out")
@@ -113,27 +107,30 @@ class JobMaker:
             ID = p.split(".")[0]
             monomers_path = f"{homedir}/{self.jobdir}/{ID}/coloumb/"
             out_jobs = Path(monomers_path).glob(f"{ID}*sh")
-            # print(monomers_path)
-            # print(list(out_jobs))
+            #  check to see if the job has already finished successfully
             for outfilename in out_jobs:
                 keep = True
                 of = Path(str(outfilename)[:-3] + ".py.out")
                 if of.exists():
                     if open(of).read().find("kcal"):
-                        # print("**", outfilename, of)
                         keep = False
                     else:
-                        # print("-", outfilename, of)
                         keep = True
                 else:
-                    # slurm_path = outfilename[:-4]+".sh
-                    # print(outfilename, of)
                     keep = True
                 if keep:
                     jobs.append(outfilename)
         return jobs
 
     def get_charmm_jobs(self, homedir):
+        jobs = []
+        for p in self.pdbs:
+            ID = p.split(".")[0]
+            slurm_path = f"{homedir}/{self.jobdir}/{ID}/charmm/{ID}.slurm"
+            jobs.append(slurm_path)
+        return jobs
+
+    def get_esp_view_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
             ID = p.split(".")[0]
@@ -202,14 +199,9 @@ class JobMaker:
         j.generate_coloumb_interactions(monomers_path=Path(mp.format(ID)))
 
     def make_molpro_job(self, p, s, homedir):
-        #  clear the terminal
-        # subprocess.call("clear")
-        # print(p)
         if isinstance(homedir, tuple):
             homedir = homedir[0]
-
         ID = p.split(".")[0]
-        # print(f"{homedir}/{self.jobdir}/{ID}")
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_molpro()
         self.molpro_jobs[ID] = j

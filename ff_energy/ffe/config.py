@@ -77,7 +77,6 @@ class Config:
         self.m_basis = theory[1]
 
     def write_config(self, filename):
-        # filename = f"{self.}"
         with open(filename, "w") as f:
             f.write(json.dumps(self.__dict__))
 
@@ -85,7 +84,3 @@ class Config:
         with open(filename, "r") as f:
             self.__dict__.update(json.loads(f.read()))
 
-
-# print(Config(**kwargs))
-# DEFAULT_CONFIG = Config(**kwargs)
-# print(DEFAULT_CONFIG)

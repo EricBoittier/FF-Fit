@@ -59,11 +59,23 @@ class Structure:
         self.atomnames = np.array([_.split()[2] for _ in self.atoms])
         self.keys = [(_[17:21].strip(), _[12:17].strip()) for _ in self.atoms]
         self.resids = [int(_[22:27].strip()) for _ in self.atoms]
+
+        # openbabel sometimes gives resids of 0
+        # this is a hack to fix that
+        for i, _ in enumerate(self.resids):
+            if _ == 0:
+                self.resids[i] = self.resids[i - 1]
+
         self.n_res = len(set(self.resids))
         resids_old = list(set(self.resids))
         resids_old.sort()
         resids_new = list(range(1, len(resids_old) + 1))
+
+
+        print(self.resids)
         self.resids = [resids_new[resids_old.index(_)] for _ in self.resids]
+        print(self.resids)
+
         self.restypes = [_[16:21].strip() for _ in self.atoms]
         self.xyzs = np.array(
             [[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms]
@@ -77,7 +89,15 @@ class Structure:
         self.res_mask = {
             r: np.array([r == _ for _ in self.resids]) for r in list(set(self.resids))
         }
+        #  give the water molecules a consistent name
         self.restypes = ["TIP3" if "HOH" in _ else _ for _ in self.restypes]
+
+        for i, (resid, atmname) in enumerate(zip(self.restypes, self.atomnames)):
+            if resid == "TIP3":
+                print("**", i, resid, atmname)
+                if atmname == "H" and self.atomnames[i - 1] == "O":
+                    self.atomnames[i] = "H1"
+                    self.atomnames[i + 1] = "H2"
 
 
     def load_dcm(self, path):
@@ -234,6 +254,7 @@ REMARK
         )
         _str = header
         for i, line in enumerate(self.atoms):
+            print(i, self.atomnames[i], self.restypes[i], self.resids[i])
             _1 = "ATOM"
             _2 = i + 1
             _3 = self.atomnames[i]

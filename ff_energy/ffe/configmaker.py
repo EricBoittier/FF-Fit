@@ -4,9 +4,10 @@ from pathlib import Path
 
 system_names = ["water_cluster",
                 "water_dimer","methanol_cluster",
-                "water_tests"]
-pdbs = ["pdbs/pdbs4/", "pdbs/dimer3d/", "pdbs/pdbsclean/", "pdbs/water_tests/"]
-system_types = ["water", "water", "methanol", "water"]
+                "water_tests", "lithium"]
+pdbs = ["pdbs/pdbs4/", "pdbs/dimer3d/", "pdbs/pdbsclean/", "pdbs/water_tests/",
+        "pdbs/lithium/"]
+system_types = ["water", "water", "methanol", "water", "water"]
 
 SYSTEMS = {
     k: {"system_name": k, "pdbs": p, "system_type": s}
@@ -87,6 +88,12 @@ ATOM_TYPES = {
         ("HOH", "H1"): "HT",
         ("HOH", "H2"): "HT",
     },
+    "lithium": {
+        ("UNL", "LI"): "LI",
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    }
 }
 
 

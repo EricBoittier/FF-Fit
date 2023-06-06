@@ -68,7 +68,14 @@ def coloumb_submit(cluster, jobmakers, max_jobs=120, Check=True):
         DRIVE = CLUSTER_DRIVE[cluster[1]]
         for js in jm.get_coloumb_jobs(DRIVE):
             jobs.append(js)
+    submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
+def esp_view_submit(cluster, jobmakers, max_jobs=120, Check=True):
+    jobs = []
+    for jm in jobmakers:
+        DRIVE = CLUSTER_DRIVE[cluster[1]]
+        for js in jm.get_esp_view_jobs(DRIVE):
+            jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
 
 
@@ -185,7 +192,8 @@ def data_jobs(CMS, molpro_small_path):
     return jobmakers
 
 
-def esp_view_jobs(CMS):
+def esp_view_jobs(CMS, DRY):
+    jobmakers = []
     for cms in CMS:
         print(cms)
         jm = MakeJob(
@@ -199,6 +207,10 @@ def esp_view_jobs(CMS):
         f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
         CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
         jm.esp_view(HOMEDIR, CHM)
+        jobmakers.append(jm)
+    if not DRY:
+        submit_jobs(jobmakers, max_jobs=1)
+    return jobmakers
 
 
 def coloumb_jobs(CMS, DRY, cluster=None):
@@ -225,9 +237,10 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(
-        prog="ProgramName",
-        description="What the program does",
-        epilog="Text at the bottom of help",
+        prog="Force Field Energy",
+        description="Manages jobs and data for force field"
+                    " energy calculations and fitting",
+        epilog="more info: https://github.com/EricBoittier/ff_energy",
     )
     print("----")
 
@@ -261,6 +274,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-mj", "--molpro", required=False, default=False, action="store_true"
+    )
+    parser.add_argument(
+        "-esp", "--esp_view", required=False, default=False, action="store_true"
     )
     parser.add_argument(
         "-mjs", "--molpro_small", required=False, default=False, action="store_true"
@@ -320,6 +336,15 @@ if __name__ == "__main__":
                 if args.verbose:
                     print("Submitting Molpro Jobs")
                 molpro_submit_small(clusterNCCR, jobmakers, max_jobs=400, Check=True)
+
+        if args.esp_view:
+            if args.verbose:
+                print("Making ESP View Jobs")
+            jobmakers = esp_view_jobs(CMS, args.dry)
+            if args.submit:
+                if args.verbose:
+                    print("Submitting ESP View Jobs")
+                esp_view_submit(clusterNCCR, jobmakers, max_jobs=400, Check=True)
 
         if args.chm:
             if args.verbose:

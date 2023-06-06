@@ -15,11 +15,13 @@ atom_types = {
     ("TIP3", "H2"): "HT",
     ("TIP3", "O"): "OT",
     ("TIP3", "H"): "HT",
+    ("UNL", "LI"): "LI",
     ("LIG", "O"): "OT",
     ("LIG", "H1"): "HT",
     ("LIG", "H"): "HT",
     ("LIG", "H2"): "HT",
     ("HOH", "O"): "OT",
+    ("HOH", "H"): "HT",
     ("HOH", "H1"): "HT",
     ("HOH", "H2"): "HT",
 }

@@ -14,6 +14,15 @@ class MyTestCase(unittest.TestCase):
         print(s.get_pdb())
         print(s.get_psf())
 
+    def test_li_pdb_read(self):
+        s = Structure("../pdbs/lithium/1_li.xyz.pdb")
+        print("natoms", len(s.atoms))
+        print("nres", s.n_res)
+        print("atomnames", s.atomnames)
+        print("keys", s.keys)
+        print(s.get_pdb())
+        print(s.get_psf())
+
 
 if __name__ == '__main__':
     unittest.main()
