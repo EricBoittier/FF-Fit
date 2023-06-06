@@ -79,8 +79,9 @@ def calculate_dipole(xyz, masses, charges):
 
 def load_from_dcd(psf_path, dcd_path):
     u = mda.Universe(psf_path, dcd_path)
-    print(psf_path)
-    print(dcd_path)
+    print("Using MD Analysis to load trajectory")
+    print("psf path:", psf_path)
+    print("dcd_path", dcd_path)
     print(u)
     print(u.trajectory)
 
