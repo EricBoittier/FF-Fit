@@ -300,12 +300,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
     def generate_cluster(self):
         self.make_dir(self.cluster_path)
         XYZSTR = self.structure.get_cluster_xyz()
+        CHARGE = self.structure.get_cluster_charge()
         molpro_job = molpro_job_template.render(
             XYZ=XYZSTR,
             NAME=self.name,
             BASIS=self.kwargs["m_basis"],
             RUN=self.kwargs["m_method"],
             MEMORY=self.kwargs["m_memory"],
+            CHARGE=CHARGE,
         )
         with open(self.cluster_path / f"{self.name}.inp", "w") as f:
             f.write(molpro_job)
@@ -325,12 +327,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         for pair in pairs:
             XYZSTR = self.structure.get_pair_xyz(*pair)
             NAME = f"{self.name}_{pair[0]}_{pair[1]}"
+            CHARGE = self.structure.get_pair_charge(*pair)
             molpro_job = molpro_job_template.render(
                 XYZ=XYZSTR,
                 NAME=NAME,
                 BASIS=self.kwargs["m_basis"],
                 RUN=self.kwargs["m_method"],
                 MEMORY=self.kwargs["m_memory"],
+                CHARGE=CHARGE,
             )
             with open(
                 self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.inp", "w"
@@ -352,12 +356,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         for monomer in monomers:
             XYZSTR = self.structure.get_monomer_xyz(monomer)
             NAME = f"{self.name}_{monomer}"
+            CHARGE = self.structure.get_monomer_charge(monomer)
             molpro_job = molpro_job_template.render(
                 XYZ=XYZSTR,
                 BASIS=self.kwargs["m_basis"],
                 NAME=NAME,
                 RUN=self.kwargs["m_method"],
                 MEMORY=self.kwargs["m_memory"],
+                CHARGE=CHARGE,
             )
             with open(self.monomers_path / f"{self.name}_{monomer}.inp", "w") as f:
                 f.write(molpro_job)

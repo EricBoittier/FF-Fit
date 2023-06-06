@@ -115,14 +115,14 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
 def molpro_jobs_big(CMS, DRY):
     jobmakers = []
     for cms in CMS:
-        print(cms)
+        print("ConfigManager:", cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
             _atom_types=cms.atom_types,
             system_name=cms.system_name,
         )
-        "/home/boittier/homeb/"
+        # "/home/boittier/homeb/"
         PCBACH = "/home/boittier/pcbach/"  # {cms.system_name}/{cms.theory_name}"
         if not DRY:
             jm.make_molpro(PCBACH)
@@ -307,7 +307,7 @@ if __name__ == "__main__":
             print("Making Configs: ", args.config)
         CMS = load_config_from_input(args.config)
     else:
-        print(args.theory, args.model, args.elec)
+        print("parameters:", args.theory, args.model, args.elec)
         if args.theory and args.model and args.elec:
             CMS = load_config_maker(args.theory, args.model, args.elec)
         else:
@@ -316,6 +316,7 @@ if __name__ == "__main__":
             sys.exit(1)
 
     if CMS is not None:
+        #  save the config files as a record
         for c in CMS:
             c.write_config()
 

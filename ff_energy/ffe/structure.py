@@ -17,6 +17,17 @@ def valid_atom_key_pairs(atom_keys):
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 
+atom_name_fix = {"CL": "Cl", "PO": "K"}
+def get_atom_names(atoms):
+    ans = np.array([_.split()[2] for _ in atoms])
+    for i, _ in enumerate(ans):
+        for k in atom_name_fix.keys():
+            if k in _:
+                ans[i] = atom_name_fix[k]
+    return ans
+
+
+
 
 class Structure:
     """Class for a pdb structure"""
@@ -52,11 +63,44 @@ class Structure:
 
         self.read_pdb(path)
 
+    def get_cluster_charge(self):
+        chg = 0
+        for i, _ in enumerate(self.restypes):
+            if _ == "CLA":
+                chg -= 1
+            elif _ == "POT":
+                chg += 1
+        return chg
+
+    #  TODO:  fix this so only the monomer/dimer charges are calculated
+    def get_monomer_charge(self, n):
+        chg = 0
+        restypes = np.array(self.restypes)
+        for i, _ in enumerate(restypes[self.res_mask[n]]):
+            if _ == "CLA":
+                chg -= 1
+            elif _ == "POT":
+                chg += 1
+        return chg
+
+    def get_pair_charge(self, res_a, res_b):
+
+        restypes = np.array(self.restypes)
+        res_types = restypes[self.res_mask[res_a] + self.res_mask[res_b]]
+        chg = 0
+        for i, _ in enumerate(res_types):
+            if _ == "CLA":
+                chg -= 1
+            elif _ == "POT":
+                chg += 1
+        return chg
+
+
     def read_pdb(self, path):
         self.lines = open(path).readlines()
         self.atoms = [_ for _ in self.lines if _.startswith("ATOM")
                       or _.startswith("HETATM")]
-        self.atomnames = np.array([_.split()[2] for _ in self.atoms])
+        self.atomnames = get_atom_names(self.atoms)
         self.keys = [(_[17:21].strip(), _[12:17].strip()) for _ in self.atoms]
         self.resids = [int(_[22:27].strip()) for _ in self.atoms]
 
@@ -208,6 +252,7 @@ class Structure:
                         )
 
     def get_monomers(self):
+        """returns list of monomers"""
         out = list(set(self.resids))
         out.sort()
         return out
@@ -237,8 +282,10 @@ class Structure:
         """returns a string in the format atomname x y z for all atoms in xyz"""
         xyz_string = ""
         for i, atom in enumerate(atomnames):
+            #  TODO: general way of getting around elements with two letters
+            a = atom[:2] if (atom.startswith("Cl")) else atom[:1]
             xyz_string += "{} {:8.3f} {:8.3f} {:8.3f}\n".format(
-                atom[:1], xyz[i, 0], xyz[i, 1], xyz[i, 2]
+                a, xyz[i, 0], xyz[i, 1], xyz[i, 2]
             )
         return xyz_string
 

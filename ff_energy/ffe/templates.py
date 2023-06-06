@@ -31,7 +31,7 @@ geometry={
 angstrom;
 {{XYZ}}
 }
-
+charge={{CHARGE}}
 basis={{BASIS}}
 {{RUN}}
 

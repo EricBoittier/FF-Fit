@@ -3,11 +3,23 @@ from ff_energy.ffe.config import DCM_STATES, kMDCM_STATES
 from pathlib import Path
 
 system_names = ["water_cluster",
-                "water_dimer","methanol_cluster",
-                "water_tests", "lithium"]
-pdbs = ["pdbs/pdbs4/", "pdbs/dimer3d/", "pdbs/pdbsclean/", "pdbs/water_tests/",
-        "pdbs/lithium/"]
-system_types = ["water", "water", "methanol", "water", "water"]
+                "water_dimer",
+                "methanol_cluster",
+                "water_tests",
+                "lithium",
+                "ions"]
+pdbs = ["pdbs/pdbs4/",
+        "pdbs/dimer3d/",
+        "pdbs/pdbsclean/",
+        "pdbs/water_tests/",
+        "pdbs/lithium/",
+        "pdbs/ions/"]
+system_types = ["water",
+                "water",
+                "methanol",
+                "water",
+                "water",
+                "water"]
 
 SYSTEMS = {
     k: {"system_name": k, "pdbs": p, "system_type": s}
@@ -93,7 +105,14 @@ ATOM_TYPES = {
         ("TIP3", "OH2"): "OT",
         ("TIP3", "H1"): "HT",
         ("TIP3", "H2"): "HT",
-    }
+    },
+    "ions": {
+        ("CLA", "CLA"): "CLA",
+        ("POT", "POT"): "POT",
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
 }
 
 

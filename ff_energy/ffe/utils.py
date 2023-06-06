@@ -14,7 +14,7 @@ def MakeJob(name,
     if _atom_types is None:
         _atom_types = atom_types
 
-    pickle_exists = get_structures(system_name)
+    pickle_exists = get_structures(system_name, pdbpath=config_maker.pdbs)
     if pickle_exists[0]:
         structures, pdbs = pickle_exists
     else:
@@ -50,14 +50,19 @@ H2KCALMOL = 627.503
 PKL_PATH = Path(__file__).parents[2] / "pickles"
 
 
-def get_structures(system_name, pdbpath="pdbs/water_tests"):
+def get_structures(system_name, pdbpath=None):
+    if pdbpath is None:
+        raise ValueError("pdbpath must be specified")
+
+
     pickle_exists = Path(PKL_PATH / f"structures/{system_name}.pkl").exists()
     if pickle_exists:
-        print("Strcuture/PDB already already exists, loading from pickle")
+        print("Structure/PDB already already exists, loading from pickle")
         structures, pdbs = next(read_from_pickle(PKL_PATH /
                                                  f"structures/{system_name}.pkl"))
     else:
-        structures, pdbs = get_structures_pdbs(Path(pdbpath), system_name=system_name)
+        structures, pdbs = get_structures_pdbs(Path(pdbpath),
+                                               system_name=system_name)
         pickle_output((structures, pdbs), name=f"structures/{system_name}")
 
     return structures, pdbs
@@ -76,8 +81,8 @@ def makeDir(path: Path):
 def str2int(g):
     """
     Convert a string to an integer
-    :param g:
-    :return:
+    :param g: string
+    :return: integer
     """
     return int(re.sub("[^0-9]", "", g))
 

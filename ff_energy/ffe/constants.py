@@ -10,9 +10,6 @@ CLUSTER_DRIVE = {
 
 CONFIG_PATH = "/home/boittier/Documents/phd/ff_energy/configs/"
 atom_types = {
-    ("TIP3", "OH2"): "OT",
-    ("TIP3", "H1"): "HT",
-    ("TIP3", "H2"): "HT",
     ("TIP3", "O"): "OT",
     ("TIP3", "H"): "HT",
     ("UNL", "LI"): "LI",
@@ -24,4 +21,11 @@ atom_types = {
     ("HOH", "H"): "HT",
     ("HOH", "H1"): "HT",
     ("HOH", "H2"): "HT",
+    ("CLA", "CLA"): "CLA",
+    ("POT", "POT"): "POT",
+    ("CLA", "Cl"): "Cl",
+    ("POT", "K"): "K",
+    ("TIP3", "OH2"): "OT",
+    ("TIP3", "H1"): "HT",
+    ("TIP3", "H2"): "HT",
 }

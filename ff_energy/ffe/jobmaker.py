@@ -16,7 +16,7 @@ def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
     for p in pdbs:
         print(p)
         s_path = PDBPATH / p
-        s = Structure(s_path, atom_types=atom_types, system_name=system_name)
+        s = Structure(s_path, _atom_types=atom_types, system_name=system_name)
         s.set_2body()
         structures.append(s)
 
@@ -65,8 +65,6 @@ class JobMaker:
             ID = p.split(".")[0]
             monomers_path = f"{homedir}/{self.jobdir}/{ID}/monomers/"
             out_jobs = Path(monomers_path).glob(f"{ID}*sh")
-            # print(monomers_path)
-            # print(list(out_jobs))
             for outfilename in out_jobs:
                 keep = True
                 of = Path(str(outfilename)[:-3] + ".out")
