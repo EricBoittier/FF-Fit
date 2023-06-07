@@ -137,7 +137,7 @@ class Job:
             monomers_path = self.monomers_path
 
         for monomers in monomers:
-            wfpath = monomers_path / f"{self.name}_{monomers}.molden"
+            wfpath = monomers_path / f"{self.name.lower()}_{monomers}.molden"
             try:
                 copy(wfpath, self.coloumb_path)
             except Exception as e:
