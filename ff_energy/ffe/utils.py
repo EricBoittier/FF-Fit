@@ -51,15 +51,20 @@ PKL_PATH = Path(__file__).parents[2] / "pickles"
 
 
 def get_structures(system_name, pdbpath=None):
-    if pdbpath is None:
-        raise ValueError("pdbpath must be specified")
-
-
+    """
+    Get structures and pdbs from pickle file, if no path is given,
+    load from the pickles folder
+    :param system_name:
+    :param pdbpath:
+    :return:
+    """
     pickle_exists = Path(PKL_PATH / f"structures/{system_name}.pkl").exists()
     if pickle_exists:
         print("Structure/PDB already already exists, loading from pickle")
         structures, pdbs = next(read_from_pickle(PKL_PATH /
                                                  f"structures/{system_name}.pkl"))
+    elif pdbpath is None:
+        raise ValueError("pdbpath must be specified")
     else:
         structures, pdbs = get_structures_pdbs(Path(pdbpath),
                                                system_name=system_name)

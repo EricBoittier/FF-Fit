@@ -40,6 +40,12 @@ Make Molpro jobs to calculate energies:
 python ff_energy/ffe/cli.py -m water_tests -t pbe0dz -e tip3 -mj -s
 ```
 
+Make Orbkit jobs to calculate the Coulomb integrals:
+```bash
+
+ python ff_energy/ffe/cli.py -m ions -t pbe0dz -e tip3 -cj -s -msp  /home/boittier/pcnccr
+```
+
 ESP View:
 ```bash
 python ff_energy/ffe/cli.py -m water_tests -t pbe0dz -e tip3 -esp

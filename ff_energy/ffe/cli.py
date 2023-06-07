@@ -267,7 +267,7 @@ if __name__ == "__main__":
         "-s", "--submit", required=False, default=False, action="store_true"
     )
     parser.add_argument(
-        "-cj", "--coloumb", required=False, default=False, action="store_true"
+        "-cj", "--coulomb", required=False, default=False, action="store_true"
     )
     parser.add_argument(
         "-chmj", "--chm", required=False, default=False, action="store_true"
@@ -356,7 +356,7 @@ if __name__ == "__main__":
                     print("Submitting CHM Jobs")
                 charmm_submit(clusterBEETHOVEN, jobmakers, max_jobs=120, Check=False)
 
-        if args.coloumb:
+        if args.coulomb:
             if args.verbose:
                 print("Making Coloumb Jobs")
             jobmakers = coloumb_jobs(CMS, args.dry, cluster=args.molpro_small_path)

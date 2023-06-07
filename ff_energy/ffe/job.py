@@ -145,9 +145,11 @@ class Job:
 
         for pair in pairs:
             orbkit_str = orbkit_ci_template.render(
-                M1=f"{self.name}_{pair[0]}.molden", M2=f"{self.name}_{pair[1]}.molden"
+                M1=f"{self.name}_{pair[0]}.molden".lower(),
+                M2=f"{self.name}_{pair[1]}.molden".lower()
             )
-            orbkit_job = self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.py"
+            orbkit_job = self.path / "coloumb" / \
+                         f"{self.name}_{pair[0]}_{pair[1]}.py".lower()
             with open(orbkit_job, "w") as f:
                 f.write(orbkit_str)
             command = f"export LIBCINTDIR=/opt/cluster/programs/libcint/lib64 " \
@@ -156,12 +158,12 @@ class Job:
             slurm_job = o_slurm_template.render(
                 NAME=f"{self.name}_{pair[0]}_{pair[1]}", COMMAND=command
             )
-            slurm_file = self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.sh"
-            # print(slurm_file)
+            slurm_file = self.path / "coloumb" / \
+                         f"{self.name}_{pair[0]}_{pair[1]}.sh".lower()
             with open(slurm_file, "w") as f:
                 f.write(slurm_job)
                 self.slurm_files["coloumb"][
-                    f"{self.name}_{pair[0]}_{pair[1]}"
+                    f"{self.name}_{pair[0]}_{pair[1]}".lower()
                 ] = slurm_file
 
     def load_dcm(self, dcm_path=None):
