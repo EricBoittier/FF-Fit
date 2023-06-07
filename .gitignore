@@ -1,3 +1,5 @@
+*.cube
+ff_energy/pydcm/data/*
 pickles/water_cluster/*
 pickles/*
 .idea/*
