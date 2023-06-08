@@ -301,7 +301,7 @@ REMARK
         )
         _str = header
         for i, line in enumerate(self.atoms):
-            print(i, self.atomnames[i], self.restypes[i], self.resids[i])
+            # print(i, self.atomnames[i], self.restypes[i], self.resids[i])
             _1 = "ATOM"
             _2 = i + 1
             _3 = self.atomnames[i]
