@@ -28,7 +28,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", type=int, default=0)
     parser.add_argument("-l2", type=float, default=0.0)
-    parser.add_argument("-p", type=str, default="/home/boittier/Documents/phd/ff_energy/cubes/dcm/scan")
+    parser.add_argument("-p", type=str,
+                        default="/home/boittier/Documents/phd/ff_energy/cubes/dcm/scan")
     args = parser.parse_args()
     generate_data(args.i, args.p, l2=args.l2)
 
