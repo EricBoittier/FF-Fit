@@ -78,47 +78,6 @@ def set_bounds(local_pos, change=0.1):
     return tuple(bounds)
 
 
-def mdcm_set_up(scan_fesp, scan_fdns,
-                mdcm_cxyz=None,
-                mdcm_clcl=None,
-                local_pos=None):
-    mdcm.dealloc_all()
-
-    Nfiles = len(scan_fesp)
-    Nchars = int(np.max([
-        len(filename) for filelist in [scan_fesp, scan_fdns]
-        for filename in filelist]))
-
-    esplist = np.empty([Nfiles, Nchars], dtype='c')
-    dnslist = np.empty([Nfiles, Nchars], dtype='c')
-
-    for ifle in range(Nfiles):
-        esplist[ifle] = "{0:{1}s}".format(scan_fesp[ifle], Nchars)
-        dnslist[ifle] = "{0:{1}s}".format(scan_fdns[ifle], Nchars)
-
-    # Load cube files, read MDCM global and local files
-    mdcm.load_cube_files(Nfiles, Nchars, esplist.T, dnslist.T)
-    mdcm.load_clcl_file(mdcm_clcl)
-    mdcm.load_cxyz_file(mdcm_cxyz)
-
-    # Get and set local MDCM array (to check if manipulation is possible)
-    clcl = mdcm.mdcm_clcl
-    mdcm.set_clcl(clcl)
-
-    if local_pos is not None:
-        mdcm.set_clcl(local_pos)
-
-    # Get and set global MDCM array (to check if manipulation is possible)
-    cxyz = mdcm.mdcm_cxyz
-    mdcm.set_cxyz(cxyz)
-
-    # Write MDCM global from local and Fitted ESP cube files
-    mdcm.write_cxyz_files()
-    mdcm.write_mdcm_cube_files()
-
-    return mdcm
-
-
 def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     # Get RMSE, averaged or weighted over ESP files, or per ESP file each
     rmse = mdcm.get_rmse()
@@ -135,7 +94,8 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
         mdcm.set_clcl(_clcl_)
         rmse = mdcm.get_rmse()
         if local_ref is not None:
-            l2diff = l2 * np.sum((local_pos - local_ref) ** 2) / local_pos.shape[0]
+            l2diff = l2 * np.sum((local_pos - local_ref) ** 2) \
+                     / local_pos.shape[0]
             # print(rmse, l2diff)
             rmse += l2diff
         return rmse
@@ -197,6 +157,7 @@ if __name__ == "__main__":
     if args.mdcm_xyz is not None:
         mdcm_xyz = args.mdcm_xyz
     else:
+        mdcm_xyz = None
         print("WARNING: No MDCM xyz file specified")
     if args.esp is not None:
         esp = args.esp
