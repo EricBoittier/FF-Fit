@@ -119,9 +119,9 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     difference = np.sum((res.x - local_ref) ** 2) \
                  / local_pos.shape[0]
     print("charge RMSD:", difference)
-
-    obj_name = os.path.join(outdir,
-                            f"pickles/{outname}_clcl.obj")
+    outname = f"{outname}_l2_{l2:.1e}_rmse_{rmse:.4f}_rmsd_{difference:.4f}"
+    obj_name = f"/home/boittier/Documents/phd/ff_energy/" \
+               f"cubes/clcl/{outname}_clcl.obj"
     #  save as pickle
     with open(obj_name, 'wb') as filehandler:
         pickle.dump(clcl_out, filehandler)
