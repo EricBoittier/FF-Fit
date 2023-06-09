@@ -70,7 +70,9 @@ class KernelFit:
     def fit(self,
             alpha=1e-3,
             N_SAMPLE_POINTS=None,
-            start=False):
+            start=False,
+            model_type=KernelRidge,
+            kernel=RBF()):
         """
 
         :param alpha:
@@ -80,7 +82,7 @@ class KernelFit:
         """
 
         if N_SAMPLE_POINTS is None:
-            N_SAMPLE_POINTS = len(self.X)//2
+            N_SAMPLE_POINTS = len(self.X)//10
             print("N_SAMPLE_POINTS set to {}".format(N_SAMPLE_POINTS))
 
         points, ids = graipher(
@@ -104,8 +106,7 @@ class KernelFit:
             y_train = np.array([y[i] for i in ids])
             y_test = np.array([y[i] for i in test_ids])
 
-            kernel = RBF()
-            model = KernelRidge(
+            model = model_type(
                 alpha=alpha,
                 kernel=kernel,
             ).fit(self.X_train, y_train)

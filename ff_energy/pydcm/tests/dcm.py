@@ -5,6 +5,8 @@ from ff_energy.pydcm.dcm import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
 from pathlib import Path
 from ff_energy.pydcm import dcm_utils as du
 from ff_energy.pydcm.kernel import KernelFit
+
+
 class MyTestCase(unittest.TestCase):
     def test_something(self):
         self.assertEqual(True, False)  # add assertion here
@@ -20,8 +22,17 @@ class MyTestCase(unittest.TestCase):
     def test_load_data(self):
         PICKLES = list(Path("/home/boittier/Documents/phd/ff_energy/cubes/clcl")
                        .glob("*.obj"))
-        scanpath = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/scan")
-        CUBES = [scanpath/ (_.name.split(".")[0] + ".cube") for _ in PICKLES]
+        scanpath = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/")
+
+        def name_(x):
+            if "gaussian" in str(x):
+                return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
+            elif "_nms_" in str(x):
+                return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
+            else:
+                raise ValueError(f"bad pickle name {x}")
+
+        CUBES = [name_(_) for _ in PICKLES]
         x, i, y = du.get_data(CUBES, PICKLES, 5)
         return x, i, y
 
@@ -29,14 +40,15 @@ class MyTestCase(unittest.TestCase):
         x, i, y = self.test_load_data()
         k = KernelFit()
         k.set_data(x, i, y)
-        k.fit()
-        print(len(k.X))
-        print(len(k.ids))
-        print(len(k.test_ids))
-        print(len(k.train_ids))
+        k.fit(alpha=0.0)
+        print("N X:", len(k.X))
+        print("N:", len(k.ids))
+        print("N test:", len(k.test_ids))
+        print("N_train:", len(k.train_ids))
         print(k.r2s)
-        print(len(k.r2s))
-
+        print("sum r2s test:", sum([_[0] for _ in k.r2s]))
+        print("sum r2s train:", sum([_[1] for _ in k.r2s]))
+        print("n models:", len(k.r2s))
 
     def test_files(self):
         i = 4
