@@ -79,7 +79,8 @@ def set_bounds(local_pos, change=0.1):
 
 
 def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
-    # Get RMSE, averaged or weighted over ESP files, or per ESP file each
+    # Get RMSE, averaged or weighted over ESP files,
+    # or per ESP file each
     rmse = mdcm.get_rmse()
     print(rmse)
 
@@ -115,13 +116,16 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     mdcm.write_cxyz_files()
     #  get the local charges array after optimization
     clcl_out = get_clcl(res.x, charges)
-    difference = np.sum((res.x - local_ref) ** 2) / local_pos.shape[0]
+    difference = np.sum((res.x - local_ref) ** 2) \
+                 / local_pos.shape[0]
     print("charge RMSD:", difference)
 
-    obj_name = os.path.join(outdir, f"pickles/{outname}_clcl.obj")
+    obj_name = os.path.join(outdir,
+                            f"pickles/{outname}_clcl.obj")
     #  save as pickle
-    filehandler = open(obj_name, "wb")
-    pickle.dump(clcl_out, filehandler)
+    with open(obj_name, 'wb') as filehandler:
+        pickle.dump(clcl_out, filehandler)
+
     # Not necessary but who knows when it becomes important to deallocate all
     # global arrays
     mdcm.dealloc_all()
