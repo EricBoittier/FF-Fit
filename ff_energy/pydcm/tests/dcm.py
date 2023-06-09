@@ -18,26 +18,29 @@ class MyTestCase(unittest.TestCase):
         optimize_mdcm(m, m.mdcm_clcl, "", "test")
 
     def test_load_data(self):
-        PICKLES = list(Path("pickles").glob("*.obj"))
+        PICKLES = list(Path("/home/boittier/Documents/phd/ff_energy/cubes/clcl")
+                       .glob("*.obj"))
         scanpath = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/scan")
         CUBES = [scanpath/ (_.name.split(".")[0] + ".cube") for _ in PICKLES]
         x, i, y = du.get_data(CUBES, PICKLES, 5)
-        print(x.shape, i.shape, y.shape)
         return x, i, y
 
     def test_fit(self):
         x, i, y = self.test_load_data()
-
         k = KernelFit()
         k.set_data(x, i, y)
         k.fit()
+        print(len(k.X))
+        print(len(k.ids))
+        print(len(k.test_ids))
+        print(len(k.train_ids))
+        print(k.r2s)
+        print(len(k.r2s))
 
 
     def test_files(self):
-
         i = 4
         l2 = 0.0
-
         cube_paths = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/scan")
         ecube_files = list(cube_paths.glob("*esp.cube"))
         dcube_files = list(cube_paths.glob("*dens.cube"))
@@ -45,9 +48,10 @@ class MyTestCase(unittest.TestCase):
         ecube_files.sort()
         dcube_files.sort()
         print(ecube_files[0], dcube_files[0])
+        #  name of the esp and dens cube files
         e = str(ecube_files[i])
         d = str(dcube_files[i])
-
+        #  set up the mdcm object
         m = mdcm_set_up([e], [d],
                         local_pos=local_pos,
                         mdcm_cxyz=mdcm_cxyz,

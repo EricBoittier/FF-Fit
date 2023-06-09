@@ -40,6 +40,8 @@ class KernelFit:
         self.r2s = []
         self.test_results = []
         self.lcs = None
+        self.test_ids = None
+        self.train_ids = None
 
     def __int__(self):
         self.init()
@@ -57,6 +59,8 @@ class KernelFit:
         self.y_test = None
         self.alpha = None
         self.kernel = None
+        self.test_ids = None
+        self.train_ids = None
 
     def set_data(self, distM, ids, lcs):
         self.X = distM
@@ -77,6 +81,7 @@ class KernelFit:
 
         if N_SAMPLE_POINTS is None:
             N_SAMPLE_POINTS = len(self.X)//2
+            print("N_SAMPLE_POINTS set to {}".format(N_SAMPLE_POINTS))
 
         points, ids = graipher(
             self.X,
@@ -85,7 +90,9 @@ class KernelFit:
         )
         npoints = len(self.X)
         inx_vals = np.arange(npoints)
+        self.train_ids = ids
         test_ids = np.delete(inx_vals, ids, axis=0)
+        self.test_ids = test_ids
         self.X_train = [self.X[i] for i in ids]
         self.X_test = [self.X[i] for i in test_ids]
 
@@ -106,12 +113,6 @@ class KernelFit:
             # evaluate the model
             train_predictions = model.predict(self.X_train)
             test_predictions = model.predict(self.X_test)
-
-            print("train_predictions", train_predictions.shape)
-            print("true values", y_train.shape)
-
-            print("test_predictions", test_predictions)
-            print("true values", y_test)
 
             r2_train = sklearn.metrics.r2_score(y_train,
                                                 train_predictions)
