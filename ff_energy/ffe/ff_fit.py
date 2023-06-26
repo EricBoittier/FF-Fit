@@ -182,7 +182,10 @@ def fit_func(
         method=method,
         tol=1e-6,
         bounds=bounds,
-        options={"maxfev": maxfev, "pgtol": 1e-8},
+        options={
+            "maxfev": maxfev,
+            # "pgtol": 1e-8
+        },
     )
 
     if not quiet:

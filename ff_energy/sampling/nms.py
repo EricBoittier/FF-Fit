@@ -9,11 +9,15 @@ parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFo
 parser._action_groups.pop()
 required = parser.add_argument_group("required arguments")
 required.add_argument("-i", "--input",   type=str,   help="input out",  required=True)
-required.add_argument("-o", "--output", type=str, help="Name of your output", required=True)
+required.add_argument("-o", "--output", type=str,
+                      help="Name of your output", required=True)
 optional = parser.add_argument_group("optional arguments")
-optional.add_argument("-l", "--linear", type=int, default=0, help="Use if your molecule is linear")
-optional.add_argument("-ns", "--number_of_samples",type=int, default=50, help="Number of samples to be generated")
-optional.add_argument("-T", "--temperature", type=float, default=30000, help="Temperature of the sampling")
+optional.add_argument("-l", "--linear", type=int, default=0,
+                      help="Use if your molecule is linear")
+optional.add_argument("-ns", "--number_of_samples",type=int, default=50,
+                      help="Number of samples to be generated")
+optional.add_argument("-T", "--temperature", type=float, default=30000,
+                      help="Temperature of the sampling")
 args = parser.parse_args()
 
 t = pt()
@@ -87,7 +91,8 @@ def main(T=300,n_samples=10):
         for j, vd in enumerate(vib_disp):
             out_name = '{}_{}_{}.xyz'.format(args.output,i,j)
             print(out_name)
-            write_xyz(eq_coord,mass,[vd],[fcts[j]],elem_num,natom,out_name,T=T,linear=args.linear)
+            write_xyz(eq_coord,mass,[vd],[fcts[j]],elem_num,natom,out_name,
+                      T=T,linear=args.linear)
 
 if __name__ == "__main__":
     main(T=args.temperature,n_samples=args.number_of_samples)

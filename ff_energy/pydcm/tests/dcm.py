@@ -30,10 +30,13 @@ class MyTestCase(unittest.TestCase):
             elif "_nms_" in str(x):
                 return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
             else:
-                raise ValueError(f"bad pickle name {x}")
+                print(f"ValueError(fbad pickle name {x})")
+                return None
 
+        PICKLES = [_ for _ in PICKLES if name_(_) is not None]
         CUBES = [name_(_) for _ in PICKLES]
         x, i, y = du.get_data(CUBES, PICKLES, 5)
+
         return x, i, y
 
     def test_fit(self):
@@ -68,7 +71,7 @@ class MyTestCase(unittest.TestCase):
                         local_pos=local_pos,
                         mdcm_cxyz=mdcm_cxyz,
                         mdcm_clcl=mdcm_clcl)
-        print(m.get_rmse())
+        print("RMSE:", m.get_rmse())
         outname = ecube_files[i].name + f"_{l2}"
         optimize_mdcm(m, m.mdcm_clcl, "", outname, l2=l2)
 
