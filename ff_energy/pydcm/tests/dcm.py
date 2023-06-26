@@ -5,7 +5,7 @@ from ff_energy.pydcm.dcm import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
 from pathlib import Path
 from ff_energy.pydcm import dcm_utils as du
 from ff_energy.pydcm.kernel import KernelFit
-
+import matplotlib.pyplot as plt
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
@@ -52,6 +52,8 @@ class MyTestCase(unittest.TestCase):
         print("sum r2s test:", sum([_[0] for _ in k.r2s]))
         print("sum r2s train:", sum([_[1] for _ in k.r2s]))
         print("n models:", len(k.r2s))
+        k.plot_fits()
+
 
     def test_files(self):
         i = 4
