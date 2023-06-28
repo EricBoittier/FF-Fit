@@ -97,4 +97,4 @@ def get_data(cubes, pickles, natoms):
         ids.append(i)
         lcs.append(local)
 
-    return (np.array(_) for _ in [distM, ids, lcs])
+    return (np.array(_) for _ in [distM, ids, lcs, cubes, pickles])

@@ -2,12 +2,17 @@ from ff_energy.pydcm.dcm_fortran import dcm_fortran
 import numpy as np
 # Basics
 import os
+import subprocess
+import time
+from pathlib import Path
 import pickle
 import pandas as pd
 import argparse
 # Optimization
 from scipy.optimize import minimize
 
+DCM_PY_PATH = Path(os.path.dirname(os.path.abspath(__file__))) / "dcm.py"
+print(DCM_PY_PATH)
 
 mdcm = dcm_fortran
 
@@ -121,7 +126,7 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     print("charge RMSD:", difference)
     outname = f"{outname}_l2_{l2:.1e}_rmse_{rmse:.4f}_rmsd_{difference:.4f}"
     obj_name = f"/home/boittier/Documents/phd/ff_energy/" \
-               f"cubes/clcl/{outname}_clcl.obj"
+               f"cubes/clcl/{l2}/{outname}_clcl.obj"
     #  save as pickle
     with open(obj_name, 'wb') as filehandler:
         pickle.dump(clcl_out, filehandler)
@@ -131,9 +136,62 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     mdcm.dealloc_all()
 
 
+def eval_kernel(clcls, esp_path, dens_path,
+                load_pkl=False, opt=False, l2=100.0, verbose=False):
+    rmses = []
+    commands = []
+    N = len(clcls)
+    path__ = "/home/boittier/Documents/" \
+             f"phd/ff_energy/cubes/clcl/{l2}"
+    print(path__)
+    for i in range(N):
+        ESP_PATH = esp_path[i]
+        DENS_PATH = dens_path[i]
+        job_command = f'python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH}' \
+                        f' -mdcm_clcl ' \
+                      f'/home/boittier/Documents/phd/ff_energy/ff_energy/pydcm/sources/' \
+                      f'dcm.mdcm -mdcm_xyz /home/boittier/Documents/phd/ff_energy/' \
+                      f'ff_energy/pydcm/sources/dcm8.xyz '
+        if load_pkl:
+            job_command += f' -l {clcls[i]}'
+        if opt:
+            job_command += f' -opt True -l2 {l2} ' \
+                           f'-o /home/boittier/Documents/phd/' \
+                           f'ff_energy/ff_energy/cubes/clcl/{l2}'
+            Path(path__
+                 ).mkdir(parents=True, exist_ok=True)
+        # print(job_command)
+        commands.append(job_command)
+
+    procs = []
+    for command in commands:
+        p = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        )
+        procs.append(p)
+        time.sleep(0.3)
+
+    for p in procs:
+        p.wait()
+        result = p.stdout.readlines()
+        if verbose:
+            for _ in result:
+                print(_)
+        if not opt:
+            rmse_out = float(result[-1].split()[-1])
+        else:
+            rmse_out = float(result[-2].split()[-1])
+        rmses.append(rmse_out)
+
+    return rmses
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Scan and average for fMDCM')
-    parser.add_argument('-n', '--nodes_to_avg', help='', required=True,
+    parser.add_argument('-n', '--nodes_to_avg', help='', required=False,
                         type=int)
     parser.add_argument('-l', '--local_pos', help='', default=None, type=str)
     parser.add_argument('-l2', '--l2', help='lambda coef. for l2 reg.',
@@ -143,6 +201,10 @@ if __name__ == "__main__":
     parser.add_argument('-esp', '--esp', help='format string for esp files',
                         default=None, type=str)
     parser.add_argument('-dens', '--dens', help='format string for density files',
+                        default=None, type=str)
+    parser.add_argument('-mdcm_clcl', '--mdcm_clcl', help='mdcm clcl file',
+                        default=None, type=str)
+    parser.add_argument('-mdcm_xyz', '--mdcm_xyz', help='mdcm xyz file',
                         default=None, type=str)
 
     args = parser.parse_args()
@@ -158,6 +220,7 @@ if __name__ == "__main__":
         mdcm_clcl = args.mdcm_clcl
     else:
         print("WARNING: No MDCM clcl file specified")
+
     if args.mdcm_xyz is not None:
         mdcm_xyz = args.mdcm_xyz
     else:
@@ -181,9 +244,19 @@ if __name__ == "__main__":
     if args.nodes_to_avg is not None:
         i = args.nodes_to_avg
     else:
+        i = None
         print("WARNING: No nodes to average specified")
 
-    mdcm = mdcm_set_up([esp.format(i)], [dens.format(i)],
+    if args.nodes_to_avg is not None:
+        ESPF = [esp.format(i)]
+        DENSF = [dens.format(i)]
+    else:
+        ESPF = [esp]
+        DENSF = [dens]
+
+    print(ESPF)
+    print(DENSF)
+    mdcm = mdcm_set_up(ESPF, DENSF,
                        mdcm_cxyz=mdcm_xyz,
                        mdcm_clcl=mdcm_clcl,
                        local_pos=local)
