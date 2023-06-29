@@ -10,6 +10,7 @@ from ff_energy.pydcm import dcm_utils as du
 from ff_energy.pydcm.dcm import DCM_PY_PATH
 from ff_energy.pydcm.kernel import KernelFit
 import matplotlib.pyplot as plt
+import pickle
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -22,7 +23,7 @@ def ignore_warnings(test_func):
     return do_test
 
 
-class MyTestCase(unittest.TestCase):
+class kMDCM_Experiments(unittest.TestCase):
     def test_something(self):
         self.assertEqual(True, False)  # add assertion here
 
@@ -97,12 +98,12 @@ class MyTestCase(unittest.TestCase):
                 N_factor=2,
                  do_optimize=False
                  ):
-
+        # path to cubes
         cube_paths = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/")
         ecube_files = list(cube_paths.glob("*/*esp.cube"))
         dcube_files = list(cube_paths.glob("*/*dens.cube"))
         print("n_cubes", len(ecube_files))
-
+        #  load mdcm object
         m = self.get_mdcm()
         print("mdcm_clcl")
         print(m.mdcm_clcl)
@@ -140,9 +141,8 @@ class MyTestCase(unittest.TestCase):
 
         rmses = eval_kernel(files, ecube_files, dcube_files,
                             load_pkl=True)
-        print("RMSEs:", rmses)
-        rmse = sum(rmses) / len(rmses)
-        print("RMSE:", rmse)
+
+        kern_rmse = self.print_rmse(rmses)
 
         self.prepare_df(k, rmses, files, alpha=alpha, l2=l2)
 
@@ -150,11 +150,22 @@ class MyTestCase(unittest.TestCase):
             self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
 
         k.plot_fits(rmses)
-        k.plot_pca(rmses, title=f"Kernel ({rmse:.2f})", name=f"kernel_{k.uuid}.png")
+        k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}.png")
 
         if do_optimize is False:
             k.plot_pca(opt_rmses, title=f"Optimized ({opt_rmse:.2f})",
                        name=f"opt_{k.uuid}.png")
+
+        print("Pickling kernel", k)
+        self.pickle_kernel(k)
+
+        return k
+
+    def print_rmse(self, rmses):
+        print("RMSEs:", rmses)
+        rmse = sum(rmses) / len(rmses)
+        print("RMSE:", rmse)
+        return rmse
 
     def prepare_df(self, k, rmses, files, alpha=0.0, l2=0.0, opt=False):
         class_name = ["test" if _ in k.test_ids
@@ -175,6 +186,10 @@ class MyTestCase(unittest.TestCase):
                          for _ in files]
             }
         ).to_csv(fn)
+
+    def pickle_kernel(self, k):
+        with open(f"kernel_{k.uuid}.pkl", "wb") as f:
+            pickle.dump(k, f)
 
 
     def test_files(self):

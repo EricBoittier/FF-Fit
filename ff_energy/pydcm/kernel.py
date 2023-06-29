@@ -85,6 +85,12 @@ class KernelFit:
         self.cubes = cubes
         self.pkls = pkls
 
+    def __repr__(self):
+        return f"KernelFit: {self.uuid} {self.alpha} {self.kernel}"
+
+    def __str__(self):
+        return f"KernelFit: {self.uuid} {self.alpha} {self.kernel}"
+
     def fit(self,
             alpha=1e-3,
             N_SAMPLE_POINTS=None,
