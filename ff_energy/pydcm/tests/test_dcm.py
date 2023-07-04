@@ -24,10 +24,19 @@ def ignore_warnings(test_func):
 
 
 class kMDCM_Experiments(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)  # add assertion here
+    def get_mdcm(self, mdcm_dict=None):
+        if mdcm_dict is not None and type(mdcm_dict) is dict:
+            if "scan_fesp" in mdcm_dict.keys():
+                scan_fesp = mdcm_dict["scan_fesp"]
+            if "scan_fdns" in mdcm_dict.keys():
+                scan_fdns = mdcm_dict["scan_fdns"]
+            if "mdcm_cxyz" in mdcm_dict.keys():
+                mdcm_cxyz = mdcm_dict["mdcm_cxyz"]
+            if "mdcm_clcl" in mdcm_dict.keys():
+                mdcm_clcl = mdcm_dict["mdcm_clcl"]
+            if "local_pos" in mdcm_dict.keys():
+                local_pos = mdcm_dict["local_pos"]
 
-    def get_mdcm(self):
         return mdcm_set_up(scan_fesp, scan_fdns,
                            local_pos=local_pos,
                            mdcm_cxyz=mdcm_cxyz,
@@ -41,10 +50,12 @@ class kMDCM_Experiments(unittest.TestCase):
         print(m.get_rmse())
         optimize_mdcm(m, m.mdcm_clcl, "", "test")
 
-    def test_load_data(self, l2 = '100.0'):
+    def test_load_data(self, l2 = '100.0',
+                       cube_path = "/home/boittier/Documents/phd/"
+                                   "ff_energy/cubes/dcm/"):
         PICKLES = list(Path(f"/home/boittier/Documents/phd/ff_energy/cubes/clcl/{l2}")
                        .glob("*.obj"))
-        scanpath = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/")
+        scanpath = Path(cube_path)
 
         def name_(x):
             if "gaussian" in str(x):
@@ -59,8 +70,14 @@ class kMDCM_Experiments(unittest.TestCase):
         CUBES = [name_(_) for _ in PICKLES]
         return du.get_data(CUBES, PICKLES, 5)
 
-    def test_standard_rmse(self, k, files, cubes, pickles):
-        cube_paths = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/")
+    def test_standard_rmse(self,
+                           k,
+                           files,
+                           cubes,
+                           pickles,
+                           cubes_pwd="/home/boittier/Documents/"
+                                     "phd/ff_energy/cubes/dcm/"):
+        cube_paths = Path(cubes_pwd)
         ecube_files = list(cube_paths.glob("*/*esp.cube"))
         dcube_files = list(cube_paths.glob("*/*dens.cube"))
         print("ecube", len(ecube_files))
@@ -78,12 +95,12 @@ class kMDCM_Experiments(unittest.TestCase):
     def experiments(self):
         alphas = [0.0, 0.1, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0]
         l2s = [0.0, 0.1, 0.5, 1.0, 2.0, 4.0, 8.0]
-        N_factors = [2, 4, 6, 8, 10, 12]
+        n_factors = [2, 4, 6, 8, 10, 12]
         for alpha in alphas:
             for l2 in l2s:
-                for N_factor in N_factors:
-                    print("alpha", alpha, "l2", l2, "N_factors", N_factors)
-                    self.test_fit(alpha=alpha, l2=l2, N_factor=N_factor)
+                for n in n_factors:
+                    print("alpha", alpha, "l2", l2, "N_factors", n_factors)
+                    self.test_fit(alpha=alpha, l2=l2, N_factor=n)
 
     def test_N_repeats(self, n=5):
         for i in range(n):
@@ -95,16 +112,18 @@ class kMDCM_Experiments(unittest.TestCase):
                  alpha=0.0,
                  l2=0.0,
                  do_null=True,
-                N_factor=2,
-                 do_optimize=False
+                n_factor=2,
+                 do_optimize=False,
+                 cubes_pwd="/home/boittier/Documents/phd/ff_energy/cubes/dcm/",
+                    mdcm_dict=None,
                  ):
         # path to cubes
-        cube_paths = Path("/home/boittier/Documents/phd/ff_energy/cubes/dcm/")
+        cube_paths = Path(cubes_pwd)
         ecube_files = list(cube_paths.glob("*/*esp.cube"))
         dcube_files = list(cube_paths.glob("*/*dens.cube"))
         print("n_cubes", len(ecube_files))
         #  load mdcm object
-        m = self.get_mdcm()
+        m = self.get_mdcm(mdcm_dict=mdcm_dict)
         print("mdcm_clcl")
         print(m.mdcm_clcl)
 
@@ -117,10 +136,10 @@ class kMDCM_Experiments(unittest.TestCase):
             print("Opt RMSE:", opt_rmse)
 
         x, i, y, cubes, pickles = self.test_load_data(l2=str(l2))
-
+        #  kernel fit
         k = KernelFit()
         k.set_data(x, i, y, cubes, pickles)
-        k.fit(alpha=alpha, N_factor=N_factor)
+        k.fit(alpha=alpha, N_factor=n_factor)
 
         print("N X:", len(k.X))
         print("N:", len(k.ids))
