@@ -1,19 +1,20 @@
 import os
 import unittest
 import logging
+
+import ff_energy.utils.utils
+
 logging.log(0, "Testing ff_energy.pydcm.dcm")
 
 import pandas as pd
 
 from ff_energy.pydcm.dcm import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
     mdcm_cxyz, mdcm_clcl, local_pos, get_clcl, optimize_mdcm, eval_kernel
-
+from ff_energy.utils.utils import make_df_same_size
 espform = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/" \
           "test_nms_0_0.xyz_esp.cube"
 densform = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/" \
            "test_nms_0_0.xyz_dens.cube"
-
-
 
 from pathlib import Path
 from ff_energy.utils import dcm_utils as du
@@ -23,13 +24,16 @@ import matplotlib.pyplot as plt
 import pickle
 
 import warnings
+
 warnings.filterwarnings('ignore')
+
 
 def ignore_warnings(test_func):
     def do_test(self, *args, **kwargs):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", ResourceWarning)
             test_func(self, *args, **kwargs)
+
     return do_test
 
 
@@ -88,9 +92,9 @@ class kMDCM_Experiments(unittest.TestCase):
         print(m.get_rmse())
         optimize_mdcm(m, m.mdcm_clcl, "", "test")
 
-    def test_load_data(self, l2 = '100.0',
-                       cube_path = "/home/boittier/Documents/phd/"
-                                   "ff_energy/cubes/dcm/"):
+    def test_load_data(self, l2='100.0',
+                       cube_path="/home/boittier/Documents/phd/"
+                                 "ff_energy/cubes/dcm/"):
         PICKLES = list(Path(f"/home/boittier/Documents/phd/ff_energy/cubes/clcl/{l2}")
                        .glob("*.obj"))
         scanpath = Path(cube_path)
@@ -150,10 +154,10 @@ class kMDCM_Experiments(unittest.TestCase):
                  alpha=0.0,
                  l2=0.0,
                  do_null=True,
-                n_factor=2,
+                 n_factor=2,
                  do_optimize=False,
                  cubes_pwd="/home/boittier/Documents/phd/ff_energy/cubes/dcm/",
-                    mdcm_dict=None,
+                 mdcm_dict=None,
                  ):
         # path to cubes
         cube_paths = Path(cubes_pwd)
@@ -168,7 +172,7 @@ class kMDCM_Experiments(unittest.TestCase):
         if do_optimize is False:
             print("Optimizing")
             opt_rmses = eval_kernel(range(140), ecube_files, dcube_files,
-                        opt=True, l2=l2)
+                                    opt=True, l2=l2)
             print("Opt RMSEs:", opt_rmses)
             opt_rmse = sum(opt_rmses) / len(opt_rmses)
             print("Opt RMSE:", opt_rmse)
@@ -234,23 +238,25 @@ class kMDCM_Experiments(unittest.TestCase):
             fn = f"opt_{k.uuid}_{l2}.csv"
         else:
             fn = f"kernel_{k.uuid}_{alpha}_{l2}.csv"
+
+        df_dict = {
+            "rmse": rmses,
+            "pkl": files,
+            "class": class_name,
+            "alpha": alpha,
+            "uuid": k.uuid,
+            'l2': l2,
+            "type": ["nms" if "nms" in str(_) else "scan"
+                     for _ in files]
+        }
+
         pd.DataFrame(
-            {
-                "rmse": rmses,
-                "pkl": files,
-                "class": class_name,
-                "alpha": alpha,
-                "uuid": k.uuid,
-                'l2': l2,
-                "type": ["nms" if "nms" in str(_) else "scan"
-                         for _ in files]
-            }
+        ff_energy.utils.utils.make_df_same_size(df_dict)
         ).to_csv(fn)
 
     def pickle_kernel(self, k):
         with open(f"kernel_{k.uuid}.pkl", "wb") as f:
             pickle.dump(k, f)
-
 
     def test_files(self):
         i = 4
