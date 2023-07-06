@@ -22,7 +22,7 @@ from ff_energy.pydcm.dcm import DCM_PY_PATH
 from ff_energy.pydcm.kernel import KernelFit
 import matplotlib.pyplot as plt
 import pickle
-
+import numpy as np
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -168,7 +168,7 @@ class kMDCM_Experiments(unittest.TestCase):
         m = self.get_mdcm(mdcm_dict=mdcm_dict)
         print("mdcm_clcl")
         print(m.mdcm_clcl)
-
+        # dp optimization
         if do_optimize is False:
             print("Optimizing")
             opt_rmses = eval_kernel(range(140), ecube_files, dcube_files,
@@ -176,13 +176,14 @@ class kMDCM_Experiments(unittest.TestCase):
             print("Opt RMSEs:", opt_rmses)
             opt_rmse = sum(opt_rmses) / len(opt_rmses)
             print("Opt RMSE:", opt_rmse)
-
+        # unload the data
         x, i, y, cubes, pickles = self.test_load_data(l2=str(l2))
         #  kernel fit
         k = KernelFit()
         k.set_data(x, i, y, cubes, pickles)
         k.fit(alpha=alpha, N_factor=n_factor)
-
+        # printing
+        print("*" * 80)
         print("N X:", len(k.X))
         print("N:", len(k.ids))
         print("N test:", len(k.test_ids))
@@ -191,38 +192,41 @@ class kMDCM_Experiments(unittest.TestCase):
         print("sum r2s test:", sum([_[0] for _ in k.r2s]))
         print("sum r2s train:", sum([_[1] for _ in k.r2s]))
         print("n models:", len(k.r2s))
-
+        print("r2s:", k.r2s)
+        # print("r2s test:", k.r2s_test)
+        # print("r2s train:", k.r2s_train)
+        # print("r2s test mean:", np.mean(k.r2s_test))
+        # print("r2s train mean:", np.mean(k.r2s_train))
         print("Moving clcls")
         files = k.move_clcls(m.mdcm_clcl)
         print("N files:", len(files), '\n')
-
+        print("*" * 80)
         #  test the original model
         if do_null:
             self.test_standard_rmse(k, files, cubes, pickles)
-
+        #  test the optimized model
         rmses = eval_kernel(files, ecube_files, dcube_files,
                             load_pkl=True)
-
+        #  Printing the rmses
         kern_rmse = self.print_rmse(rmses)
-
+        print("RMSEs:", rmses)
         self.prepare_df(k, rmses, files, alpha=alpha, l2=l2)
-
+        #  test the optimized model
         if do_optimize is False:
             self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
-
+        # plot fits
         k.plot_fits(rmses)
         k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}")
-
+        #  plot optimized
         if do_optimize is False:
             k.plot_pca(opt_rmses, title=f"Optimized ({opt_rmse:.2f})",
                        name=f"opt_{k.uuid}")
-
+        #  pickle kernel
         print("Pickling kernel", k)
         self.pickle_kernel(k)
-
+        #  write manifest
         print("Writing manifest")
         k.write_manifest(f"manifest/{k.uuid}.json")
-
         return k
 
     def print_rmse(self, rmses):
