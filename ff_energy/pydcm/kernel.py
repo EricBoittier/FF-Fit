@@ -12,6 +12,22 @@ from ff_energy.pydcm.dcm import get_clcl
 
 
 def graipher(pts, K, start=False):
+    """
+    https://en.wikipedia.org/wiki/Farthest-first_traversal
+    :param pts:
+    :param K:
+    :param start:
+    :return:
+    """
+    # error handling
+    if K > len(pts):
+        raise ValueError("K must be less than the number of points")
+    if K < 1:
+        raise ValueError("K must be greater than 0")
+    if len(pts.shape) != 2:
+        raise ValueError("pts must be a 2D array")
+
+
     farthest_pts = np.zeros((K, pts.shape[1]))
     farthest_pts_ids = []
     if start:
@@ -109,7 +125,8 @@ class KernelFit:
             start=False,
             model_type=KernelRidge,
             kernel=RBF(),
-            N_factor=10):
+            N_factor=10,
+            l2=None):
         """
 
         :param alpha:
@@ -117,7 +134,11 @@ class KernelFit:
         :param start:
         :return:
         """
-
+        self.alpha = alpha
+        self.kernel = kernel
+        self.N_factor = N_factor
+        self.l2 = l2
+        # sample N_SAMPLE_POINTS
         if N_SAMPLE_POINTS is None:
             N_SAMPLE_POINTS = len(self.X)//N_factor
             print("N_SAMPLE_POINTS set to {}".format(N_SAMPLE_POINTS))
@@ -163,7 +184,7 @@ class KernelFit:
             self.test_results.append((y_test, test_predictions))
             self.train_results.append((y_train, train_predictions))
 
-    def move_clcls(self, clcl):
+    def move_clcls(self, clcl, l2):
         charges = clcl.copy()
         files = []
         #  iterate over each structure
@@ -211,7 +232,7 @@ class KernelFit:
         plt.tight_layout()
         if name is not None:
             plt.savefig(f"{name}.png", bbox_inches='tight')
-        plt.show()
+        #plt.show()
 
     def plot_fits(self, rmses, name=None):
         N = len(self.models) // 3
@@ -252,7 +273,7 @@ class KernelFit:
         plt.tight_layout()
         if name is not None:
             plt.savefig(name, bbox_inches='tight')
-        plt.show()
+        #plt.show()
 
     def plot_fits3d(self):
         pass
@@ -352,6 +373,5 @@ def plot3d(i, ax, test_results, test_angle, test_rmses):
     ax[0].set_xlabel("$\\theta _{\mathrm{HOC}}$ [$^{\circ}$]", fontsize=20)
     ax[1].set_xlabel("$\\theta _{\mathrm{HOC}}$ [$^{\circ}$]", fontsize=20)
     plt.savefig(f"{i}_charges3d.pdf", bbox_inches="tight")
-    plt.show()
 
 

@@ -4,29 +4,35 @@ import numpy as np
 import os
 import subprocess
 import time
-from pathlib import Path
+from pathlib import Path, PosixPath
 import pickle
 import pandas as pd
 import argparse
 # Optimization
 from scipy.optimize import minimize
 
+bohr_to_a = 0.529177
+
 DCM_PY_PATH = Path(os.path.dirname(os.path.abspath(__file__))) / "dcm.py"
-print(DCM_PY_PATH)
+HOME_PATH = Path(os.path.expanduser("~"))
+FFE_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parents[1]
+print("DCMPY:", DCM_PY_PATH)
+print("HOME:", HOME_PATH)
+print("FFE:", FFE_PATH)
 
 mdcm = dcm_fortran
 
-espform = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/" \
+espform = FFE_PATH / "cubes/dcm/nms/" \
           "test_nms_0_0.xyz_esp.cube"
-densform = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/" \
+densform = FFE_PATH / "cubes/dcm/nms/" \
            "test_nms_0_0.xyz_dens.cube"
 
 scan_fesp = [espform]
 scan_fdns = [densform]
 
-mdcm_cxyz = "/home/boittier/Documents/phd/ff_energy/ff_energy/pydcm/sources/" \
+mdcm_cxyz = FFE_PATH / "ff_energy/pydcm/sources/" \
     "dcm8.xyz"
-mdcm_clcl = "/home/boittier/Documents/phd/ff_energy/ff_energy/pydcm/sources/" \
+mdcm_clcl = FFE_PATH / "ff_energy/pydcm/sources/" \
             "dcm.mdcm"
 
 local_pos = None
@@ -36,16 +42,27 @@ def mdcm_set_up(scan_fesp, scan_fdns,
                 mdcm_cxyz=None,
                 mdcm_clcl=None,
                 local_pos=None):
+    # convert PosixPath to string
+    if isinstance(scan_fesp, PosixPath):
+        scan_fesp = str(scan_fesp)
+    if isinstance(scan_fdns, PosixPath):
+        scan_fdns = str(scan_fdns)
+    if isinstance(mdcm_cxyz, PosixPath):
+        mdcm_cxyz = str(mdcm_cxyz)
+    if isinstance(mdcm_clcl, PosixPath):
+        mdcm_clcl = str(mdcm_clcl)
+
+    # Load MDCM global and local files
     mdcm.dealloc_all()
     Nfiles = len(scan_fesp)
     Nchars = int(np.max([
-        len(filename) for filelist in [scan_fesp, scan_fdns]
+        len(str(filename)) for filelist in [scan_fesp, scan_fdns]
         for filename in filelist]))
     esplist = np.empty([Nfiles, Nchars], dtype='c')
     dnslist = np.empty([Nfiles, Nchars], dtype='c')
     for ifle in range(Nfiles):
-        esplist[ifle] = "{0:{1}s}".format(scan_fesp[ifle], Nchars)
-        dnslist[ifle] = "{0:{1}s}".format(scan_fdns[ifle], Nchars)
+        esplist[ifle] = "{0:{1}s}".format(str(scan_fesp[ifle]), Nchars)
+        dnslist[ifle] = "{0:{1}s}".format(str(scan_fdns[ifle]), Nchars)
     # Load cube files, read MDCM global and local files
     mdcm.load_cube_files(Nfiles, Nchars, esplist.T, dnslist.T)
     if mdcm_clcl is not None:
@@ -62,7 +79,6 @@ def mdcm_set_up(scan_fesp, scan_fdns,
     mdcm.write_mdcm_cube_files()
     return mdcm
 
-bohr_to_a = 0.529177
 
 
 def get_clcl(local_pos, charges):
@@ -125,7 +141,7 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
                  / local_pos.shape[0]
     print("charge RMSD:", difference)
     outname = f"{outname}_l2_{l2:.1e}_rmse_{rmse:.4f}_rmsd_{difference:.4f}"
-    obj_name = f"/home/boittier/Documents/phd/ff_energy/" \
+    obj_name = f"{FFE_PATH}/" \
                f"cubes/clcl/{l2}/{outname}_clcl.obj"
     #  save as pickle
     with open(obj_name, 'wb') as filehandler:
@@ -141,23 +157,21 @@ def eval_kernel(clcls, esp_path, dens_path,
     rmses = []
     commands = []
     N = len(clcls)
-    path__ = "/home/boittier/Documents/" \
-             f"phd/ff_energy/cubes/clcl/{l2}"
-    print(path__)
+    path__ = f"{FFE_PATH}/ff_energy/cubes/clcl/{l2}"
+    print("path:", path__)
     for i in range(N):
         ESP_PATH = esp_path[i]
         DENS_PATH = dens_path[i]
         job_command = f'python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH}' \
                         f' -mdcm_clcl ' \
-                      f'/home/boittier/Documents/phd/ff_energy/ff_energy/pydcm/sources/' \
-                      f'dcm.mdcm -mdcm_xyz /home/boittier/Documents/phd/ff_energy/' \
+                      f'{FFE_PATH}/ff_energy/pydcm/sources/' \
+                      f'dcm.mdcm -mdcm_xyz {FFE_PATH}/' \
                       f'ff_energy/pydcm/sources/dcm8.xyz '
         if load_pkl:
             job_command += f' -l {clcls[i]}'
         if opt:
             job_command += f' -opt True -l2 {l2} ' \
-                           f'-o /home/boittier/Documents/phd/' \
-                           f'ff_energy/ff_energy/cubes/clcl/{l2}'
+                           f'-o {FFE_PATH}/cubes/clcl/{l2}'
             Path(path__
                  ).mkdir(parents=True, exist_ok=True)
         # print(job_command)
@@ -254,8 +268,8 @@ if __name__ == "__main__":
         ESPF = [esp]
         DENSF = [dens]
 
-    print(ESPF)
-    print(DENSF)
+    #print(ESPF)
+    #print(DENSF)
     mdcm = mdcm_set_up(ESPF, DENSF,
                        mdcm_cxyz=mdcm_xyz,
                        mdcm_clcl=mdcm_clcl,
@@ -270,3 +284,4 @@ if __name__ == "__main__":
     else:
         rmse = mdcm.get_rmse()
         print("RMSE:", i, rmse)
+
