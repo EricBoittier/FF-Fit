@@ -2,7 +2,7 @@ import unittest
 
 import jax.numpy
 
-from ff_energy.ffe.utils import read_from_pickle
+from ff_energy.ffe.ffe_utils import read_from_pickle
 from ff_energy.ffe.ff import FF
 import jax.numpy as jnp
 

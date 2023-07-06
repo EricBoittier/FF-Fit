@@ -1,12 +1,22 @@
 import os
 import unittest
+import logging
+logging.log(0, "Testing ff_energy.pydcm.dcm")
 
 import pandas as pd
 
 from ff_energy.pydcm.dcm import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
     mdcm_cxyz, mdcm_clcl, local_pos, get_clcl, optimize_mdcm, eval_kernel
+
+espform = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/" \
+          "test_nms_0_0.xyz_esp.cube"
+densform = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/" \
+           "test_nms_0_0.xyz_dens.cube"
+
+
+
 from pathlib import Path
-from ff_energy.pydcm import dcm_utils as du
+from ff_energy.utils import dcm_utils as du
 from ff_energy.pydcm.dcm import DCM_PY_PATH
 from ff_energy.pydcm.kernel import KernelFit
 import matplotlib.pyplot as plt
@@ -28,14 +38,42 @@ class kMDCM_Experiments(unittest.TestCase):
         if mdcm_dict is not None and type(mdcm_dict) is dict:
             if "scan_fesp" in mdcm_dict.keys():
                 scan_fesp = mdcm_dict["scan_fesp"]
+            else:
+                scan_fesp = None
             if "scan_fdns" in mdcm_dict.keys():
                 scan_fdns = mdcm_dict["scan_fdns"]
+            else:
+                scan_fdns = None
             if "mdcm_cxyz" in mdcm_dict.keys():
                 mdcm_cxyz = mdcm_dict["mdcm_cxyz"]
+            else:
+                mdcm_cxyz = None
             if "mdcm_clcl" in mdcm_dict.keys():
                 mdcm_clcl = mdcm_dict["mdcm_clcl"]
+            else:
+                mdcm_clcl = None
             if "local_pos" in mdcm_dict.keys():
                 local_pos = mdcm_dict["local_pos"]
+            else:
+                local_pos = None
+        else:
+            scan_fesp = None
+            scan_fdns = None
+            local_pos = None
+            mdcm_cxyz = None
+            mdcm_clcl = None
+
+        if scan_fesp is None:
+            scan_fesp = [espform]
+        if scan_fdns is None:
+            scan_fdns = [densform]
+
+        if mdcm_cxyz is None:
+            mdcm_cxyz = "/home/boittier/Documents/phd/ff_energy/ff_energy/pydcm/sources/" \
+                        "dcm8.xyz"
+        if mdcm_clcl is None:
+            mdcm_clcl = "/home/boittier/Documents/phd/ff_energy/ff_energy/pydcm/sources/" \
+                        "dcm.mdcm"
 
         return mdcm_set_up(scan_fesp, scan_fdns,
                            local_pos=local_pos,
@@ -169,14 +207,17 @@ class kMDCM_Experiments(unittest.TestCase):
             self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
 
         k.plot_fits(rmses)
-        k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}.png")
+        k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}")
 
         if do_optimize is False:
             k.plot_pca(opt_rmses, title=f"Optimized ({opt_rmse:.2f})",
-                       name=f"opt_{k.uuid}.png")
+                       name=f"opt_{k.uuid}")
 
         print("Pickling kernel", k)
         self.pickle_kernel(k)
+
+        print("Writing manifest")
+        k.write_manifest(f"manifest/{k.uuid}.json")
 
         return k
 

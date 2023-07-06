@@ -1,8 +1,8 @@
 from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
     clusterNCCR, clusterBEETHOVEN
-from ff_energy.ffe.utils import MakeJob, charmm_jobs
-from ff_energy.ffe.utils import pickle_output
-from ff_energy.ffe.utils import PKL_PATH
+from ff_energy.ffe.ffe_utils import MakeJob, charmm_jobs
+from ff_energy.ffe.ffe_utils import pickle_output
+from ff_energy.ffe.ffe_utils import PKL_PATH
 from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
 from ff_energy.ffe.data import Data

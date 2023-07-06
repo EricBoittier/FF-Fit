@@ -91,6 +91,18 @@ class KernelFit:
     def __str__(self):
         return f"KernelFit: {self.uuid} {self.alpha} {self.kernel}"
 
+    def write_manifest(self, path):
+        string_ = f"{self.uuid} {self.alpha} {self.kernel}\nTest ids:\n"
+        for test in self.test_ids:
+            string_ += f"test {test}\n"
+        string_ += "Train ids:\n"
+        for train in self.train_ids:
+            string_ += f"train {train}\n"
+
+        with open(path, "w") as f:
+            f.write(string_)
+        return string_
+
     def fit(self,
             alpha=1e-3,
             N_SAMPLE_POINTS=None,
