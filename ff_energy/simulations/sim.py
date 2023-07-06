@@ -1,5 +1,5 @@
 from ff_energy.simulations.templater import SimTemplate, input_files
-from ff_energy.ffe.utils import makeDir
+from ff_energy.ffe.ffe_utils import makeDir
 from pathlib import Path
 from shutil import copyfile
 

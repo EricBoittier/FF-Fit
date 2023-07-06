@@ -28,6 +28,7 @@ def plot_energy_MSE(
         bounds=None,
         alpha=0.5,
         s=1,
+        save=False,
         cbar_bounds=(-120, 0),
 ):
     """Plot the energy MSE"""
@@ -136,6 +137,10 @@ def plot_energy_MSE(
         "slope": slope,
         "intercept": intercept,
     }
+
+    if save:
+        plt.savefig(save, dpi=300)
+
 
     return ax, cbar, stats
 

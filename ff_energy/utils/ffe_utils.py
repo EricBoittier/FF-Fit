@@ -1,6 +1,8 @@
 import pickle
 from pathlib import Path
 import re
+import numpy as np
+import codecs, json
 
 from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
 from ff_energy.ffe.constants import atom_types
@@ -51,15 +53,20 @@ PKL_PATH = Path(__file__).parents[2] / "pickles"
 
 
 def get_structures(system_name, pdbpath=None):
-    if pdbpath is None:
-        raise ValueError("pdbpath must be specified")
-
-
+    """
+    Get structures and pdbs from pickle file, if no path is given,
+    load from the pickles folder
+    :param system_name:
+    :param pdbpath:
+    :return:
+    """
     pickle_exists = Path(PKL_PATH / f"structures/{system_name}.pkl").exists()
     if pickle_exists:
         print("Structure/PDB already already exists, loading from pickle")
         structures, pdbs = next(read_from_pickle(PKL_PATH /
                                                  f"structures/{system_name}.pkl"))
+    elif pdbpath is None:
+        raise ValueError("pdbpath must be specified")
     else:
         structures, pdbs = get_structures_pdbs(Path(pdbpath),
                                                system_name=system_name)
@@ -115,3 +122,27 @@ def read_from_pickle(path):
                 yield pickle.load(file)
         except EOFError:
             print("EOFError when loading {}".format(path))
+
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+
+def write_json(data, path):
+    keys = data.keys()
+    fn = "_".join(keys) + ".json"
+    path = Path(path) / fn
+    with codecs.open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, separators=(',', ':'),
+                  sort_keys=True, indent=4, cls=NumpyEncoder)
+
+
+def json_load_np(path: str) -> dict:
+    json_load = json.loads(path)
+    np_dict = {}  # dictionary of numpy objects
+    for key in json_load.keys():
+        np_dict[key] = np.array(json_load[key])
+    return np_dict

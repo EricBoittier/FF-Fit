@@ -14,7 +14,6 @@ def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
     structures = []
     pdbs = [_ for _ in os.listdir(PDBPATH) if _.endswith("pdb")]
     for p in pdbs:
-        print(p)
         s_path = PDBPATH / p
         s = Structure(s_path, _atom_types=atom_types, system_name=system_name)
         s.set_2body()

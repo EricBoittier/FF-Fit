@@ -1,8 +1,8 @@
 from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
     clusterNCCR, clusterBEETHOVEN
-from ff_energy.ffe.utils import MakeJob, charmm_jobs
-from ff_energy.ffe.utils import pickle_output
-from ff_energy.ffe.utils import PKL_PATH
+from ff_energy.ffe.ffe_utils import MakeJob, charmm_jobs
+from ff_energy.ffe.ffe_utils import pickle_output
+from ff_energy.ffe.ffe_utils import PKL_PATH
 from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
 from ff_energy.ffe.data import Data
@@ -267,7 +267,7 @@ if __name__ == "__main__":
         "-s", "--submit", required=False, default=False, action="store_true"
     )
     parser.add_argument(
-        "-cj", "--coloumb", required=False, default=False, action="store_true"
+        "-cj", "--coulomb", required=False, default=False, action="store_true"
     )
     parser.add_argument(
         "-chmj", "--chm", required=False, default=False, action="store_true"
@@ -356,7 +356,7 @@ if __name__ == "__main__":
                     print("Submitting CHM Jobs")
                 charmm_submit(clusterBEETHOVEN, jobmakers, max_jobs=120, Check=False)
 
-        if args.coloumb:
+        if args.coulomb:
             if args.verbose:
                 print("Making Coloumb Jobs")
             jobmakers = coloumb_jobs(CMS, args.dry, cluster=args.molpro_small_path)

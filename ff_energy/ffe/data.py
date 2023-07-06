@@ -4,10 +4,10 @@ import itertools
 
 import jax.numpy as jnp
 
-from ff_energy.ffe.utils import read_from_pickle, str2int
+from ff_energy.ffe.ffe_utils import read_from_pickle, str2int
 from ff_energy.ffe.plot import plot_energy_MSE
 from ff_energy.ffe.geometry import dihedral3, bisector, angle, dist
-from ff_energy.ffe.utils import get_structures
+from ff_energy.ffe.ffe_utils import get_structures
 from ff_energy.ffe.potential import Ecoloumb
 from ff_energy.ffe.bonded_terms import FitBonded
 

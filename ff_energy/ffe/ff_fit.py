@@ -9,7 +9,7 @@ from ff_energy.ffe.potential import LJ, DE
 from ff_energy.ffe.ff import FF
 from ff_energy.ffe.data import Data
 from pathlib import Path
-from ff_energy.ffe.utils import pickle_output, read_from_pickle, PKL_PATH
+from ff_energy.ffe.ffe_utils import pickle_output, read_from_pickle, PKL_PATH
 
 sig_bound = (0.001, 2.5)
 ep_bound = (0.001, 2.5)
@@ -182,7 +182,10 @@ def fit_func(
         method=method,
         tol=1e-6,
         bounds=bounds,
-        options={"maxfev": maxfev, "pgtol": 1e-8},
+        options={
+            "maxfev": maxfev,
+            # "pgtol": 1e-8
+        },
     )
 
     if not quiet:

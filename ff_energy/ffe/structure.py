@@ -5,6 +5,7 @@ import numpy as np
 from ff_energy.ffe.templates import PSF
 from ff_energy.ffe.geometry import sqrt_einsum_T
 import ff_energy.ffe.constants as constants
+from ase.io import read
 
 def valid_atom_key_pairs(atom_keys):
     atom_key_pairs = list(itertools.combinations(atom_keys, 2))
@@ -72,7 +73,6 @@ class Structure:
                 chg += 1
         return chg
 
-    #  TODO:  fix this so only the monomer/dimer charges are calculated
     def get_monomer_charge(self, n):
         chg = 0
         restypes = np.array(self.restypes)
@@ -301,7 +301,7 @@ REMARK
         )
         _str = header
         for i, line in enumerate(self.atoms):
-            print(i, self.atomnames[i], self.restypes[i], self.resids[i])
+            # print(i, self.atomnames[i], self.restypes[i], self.resids[i])
             _1 = "ATOM"
             _2 = i + 1
             _3 = self.atomnames[i]
@@ -327,3 +327,29 @@ REMARK
     def save_pdb(self, path):
         with open(path, "w") as f:
             f.write(self.get_pdb())
+
+    def save_xyz(self, path):
+        with open(path, "w") as f:
+            s = self.get_cluster_xyz()
+            f.write(f"{len(self.atoms)}\nFFE output\n")
+            f.write(s)
+
+    def save_monomer_xyz(self, res, path):
+        with open(path, "w") as f:
+            f.write(self.get_monomer_xyz(res))
+
+    def save_pair_xyz(self, res_a, res_b, path):
+        with open(path, "w") as f:
+            f.write(self.get_pair_xyz(res_a, res_b))
+
+    def get_ase(self):
+        """returns ase atoms object
+        workaround by saving to file..."""
+        name = str(self.path.absolute()) + ".tmp.xyz"
+        self.save_xyz(name)
+        atoms = read(name)
+        os.remove(name)
+        return atoms
+
+
+
