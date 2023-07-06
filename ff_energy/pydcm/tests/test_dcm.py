@@ -170,7 +170,8 @@ class kMDCM_Experiments(unittest.TestCase):
         print(m.mdcm_clcl)
         # dp optimization
         if do_optimize is False:
-            print("Optimizing")
+            print("*"*80)
+            print("Optimizing with l2=", l2)
             opt_rmses = eval_kernel(range(140), ecube_files, dcube_files,
                                     opt=True, l2=l2)
             print("Opt RMSEs:", opt_rmses)
@@ -183,7 +184,7 @@ class kMDCM_Experiments(unittest.TestCase):
         k.set_data(x, i, y, cubes, pickles)
         k.fit(alpha=alpha, N_factor=n_factor)
         # printing
-        print("*" * 80)
+        print("*" * 20, "Kernel Fit", "*" * 20)
         print("N X:", len(k.X))
         print("N:", len(k.ids))
         print("N test:", len(k.test_ids))
@@ -200,7 +201,8 @@ class kMDCM_Experiments(unittest.TestCase):
         print("Moving clcls")
         files = k.move_clcls(m.mdcm_clcl)
         print("N files:", len(files), '\n')
-        print("*" * 80)
+
+        print("*" * 20, "Eval Results", "*" * 20)
         #  test the original model
         if do_null:
             self.test_standard_rmse(k, files, cubes, pickles)
@@ -214,6 +216,8 @@ class kMDCM_Experiments(unittest.TestCase):
         #  test the optimized model
         if do_optimize is False:
             self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
+
+        print("*" * 20, "Eval Kernel", "*" * 20)
         # plot fits
         k.plot_fits(rmses)
         k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}")
