@@ -11,13 +11,14 @@ from sklearn.decomposition import PCA
 from ff_energy.pydcm.dcm import get_clcl
 
 
-def graipher(pts, K, start=False):
+def graipher(pts, K, start=False) -> (np.ndarray, np.ndarray):
     """
     https://en.wikipedia.org/wiki/Farthest-first_traversal
     :param pts:
     :param K:
     :param start:
-    :return:
+    :return: farthest_pts
+            farthest_pts_ids
     """
     # error handling
     if K > len(pts):
@@ -26,9 +27,10 @@ def graipher(pts, K, start=False):
         raise ValueError("K must be greater than 0")
     if len(pts.shape) != 2:
         raise ValueError("pts must be a 2D array")
-
-
-    farthest_pts = np.zeros((K, pts.shape[1]))
+    # initialize the farthest points array
+    farthest_pts = np.zeros(
+        (K, pts.shape[1])
+    )
     farthest_pts_ids = []
     if start:
         farthest_pts[0] = start
@@ -40,8 +42,8 @@ def graipher(pts, K, start=False):
     for i in range(1, K):
         farthest_pts[i] = pts[np.argmax(distances)]
         farthest_pts_ids.append(np.argmax(distances))
-
         distances = np.minimum(distances, calc_distances(farthest_pts[i], pts))
+
     return farthest_pts, farthest_pts_ids
 
 
@@ -274,10 +276,8 @@ class KernelFit:
         plt.tight_layout()
         if name is not None:
             plt.savefig(name, bbox_inches='tight')
-        #plt.show()
 
-    def plot_fits3d(self):
-        pass
+
 
 
 

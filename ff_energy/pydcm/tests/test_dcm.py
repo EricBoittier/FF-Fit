@@ -24,8 +24,8 @@ from ff_energy.pydcm.dcm import DCM_PY_PATH
 
 from ff_energy.pydcm.kernel import KernelFit
 
-model_test_key = "ddc0ceff-f221-45c5-bd4e-3e5e2e1eb705"
-
+# model_test_key = "ddc0ceff-f221-45c5-bd4e-3e5e2e1eb705"
+model_test_key = "e73308ad-2677-49b3-a149-270743bd3a83"
 # path to  this file
 PATH_TO_TESTDIR = Path(os.path.dirname(os.path.abspath(__file__)))
 
@@ -97,25 +97,48 @@ class kMDCM_Experiments(unittest.TestCase):
         print(m.get_rmse())
         optimize_mdcm(m, m.mdcm_clcl, "", "test")
 
-    def test_load_data(self, l2,
-                       cube_path=f"{FFE_PATH}/cubes/dcm/"):
+    def test_load_data(self,
+                       l2,
+                       cube_path=f"{FFE_PATH}/cubes/dcm/",
+                       natoms=5,
+                       ):
         PICKLES = list(Path(f"{FFE_PATH}/cubes/clcl/{l2}")
-                       .glob("*.obj"))
+                       .glob("*clcl.obj"))
         scanpath = Path(cube_path)
-
-        def name_(x):
-            if "gaussian" in str(x):
-                return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
-            elif "_nms_" in str(x):
-                return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
-            else:
-                print(f"ValueError(fbad pickle name {x})")
+        chosen_points = []
+        def name_(x, origs=False):
+            try:
+                name = x.name.split(".c")[0]
+            except Exception as e:
+                print(f"Exception {e} for {x}")
                 return None
 
-        PICKLES = [_ for _ in PICKLES if name_(_) is not None]
-        CUBES = [name_(_) for _ in PICKLES]
+            if origs and (name not in chosen_points):
+                if "gaussian" in str(x) :
+                    chosen_points.append(name)
+                    return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
+                elif "_nms_" in str(x):
+                    chosen_points.append(name)
+                    return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
+                else:
+                    print(f"ValueError(fbad pickle name {x})")
+                    return None
+            else:
+                if "gaussian" in str(x):
+                    return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
+                elif "_nms_" in str(x):
+                    return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
+                else:
+                    print(f"ValueError(fbad pickle name {x})")
+                    return None
+
+        PICKLES = [_ for _ in PICKLES
+                   if name_(_, origs=True) is not None]
+        CUBES = [name_(_, origs=False) for _ in PICKLES]
+        #  they must be the same length
         assert len(CUBES) == len(PICKLES)
-        return du.get_data(CUBES, PICKLES, 5)
+        #  return the data
+        return du.get_data(CUBES, PICKLES, natoms)
 
     def test_standard_rmse(self,
                            k,
@@ -156,7 +179,7 @@ class kMDCM_Experiments(unittest.TestCase):
         Test the standard RMSE
         :return:
         """
-        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4)
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=True)
 
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
