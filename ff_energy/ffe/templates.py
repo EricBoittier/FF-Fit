@@ -6,7 +6,10 @@ template_files = Path(__file__).parent / "template_files"
 
 with open(template_files / "esp_view.sh") as file_:
     esp_view_template = Template(file_.read())
-# print(esp_view_template.render(KEY="TEST", NCHG=6))
+
+with open(template_files / "esp_cubes.sh") as file_:
+    esp_cubes_template = Template(file_.read())
+
 
 with open(template_files / "gaussian.com") as file_:
     g_template = Template(file_.read())

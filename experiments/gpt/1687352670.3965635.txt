@@ -1,0 +1,8 @@
+```json
+{
+  "levels_of_theory": ["pbe0dz"],
+  "types_of_calculations": ["clusters", "pairs"],
+  "types_of_charge_models": ["DUMMY", "ECOL", "epol_mike", "kmdcm", "mdcm", "optpc"],
+  "types_of_force_fields": ["lj", "de"]
+}
+```
