@@ -146,6 +146,11 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     #  save as pickle
     with open(obj_name, 'wb') as filehandler:
         pickle.dump(clcl_out, filehandler)
+    #  save the global charges array
+    global_charges = mdcm.mdcm_cxyz
+    with open(f"{FFE_PATH}/cubes/clcl/{l2}/{outname}_clcl_global.obj",
+                'wb') as filehandler:
+            pickle.dump(global_charges, filehandler)
 
     # Not necessary but who knows when it becomes important to deallocate all
     # global arrays
@@ -160,9 +165,11 @@ def eval_kernel(clcls, esp_path, dens_path,
     """
     rmses = []
     commands = []
-    N = len(clcls)
+    N = len(esp_path)
     path__ = f"{FFE_PATH}/ff_energy/cubes/clcl/{l2}"
     print("path:", path__)
+    esp_path.sort()
+    dens_path.sort()
     for i in range(N):
         ESP_PATH = esp_path[i]
         DENS_PATH = dens_path[i]
@@ -244,6 +251,7 @@ if __name__ == "__main__":
     else:
         mdcm_xyz = None
         print("WARNING: No MDCM xyz file specified")
+
     if args.esp is not None:
         esp = args.esp
     else:
@@ -272,8 +280,7 @@ if __name__ == "__main__":
         ESPF = [esp]
         DENSF = [dens]
 
-    #print(ESPF)
-    #print(DENSF)
+
     mdcm = mdcm_set_up(ESPF, DENSF,
                        mdcm_cxyz=mdcm_xyz,
                        mdcm_clcl=mdcm_clcl,

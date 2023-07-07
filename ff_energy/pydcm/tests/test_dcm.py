@@ -26,6 +26,9 @@ from ff_energy.pydcm.kernel import KernelFit
 
 model_test_key = "ddc0ceff-f221-45c5-bd4e-3e5e2e1eb705"
 
+# path to  this file
+PATH_TO_TESTDIR = Path(os.path.dirname(os.path.abspath(__file__)))
+
 def ignore_warnings(test_func):
     def do_test(self, *args, **kwargs):
         with warnings.catch_warnings():
@@ -148,6 +151,13 @@ class kMDCM_Experiments(unittest.TestCase):
                       "filename": files}
                      ).to_csv("standard_.csv")
 
+    def test_standard(self):
+        """
+        Test the standard RMSE
+        :return:
+        """
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4)
+
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
         l2s = [0.0, 0.1, 0.5, 1.0, 2.0, 4.0]
@@ -197,7 +207,7 @@ class kMDCM_Experiments(unittest.TestCase):
             print("*"*80)
             print("Optimizing with l2=", l2)
             opt_rmses = eval_kernel(
-                    range(140), 
+                    None,
                     ecube_files,
                     dcube_files,
                     opt=True, 
@@ -231,6 +241,7 @@ class kMDCM_Experiments(unittest.TestCase):
         #   Move the local charges
         print("Moving clcls")
         files = k.move_clcls(m.mdcm_clcl, l2=l2)
+        files.sort()
         print("N files:", len(files), '\n')
         
         print("*" * 20, "Eval Results", "*" * 20)
@@ -270,7 +281,7 @@ class kMDCM_Experiments(unittest.TestCase):
         self.pickle_kernel(k)
         #  write manifest
         print("Writing manifest")
-        k.write_manifest(f"manifest/{k.uuid}.json")
+        k.write_manifest(PATH_TO_TESTDIR / f"manifest/{k.uuid}.json")
         return k
 
     def print_rmse(self, rmses):
@@ -309,7 +320,7 @@ class kMDCM_Experiments(unittest.TestCase):
         ).to_csv(fn)
 
     def pickle_kernel(self, k):
-        with open(f"models/kernel_{k.uuid}.pkl", "wb") as f:
+        with open(PATH_TO_TESTDIR / f"models/kernel_{k.uuid}.pkl", "wb") as f:
             pickle.dump(k, f)
 
     def test_files(self):
@@ -348,9 +359,6 @@ if __name__ == '__main__':
     
     k = kMDCM_Experiments()
     k.test_fit(alpha=args.alpha, n_factor=args.n_factor, l2=args.l2)
-
-    # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
-    #sys.argv[1:] = args.unittest_args
 
     #unittest.main()
 

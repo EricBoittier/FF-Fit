@@ -141,7 +141,7 @@ class KernelFit:
         # sample N_SAMPLE_POINTS
         if N_SAMPLE_POINTS is None:
             N_SAMPLE_POINTS = len(self.X)//N_factor
-            
+            print("len(X)", len(self.X))
             print("N_SAMPLE_POINTS set to {}".format(N_SAMPLE_POINTS))
 
         points, ids = graipher(
