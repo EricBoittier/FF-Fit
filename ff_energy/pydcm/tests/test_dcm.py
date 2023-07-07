@@ -149,16 +149,16 @@ class kMDCM_Experiments(unittest.TestCase):
                      ).to_csv("standard_.csv")
 
     def experiments(self):
-        alphas = [0.0, 0.1, 0.5, 1.0, 2.0, 4.0, 8.0, 16.0]
-        l2s = [0.0, 0.1, 0.5, 1.0, 2.0, 4.0, 8.0]
+        alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
+        l2s = [0.0, 0.1, 0.5, 1.0, 2.0, 4.0]
         n_factors = [2, 4, 6, 8, 10, 12]
         for alpha in alphas:
             for l2 in l2s:
                 for n in n_factors:
                     print("alpha", alpha, "l2", l2, "N_factors", n_factors)
-                    self.test_fit(alpha=alpha, l2=l2, N_factor=n)
+                    self.test_fit(alpha=alpha, l2=l2, n_factor=n)
 
-    def test_N_repeats(self, n=5):
+    def test_N_repeats(self, n=1):
         for i in range(n):
             print("i", i)
             self.experiments()
@@ -172,26 +172,38 @@ class kMDCM_Experiments(unittest.TestCase):
                  do_optimize=False,
                  cubes_pwd= FFE_PATH / "cubes/dcm/",
                  mdcm_dict=None,
-                 load_data=True,
+                 load_data=False,
                  ):
+        """
+        Test the kernel fit
+        """
+
         # path to cubes
         cube_paths = Path(cubes_pwd)
         ecube_files = list(cube_paths.glob("*/*esp.cube"))
         dcube_files = list(cube_paths.glob("*/*dens.cube"))
         print("n_cubes", len(ecube_files))
         print("l2", l2)
+        
         #  load mdcm object
         m = self.get_mdcm(mdcm_dict=mdcm_dict)
         print("mdcm_clcl")
         print(m.mdcm_clcl)
+        
         if load_data is True:
             do_optimize = True # dumb
         # dp optimization
         if do_optimize is False:
             print("*"*80)
             print("Optimizing with l2=", l2)
-            opt_rmses = eval_kernel(range(140), ecube_files, dcube_files,
-                                    opt=True, l2=l2)
+            opt_rmses = eval_kernel(
+                    range(140), 
+                    ecube_files,
+                    dcube_files,
+                    opt=True, 
+                    l2=l2,
+                    verbose=True,
+                                    )
             print("Opt RMSEs:", opt_rmses)
             opt_rmse = sum(opt_rmses) / len(opt_rmses)
             print("Opt RMSE:", opt_rmse)
@@ -229,7 +241,10 @@ class kMDCM_Experiments(unittest.TestCase):
         
         #  test the optimized model
         rmses = eval_kernel(files, ecube_files, dcube_files,
-                            load_pkl=True)
+                            load_pkl=True, l2=l2)
+
+        print("len(rmses):", len(rmses))
+        
         #  Printing the rmses
         kern_rmse = self.print_rmse(rmses)
         print("RMSEs:", rmses)
@@ -246,8 +261,10 @@ class kMDCM_Experiments(unittest.TestCase):
         
         #  plot optimized
         if do_optimize is False:
-            k.plot_pca(opt_rmses, title=f"Optimized ({opt_rmse:.2f})",
-                       name=f"opt_{k.uuid}")
+            print(opt_rmses)
+            print(len(opt_rmses))
+            #k.plot_pca(opt_rmse, title=f"Optimized ({opt_rmse:.2f})",
+            #           name=f"opt_{k.uuid}")
         #  pickle kernel
         print("Pickling kernel", k)
         self.pickle_kernel(k)
@@ -257,18 +274,24 @@ class kMDCM_Experiments(unittest.TestCase):
         return k
 
     def print_rmse(self, rmses):
+        """
+
+        """
         print("RMSEs:", rmses)
         rmse = sum(rmses) / len(rmses)
         print("RMSE:", rmse)
         return rmse
 
     def prepare_df(self, k, rmses, files, alpha=0.0, l2=0.0, opt=False):
+        """
+
+        """
         class_name = ["test" if _ in k.test_ids
                       else "train" for _ in k.ids]
         if opt:
-            fn = f"opt_{k.uuid}_{l2}.csv"
+            fn = f"csvs/opt_{k.uuid}_{l2}.csv"
         else:
-            fn = f"kernel_{k.uuid}_{alpha}_{l2}.csv"
+            fn = f"csvs/kernel_{k.uuid}_{alpha}_{l2}.csv"
 
         df_dict = {
             "rmse": rmses,
@@ -313,6 +336,22 @@ class kMDCM_Experiments(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    from argparse import ArgumentParser
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--alpha', type=float, default=0.0)
+    parser.add_argument('--n_factor', type=int, default=1.0)
+    parser.add_argument('--l2', type=float, default=0.0)
+    parser.add_argument('unittest_args', nargs='*')
+    args = parser.parse_args()
+    
+    k = kMDCM_Experiments()
+    k.test_fit(alpha=args.alpha, n_factor=args.n_factor, l2=args.l2)
+
+    # Now set the sys.argv to the unittest_args (leaving sys.argv[0] alone)
+    #sys.argv[1:] = args.unittest_args
+
+    #unittest.main()
 
 

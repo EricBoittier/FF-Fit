@@ -153,7 +153,11 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
 
 
 def eval_kernel(clcls, esp_path, dens_path,
-                load_pkl=False, opt=False, l2=100.0, verbose=False):
+                load_pkl=False, opt=False, l2=100.0, 
+                verbose=False):
+    """
+    Evaluate kernel for a set of ESP and DENS files
+    """
     rmses = []
     commands = []
     N = len(clcls)
