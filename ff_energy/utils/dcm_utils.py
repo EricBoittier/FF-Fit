@@ -4,6 +4,7 @@ import pickle
 import pandas as pd
 
 from ff_energy.pydcm.dcm import bohr_to_a, get_clcl
+import cclib
 
 def load_nc(path, n=3):
     #  load nuclear coordinates
@@ -98,3 +99,11 @@ def get_data(cubes, pickles, natoms):
         lcs.append(local)
 
     return (np.array(_) for _ in [distM, ids, lcs, cubes, pickles])
+
+
+
+def get_cclib_data(filename):
+    data = cclib.io.ccread(filename)
+    return data
+
+

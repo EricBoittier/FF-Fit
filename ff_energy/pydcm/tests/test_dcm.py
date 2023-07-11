@@ -1,33 +1,30 @@
 import os
 import unittest
 import logging
-logging.log(0, "Testing ff_energy.pydcm.dcm")
+
 import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
 import pickle
 import numpy as np
 import warnings
+
 warnings.filterwarnings('ignore')
 
 import ff_energy.utils.utils
 from ff_energy.pydcm.dcm import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
     mdcm_cxyz, mdcm_clcl, local_pos, get_clcl, optimize_mdcm, eval_kernel
-from ff_energy.utils.utils import make_df_same_size
-
 from ff_energy.pydcm.dcm import FFE_PATH, espform, densform
-
-
 from ff_energy.utils import dcm_utils as du
-
-from ff_energy.pydcm.dcm import DCM_PY_PATH
-
+from ff_energy.utils import json_utils as ju
+from ff_energy.pydcm.mdcm_dict import MDCM
 from ff_energy.pydcm.kernel import KernelFit
 
 # model_test_key = "ddc0ceff-f221-45c5-bd4e-3e5e2e1eb705"
 model_test_key = "e73308ad-2677-49b3-a149-270743bd3a83"
 # path to  this file
 PATH_TO_TESTDIR = Path(os.path.dirname(os.path.abspath(__file__)))
+
 
 def ignore_warnings(test_func):
     def do_test(self, *args, **kwargs):
@@ -42,7 +39,7 @@ class kMDCM_Experiments(unittest.TestCase):
     """ 
     Class of tests and experiments for kMDCM
     """
-    
+
     def get_mdcm(self, mdcm_dict=None):
         if mdcm_dict is not None and type(mdcm_dict) is dict:
             if "scan_fesp" in mdcm_dict.keys():
@@ -79,10 +76,10 @@ class kMDCM_Experiments(unittest.TestCase):
 
         if mdcm_cxyz is None:
             mdcm_cxyz = FFE_PATH / "ff_energy/pydcm/sources/" \
-                        "dcm8.xyz"
+                                   "dcm8.xyz"
         if mdcm_clcl is None:
             mdcm_clcl = FFE_PATH / "ff_energy/pydcm/sources/" \
-                        "dcm.mdcm"
+                                   "dcm.mdcm"
 
         return mdcm_set_up(scan_fesp, scan_fdns,
                            local_pos=local_pos,
@@ -99,22 +96,31 @@ class kMDCM_Experiments(unittest.TestCase):
 
     def test_load_data(self,
                        l2,
-                       cube_path=f"{FFE_PATH}/cubes/dcm/",
+                       cube_path=None,
+                       pickle_path=None,
                        natoms=5,
                        ):
-        PICKLES = list(Path(f"{FFE_PATH}/cubes/clcl/{l2}")
-                       .glob("*clcl.obj"))
+
+        if cube_path is None:
+            cube_path = f"{FFE_PATH}/cubes/dcm/"
+
+        if pickle_path is None:
+            PICKLES = list(Path(f"{FFE_PATH}/cubes/clcl/{l2}")
+                           .glob("*clcl.obj"))
+        else:
+            PICKLES = list(Path(pickle_path).glob("*clcl.obj"))
+
         scanpath = Path(cube_path)
         chosen_points = []
+
         def name_(x, origs=False):
             try:
                 name = x.name.split(".c")[0]
             except Exception as e:
                 print(f"Exception {e} for {x}")
                 return None
-
             if origs and (name not in chosen_points):
-                if "gaussian" in str(x) :
+                if "gaussian" in str(x):
                     chosen_points.append(name)
                     return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
                 elif "_nms_" in str(x):
@@ -145,7 +151,8 @@ class kMDCM_Experiments(unittest.TestCase):
                            files,
                            cubes,
                            pickles,
-                           cubes_pwd = None):
+                           cubes_pwd=None,
+                           fname="",):
         """
         Test the standard RMSE
         :param k: KernelFit object
@@ -169,10 +176,10 @@ class kMDCM_Experiments(unittest.TestCase):
         print("RMSEs:", rmses)
         rmse = sum(rmses) / len(rmses)
         print("RMSE:", rmse)
-        k.plot_pca(rmses, title=f"Standard ({rmse:.2f})")
+        k.plot_pca(rmses, title=f"{fname} Standard RMSE: {rmse:.2f} [(kcal/mol)/$e$]")
         pd.DataFrame({"rmses": rmses,
                       "filename": files}
-                     ).to_csv("standard_.csv")
+                     ).to_csv(f"{fname}_standard_.csv")
 
     def test_standard(self):
         """
@@ -180,6 +187,14 @@ class kMDCM_Experiments(unittest.TestCase):
         :return:
         """
         self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=True)
+
+    def test_water(self):
+        waterpath = Path(f"{FFE_PATH}/ff_energy/pydcm/water.json")
+        water = MDCM(str(waterpath))
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=False,
+                      mdcm_dict=water, do_optimize=True, fname="water")
+
+
 
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
@@ -203,52 +218,63 @@ class kMDCM_Experiments(unittest.TestCase):
                  do_null=False,
                  n_factor=2,
                  do_optimize=False,
-                 cubes_pwd= FFE_PATH / "cubes/dcm/",
+                 cubes_pwd=FFE_PATH / "cubes/dcm/",
                  mdcm_dict=None,
                  load_data=False,
+                 fname="test",
+
                  ):
         """
         Test the kernel fit
         """
 
-        # path to cubes
-        cube_paths = Path(cubes_pwd)
-        ecube_files = list(cube_paths.glob("*/*esp.cube"))
-        dcube_files = list(cube_paths.glob("*/*dens.cube"))
+        if mdcm_dict is None:
+            # path to cubes
+            cube_paths = Path(cubes_pwd)
+            ecube_files = list(cube_paths.glob("*/*esp.cube"))
+            dcube_files = list(cube_paths.glob("*/*dens.cube"))
+        else:
+            mdcm_dict = mdcm_dict.asDict()
+            ecube_files = mdcm_dict["scan_fesp"]
+            dcube_files = mdcm_dict["scan_fdns"]
+
         print("n_cubes", len(ecube_files))
         print("l2", l2)
-        
+
         #  load mdcm object
         m = self.get_mdcm(mdcm_dict=mdcm_dict)
         print("mdcm_clcl")
         print(m.mdcm_clcl)
-        
+
         if load_data is True:
-            do_optimize = True # dumb
+            do_optimize = True  # dumb
         # dp optimization
-        if do_optimize is False:
-            print("*"*80)
+        if do_optimize is True:
+            print("*" * 80)
             print("Optimizing with l2=", l2)
             opt_rmses = eval_kernel(
-                    None,
-                    ecube_files,
-                    dcube_files,
-                    opt=True, 
-                    l2=l2,
-                    verbose=True,
-                                    )
+                None,
+                ecube_files,
+                dcube_files,
+                opt=True,
+                l2=l2,
+                verbose=True,
+            )
             print("Opt RMSEs:", opt_rmses)
             opt_rmse = sum(opt_rmses) / len(opt_rmses)
             print("Opt RMSE:", opt_rmse)
-        
+
         # unload the data
-        x, i, y, cubes, pickles = self.test_load_data(l2=str(l2))
-        
+        x, i, y, cubes, pickles = \
+            self.test_load_data(l2=str(l2),
+                                pickle_path=FFE_PATH/"cubes"/ "clcl" / fname,
+                                cube_path=FFE_PATH/"cubes"/ fname)
+
         #  kernel fit
         k = KernelFit()
         k.set_data(x, i, y, cubes, pickles)
-        k.fit(alpha=alpha, N_factor=n_factor,l2=l2)
-        
+        k.fit(alpha=alpha, N_factor=n_factor, l2=l2)
+
         # printing
         print("*" * 20, "Kernel Fit", "*" * 20)
         print("N X:", len(k.X))
@@ -260,44 +286,43 @@ class kMDCM_Experiments(unittest.TestCase):
         print("sum r2s train:", sum([_[1] for _ in k.r2s]))
         print("n models:", len(k.r2s))
         print("r2s:", k.r2s)
-        
+
         #   Move the local charges
         print("Moving clcls")
         files = k.move_clcls(m.mdcm_clcl, l2=l2)
         files.sort()
         print("N files:", len(files), '\n')
-        
+
         print("*" * 20, "Eval Results", "*" * 20)
         #  test the original model
         if do_null:
             print(" " * 20, "Eval Null", "*" * 20)
             self.test_standard_rmse(k, files, cubes, pickles)
-        
+
         #  test the optimized model
         rmses = eval_kernel(files, ecube_files, dcube_files,
-                            load_pkl=True, l2=l2)
+                            load_pkl=True, l2=l2, fname=fname)
 
         print("len(rmses):", len(rmses))
-        
+
         #  Printing the rmses
         kern_rmse = self.print_rmse(rmses)
         print("RMSEs:", rmses)
         self.prepare_df(k, rmses, files, alpha=alpha, l2=l2)
-        
+
         if do_optimize is False:
             self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
 
-        
         print("*" * 20, "Eval Kernel", "*" * 20)
         # plot fits
         k.plot_fits(rmses)
         k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}")
-        
+
         #  plot optimized
         if do_optimize is False:
             print(opt_rmses)
             print(len(opt_rmses))
-            #k.plot_pca(opt_rmse, title=f"Optimized ({opt_rmse:.2f})",
+            # k.plot_pca(opt_rmse, title=f"Optimized ({opt_rmse:.2f})",
             #           name=f"opt_{k.uuid}")
         #  pickle kernel
         print("Pickling kernel", k)
@@ -339,7 +364,7 @@ class kMDCM_Experiments(unittest.TestCase):
         }
 
         pd.DataFrame(
-        ff_energy.utils.utils.make_df_same_size(df_dict)
+            ff_energy.utils.utils.make_df_same_size(df_dict)
         ).to_csv(fn)
 
     def pickle_kernel(self, k):
@@ -379,10 +404,8 @@ if __name__ == '__main__':
     parser.add_argument('--l2', type=float, default=0.0)
     parser.add_argument('unittest_args', nargs='*')
     args = parser.parse_args()
-    
+
     k = kMDCM_Experiments()
     k.test_fit(alpha=args.alpha, n_factor=args.n_factor, l2=args.l2)
 
-    #unittest.main()
-
-
+    # unittest.main()

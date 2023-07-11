@@ -47,6 +47,7 @@ from plotnine import (
 import patchworklib as pw
 
 import seaborn as sns
+
 PAL = sns.color_palette("pastel")
 
 
@@ -72,6 +73,7 @@ def orthographic_plot(x, y, z,
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     return ax
+
 
 def prepare_standard(x: pd.DataFrame, csv_dir: str):
     csv_files = list(Path(csv_dir).glob("csvs/*.csv"))
@@ -124,6 +126,7 @@ def prepare_standard(x: pd.DataFrame, csv_dir: str):
     standard["a102"] = a1
     return standard, headers
 
+
 def get_change_graph(row, csv_dict, standard, pca_df):
     a, row = row
     k1 = row[0]
@@ -134,13 +137,16 @@ def get_change_graph(row, csv_dict, standard, pca_df):
     rmse2 = row[4]
     l = row[6]
     return plot_change2(csv_dict[k1],
-                     csv_dict[k2],
-                standard,
-                pca_df,
-                title=f"\n$\\alpha = $ {a} | $\lambda = $ {l:.1f} | RMSE = {rmse:.2f} | $n$ = {n}")
+                        csv_dict[k2],
+                        standard,
+                        pca_df,
+                        title=f"\n$\\alpha = $ {a} | $\lambda = $ {l:.1f} | RMSE = {rmse:.2f} | $n$ = {n}")
+
 
 def get_brick(row, csv_dict, standard, pca_df):
-    return pw.load_ggplot(get_change_graph(row), figsize=(4,4))
+    return pw.load_ggplot(get_change_graph(row), figsize=(4, 4))
+
+
 def plot_hists(standard, headers, k, color_key="rmses"):
     #  plot a figure
     fig, ax = plt.subplots(len(headers) // 4, 4, figsize=(9, 9),
@@ -174,15 +180,16 @@ def plot_hists(standard, headers, k, color_key="rmses"):
 
     return plt.gcf()
 
-def plot_angle(standard):
 
-    fig, axs = plt.subplots(1,2, sharey=True, gridspec_kw={'width_ratios': [3, 1]})
+def plot_angle(standard):
+    fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={'width_ratios': [3, 1]})
     plt.subplots_adjust(wspace=0, )
     standard["cut_a102"] = pd.cut(standard["a102"], bins=10)
-    standard["cut_a102"] = standard["cut_a102"].apply(lambda x: 0.5*(x.left + x.right))
+    standard["cut_a102"] = standard["cut_a102"].apply(
+        lambda x: 0.5 * (x.left + x.right))
     sns.lineplot(data=standard, x="cut_a102", y="rmse", ax=axs[0])
     sns.scatterplot(data=standard, x="a102", y="rmse", ax=axs[0])
-    axs[0].set_ylim(0,2)
+    axs[0].set_ylim(0, 2)
     axs[1].hist(standard["rmse"], orientation='horizontal')
 
 
@@ -232,22 +239,22 @@ def plot_change2(test, opt, standard, pca_df, title=""):
     return _
 
 
-def rmse_plot(ds_paired, standard, title=False):
-
-    ax = plt.gca()
+def rmse_plot(ds_paired, standard, title=False, ax=None):
+    if ax is None:
+        ax = plt.gca()
     lp = sns.lineplot(data=ds_paired,
-                 x=LAMBDA, y="rmse_kernel", markers=True, c="gray", ax=ax,
-                      hue=ALPHA, palette="rainbow")
+                      x=LAMBDA, y="rmse_kernel", markers=True, c="gray", ax=ax,
+                      hue=ALPHA, palette="pastel")
     ax.axhline(standard.rmses.median(), c="k", linestyle="--")
     ax.axhline(ds_paired.rmse_opt.median(), c="gray", linestyle="--")
     # ax.set_ylim(0, 0.82)
     ax.set_xlabel(LAMBDA, fontsize=20)
     ax.set_ylabel(RMSELABEL, fontsize=20)
-    plt.tight_layout()
+    # plt.tight_layout()
 
     if title:
-        plt.title(title)
-    plt.savefig("median_RMSE_summary.pdf", bbox_inches = "tight")
+        ax.set_title(title)
+    plt.savefig("median_RMSE_summary.pdf", bbox_inches="tight")
     return ax
 
 

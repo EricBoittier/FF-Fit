@@ -157,35 +157,40 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     mdcm.dealloc_all()
 
 
-def eval_kernel(clcls, esp_path, dens_path,
+def eval_kernel(clcls, esp_path, dens_path, mdcm_clcl=None, mdcm_xyz=None,
                 load_pkl=False, opt=False, l2=100.0, 
-                verbose=False):
+                verbose=False, fname=None):
     """
     Evaluate kernel for a set of ESP and DENS files
     """
     rmses = []
     commands = []
     N = len(esp_path)
-    path__ = f"{FFE_PATH}/ff_energy/cubes/clcl/{l2}"
+    path__ = f"{FFE_PATH}/ff_energy/cubes/clcl/{fname}/{l2}"
     print("path:", path__)
+    # sort the paths
     esp_path.sort()
     dens_path.sort()
+
+    if mdcm_clcl is None:
+        mdcm_clcl = f'{FFE_PATH}/ff_energy/pydcm/sources/' \
+                      f'dcm.mdcm '
+    if mdcm_xyz is None:
+        mdcm_xyz = f'{FFE_PATH}/ff_energy/pydcm/sources/' \
+                      f'dcm8.xyz '
+
     for i in range(N):
         ESP_PATH = esp_path[i]
         DENS_PATH = dens_path[i]
         job_command = f'python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH}' \
-                        f' -mdcm_clcl ' \
-                      f'{FFE_PATH}/ff_energy/pydcm/sources/' \
-                      f'dcm.mdcm -mdcm_xyz {FFE_PATH}/' \
-                      f'ff_energy/pydcm/sources/dcm8.xyz '
+                        f' -mdcm_clcl {mdcm_clcl} -mdcm_xyz {mdcm_xyz}'
         if load_pkl:
             job_command += f' -l {clcls[i]}'
         if opt:
             job_command += f' -opt True -l2 {l2} ' \
-                           f'-o {FFE_PATH}/cubes/clcl/{l2}'
+                           f'-o {FFE_PATH}/cubes/clcl/{fname}/{l2}'
             Path(path__
                  ).mkdir(parents=True, exist_ok=True)
-        # print(job_command)
         commands.append(job_command)
 
     procs = []
