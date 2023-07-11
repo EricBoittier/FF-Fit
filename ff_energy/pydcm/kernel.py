@@ -95,11 +95,13 @@ class KernelFit:
         self.train_ids = None
         self.lcs = None
         self.pkls = None
+        self.fname = None
 
-    def set_data(self, distM, ids, lcs, cubes, pkls):
+    def set_data(self, distM, ids, lcs, cubes, pkls, fname=None):
         self.X = distM
         self.y = lcs
         self.ids = ids
+        self.fname = fname
         self.cubes = cubes
         self.pkls = pkls
 
@@ -110,7 +112,7 @@ class KernelFit:
         return f"KernelFit: {self.uuid} {self.alpha} {self.kernel}"
 
     def write_manifest(self, path):
-        string_ = f"{self.uuid} {self.alpha} {self.kernel}\nTest ids:\n"
+        string_ = f"{self.uuid} {self.alpha} {self.kernel} {self.fname}\nTest ids:\n"
         for test in self.test_ids:
             string_ += f"test {test}\n"
         string_ += "Train ids:\n"

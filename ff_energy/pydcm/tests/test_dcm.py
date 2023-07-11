@@ -141,6 +141,7 @@ class kMDCM_Experiments(unittest.TestCase):
                            pickles,
                            cubes_pwd=None,
                            fname="",
+                           mdcm_dict=None,
                            ):
         """
         Test the standard RMSE
@@ -161,7 +162,13 @@ class kMDCM_Experiments(unittest.TestCase):
         print("ecube", len(ecube_files))
         print("dcube", len(dcube_files))
         print(len(cubes), len(pickles))
-        rmses = eval_kernel(files, ecube_files, dcube_files)
+        rmses = eval_kernel(files,
+                            ecube_files,
+                            dcube_files,
+                            fname=fname,
+                            mdcm_clcl=mdcm_dict["mdcm_clcl"],
+                            mdcm_xyz=mdcm_dict["mdcm_cxyz"],
+                            )
         print("RMSEs:", rmses)
         rmse = sum(rmses) / len(rmses)
         print("RMSE:", rmse)
@@ -182,8 +189,6 @@ class kMDCM_Experiments(unittest.TestCase):
         water = MDCM(str(waterpath))
         self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=False,
                       mdcm_dict=water, do_optimize=False, fname="water", natoms=3)
-
-
 
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
@@ -268,7 +273,7 @@ class kMDCM_Experiments(unittest.TestCase):
 
         #  kernel fit
         k = KernelFit()
-        k.set_data(x, i, y, cubes, pickles)
+        k.set_data(x, i, y, cubes, pickles, fname=fname)
         k.fit(alpha=alpha, N_factor=n_factor, l2=l2)
 
         # printing
@@ -293,13 +298,17 @@ class kMDCM_Experiments(unittest.TestCase):
         #  test the original model
         if do_null:
             print(" " * 20, "Eval Null", "*" * 20)
-            self.test_standard_rmse(k, files, cubes, pickles, )
+            self.test_standard_rmse(k, files, cubes, pickles,
+                                    mdcm_dict=mdcm_dict, fname=fname)
 
         print("nfiles", len(files))
 
         #  test the optimized model
         rmses = eval_kernel(files, ecube_files, dcube_files,
-                            load_pkl=True, l2=l2, fname=fname)
+                            load_pkl=True,
+                            mdcm_clcl=mdcm_dict["mdcm_clcl"],
+                            mdcm_xyz=mdcm_dict["mdcm_cxyz"],
+                            fname=fname)
 
         print("len(rmses):", len(rmses))
 
@@ -308,7 +317,7 @@ class kMDCM_Experiments(unittest.TestCase):
         print("RMSEs:", rmses)
         self.prepare_df(k, rmses, files, alpha=alpha, l2=l2)
 
-        if do_optimize is False:
+        if do_optimize is True:
             self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
 
         print("*" * 20, "Eval Kernel", "*" * 20)
@@ -317,7 +326,7 @@ class kMDCM_Experiments(unittest.TestCase):
         k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}")
 
         #  plot optimized
-        if do_optimize is False:
+        if do_optimize is True:
             print("opt rmses:", opt_rmses)
             print("n_opt:", len(opt_rmses))
 
