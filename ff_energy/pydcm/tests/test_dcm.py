@@ -259,6 +259,9 @@ class kMDCM_Experiments(unittest.TestCase):
                 opt=True,
                 l2=l2,
                 verbose=True,
+                fname=fname,
+                mdcm_clcl=mdcm_dict["mdcm_clcl"],
+                mdcm_xyz=mdcm_dict["mdcm_cxyz"],
             )
             print("Opt RMSEs:", opt_rmses)
             opt_rmse = sum(opt_rmses) / len(opt_rmses)

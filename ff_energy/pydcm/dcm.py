@@ -157,9 +157,16 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     mdcm.dealloc_all()
 
 
-def eval_kernel(clcls, esp_path, dens_path, mdcm_clcl=None, mdcm_xyz=None,
-                load_pkl=False, opt=False, l2=100.0, 
-                verbose=False, fname=None):
+def eval_kernel(clcls,
+                esp_path,
+                dens_path,
+                mdcm_clcl=None,
+                mdcm_xyz=None,
+                load_pkl=False,
+                opt=False,
+                l2=100.0,
+                verbose=False,
+                fname=None):
     """
     Evaluate kernel for a set of ESP and DENS files
     """
