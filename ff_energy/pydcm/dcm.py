@@ -99,9 +99,12 @@ def set_bounds(local_pos, change=0.1):
     return tuple(bounds)
 
 
-def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
+def optimize_mdcm(mdcm, clcl, outname, l2, fname):
     # Get RMSE, averaged or weighted over ESP files,
     # or per ESP file each
+    if fname is None:
+        fname = "test"
+
     rmse = mdcm.get_rmse()
     print(rmse)
 
@@ -140,15 +143,28 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     difference = np.sum((res.x - local_ref) ** 2) \
                  / local_pos.shape[0]
     print("charge RMSD:", difference)
+
+
+
     outname = f"{outname}_l2_{l2:.1e}_rmse_{rmse:.4f}_rmsd_{difference:.4f}"
+    on = outname.split('/')[-1]
     obj_name = f"{FFE_PATH}/" \
-               f"cubes/clcl/{l2}/{outname}_clcl.obj"
+               f"cubes/clcl/{fname}/{l2}/{on}_clcl.obj"
+
+    # make parent directory if it does not exist
+    if not os.path.exists(os.path.dirname(obj_name)):
+        try:
+            os.makedirs(os.path.dirname(obj_name))
+        except Exception as e:
+            print(e)
+
     #  save as pickle
     with open(obj_name, 'wb') as filehandler:
         pickle.dump(clcl_out, filehandler)
     #  save the global charges array
     global_charges = mdcm.mdcm_cxyz
-    with open(f"{FFE_PATH}/cubes/clcl/{l2}/{outname}_clcl_global.obj",
+    with open(f"{FFE_PATH}/cubes/clcl/{fname}/{l2}/"
+              f"{on}_global_charges.obj",
                 'wb') as filehandler:
             pickle.dump(global_charges, filehandler)
 
@@ -165,7 +181,7 @@ def eval_kernel(clcls,
                 load_pkl=False,
                 opt=False,
                 l2=100.0,
-                verbose=False,
+                verbose=True,
                 fname=None):
     """
     Evaluate kernel for a set of ESP and DENS files
@@ -189,15 +205,23 @@ def eval_kernel(clcls,
     for i in range(N):
         ESP_PATH = esp_path[i]
         DENS_PATH = dens_path[i]
-        job_command = f'python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH}' \
-                        f' -mdcm_clcl {mdcm_clcl} -mdcm_xyz {mdcm_xyz}'
+        job_command = f'python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH} ' \
+                        f' -mdcm_clcl {mdcm_clcl} -mdcm_xyz {mdcm_xyz} '
+        #  if loading the local charges from a pickle file
         if load_pkl:
-            job_command += f' -l {clcls[i]}'
+            job_command += f' -l {clcls[i]} '
+        #  if optimizing
         if opt:
+            _optname = Path(ESP_PATH).stem
             job_command += f' -opt True -l2 {l2} ' \
-                           f'-o {FFE_PATH}/cubes/clcl/{fname}/{l2}'
-            Path(path__
-                 ).mkdir(parents=True, exist_ok=True)
+                           f'-o {FFE_PATH}/cubes/clcl/{fname}/{l2}/{_optname}'
+
+        job_command += f' -fname {fname}'
+        Path(path__
+             ).mkdir(parents=True, exist_ok=True)
+        if verbose:
+            print(job_command)
+
         commands.append(job_command)
 
     procs = []
@@ -243,6 +267,8 @@ if __name__ == "__main__":
                         default=None, type=str)
     parser.add_argument('-mdcm_xyz', '--mdcm_xyz', help='mdcm xyz file',
                         default=None, type=str)
+    parser.add_argument('-fname', '--fname', help='name of the molecule')
+
 
     args = parser.parse_args()
     print(' '.join(f'{k}={v}\n' for k, v in vars(args).items()))
@@ -285,6 +311,11 @@ if __name__ == "__main__":
         i = None
         print("WARNING: No nodes to average specified")
 
+    if args.fname is not None:
+        fname = args.fname
+    else:
+        raise ValueError("No fname specified")
+
     if args.nodes_to_avg is not None:
         ESPF = [esp.format(i)]
         DENSF = [dens.format(i)]
@@ -303,7 +334,12 @@ if __name__ == "__main__":
     if args.opt:
         print("Optimizing")
         outname = esp.format(i).split("/")[-1]
-        optimize_mdcm(mdcm, clcl, args.outdir, outname, l2=args.l2)
+        optimize_mdcm(mdcm,
+                      clcl,
+                      args.outdir,
+                      # outname,
+                      args.l2,
+                      fname)
     else:
         rmse = mdcm.get_rmse()
         print("RMSE:", i, rmse)

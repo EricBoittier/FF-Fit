@@ -112,37 +112,25 @@ class kMDCM_Experiments(unittest.TestCase):
 
         scanpath = Path(cube_path)
         chosen_points = []
+        chosen_files = []
+        for c in scanpath.glob("*/*esp.cube"):
+            ccode = c.name.split("esp")[0]
+            if ccode not in chosen_points:
+                chosen_points.append(ccode)
+                chosen_files.append(c)
 
-        def name_(x, origs=False):
-            try:
-                name = x.name.split(".c")[0]
-            except Exception as e:
-                print(f"Exception {e} for {x}")
-                return None
-            if origs and (name not in chosen_points):
-                if "gaussian" in str(x):
-                    chosen_points.append(name)
-                    return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
-                elif "_nms_" in str(x):
-                    chosen_points.append(name)
-                    return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
-                else:
-                    print(f"ValueError(fbad pickle name {x})")
-                    return None
-            else:
-                if "gaussian" in str(x):
-                    return scanpath / "scan" / (x.name.split(".c")[0] + ".cube")
-                elif "_nms_" in str(x):
-                    return scanpath / "nms" / (x.name.split(".c")[0] + ".cube")
-                else:
-                    print(f"ValueError(fbad pickle name {x})")
-                    return None
+        CUBES = [scanpath / f"{chosen_files[i].parents[0]}/{c}esp.cube"
+                 for i, c in enumerate(chosen_points)]
 
-        PICKLES = [_ for _ in PICKLES
-                   if name_(_, origs=True) is not None]
-        CUBES = [name_(_, origs=False) for _ in PICKLES]
+        print("CUBES:", CUBES)
+        print("PICKLES:", PICKLES)
+        print("n cubes:", len(CUBES))
+        print("n pickles:", len(PICKLES))
         #  they must be the same length
         assert len(CUBES) == len(PICKLES)
+        # sort them
+        CUBES.sort()
+        PICKLES.sort()
         #  return the data
         return du.get_data(CUBES, PICKLES, natoms)
 
@@ -152,7 +140,8 @@ class kMDCM_Experiments(unittest.TestCase):
                            cubes,
                            pickles,
                            cubes_pwd=None,
-                           fname="",):
+                           fname="",
+                           ):
         """
         Test the standard RMSE
         :param k: KernelFit object
@@ -192,7 +181,7 @@ class kMDCM_Experiments(unittest.TestCase):
         waterpath = Path(f"{FFE_PATH}/ff_energy/pydcm/water.json")
         water = MDCM(str(waterpath))
         self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=False,
-                      mdcm_dict=water, do_optimize=True, fname="water")
+                      mdcm_dict=water, do_optimize=False, fname="water", natoms=3)
 
 
 
@@ -222,7 +211,7 @@ class kMDCM_Experiments(unittest.TestCase):
                  mdcm_dict=None,
                  load_data=False,
                  fname="test",
-
+                 natoms=3,
                  ):
         """
         Test the kernel fit
@@ -269,9 +258,13 @@ class kMDCM_Experiments(unittest.TestCase):
 
         # unload the data
         x, i, y, cubes, pickles = \
-            self.test_load_data(l2=str(l2),
-                                pickle_path=FFE_PATH/"cubes"/ "clcl" / fname,
-                                cube_path=FFE_PATH/"cubes"/ fname)
+            self.test_load_data(
+                l2=str(l2),
+                pickle_path=FFE_PATH / "cubes" / "clcl" / fname / f"{l2}",
+                cube_path=FFE_PATH / "cubes" / fname,
+                natoms=natoms, )
+        # all arrays should be the same length
+        assert len(x) == len(i) == len(y) == len(cubes) == len(pickles)
 
         #  kernel fit
         k = KernelFit()
@@ -284,7 +277,7 @@ class kMDCM_Experiments(unittest.TestCase):
         print("N:", len(k.ids))
         print("N test:", len(k.test_ids))
         print("N_train:", len(k.train_ids))
-        print(k.r2s)
+        print("r2s:", k.r2s)
         print("sum r2s test:", sum([_[0] for _ in k.r2s]))
         print("sum r2s train:", sum([_[1] for _ in k.r2s]))
         print("n models:", len(k.r2s))
@@ -300,7 +293,9 @@ class kMDCM_Experiments(unittest.TestCase):
         #  test the original model
         if do_null:
             print(" " * 20, "Eval Null", "*" * 20)
-            self.test_standard_rmse(k, files, cubes, pickles)
+            self.test_standard_rmse(k, files, cubes, pickles, )
+
+        print("nfiles", len(files))
 
         #  test the optimized model
         rmses = eval_kernel(files, ecube_files, dcube_files,
@@ -323,10 +318,9 @@ class kMDCM_Experiments(unittest.TestCase):
 
         #  plot optimized
         if do_optimize is False:
-            print(opt_rmses)
-            print(len(opt_rmses))
-            # k.plot_pca(opt_rmse, title=f"Optimized ({opt_rmse:.2f})",
-            #           name=f"opt_{k.uuid}")
+            print("opt rmses:", opt_rmses)
+            print("n_opt:", len(opt_rmses))
+
         #  pickle kernel
         print("Pickling kernel", k)
         self.pickle_kernel(k)
