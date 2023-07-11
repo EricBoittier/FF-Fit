@@ -227,8 +227,11 @@ class kMDCM_Experiments(unittest.TestCase):
             cube_paths = Path(cubes_pwd)
             ecube_files = list(cube_paths.glob("*/*esp.cube"))
             dcube_files = list(cube_paths.glob("*/*dens.cube"))
+        elif isinstance(mdcm_dict, str):
+            mdcm_dict = MDCM(mdcm_dict).asDict()
         else:
             mdcm_dict = mdcm_dict.asDict()
+        if isinstance(mdcm_dict, dict):
             ecube_files = mdcm_dict["scan_fesp"]
             dcube_files = mdcm_dict["scan_fdns"]
 
@@ -408,10 +411,17 @@ if __name__ == '__main__':
     parser.add_argument('--alpha', type=float, default=0.0)
     parser.add_argument('--n_factor', type=int, default=1.0)
     parser.add_argument('--l2', type=float, default=0.0)
+    parser.add_argument('--fname', type=str, default="test")
+    parser.add_argument('--json', type=str, required=True)
     parser.add_argument('unittest_args', nargs='*')
     args = parser.parse_args()
 
     k = kMDCM_Experiments()
-    k.test_fit(alpha=args.alpha, n_factor=args.n_factor, l2=args.l2)
+    k.test_fit(alpha=args.alpha, 
+               n_factor=args.n_factor, 
+               l2=args.l2, 
+               fname=args.fname,
+               mdcm_dict=args.json,
+               do_optimize=True)
 
-    # unittest.main()
+
