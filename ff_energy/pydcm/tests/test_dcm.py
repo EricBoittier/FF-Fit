@@ -318,10 +318,10 @@ class kMDCM_Experiments(unittest.TestCase):
         #  Printing the rmses
         kern_rmse = self.print_rmse(rmses)
         print("RMSEs:", rmses)
-        self.prepare_df(k, rmses, files, alpha=alpha, l2=l2)
+        self.prepare_df(k, rmses, files, alpha=alpha, l2=l2, fname=fname)
 
         if do_optimize is True:
-            self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True)
+            self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True, fname=fname)
 
         print("*" * 20, "Eval Kernel", "*" * 20)
         # plot fits
@@ -350,16 +350,16 @@ class kMDCM_Experiments(unittest.TestCase):
         print("RMSE:", rmse)
         return rmse
 
-    def prepare_df(self, k, rmses, files, alpha=0.0, l2=0.0, opt=False):
+    def prepare_df(self, k, rmses, files, alpha=0.0, l2=0.0, opt=False, fname="test"):
         """
 
         """
         class_name = ["test" if _ in k.test_ids
                       else "train" for _ in k.ids]
         if opt:
-            fn = f"csvs/opt_{k.uuid}_{l2}.csv"
+            fn = f"csvs/{fname}_opt_{k.uuid}_{l2}.csv"
         else:
-            fn = f"csvs/kernel_{k.uuid}_{alpha}_{l2}.csv"
+            fn = f"csvs/{fname}_kernel_{k.uuid}_{alpha}_{l2}.csv"
 
         df_dict = {
             "rmse": rmses,

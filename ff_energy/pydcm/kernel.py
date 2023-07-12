@@ -236,7 +236,7 @@ class KernelFit:
             ax.set_title(title)
         plt.tight_layout()
         if name is not None:
-            plt.savefig(f"{name}.png", bbox_inches='tight')
+            plt.savefig(f"{self.uuid}_{name}.png", bbox_inches='tight')
         #plt.show()
 
     def plot_fits(self, rmses, name=None):

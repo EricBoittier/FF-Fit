@@ -8,11 +8,14 @@ cpus_per_task="48"
 memory="4G"
 
 # Define the arrays
-alphas=(0.0 0.1 0.01 0.001 0.0001, 0.00001, 0.5, 1.0)
+#alphas=(0.0 0.1 0.01 0.001 0.0001 0.00001 0.5 1.0)
+#alphas=(0.0001 0.00001 0.00001 0.5 )
+alphas=(2.0 10.0 100.0)
 l2s=(0.0 0.1 0.5 1.0 2.0 4.0)
 n_factors=(6 8 10 12)
-repeats=4
-
+repeats=30
+json="water.json"
+fname="water"
 # Loop over the arrays
 for alpha in "${alphas[@]}"
 do
@@ -23,8 +26,8 @@ do
             for (( repeat=1; repeat<=repeats; repeat++ ))
             do
                 # Define the output and error log filenames
-                output_log="output_${alpha}_${l2}_${n}_${repeat}.log"
-                error_log="error_${alpha}_${l2}_${n}_${repeat}.log"
+                output_log="${fname}_output_${alpha}_${l2}_${n}_${repeat}.log"
+                error_log="${fname}_error_${alpha}_${l2}_${n}_${repeat}.log"
 
                 # Create the SLURM submission script for each job copy
                 submission_script="#!/bin/bash
@@ -43,7 +46,7 @@ echo \"Job ID: \$SLURM_JOB_ID\"
 
 conda activate p
 cd /cluster/home/boittier/ff_energy/ff_energy/pydcm/tests/
-python test_dcm.py --alpha ${alpha} --n_factor ${n} --l2 ${l2} test_N_repeats 
+python test_dcm.py --alpha ${alpha} --n_factor ${n} --l2 ${l2} --json ${json} --fname ${fname} test_N_repeats 
 
 
 
