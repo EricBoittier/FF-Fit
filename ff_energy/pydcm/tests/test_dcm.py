@@ -122,6 +122,27 @@ class kMDCM_Experiments(unittest.TestCase):
         CUBES = [scanpath / f"{chosen_files[i].parents[0]}/{c}esp.cube"
                  for i, c in enumerate(chosen_points)]
 
+        # here we have two lists of files, one for cubes and one for pickles
+        # there will always be n cube files and m x n pickle files, where n is the
+        # number of conformations and m is the number of times an optimization has
+        # been run
+        def sort_rmse(x):
+            spl = x.stem.split("_")
+            for i, _ in enumerate(spl):
+                if _ == "rmse":
+                    return float(spl[i+1])
+            return x.stem
+
+        # make the cube and pickle lists the same, keeping the order based on
+        # the cube list
+        pkls = []
+        for _ in chosen_points:
+            tmp_pkl = [x for x in PICKLES if "_".join(
+                _.split("_")[:3])[1:] in x.name]
+            tmp_pkl.sort(key=sort_rmse)
+            pkls.append(tmp_pkl[0])
+        PICKLES = pkls
+
         print("CUBES:", CUBES)
         print("PICKLES:", PICKLES)
         print("n cubes:", len(CUBES))
@@ -129,8 +150,8 @@ class kMDCM_Experiments(unittest.TestCase):
         #  they must be the same length
         assert len(CUBES) == len(PICKLES)
         # sort them
-        CUBES.sort()
-        PICKLES.sort()
+        CUBES.sort(key=lambda x: x.stem)
+        PICKLES.sort(key=lambda x: x.stem)
         #  return the data
         return du.get_data(CUBES, PICKLES, natoms)
 
@@ -187,8 +208,19 @@ class kMDCM_Experiments(unittest.TestCase):
     def test_water(self):
         waterpath = Path(f"{FFE_PATH}/ff_energy/pydcm/water.json")
         water = MDCM(str(waterpath))
-        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=False,
-                      mdcm_dict=water, do_optimize=False, fname="water", natoms=3)
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4,
+                      load_data=False,
+                      mdcm_dict=water, do_optimize=False,
+                      fname="water", natoms=3)
+
+    def test_methanol(self):
+        path = Path(f"{FFE_PATH}/ff_energy/pydcm/methanol.json")
+        m = MDCM(str(path))
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4,
+                      load_data=False,
+                      mdcm_dict=m, do_optimize=False,
+                      fname="methanol", natoms=6)
+
 
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]

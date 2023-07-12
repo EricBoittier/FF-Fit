@@ -38,7 +38,7 @@ if __name__ == "__main__":
     methanol_dict["scan_fdns"] = [str(_) for _
                                     in list(methanol_cubes_path.glob("*/*_dens.cube"))]
     methanol_dict["mdcm_cxyz"] = str(methanol_mdcm_path / "refined.xyz")
-    methanol_dict["mdcm_clcl"] = str(methanol_mdcm_path / "pbe0_dz.mdcm")
+    methanol_dict["mdcm_clcl"] = str(methanol_mdcm_path / "meoh_pbe0dz.mdcm")
     json.dump(methanol_dict, open("methanol.json", "w"))
 
     dcm_dict = {}
