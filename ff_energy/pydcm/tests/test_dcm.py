@@ -370,13 +370,12 @@ class kMDCM_Experiments(unittest.TestCase):
         self.pickle_kernel(k)
         #  write manifest
         print("Writing manifest")
-        k.write_manifest(PATH_TO_TESTDIR / f"manifest/{k.uuid}.json")
+        k.write_manifest(
+            PATH_TO_TESTDIR / f"manifest/{k.uuid}.json"
+        )
         return k
 
     def print_rmse(self, rmses):
-        """
-
-        """
         print("RMSEs:", rmses)
         rmse = sum(rmses) / len(rmses)
         print("RMSE:", rmse)
