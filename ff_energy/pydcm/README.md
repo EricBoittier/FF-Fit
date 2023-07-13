@@ -1,4 +1,9 @@
-# PyDCM
+# Ideas for Kernel Code
+- add random noise to input?
+- tests permutations of input?
+
+
+# Kai's README: PyDCM
 Combine all models and improve user friendlines of the (Minimal) Distributed Charge Method (MDCM)
 
 The aid is to combine, extend and simplify the application of the MDCM modules (see e.g. https://github.com/MMunibas/MDCM) in one package avaiable by Python-

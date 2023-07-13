@@ -51,6 +51,14 @@ import seaborn as sns
 PAL = sns.color_palette("pastel")
 
 
+def values_to_colors(values, cmap="viridis", lim=None):
+    if lim is None:
+        lim = [min(values), max(values)]
+    norm = mpl.colors.Normalize(vmin=lim[0], vmax=lim[1])
+    cmap = cm.get_cmap(cmap)
+    return cmap(norm(values))
+
+
 def orthographic_plot(x, y, z,
                       ax=None,
                       c="k",
@@ -251,6 +259,13 @@ def rmse_plot(ds_paired, standard, title=False, ax=None):
     ax.set_xlabel(LAMBDA, fontsize=20)
     ax.set_ylabel(RMSELABEL, fontsize=20)
     # plt.tight_layout()
+    # LABELS = [f"{x:.1e}" for x in ds_paired[ALPHA].unique()]
+    # check axes and find which has a legend
+    leg = lp.axes.get_legend()
+
+    for t in leg.texts:
+        t.set_text(f"{float(t.get_text()):.1e}")
+    # plt.legend(title=ALPHA, loc='upper right', labels=LABELS)
 
     if title:
         ax.set_title(title)

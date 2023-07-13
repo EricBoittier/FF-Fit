@@ -26,7 +26,7 @@ def md_analysis(psf, dcd):
     return mda.Universe(psf, dcd)
 
 
-def get_angles(u, n_atoms=3, step = 1, start=0, stop=-1):
+def get_angles(u, n_atoms=3, step=1, start=0, stop=-1):
     n_res = len(u.residues)
     n_frames = len(u.trajectory[start:stop:step])
     angles = np.zeros((n_res, n_frames))
@@ -53,21 +53,23 @@ def hb_analysis(u, start=0, stop=-1, step=1):
         acceptors_sel="name OH2",
         d_a_cutoff=3.0,
         d_h_a_angle_cutoff=150,
-        update_selections=False
+        update_selections=False,
     )
     hbonds.run(start=start, stop=stop, step=step)
     return hbonds
 
 
-def g_rdf(u, sel='resname TIP3 and type OT', step=1, start=0, stop=-1):
+def g_rdf(u, sel="resname TIP3 and type OT", step=1, start=0, stop=-1):
     selection = u.select_atoms(sel)
     print(selection)
 
-    irdf = rdf.InterRDF(selection, selection,
-                        nbins=int(10//0.1),  # default
-                        range=(0.0, 10.0),  # distance in angstroms
-                        exclusion_block=(1, 1),
-                        )
+    irdf = rdf.InterRDF(
+        selection,
+        selection,
+        nbins=int(10 // 0.1),  # default
+        range=(0.0, 10.0),  # distance in angstroms
+        exclusion_block=(1, 1),
+    )
     irdf.run(step=step, start=start, stop=stop)
     return irdf
 

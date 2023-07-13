@@ -130,7 +130,7 @@ class kMDCM_Experiments(unittest.TestCase):
             spl = x.stem.split("_")
             for i, _ in enumerate(spl):
                 if _ == "rmse":
-                    return float(spl[i+1])
+                    return float(spl[i + 1])
             return x.stem
 
         # make the cube and pickle lists the same, keeping the order based on
@@ -218,9 +218,8 @@ class kMDCM_Experiments(unittest.TestCase):
         m = MDCM(str(path))
         self.test_fit(alpha=1e-5, l2="1.0", n_factor=4,
                       load_data=False,
-                      mdcm_dict=m, do_optimize=False,
+                      mdcm_dict=m, do_optimize=True,
                       fname="methanol", natoms=6)
-
 
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
@@ -275,6 +274,9 @@ class kMDCM_Experiments(unittest.TestCase):
         print("mdcm_clcl")
         print(m.mdcm_clcl)
 
+        #  kernel fit
+        k = KernelFit()
+
         if load_data is True:
             do_optimize = True  # dumb
         # dp optimization
@@ -289,6 +291,7 @@ class kMDCM_Experiments(unittest.TestCase):
                 l2=l2,
                 verbose=True,
                 fname=fname,
+                uuid=k.uuid,
                 mdcm_clcl=mdcm_dict["mdcm_clcl"],
                 mdcm_xyz=mdcm_dict["mdcm_cxyz"],
             )
@@ -306,8 +309,6 @@ class kMDCM_Experiments(unittest.TestCase):
         # all arrays should be the same length
         assert len(x) == len(i) == len(y) == len(cubes) == len(pickles)
 
-        #  kernel fit
-        k = KernelFit()
         k.set_data(x, i, y, cubes, pickles, fname=fname)
         k.fit(alpha=alpha, N_factor=n_factor, l2=l2)
 
@@ -325,7 +326,7 @@ class kMDCM_Experiments(unittest.TestCase):
 
         #   Move the local charges
         print("Moving clcls")
-        files = k.move_clcls(m.mdcm_clcl, l2=l2)
+        files = k.move_clcls(m)
         files.sort()
         print("N files:", len(files), '\n')
 
@@ -343,6 +344,8 @@ class kMDCM_Experiments(unittest.TestCase):
                             load_pkl=True,
                             mdcm_clcl=mdcm_dict["mdcm_clcl"],
                             mdcm_xyz=mdcm_dict["mdcm_cxyz"],
+                            uuid=k.uuid,
+                            l2=l2,
                             fname=fname)
 
         print("len(rmses):", len(rmses))
@@ -353,12 +356,15 @@ class kMDCM_Experiments(unittest.TestCase):
         self.prepare_df(k, rmses, files, alpha=alpha, l2=l2, fname=fname)
 
         if do_optimize is True:
-            self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True, fname=fname)
+            self.prepare_df(k, opt_rmses, files, alpha=alpha, l2=l2, opt=True,
+                            fname=fname)
 
         print("*" * 20, "Eval Kernel", "*" * 20)
         # plot fits
         k.plot_fits(rmses)
-        k.plot_pca(rmses, title=f"Kernel ({kern_rmse:.2f})", name=f"kernel_{k.uuid}")
+        k.plot_pca(rmses,
+                   title=f"Kernel ({kern_rmse:.2f})",
+                   name=f"kernel_{k.uuid}")
 
         #  plot optimized
         if do_optimize is True:
@@ -366,7 +372,6 @@ class kMDCM_Experiments(unittest.TestCase):
             print("n_opt:", len(opt_rmses))
 
         #  pickle kernel
-        print("Pickling kernel", k)
         self.pickle_kernel(k)
         #  write manifest
         print("Writing manifest")
@@ -408,7 +413,9 @@ class kMDCM_Experiments(unittest.TestCase):
         ).to_csv(fn)
 
     def pickle_kernel(self, k):
-        with open(PATH_TO_TESTDIR / f"models/kernel_{k.uuid}.pkl", "wb") as f:
+        p = PATH_TO_TESTDIR / f"models/kernel_{k.uuid}.pkl"
+        print("Pickling kernel to", p)
+        with open(p, "wb") as f:
             pickle.dump(k, f)
 
     def test_files(self):
@@ -448,11 +455,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     k = kMDCM_Experiments()
-    k.test_fit(alpha=args.alpha, 
-               n_factor=args.n_factor, 
-               l2=args.l2, 
+    k.test_fit(alpha=args.alpha,
+               n_factor=args.n_factor,
+               l2=args.l2,
                fname=args.fname,
                mdcm_dict=args.json,
                do_optimize=True)
-
-

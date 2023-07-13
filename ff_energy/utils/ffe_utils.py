@@ -8,11 +8,7 @@ from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
 from ff_energy.ffe.constants import atom_types
 
 
-def MakeJob(name,
-            config_maker,
-            _atom_types=None,
-            system_name=None
-            ):
+def MakeJob(name, config_maker, _atom_types=None, system_name=None):
     if _atom_types is None:
         _atom_types = atom_types
 
@@ -63,13 +59,13 @@ def get_structures(system_name, pdbpath=None):
     pickle_exists = Path(PKL_PATH / f"structures/{system_name}.pkl").exists()
     if pickle_exists:
         print("Structure/PDB already already exists, loading from pickle")
-        structures, pdbs = next(read_from_pickle(PKL_PATH /
-                                                 f"structures/{system_name}.pkl"))
+        structures, pdbs = next(
+            read_from_pickle(PKL_PATH / f"structures/{system_name}.pkl")
+        )
     elif pdbpath is None:
         raise ValueError("pdbpath must be specified")
     else:
-        structures, pdbs = get_structures_pdbs(Path(pdbpath),
-                                               system_name=system_name)
+        structures, pdbs = get_structures_pdbs(Path(pdbpath), system_name=system_name)
         pickle_output((structures, pdbs), name=f"structures/{system_name}")
 
     return structures, pdbs
@@ -135,9 +131,10 @@ def write_json(data, path):
     keys = data.keys()
     fn = "_".join(keys) + ".json"
     path = Path(path) / fn
-    with codecs.open(path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, separators=(',', ':'),
-                  sort_keys=True, indent=4, cls=NumpyEncoder)
+    with codecs.open(path, "w", encoding="utf-8") as f:
+        json.dump(
+            data, f, separators=(",", ":"), sort_keys=True, indent=4, cls=NumpyEncoder
+        )
 
 
 def json_load_np(path: str) -> dict:

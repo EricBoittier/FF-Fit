@@ -6,15 +6,13 @@ import pandas as pd
 from ff_energy.pydcm.dcm import bohr_to_a, get_clcl
 import cclib
 
+
 def load_nc(path, n=3):
     #  load nuclear coordinates
     with open(path) as f:
-        nc_lines = f.readlines()[6:6 + n]
-    ncs = np.array([[float(y) * bohr_to_a
-                     for y in x.split()[2:]]
-                    for x in nc_lines])
+        nc_lines = f.readlines()[6 : 6 + n]
+    ncs = np.array([[float(y) * bohr_to_a for y in x.split()[2:]] for x in nc_lines])
     return ncs
-
 
 
 def get_dist_matrix(atoms):
@@ -47,6 +45,7 @@ def inv_scale_Z(x, dmean, dstd):
 
 def scale_sum(data, x):
     return x / sum(data)
+
 
 # https://stackoverflow.com/a/31364297/412655
 def set_axes_equal(ax):
@@ -101,9 +100,6 @@ def get_data(cubes, pickles, natoms):
     return (np.array(_) for _ in [distM, ids, lcs, cubes, pickles])
 
 
-
 def get_cclib_data(filename):
     data = cclib.io.ccread(filename)
     return data
-
-

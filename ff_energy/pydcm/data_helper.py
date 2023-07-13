@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import cclib
 import ase
@@ -5,11 +6,14 @@ from ase.visualize import view
 
 filename = "/home/boittier/Documents/phd/ff_energy/cubes/dcm/nms/test_nms_0_0.xyz.out"
 
+
 def get_cclib_data(filename):
     data = cclib.io.ccread(filename)
     return data
 
-def prepare_paired_df(ds: pd.DataFrame, csv_dict: dict):
+
+def prepare_paired_df(ds: pd.DataFrame,
+                      csv_dict: dict):
     key1s = []
     key2s = []
     alphas = []
@@ -18,13 +22,15 @@ def prepare_paired_df(ds: pd.DataFrame, csv_dict: dict):
     rmse1 = []
     rmse2 = []
 
-    for _ in list(set(ds["_"])):
-        row = ds[ds["_"] == _]
+    # ds["uuid"] =
+
+    for _ in list(set(ds["uuid"])):
+        row = ds[ds["uuid"] == _]
         alphas.append(row["alpha"].mean())
         lambdas.append(row["l2"].mean())
         l = list(row["key"])
 
-        if l[0].startswith("kernel_"):
+        if l[0].__contains__("kernel_"):
             key1s.append(l[0])
             key2s.append(l[1])
             TEST1 = csv_dict[l[0]][csv_dict[l[0]]["class"] == "test"]
@@ -59,20 +65,43 @@ def prepare_dataframe(csv_dict: dict):
     keys = []
     rmses = []
     evaluated = []
+    uuids = []
 
     for k, v in csv_dict.items():
         if k != "standard_":
             evaluated.append(k.split("_")[0])
             l2s.append(v["l2"].mean())
-            alphas.append(round(v["alpha"].mean(), 3))
+            alphas.append(v["alpha"].mean())
             rmses.append(v["rmse"].median())
             keys.append(k)
+            uuids.append(k.split("_")[2])
 
-    ds = pd.DataFrame({"key": keys,
-                       "l2": l2s,
-                       "alpha": alphas,
-                       "rmse": rmses,
-                       "class": evaluated})
+    ds = pd.DataFrame(
+        {
+            "key": keys,
+            "l2": l2s,
+            "alpha": alphas,
+            "rmse": rmses,
+            "class": evaluated,
+            "uuid": uuids
+        }
+    )
 
     ds["_"] = ds["key"].apply(lambda x: x.split("_")[1])
     return ds
+
+def read_global_charges(filename):
+    with open(filename) as f:
+        lines = f.readlines()
+    Nchg = int(lines[0].split()[0])
+    charges = np.zeros((Nchg, 4))
+    for i in range(Nchg):
+        charges[i, :] = [float(x) for x in
+                         lines[i + 2].split()[1:]]
+
+    RMSE = None
+    for _ in lines:
+        if "RMSE" in _:
+            RMSE = float(_.split()[1])
+
+    return charges, RMSE

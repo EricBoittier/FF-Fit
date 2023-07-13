@@ -189,7 +189,9 @@ class KernelFit:
             self.test_results.append((y_test, test_predictions))
             self.train_results.append((y_train, train_predictions))
 
-    def move_clcls(self, clcl, l2):
+
+    def move_clcls(self, m):
+        clcl = m.mdcm_clcl
         charges = clcl.copy()
         files = []
         #  iterate over each structure
@@ -198,11 +200,11 @@ class KernelFit:
             #  iterate over each charge
             for j, model in enumerate(self.models):
                 local_pos.append(model.predict([i]))
+            # get the new clcl array
             new_clcl = get_clcl(local_pos, charges)
             Path(f"pkls/{self.uuid}")\
                 .mkdir(parents=True, exist_ok=True)
             fn = f"pkls/{self.uuid}/{self.cubes[index].stem}.pkl"
-            # print(fn)
             filehandler = open(
                 fn, "wb")
             files.append(fn)
@@ -236,8 +238,7 @@ class KernelFit:
             ax.set_title(title)
         plt.tight_layout()
         if name is not None:
-            plt.savefig(f"{self.uuid}_{name}.png", bbox_inches='tight')
-        #plt.show()
+            plt.savefig(f"pngs/{self.uuid}_{name}.png", bbox_inches='tight')
 
     def plot_fits(self, rmses, name=None):
         N = len(self.models) // 3
