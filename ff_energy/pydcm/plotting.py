@@ -56,7 +56,7 @@ def values_to_colors(values, cmap="viridis", lim=None):
         lim = [min(values), max(values)]
     norm = mpl.colors.Normalize(vmin=lim[0], vmax=lim[1])
     cmap = cm.get_cmap(cmap)
-    return cmap(norm(values))
+    return cmap(norm(values)), cm.ScalarMappable(norm=norm, cmap=cmap)
 
 
 def orthographic_plot(x, y, z,
