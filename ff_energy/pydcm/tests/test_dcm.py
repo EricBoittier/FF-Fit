@@ -223,12 +223,12 @@ class kMDCM_Experiments(unittest.TestCase):
                       do_null=True)
 
     def test_methanol_perm(self):
-        path = Path(f"{FFE_PATH}/ff_energy/pydcm/methanol.json")
+        path = Path(f"{FFE_PATH}/ff_energy/pydcm/methanol_perm.json")
         m = MDCM(str(path))
         self.test_fit(alpha=1e-5, l2="1.0", n_factor=4,
                       load_data=False,
                       mdcm_dict=m, do_optimize=True,
-                      fname="methanol", natoms=6,
+                      fname="methanol_perm", natoms=6,
                       do_null=True)
 
     def experiments(self):
