@@ -193,7 +193,7 @@ class kMDCM_Experiments(unittest.TestCase):
         print("RMSEs:", rmses)
         rmse = sum(rmses) / len(rmses)
         print("RMSE:", rmse)
-        k.plot_pca(rmses, title=f"{fname} Standard RMSE: {rmse:.2f} [(kcal/mol)/$e$]")
+        # k.plot_pca(rmses, title=f"{fname} Standard RMSE: {rmse:.2f} [(kcal/mol)/$e$]")
         pd.DataFrame({"rmses": rmses,
                       "filename": files}
                      ).to_csv(f"{fname}_standard_.csv")
@@ -219,7 +219,17 @@ class kMDCM_Experiments(unittest.TestCase):
         self.test_fit(alpha=1e-5, l2="1.0", n_factor=4,
                       load_data=False,
                       mdcm_dict=m, do_optimize=True,
-                      fname="methanol", natoms=6)
+                      fname="methanol", natoms=6,
+                      do_null=True)
+
+    def test_methanol_perm(self):
+        path = Path(f"{FFE_PATH}/ff_energy/pydcm/methanol.json")
+        m = MDCM(str(path))
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4,
+                      load_data=False,
+                      mdcm_dict=m, do_optimize=True,
+                      fname="methanol", natoms=6,
+                      do_null=True)
 
     def experiments(self):
         alphas = [0.0, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1]
