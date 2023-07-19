@@ -92,6 +92,7 @@ def prepare_dataframe(csv_dict: dict):
             "uuid": uuids
         }
     )
+
     def name_(x):
         if "kernel" in x:
             return "kernel"
@@ -102,6 +103,7 @@ def prepare_dataframe(csv_dict: dict):
 
     ds["_"] = ds["key"].apply(lambda x: name_(x))
     return ds
+
 
 def read_global_charges(filename):
     with open(filename) as f:
