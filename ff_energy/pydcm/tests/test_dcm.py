@@ -175,15 +175,17 @@ class kMDCM_Experiments(unittest.TestCase):
         if cubes_pwd is None:
             cube_paths = Path(f"{FFE_PATH}/cubes/dcm/")
         print("cubes", len(cubes))
-        print("cubes path", cube_paths)
-        ecube_files = list(cube_paths.glob("*/*esp.cube"))
-        dcube_files = list(cube_paths.glob("*/*dens.cube"))
+        #print("cubes path", cube_paths)
+        #ecube_files = list(cube_paths.glob("*/*esp.cube"))
+        #dcube_files = list(cube_paths.glob("*/*dens.cube"))
+        ecube_files = cubes
+        dcube_files = cubes
         print("ecube", len(ecube_files))
         print("dcube", len(dcube_files))
-        print(len(cubes), len(pickles))
+        #print(len(cubes), len(pickles))
         rmses = eval_kernel(files,
-                            ecube_files,
-                            dcube_files,
+                            cubes,
+                            cubes,
                             fname=fname,
                             mdcm_clcl=mdcm_dict["mdcm_clcl"],
                             mdcm_xyz=mdcm_dict["mdcm_cxyz"],
@@ -196,13 +198,16 @@ class kMDCM_Experiments(unittest.TestCase):
                      ).to_csv(f"{fname}_standard_.csv")
 
     def test_mdcm_standard_csv(self):
-        fname = "methanol"
+        fname = "methanol_perm"
         mdcm_dict = MDCM(fname+".json").asDict()
+        print(mdcm_dict)
         print(" " * 20, "Eval Null", "*" * 20)
-        self.test_standard_rmse(None,
-                                mdcm_dict["scan_fesp"],
-                                mdcm_dict["scan_fdens"],
-                                mdcm_dict=mdcm_dict, fname=fname)
+        if len(mdcm_dict["scan_fesp"]) > 0:
+            self.test_standard_rmse(None,
+                                    mdcm_dict["scan_fesp"],
+                                    mdcm_dict["scan_fdns"],
+                                    mdcm_dict=mdcm_dict, 
+                                    fname=fname)
 
     def test_standard(self):
         """
@@ -270,7 +275,7 @@ class kMDCM_Experiments(unittest.TestCase):
         if mdcm_dict is None:
             # path to cubes
             cube_paths = Path(cubes_pwd)
-            ecube_files = list(cube_paths.glob("*/*esp.cube"))
+            ecube_files = list(cube_paths.glob("*/.cube"))
             dcube_files = list(cube_paths.glob("*/*dens.cube"))
         elif isinstance(mdcm_dict, str):
             mdcm_dict = MDCM(mdcm_dict).asDict()
