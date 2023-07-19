@@ -67,14 +67,20 @@ def prepare_dataframe(csv_dict: dict):
     evaluated = []
     uuids = []
 
+    def finduuid(x):
+        spl = x.split("_")
+        for _ in spl:
+            if len(_) == 36:
+                return _
+
     for k, v in csv_dict.items():
-        if k != "standard_":
+        if "_standard_" not in k:
             evaluated.append(k.split("_")[0])
             l2s.append(v["l2"].mean())
             alphas.append(v["alpha"].mean())
             rmses.append(v["rmse"].median())
             keys.append(k)
-            uuids.append(k.split("_")[2])
+            uuids.append(finduuid(k))
 
     ds = pd.DataFrame(
         {
@@ -86,8 +92,15 @@ def prepare_dataframe(csv_dict: dict):
             "uuid": uuids
         }
     )
+    def name_(x):
+        if "kernel" in x:
+            return "kernel"
+        elif "opt" in x:
+            return "opt"
+        else:
+            return "standard?"
 
-    ds["_"] = ds["key"].apply(lambda x: x.split("_")[1])
+    ds["_"] = ds["key"].apply(lambda x: name_(x))
     return ds
 
 def read_global_charges(filename):
