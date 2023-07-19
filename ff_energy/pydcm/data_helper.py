@@ -111,7 +111,6 @@ def read_global_charges(filename):
     for i in range(Nchg):
         charges[i, :] = [float(x) for x in
                          lines[i + 2].split()[1:]]
-
     RMSE = None
     for _ in lines:
         if "RMSE" in _:
