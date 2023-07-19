@@ -1,7 +1,8 @@
 from itertools import permutations, product
 
 def cube_to_permutable_copies(cubefile: str,
-                              perm_idxs: list) -> None:
+                              perm_idxs: list,
+                              fname: str) -> None:
     """
     Given a list of lists of permutable atoms for each
     atom type in the cube file (with permutable atoms),
@@ -51,32 +52,39 @@ def cube_to_permutable_copies(cubefile: str,
 
         # get the new cube lines
         new_cube_lines = lines[:6] + new_atom_lines + lines[6+natoms:]
-        if "esp" in cubefile:
-            filename = cubefile.replace("_esp.cube", f"_perm_{i}_esp.cube")
-        elif "dens" in cubefile:
-            filename = cubefile.replace("_dens.cube", f"_perm_{i}_dens.cube")
-        else:
-            raise ValueError("Cube file does not contain ESP or DENS")
-        print(filename, comb)
+        fname_stem = cubefile.split("/")[-1]
+
+        fname_stem = fname_stem.replace("meoh", f"{fname}_perm_{i}")
+        print(fname_stem, comb)
+        path_fstr = "/home/boittier/Documents/phd/ff_energy/cubes/{}/scan/"
         # write the new cube file
-        with open(filename, "w") as f:
+        with open(path_fstr.format("methanol_perm") + fname_stem, "w") as f:
+            f.writelines(new_cube_lines)
+        if i != 0:
+            with open(path_fstr.format("methanol_perm_test") + fname_stem, "w") as f:
                 f.writelines(new_cube_lines)
 
 
 if __name__ == "__main__":
     from pathlib import Path
-    cubes_path = "/home/boittier/Documents/phd/ff_energy/cubes/methanol/scan/"
     # loop thru esp files
+    fname = "methanol"
+    cubes_path = "/home/boittier/Documents/phd/ff_energy/cubes/methanol/scan/"
+
     files = Path(cubes_path).glob("*_esp.cube")
     for f in files:
         cube_to_permutable_copies(
             str(f),
-            [[3,4,5]]
+            [[3,4,5]],
+            fname
         )
     # loop thru density files
     files = Path(cubes_path).glob("*_dens.cube")
     for f in files:
         cube_to_permutable_copies(
             str(f),
-            [[3,4,5]]
+            [[3,4,5]],
+            fname
         )
+
+
