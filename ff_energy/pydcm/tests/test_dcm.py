@@ -156,7 +156,6 @@ class kMDCM_Experiments(unittest.TestCase):
         return du.get_data(CUBES, PICKLES, natoms)
 
     def test_standard_rmse(self,
-                           k,
                            files,
                            cubes,
                            pickles,
@@ -166,8 +165,7 @@ class kMDCM_Experiments(unittest.TestCase):
                            ):
         """
         Test the standard RMSE
-        :param k: KernelFit object
-        :param files: list of filenames
+        :param files: list of CLCL filenames
         :param cubes: list of cube objects
         :param pickles: list of pickle objects
         :param cubes_pwd: path to the cubes
@@ -197,12 +195,19 @@ class kMDCM_Experiments(unittest.TestCase):
                       "filename": files}
                      ).to_csv(f"{fname}_standard_.csv")
 
+    def test_mdcm_standard_csv(self):
+        fname = "methanol"
+        mdcm_dict = MDCM(fname+".json").asDict()
+        print(" " * 20, "Eval Null", "*" * 20)
+        self.test_standard_rmse(None,
+                                mdcm_dict["scan_fesp"],
+                                mdcm_dict["scan_fdens"],
+                                mdcm_dict=mdcm_dict, fname=fname)
+
     def test_standard(self):
         """
-        Test the standard RMSE
-        :return:
         """
-        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=True)
+        self.test_fit(alpha=1e-5, l2="1.0", n_factor=4, load_data=False)
 
     def test_water(self):
         waterpath = Path(f"{FFE_PATH}/ff_energy/pydcm/water.json")
@@ -271,6 +276,7 @@ class kMDCM_Experiments(unittest.TestCase):
             mdcm_dict = MDCM(mdcm_dict).asDict()
         else:
             mdcm_dict = mdcm_dict.asDict()
+
         if isinstance(mdcm_dict, dict):
             ecube_files = mdcm_dict["scan_fesp"]
             dcube_files = mdcm_dict["scan_fdns"]
