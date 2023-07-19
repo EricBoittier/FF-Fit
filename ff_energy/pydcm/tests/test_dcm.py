@@ -193,7 +193,6 @@ class kMDCM_Experiments(unittest.TestCase):
         print("RMSEs:", rmses)
         rmse = sum(rmses) / len(rmses)
         print("RMSE:", rmse)
-        # k.plot_pca(rmses, title=f"{fname} Standard RMSE: {rmse:.2f} [(kcal/mol)/$e$]")
         pd.DataFrame({"rmses": rmses,
                       "filename": files}
                      ).to_csv(f"{fname}_standard_.csv")
