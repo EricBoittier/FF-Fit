@@ -54,7 +54,8 @@ class UncertaintyQuantifier:
         # standardize the data
         self.data["FIT_scaled"] = self.data["FIT"].pipe(standardize)
         self.data["TARGET_scaled"] = self.data["TARGET"].pipe(standardize)
-        self.data["SE_scaled"] = self.data["SE"].pipe(standardize)
+        self.data["SE_scaled"] = self.data["FIT_scaled"].std()
+
         # Calculate the residuals
         residuals = self.data[self.ref_key] - self.data[self.key]
         #  create a test-train split

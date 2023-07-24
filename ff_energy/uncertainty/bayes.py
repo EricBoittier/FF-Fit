@@ -111,14 +111,13 @@ def get_residuals(predictions, CI=0.9):
     return residuals_dict
 
 
-def calculate_bayesian_uncertainty(df):
-    df["FIT_scaled"] = df["FIT"].pipe(standardize)
-    df["TARGET_scaled"] = df["TARGET"].pipe(standardize)
+def calculate_bayesian_uncertainty(df, verbose=False):
     kernel = get_kernel(regression_model)
     mcmc = get_mcmc(kernel)
     rnd_key = get_random_seed()
-    mcmc = run_mcmc(mcmc, rnd_key, df)
-    mcmc.print_summary()
+    mcmc = run_mcmc(mcmc, rnd_key, df, target_sd=df["FIT_scaled"].std())
+    if verbose:
+        mcmc.print_summary()
     predictions = get_predictions(mcmc, rnd_key, df)
     residuals = get_residuals(predictions)
     unstandarize = lambda x: x * df["TARGET"].std() + df["TARGET"].mean()
