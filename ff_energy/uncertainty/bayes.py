@@ -121,10 +121,20 @@ def calculate_bayesian_uncertainty(df):
     mcmc.print_summary()
     predictions = get_predictions(mcmc, rnd_key, df)
     residuals = get_residuals(predictions)
+    unstandarize = lambda x: x * df["TARGET"].std() + df["TARGET"].mean()
 
     out_dict = {
-        "predictions": predictions,
-        "residuals": residuals,
+        "predictions_scaled": predictions,
+        "residuals_scaled": residuals,
+        "df": df,
+        "unstandarize": unstandarize,
+        "residuals_unscaled": {
+            "obs": unstandarize(residuals["obs"]),
+            "obs_mean": unstandarize(residuals["obs_mean"]),
+            "obs_hpdi": unstandarize(residuals["obs_hpdi"]),
+            "obs_mean_hpdi": unstandarize(residuals["obs_mean_hpdi"]),
+            "err": unstandarize(residuals["err"]),
+        },
     }
 
     return out_dict

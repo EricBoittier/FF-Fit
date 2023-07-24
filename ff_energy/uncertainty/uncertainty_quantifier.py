@@ -29,7 +29,17 @@ class UncertaintyQuantifier:
         else:
             self.ref_key = ref_key
 
-        self.output_dict = self.calculate_uncertainty()
+        self.output_dict = {
+            'conformal_uncertainty': None,
+            'bayesian_uncertainty': None,
+            'bootstrap_uncertainty': None,
+            'cross_val_uncertainty': None,
+            'mapie_uncertainty': None,
+            'std_uncertainty': None,
+        }
+
+    def calc(self):
+        self.calculate_uncertainty()
 
     def __repr__(self):
         return f"UncertaintyQuantifier(data={self.data})"
@@ -37,7 +47,7 @@ class UncertaintyQuantifier:
     def __str__(self):
         return f"UncertaintyQuantifier(data={self.data})"
 
-    def calculate_uncertainty(self, split=0.8):
+    def calculate_uncertainty(self, split=0.8, keys=None):
         self.data["TARGET"] = self.data[self.ref_key]
         self.data["FIT"] = self.data[self.key]
         self.data["SE"] = self.data["FIT"].std() / np.sqrt(self.data["FIT"].shape[0])
@@ -65,41 +75,40 @@ class UncertaintyQuantifier:
             "y_test": self.data.loc[test_idx, self.key],
             "y_pred": self.data.loc[train_idx, self.key],
             "y_test_pred": self.data.loc[test_idx, self.key],
-            "X_train": self.data.loc[train_idx, self.key],
-            "X_test": self.data.loc[test_idx, self.key],
+            "X_train": self.data.loc[train_idx, self.ref_key],
+            "X_test": self.data.loc[test_idx, self.ref_key],
         }
 
-        # Calculate the uncertainty using conformal predictions
-        conformal_uncertainty = calculate_conformal_uncertainty(data_dict)
-        self.conformal_uncertainty = conformal_uncertainty
+        if keys is None:
+            keys = self.output_dict.keys()
 
-        # Calculate the uncertainty using Bayesian statistics
-        bayesian_uncertainty = calculate_bayesian_uncertainty(self.data)
-        self.bayesian_uncertainty = bayesian_uncertainty
-
-        # Calculate the uncertainty using bootstrap resampling
-        bootstrap_uncertainty = calculate_bootstrap_uncertainty(self.data)
-        self.bootstrap_uncertainty = bootstrap_uncertainty
-
-        # Calculate the uncertainty using cross-validation
-        cross_val_uncertainty = calculate_cross_val_uncertainty(data_dict)
-        self.cross_val_uncertainty = cross_val_uncertainty
-
-        # Calculate the uncertainty using MAPPIE
-        mapie_uncertainty = calculate_mapie_uncertainty(data_dict)
-        self.mapie_uncertainty = mapie_uncertainty
-
-        # standard dev. uncertainty
-        std_uncertainty = calculate_std_uncertainty(data_dict)
-        self.std_uncertainty = std_uncertainty
-
-        out_dict = {
-            'conformal_uncertainty': conformal_uncertainty,
-            'bayesian_uncertainty': bayesian_uncertainty,
-            'bootstrap_uncertainty': bootstrap_uncertainty,
-            'cross_val_uncertainty': cross_val_uncertainty,
-            'mapie_uncertainty': mapie_uncertainty,
-            'std_uncertainty': std_uncertainty,
-        }
-
-        return out_dict
+        if "conformal_uncertainty" in keys:
+            # Calculate the uncertainty using conformal predictions
+            conformal_uncertainty = calculate_conformal_uncertainty(data_dict)
+            self.conformal_uncertainty = conformal_uncertainty
+            self.output_dict['conformal_uncertainty'] = conformal_uncertainty
+        if "bayesian_uncertainty" in keys:
+            # Calculate the uncertainty using Bayesian statistics
+            bayesian_uncertainty = calculate_bayesian_uncertainty(self.data)
+            self.bayesian_uncertainty = bayesian_uncertainty
+            self.output_dict['bayesian_uncertainty'] = bayesian_uncertainty
+        if "bootstrap_uncertainty" in keys:
+            # Calculate the uncertainty using bootstrap resampling
+            bootstrap_uncertainty = calculate_bootstrap_uncertainty(self.data)
+            self.bootstrap_uncertainty = bootstrap_uncertainty
+            self.output_dict['bootstrap_uncertainty'] = bootstrap_uncertainty
+        if "cross_val_uncertainty" in keys:
+            # Calculate the uncertainty using cross-validation
+            cross_val_uncertainty = calculate_cross_val_uncertainty(data_dict)
+            self.cross_val_uncertainty = cross_val_uncertainty
+            self.output_dict['cross_val_uncertainty'] = cross_val_uncertainty
+        if "mapie_uncertainty" in keys:
+            # Calculate the uncertainty using MAPPIE
+            mapie_uncertainty = calculate_mapie_uncertainty(data_dict)
+            self.mapie_uncertainty = mapie_uncertainty
+            self.output_dict['mapie_uncertainty'] = mapie_uncertainty
+        if "std_uncertainty" in keys:
+            # standard dev. uncertainty
+            std_uncertainty = calculate_std_uncertainty(data_dict)
+            self.std_uncertainty = std_uncertainty
+            self.output_dict['std_uncertainty'] = std_uncertainty
