@@ -81,7 +81,6 @@ def run_mcmc(mcmc, rng_key_, data, target_sd=None):
 
 
 def get_predictions(mcmc, rng_key_, data, target_sd=None):
-
     if target_sd is not None:
         target_sd = jnp.array(target_sd)
     else:
@@ -111,6 +110,7 @@ def get_residuals(predictions, CI=0.9):
     residuals_dict["err"] = err
     return residuals_dict
 
+
 def calculate_bayesian_uncertainty(df):
     df["FIT_scaled"] = df["FIT"].pipe(standardize)
     df["TARGET_scaled"] = df["TARGET"].pipe(standardize)
@@ -118,6 +118,7 @@ def calculate_bayesian_uncertainty(df):
     mcmc = get_mcmc(kernel)
     rnd_key = get_random_seed()
     mcmc = run_mcmc(mcmc, rnd_key, df)
+    mcmc.print_summary()
     predictions = get_predictions(mcmc, rnd_key, df)
     residuals = get_residuals(predictions)
 

@@ -1,3 +1,7 @@
+from pathlib import Path
+
+FFEPATH = Path(__file__).parent.parent.parent
+
 
 clusterBACH = ("ssh", "boittier@pc-bach")
 clusterBEETHOVEN = ("ssh", "boittier@beethoven")
