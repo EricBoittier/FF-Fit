@@ -1,0 +1,155 @@
+The core classes, functions, and methods that will be necessary are:
+
+1. `DataLoader`: A class to load and preprocess the data from the csv file.
+2. `UncertaintyQuantifier`: A class to calculate the uncertainty using different methods.
+3. `Plotter`: A class to generate the required plots.
+4. `LatexTableGenerator`: A class to generate the Latex table.
+5. `main`: The main function that ties everything together.
+
+Now, let's start with the "entrypoint" file, `main.py`.
+
+main.py
+```python
+import pandas as pd
+from dataloader import DataLoader
+from uncertainty_quantifier import UncertaintyQuantifier
+from plotter import Plotter
+from latex_table_generator import LatexTableGenerator
+
+def main():
+    # Load and preprocess the data
+    data_loader = DataLoader('data.csv')
+    data = data_loader.load_data()
+
+    # Calculate the uncertainty
+    uncertainty_quantifier = UncertaintyQuantifier(data)
+    uncertainty = uncertainty_quantifier.calculate_uncertainty()
+
+    # Generate the plots
+    plotter = Plotter(data, uncertainty)
+    plotter.generate_plots()
+
+    # Generate the Latex table
+    latex_table_generator = LatexTableGenerator(data, uncertainty)
+    latex_table_generator.generate_table()
+
+if __name__ == "__main__":
+    main()
+```
+
+Now, let's move on to the `DataLoader` class in `dataloader.py`.
+
+dataloader.py
+```python
+import pandas as pd
+
+class DataLoader:
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+    def load_data(self):
+        data = pd.read_csv(self.file_path)
+        return data
+```
+
+Next, the `UncertaintyQuantifier` class in `uncertainty_quantifier.py`.
+
+uncertainty_quantifier.py
+```python
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from scipy.stats import norm
+from numpyro import distributions as dist
+from jax import random
+from uncertainpy import UQ
+
+class UncertaintyQuantifier:
+    def __init__(self, data):
+        self.data = data
+
+    def calculate_uncertainty(self):
+        # Calculate the residuals
+        residuals = self.data['Eref'] - self.data.mean(axis=1)
+
+        # Calculate the uncertainty using conformal predictions
+        conformal_uncertainty = self.calculate_conformal_uncertainty(residuals)
+
+        # Calculate the uncertainty using Bayesian statistics
+        bayesian_uncertainty = self.calculate_bayesian_uncertainty(residuals)
+
+        # Calculate the uncertainty using bootstrap resampling
+        bootstrap_uncertainty = self.calculate_bootstrap_uncertainty(residuals)
+
+        return conformal_uncertainty, bayesian_uncertainty, bootstrap_uncertainty
+
+    def calculate_conformal_uncertainty(self, residuals):
+        # Placeholder for the actual implementation
+        return np.std(residuals)
+
+    def calculate_bayesian_uncertainty(self, residuals):
+        # Placeholder for the actual implementation
+        return np.std(residuals)
+
+    def calculate_bootstrap_uncertainty(self, residuals):
+        # Placeholder for the actual implementation
+        return np.std(residuals)
+```
+
+Next, the `Plotter` class in `plotter.py`.
+
+plotter.py
+```python
+import matplotlib.pyplot as plt
+from scipy.stats import pearsonr
+
+class Plotter:
+    def __init__(self, data, uncertainty):
+        self.data = data
+        self.uncertainty = uncertainty
+
+    def generate_plots(self):
+        # Generate a regression line plot
+        plt.figure(figsize=(10, 6))
+        plt.plot(self.data['Eref'], self.data.mean(axis=1), 'o')
+        plt.plot(self.data['Eref'], self.data['Eref'], 'r-')
+        plt.xlabel('Eref')
+        plt.ylabel('Model prediction')
+        plt.title('Regression line plot')
+        plt.show()
+
+        # Print the r squared, Pearson's r and other statistics
+        r, p = pearsonr(self.data['Eref'], self.data.mean(axis=1))
+        print(f"Pearson's r: {r}, p-value: {p}")
+```
+
+Finally, the `LatexTableGenerator` class in `latex_table_generator.py`.
+
+latex_table_generator.py
+```python
+import pandas as pd
+
+class LatexTableGenerator:
+    def __init__(self, data, uncertainty):
+        self.data = data
+        self.uncertainty = uncertainty
+
+    def generate_table(self):
+        # Placeholder for the actual implementation
+        pass
+```
+
+The `requirements.txt` file:
+
+requirements.txt
+```
+pandas
+numpy
+scikit-learn
+scipy
+numpyro
+jax
+uncertainpy
+matplotlib
+```
+
+Please note that the actual implementations of the methods to calculate the uncertainty and generate the Latex table are placeholders and need to be replaced with the actual implementations.
