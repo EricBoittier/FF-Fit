@@ -3,7 +3,7 @@ import typing
 import pandas as pd
 import re
 import numpy as np
-from ff_energy.ffe.ffe_utils import str2int
+from ff_energy.utils.ffe_utils import str2int
 
 from jax import grad
 import jax.numpy as jnp

@@ -1,15 +1,14 @@
 from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
     clusterNCCR, clusterBEETHOVEN
-from ff_energy.ffe.ffe_utils import MakeJob, charmm_jobs
-from ff_energy.ffe.ffe_utils import pickle_output
-from ff_energy.ffe.ffe_utils import PKL_PATH
+from ff_energy.utils.ffe_utils import MakeJob, charmm_jobs
+from ff_energy.utils.ffe_utils import pickle_output
+from ff_energy.utils.ffe_utils import PKL_PATH
 from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
 from ff_energy.ffe.data import Data
 from pathlib import Path
 from ff_energy.ffe.slurm import SlurmJobHandler
 import sys
-
 
 
 def load_config_maker(theory, system, elec):
@@ -47,9 +46,6 @@ def load_all_theory():
     return CMS
 
 
-
-
-
 def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj = SlurmJobHandler(max_jobs=max_jobs, cluster=cluster)
     print("Running jobs.py: ", shj.get_running_jobs())
@@ -69,6 +65,7 @@ def coloumb_submit(cluster, jobmakers, max_jobs=120, Check=True):
         for js in jm.get_coloumb_jobs(DRIVE):
             jobs.append(js)
     submit_jobs(jobs, max_jobs=max_jobs, Check=Check, cluster=cluster)
+
 
 def esp_view_submit(cluster, jobmakers, max_jobs=120, Check=True):
     jobs = []
@@ -179,7 +176,7 @@ def data_jobs(CMS, molpro_small_path):
             PCBACH,  # cluster
             PAIRS,  # pairs
             COLOUMB,  # coulomb
-            CHM, # charmm
+            CHM,  # charmm
         )
         jobmakers.append(jm)
 

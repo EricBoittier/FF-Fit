@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from sklearn.preprocessing import StandardScaler
+
 from ff_energy.uncertainty.bootstrap import calculate_bootstrap_uncertainty
 from ff_energy.uncertainty.cross_val import calculate_cross_val_uncertainty, \
     calculate_std_uncertainty
@@ -29,6 +31,8 @@ class UncertaintyQuantifier:
         else:
             self.ref_key = ref_key
 
+        self.scaler = None
+
         self.output_dict = {
             'conformal_uncertainty': None,
             'bayesian_uncertainty': None,
@@ -48,14 +52,24 @@ class UncertaintyQuantifier:
         return f"UncertaintyQuantifier(data={self.data})"
 
     def calculate_uncertainty(self, split=0.8, keys=None):
+
+        self.scaler = StandardScaler()
+
         self.data["TARGET"] = self.data[self.ref_key]
         self.data["FIT"] = self.data[self.key]
         self.data["SE"] = self.data["FIT"].std() / np.sqrt(self.data["FIT"].shape[0])
         # standardize the data
-        self.data["FIT_scaled"] = self.data["FIT"].pipe(standardize)
-        self.data["TARGET_scaled"] = self.data["TARGET"].pipe(standardize)
-        self.data["SE_scaled"] = self.data["FIT_scaled"].std()
 
+        self.data["FIT_scaled"] = self.scaler.fit_transform(
+            self.data[self.key].values.reshape(-1, 1)).T[0]
+
+        self.data["TARGET_scaled"] = self.scaler.transform(
+            self.data["TARGET"].values.reshape(-1, 1)).T[0]
+
+        self.data["SE_scaled"]\
+            = self.data["FIT_scaled"].std() / np.sqrt(self.data["FIT_scaled"].shape[0])
+
+        print(self.data.describe())
         # Calculate the residuals
         residuals = self.data[self.ref_key] - self.data[self.key]
         #  create a test-train split
@@ -90,7 +104,8 @@ class UncertaintyQuantifier:
             self.output_dict['conformal_uncertainty'] = conformal_uncertainty
         if "bayesian_uncertainty" in keys:
             # Calculate the uncertainty using Bayesian statistics
-            bayesian_uncertainty = calculate_bayesian_uncertainty(self.data)
+            bayesian_uncertainty = calculate_bayesian_uncertainty(self.data,
+                                                                  scaler=self.scaler)
             self.bayesian_uncertainty = bayesian_uncertainty
             self.output_dict['bayesian_uncertainty'] = bayesian_uncertainty
         if "bootstrap_uncertainty" in keys:

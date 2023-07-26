@@ -4,10 +4,9 @@ import itertools
 
 import jax.numpy as jnp
 
-from ff_energy.ffe.ffe_utils import read_from_pickle, str2int
+from ff_energy.utils.ffe_utils import read_from_pickle, str2int, get_structures
 from ff_energy.ffe.plot import plot_energy_MSE
 from ff_energy.ffe.geometry import dihedral3, bisector, angle, dist
-from ff_energy.ffe.ffe_utils import get_structures
 from ff_energy.ffe.potential import Ecoloumb
 from ff_energy.ffe.bonded_terms import FitBonded
 
@@ -110,13 +109,13 @@ class Data:
         self.coloumb = col
 
         if (
-            "M_ENERGY" in data.keys()
-            and cluster_df is not None
-            and monomers_df is not None
+                "M_ENERGY" in data.keys()
+                and cluster_df is not None
+                and monomers_df is not None
         ):
             self.data["intE"] = (
-                self.data["C_ENERGY"] - self.data["M_ENERGY"]
-            ) * H2KCALMOL
+                                        self.data["C_ENERGY"] - self.data["M_ENERGY"]
+                                ) * H2KCALMOL
 
         self.ctot = ctot
         self.chm_df = chm_df
@@ -160,7 +159,6 @@ class Data:
 
     def __repr__(self):
         return self.__str__()
-
 
     def pair_monomer_E(self, x):
         pair = x.pair
@@ -209,9 +207,6 @@ class Data:
 
     def plot_pair_monomer_E(self) -> None:
         _ = self.data[self.data["n_pairs"] == 190].copy()
-        # _ = _[_["n_monomers"] == 20].copy()
-        # _ = _[_["ECOL"] < -50].copy()
-        # _ = _.dropna(subset=["intE"])
         _ = _[_["P_intE"] < 1]
         _ = _[_["intE"] < 1]
         print("n:", len(_))
@@ -234,9 +229,9 @@ class Data:
 
 
 def pairs_data(
-    data,
-    name="PC",
-    dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
+        data,
+        name="PC",
+        dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
 ):
     """
 

@@ -18,3 +18,4 @@ def calculate_bootstrap_uncertainty(df):
         "rseMax": rseMax,
     }
     return out_dict
+

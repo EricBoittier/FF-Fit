@@ -111,7 +111,7 @@ def get_residuals(predictions, CI=0.9):
     return residuals_dict
 
 
-def calculate_bayesian_uncertainty(df, verbose=False):
+def calculate_bayesian_uncertainty(df, verbose=False, scaler=None):
     kernel = get_kernel(regression_model)
     mcmc = get_mcmc(kernel)
     rnd_key = get_random_seed()
@@ -120,19 +120,26 @@ def calculate_bayesian_uncertainty(df, verbose=False):
         mcmc.print_summary()
     predictions = get_predictions(mcmc, rnd_key, df)
     residuals = get_residuals(predictions)
-    unstandarize = lambda x: x * df["TARGET"].std() + df["TARGET"].mean()
+    if scaler is None:
+        unstandardize = lambda x: x * df["FIT"].std() + df["FIT"].mean()
+    else:
+        #  Assume the scaler is a MinMaxScaler and reshape accordingly
+        def unstandardize(x):
+            if len(x.shape) == 1:
+                x = x.reshape(-1, 1)
+            return scaler.inverse_transform(x)
 
     out_dict = {
         "predictions_scaled": predictions,
         "residuals_scaled": residuals,
         "df": df,
-        "unstandarize": unstandarize,
+        "unstandarize": unstandardize,
         "residuals_unscaled": {
-            "obs": unstandarize(residuals["obs"]),
-            "obs_mean": unstandarize(residuals["obs_mean"]),
-            "obs_hpdi": unstandarize(residuals["obs_hpdi"]),
-            "obs_mean_hpdi": unstandarize(residuals["obs_mean_hpdi"]),
-            "err": unstandarize(residuals["err"]),
+            "obs": unstandardize(residuals["obs"]),
+            "obs_mean": unstandardize(residuals["obs_mean"]),
+            "obs_hpdi": unstandardize(residuals["obs_hpdi"]),
+            "obs_mean_hpdi": unstandardize(residuals["obs_mean_hpdi"]),
+            "err": unstandardize(residuals["err"]),
         },
     }
 

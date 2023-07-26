@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 
 
-def calculate_mapie_uncertainty(data_dict, verbose=False, error=0.05):
+def calculate_mapie_uncertainty(data_dict, verbose=True, error=0.05):
     y_train = np.array(data_dict['y_train'])
     y_test = np.array(data_dict['y_test'])
     X_train = np.array(data_dict['X_train'])
@@ -18,12 +18,12 @@ def calculate_mapie_uncertainty(data_dict, verbose=False, error=0.05):
 
     # print shapes if in verbose
     if verbose:
-        print("y_train", y_train.shape)
-        print("y_test", y_test.shape)
-        print("X_train", X_train.shape)
-        print("X_test", X_test.shape)
-        print("y_pred", y_pred.shape)
-        print("y_test_pred", y_test_pred.shape)
+        print("y_train", y_train.shape, y_train[0:10])
+        print("y_test", y_test.shape, y_test[0:10])
+        print("X_train", X_train.shape, X_train[0:10])
+        print("X_test", X_test.shape, X_test[0:10])
+        print("y_pred", y_pred.shape, y_pred[0:10])
+        print("y_test_pred", y_test_pred.shape, y_test_pred[0:10])
         print("std", std.shape)
         print("y_err", y_err.shape)
 
@@ -40,11 +40,11 @@ def calculate_mapie_uncertainty(data_dict, verbose=False, error=0.05):
 
     est = LinearRegression()
     mapie = MapieRegressor(est, cv=10, agg_function="median")
-
-    mapie.fit(X_train, y_train)
+    ones_like = np.ones((len(y_train))) * 1.0
+    mapie.fit(ones_like.reshape(-1,1), y_train.reshape(-1,1))
 
     y_test_pred, y_test_pis = mapie.predict(
-        X_test, alpha=[error]
+        np.array([X_test]), alpha=[error]
     )
     return_dict = {
         'mae_test': mae_test,
