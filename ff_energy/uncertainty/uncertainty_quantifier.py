@@ -7,7 +7,6 @@ from ff_energy.uncertainty.bootstrap import calculate_bootstrap_uncertainty
 from ff_energy.uncertainty.cross_val import calculate_cross_val_uncertainty, \
     calculate_std_uncertainty
 from ff_energy.uncertainty.mapie import calculate_mapie_uncertainty
-from ff_energy.uncertainty.pipe import standardize
 from ff_energy.uncertainty.bayes import calculate_bayesian_uncertainty
 from ff_energy.uncertainty.conformal import calculate_conformal_uncertainty
 

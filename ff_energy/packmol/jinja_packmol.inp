@@ -1,0 +1,9 @@
+#
+# A mixture of water and urea
+#
+
+tolerance 2.0
+filetype pdb
+output {{outputName}}
+
+{{structures}}

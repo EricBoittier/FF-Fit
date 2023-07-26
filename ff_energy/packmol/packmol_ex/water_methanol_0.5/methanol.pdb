@@ -1,0 +1,10 @@
+REMARK  GENERATE LIGAND                                                               
+REMARK   DATE:     6/20/22      4:53: 6      CREATED BY USER: apache                  
+ATOM      1  O   LIG L   1       1.420   0.000   0.000  1.00  0.00      LIG 
+ATOM      2  C   LIG L   1       0.000   0.000   0.000  1.00  0.00      LIG 
+ATOM      3  H1  LIG L   1       1.747   0.924   0.000  1.00  0.00      LIG 
+ATOM      4  H2  LIG L   1      -0.363  -1.028   0.000  1.00  0.00      LIG 
+ATOM      5  H3  LIG L   1      -0.363   0.514   0.890  1.00  0.00      LIG 
+ATOM      6  H4  LIG L   1      -0.363   0.514  -0.890  1.00  0.00      LIG 
+TER       7      LIG      1
+END

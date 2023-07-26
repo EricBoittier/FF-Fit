@@ -1,0 +1,13 @@
+#
+# A mixture of water and urea
+#
+
+tolerance 2.0
+filetype pdb
+output dcm_box.pdb
+
+structure dcm.pdb 
+  number 254 
+  inside box 0. 0. 0. 30. 30. 30. 
+end structure
+
