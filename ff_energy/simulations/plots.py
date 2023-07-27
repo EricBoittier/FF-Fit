@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-import ff_energy.simulations.sim_utils
-from ff_energy.simulations.sim_utils import get_rdf_peaks
+import ff_energy
+from ff_energy import get_rdf_peaks
 
 time_label = "$t$ (ps)"
 energy_label = "$E$ (kcal/mol)"

@@ -2,9 +2,9 @@ import itertools
 import os
 import numpy as np
 
-from ff_energy.ffe.templates import PSF
-from ff_energy.ffe.geometry import sqrt_einsum_T
-import ff_energy.ffe.constants as constants
+from ff_energy import PSF
+from ff_energy import sqrt_einsum_T
+import ff_energy as constants
 from ase.io import read
 
 def valid_atom_key_pairs(atom_keys):

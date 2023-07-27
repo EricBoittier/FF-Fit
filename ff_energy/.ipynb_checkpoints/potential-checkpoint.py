@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import itertools
 
-from ff_energy.structure import atom_key_pairs
+from ff_energy import atom_key_pairs
 
 def LJ(sig, ep, r, a=6, b=2, c=2):
     """

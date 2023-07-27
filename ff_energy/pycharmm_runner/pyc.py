@@ -27,6 +27,9 @@ import pycharmm.scalar as scalar
 from ff_energy.pycharmm_runner.nbonds_dicts import DEFAULT_NBONDS_DICT
 from ff_energy.pycharmm_runner.mini_dicts import ABNR_DICT
 from ff_energy.pycharmm_runner.input_dicts import DCM_TEST
+from ff_energy.pycharmm_runner.dyna_dicts import get_dynamics_dict
+
+
 
 def nbonds_setup(dict=None):
     if dict is None:
@@ -92,6 +95,26 @@ class PyCHARMM_Runner:
                 dict = ABNR_DICT
             minimize.run_abnr(**dict)
 
+    def dynamics(self,
+                 dict=None,
+                 type=None,
+                 resname="heat",
+                 nstep=10000,
+                 timestep=0.0005):
+        res_file, dcd_file = self.write_res_dcd(resname)
+        dynamics_dict = get_dynamics_dict(timestep, res_file, dcd_file)
+        dyn_heat = pycharmm.DynamicsScript(**dynamics_dict)
+        dyn_heat.run()
+        res_file.close()
+        dcd_file.close()
+
+    def write_res_dcd(self, resname):
+        res_file = pycharmm.CharmmFile(
+            file_name=f'{self.output_path}/{resname}.res', file_unit=2, formatted=True, read_only=False)
+        dcd_file = pycharmm.CharmmFile(
+            file_name=f'{self.output_path}/{resname}.dcd', file_unit=1, formatted=False, read_only=False)
+        return res_file, dcd_file
+
     def write_info(self, key, note=""):
         write.coor_pdb(f"{self.output_path}/{key}.pdb", title=f"{key}: {note}")
         write.psf_card(f"{self.output_path}/{key}.psf", title=f"{key}: {note}")
@@ -101,6 +124,8 @@ class PyCHARMM_Runner:
         self.imageinit()
         self.minimize()
         self.write_info("dcm_box", note="dcm_box")
+        self.dynamics()
+        self.write_info("dcm_box_heat", note="dcm_box_heat")
 
 
 if __name__ == "__main__":

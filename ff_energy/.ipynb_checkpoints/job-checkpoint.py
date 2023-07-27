@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
-from ff_energy.templates import molpro_job_template, m_slurm_template, orbkit_ci_template, o_slurm_template, \
+from ff_energy import molpro_job_template, m_slurm_template, orbkit_ci_template, o_slurm_template, \
     c_slurm_template, c_job_template, PAR, molpro_pol_template, orbkit_pol_template
 
-from ff_energy.templates import esp_view_template, vmd_template, g_template
+from ff_energy import esp_view_template, vmd_template, g_template
 from shutil import copy
 import pandas as pd
 

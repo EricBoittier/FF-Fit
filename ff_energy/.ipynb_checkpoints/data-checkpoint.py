@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 import pickle
 import itertools
-from ff_energy.plot import plot_energy_MSE
+from ff_energy import plot_energy_MSE
 
 H2KCALMOL = 627.503
 

@@ -3,16 +3,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
-from ff_energy.ffe.ffe_utils import read_from_pickle
+from ff_energy import read_from_pickle
 import jax.numpy as jnp
-from ff_energy.ffe.plot import plot_energy_MSE, plot_ff_fit
-from ff_energy.ffe.structure import atom_key_pairs
-from ff_energy.ffe.potential import LJ, akp_indx
-from ff_energy.ffe.ff import FF
-from ff_energy.ffe.ff_fit import load_ff, fit_func, fit_repeat
-from ff_energy.ffe.data import pairs_data
-from ff_energy.ffe.ffe_utils import pickle_output, read_from_pickle, str2int, PKL_PATH
-from ff_energy.exp_help.helpers import load_json
+from ff_energy import plot_energy_MSE, plot_ff_fit
+from ff_energy import atom_key_pairs
+from ff_energy import LJ, akp_indx
+from ff_energy import FF
+from ff_energy import load_ff, fit_func, fit_repeat
+from ff_energy import pairs_data
+from ff_energy import pickle_output, read_from_pickle, str2int, PKL_PATH
+from ff_energy import load_json
 import itertools as it
 
 """

@@ -1,6 +1,4 @@
 
-
-
 DCM_TEST = {
     "pdb_name": "source/dcm/dcm_box.pdb",
     "toppar_stream": "stream source/dcm/dcm_toppar.str",

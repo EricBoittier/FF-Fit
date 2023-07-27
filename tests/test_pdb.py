@@ -1,5 +1,5 @@
 import unittest
-from ff_energy.ffe.structure import Structure
+from ff_energy import Structure
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):

@@ -1,6 +1,6 @@
 # from ff_energy.structure import
-from ff_energy.potential import FF, LJ
-from ff_energy.data import Data
+from ff_energy import FF, LJ
+from ff_energy import Data
 import pickle
 from pathlib import Path
 

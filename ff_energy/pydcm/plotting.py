@@ -6,9 +6,9 @@ from pathlib import Path
 from plotnine import ggplot, geom_point, aes, stat_smooth, facet_wrap
 from plotnine.data import mtcars
 
-from ff_energy.pydcm.kernel import KernelFit
+from ff_energy import KernelFit
 
-from ff_energy.pydcm.data_helper import get_cclib_data
+from ff_energy import get_cclib_data
 import numpy as np
 
 from matplotlib import ticker

@@ -3,7 +3,7 @@ import os
 import pickle
 import pandas as pd
 
-from ff_energy.pydcm.dcm import bohr_to_a, get_clcl
+from ff_energy import bohr_to_a, get_clcl
 import cclib
 
 

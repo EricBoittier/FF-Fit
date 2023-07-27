@@ -1,8 +1,8 @@
-from ff_energy.pydcm.dcm import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
+from ff_energy import mdcm, mdcm_set_up, scan_fesp, scan_fdns, \
     mdcm_cxyz, mdcm_clcl, local_pos, get_clcl, optimize_mdcm
 from pathlib import Path
-from ff_energy.pydcm import dcm_utils as du
-from ff_energy.pydcm.kernel import KernelFit
+from ff_energy import dcm_utils as du
+from ff_energy import KernelFit
 
 def generate_data(i, p, l2=0.0):
     cube_paths = Path(p)

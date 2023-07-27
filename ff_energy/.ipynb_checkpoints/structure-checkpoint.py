@@ -2,7 +2,7 @@ import itertools
 import os
 import numpy as np
 
-from ff_energy.templates import PSF
+from ff_energy import PSF
 
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = list(itertools.combinations_with_replacement(atom_keys, 2))

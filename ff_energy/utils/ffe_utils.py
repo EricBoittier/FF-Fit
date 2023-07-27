@@ -4,8 +4,8 @@ import re
 import numpy as np
 import codecs, json
 
-from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.ffe.constants import atom_types
+from ff_energy import get_structures_pdbs, JobMaker
+from ff_energy import atom_types
 
 
 def MakeJob(name, config_maker, _atom_types=None, system_name=None):

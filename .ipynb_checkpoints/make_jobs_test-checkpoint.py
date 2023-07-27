@@ -1,8 +1,8 @@
 import sys
 sys.path.append("/home/boittier/Documents/phd/ff_energy")
 
-from ff_energy.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.configmaker import *
+from ff_energy import get_structures_pdbs, JobMaker
+from ff_energy import *
 
 from pathlib import Path
 
@@ -60,7 +60,7 @@ def cluster_submit(cluster,jm,max_jobs=120,Check=True):
 
 #     cluster=('ssh', 'boittier@pc-bach')
 
-    from ff_energy.slurm import SlurmJobHandler
+    from ff_energy import SlurmJobHandler
 
     shj = SlurmJobHandler(max_jobs=max_jobs,cluster=cluster)
     print("Running jobs.py: ", shj.get_running_jobs())

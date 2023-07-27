@@ -3,12 +3,12 @@ import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
 
-from ff_energy.uncertainty.bootstrap import calculate_bootstrap_uncertainty
-from ff_energy.uncertainty.cross_val import calculate_cross_val_uncertainty, \
+from ff_energy import calculate_bootstrap_uncertainty
+from ff_energy import calculate_cross_val_uncertainty, \
     calculate_std_uncertainty
-from ff_energy.uncertainty.mapie import calculate_mapie_uncertainty
-from ff_energy.uncertainty.bayes import calculate_bayesian_uncertainty
-from ff_energy.uncertainty.conformal import calculate_conformal_uncertainty
+from ff_energy import calculate_mapie_uncertainty
+from ff_energy import calculate_bayesian_uncertainty
+from ff_energy import calculate_conformal_uncertainty
 
 
 class UncertaintyQuantifier:

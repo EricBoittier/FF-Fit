@@ -1,8 +1,8 @@
 from unittest import TestCase
 import json
 
-from ff_energy.simulations.templater import SimTemplate, config_files
-from ff_energy.simulations.sim import Simulation
+from ff_energy import SimTemplate, config_files
+from ff_energy import Simulation
 
 temperatures = [300, 298]
 

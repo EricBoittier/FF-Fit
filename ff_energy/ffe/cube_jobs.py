@@ -1,4 +1,4 @@
-from ff_energy.ffe.templates import g_template, esp_cubes_template
+from ff_energy import g_template, esp_cubes_template
 from pathlib import Path
 
 def XYZ_to_job(path,

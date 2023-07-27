@@ -1,7 +1,7 @@
 import os
 import pickle
 from pathlib import Path
-from ff_energy.ffe.templates import (
+from ff_energy import (
     molpro_job_template,
     m_slurm_template,
     orbkit_ci_template,
@@ -13,11 +13,10 @@ from ff_energy.ffe.templates import (
     orbkit_pol_template,
 )
 
-from ff_energy.ffe.templates import esp_view_template, vmd_template, g_template
+from ff_energy import esp_view_template, vmd_template, g_template
 from shutil import copy
 import pandas as pd
-import ff_energy.ffe.constants as constants
-
+import ff_energy as constants
 
 h2kcalmol = 627.5095
 # path to the charmm files

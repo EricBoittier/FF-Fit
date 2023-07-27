@@ -8,7 +8,7 @@ import pickle
 import uuid
 from pathlib import Path
 from sklearn.decomposition import PCA
-from ff_energy.pydcm.dcm import get_clcl
+from ff_energy import get_clcl
 
 
 def graipher(pts, K, start=False) -> (np.ndarray, np.ndarray):

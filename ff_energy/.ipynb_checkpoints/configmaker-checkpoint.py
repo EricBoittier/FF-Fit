@@ -1,5 +1,5 @@
-from ff_energy.ffe.config import Config
-from ff_energy.ffe.config import DCM_STATES #, kDCM_STATES
+from ff_energy import Config
+from ff_energy import DCM_STATES #, kDCM_STATES
 from pathlib import Path
 system_names = ["water_cluster",
            "water_dimer", 

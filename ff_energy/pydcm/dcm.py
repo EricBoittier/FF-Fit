@@ -1,4 +1,4 @@
-from ff_energy.pydcm.dcm_fortran import dcm_fortran
+from ff_energy import dcm_fortran
 import numpy as np
 # Basics
 import os
