@@ -62,6 +62,9 @@ class PyCHARMM_Runner:
         return rep_str
 
     def setup(self):
+        """Set up the system by reading a toppar stream file and build the
+        system from the sequence, then read in the pdb file for coordinates
+        """
         pycharmm.lingo.charmm_script('bomlev 0')
         pycharmm.lingo.charmm_script(self.toppar_stream)
         read.sequence_string(self.sequence)
@@ -70,24 +73,39 @@ class PyCHARMM_Runner:
             setup_ic=True)
         read.pdb(self.pdb_name)
 
-    def dcm_setup(self):
+    def dcm_setup(self, dump=False):
+        """Uses the charmm linguo utility to run DCM
         """
-
-        :return:
-        """
-        _str = """! DCM SETUP
-        ! the xyz file to dump coords
-!open unit 15 write card name dump.xyz
-! the DCM file to load the input
+        _str = """! DCM SETUP ! the xyz file to dump coords!
+the DCM file to load the input
+{OPEN_DUMP}
 open unit 10 card read name {DCM_FILE_PATH}
 ! start the DCM module
-DCM IUDCM 10 TSHIFT !XYZ 15
+DCM IUDCM 10 TSHIFT {LOAD_DUMP}
 ! close the dcm input file
 close unit 10"""
-        _str = _str.format(DCM_FILE_PATH=self.dcm_file_path)
+        #  If the coordinates will be saved to a dump file, then
+        if dump:
+            open_dump = "open unit 15 write card name dump.xyz"
+            load_dump = "XYZ 15"
+        else:
+            open_dump = ""
+            load_dump = ""
+
+        _str = _str.format(
+            DCM_FILE_PATH=self.dcm_file_path,
+            OPEN_DUMP=open_dump,
+            LOAD_DUMP=load_dump
+        )
         pycharmm.lingo.charmm_script(_str)
 
     def imageinit(self, side_length=None, cutoff=None):
+        """ Set up the cubic periodic boundary conditions
+
+        :param side_length: None or float
+        :param cutoff: None or float
+        :return: None
+        """
         if side_length is None:
             side_length = self.sidelength
         if cutoff is None:
@@ -97,12 +115,23 @@ close unit 10"""
         crystal.build(cutoff)
 
     def minimize(self, dict=None, type="abnr"):
+        """Minimize the structure
+        """
         if type == "abnr":
             if dict is None:
-                dict = ABNR_DICT
-            minimize.run_abnr(**dict)
+                _dict = ABNR_DICT
+            else:
+                _dict = dict
+            minimize.run_abnr(**_dict)
 
     def write_res_dcd(self, resname):
+        """ Write the restart and dcd files
+
+        :param resname: str of the key for saving the files
+                        KEY.res and KEY.dcd will be created in
+                        the output_path
+        :return: None
+        """
         res_file = pycharmm.CharmmFile(
             file_name=f'{self.output_path}/{resname}.res',
             file_unit=2, formatted=True, read_only=False)
@@ -112,6 +141,8 @@ close unit 10"""
         return res_file, dcd_file
 
     def read_restart(self, resname):
+        """ Read the restart file into UNIT 3
+        """
         print(f"Reading restart file {self.output_path}/{resname}.res")
         restart_file = pycharmm.CharmmFile(
             file_name=f'{self.output_path}/{resname}.res',
@@ -120,11 +151,12 @@ close unit 10"""
         return restart_file
 
     def write_info(self, key, note=""):
+        """ Write the pdb and psf files for the structure
+        """
         write.coor_pdb(f"{self.output_path}/{key}.pdb", title=f"{key}: {note}")
         write.psf_card(f"{self.output_path}/{key}.psf", title=f"{key}: {note}")
 
     def dynamics(self,
-                 dict=None,
                  resname="heat",
                  dynatype="heat",
                  restart=False,
@@ -145,6 +177,7 @@ close unit 10"""
             dynatype=dynatype, restart=restart_file, str_file=restart_file,
             pmass=pmass, nstep=nstep)
 
+        # load the dynamics script
         dyn_ = pycharmm.DynamicsScript(**dyna_dict)
         # run
         dyn_.run()
@@ -155,6 +188,11 @@ close unit 10"""
             restart_file.close()
 
     def routine(self):
+        """ Basic routine for doing minimization, heating, equilibration
+        and production dynamics
+
+        :return: None
+        """
         #  setup
         pmass = get_pmass(self.pdb_name)
         self.setup()
