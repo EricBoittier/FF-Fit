@@ -5,6 +5,7 @@ DCM_TEST = {
     "sequence": "DCM "*254,
     "sidelength": 30,
     "image_cutoff": 12.0,
+    "dcm_file_path": "source/dcm/dcm.dcm"
 }
 
 

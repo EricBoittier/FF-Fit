@@ -25,15 +25,23 @@ A package for calculating the energy of a system of particles using a force fiel
 
 ## Installation
 
+### Simple (Python Only)
 ```bash
 pip install -e .
 ```
 
+### PyCHARMM (Energy Evaluations and MD in CHARMM)
+The python interface for the Havard Molecular Mechanics (CHARMM) program is required for the CHARMM energy calculations.  The PyCHARMM package is not available on PyPI and must be installed manually.
+
+Instructions, from Dr. Kai Toepfer, included in the [pycharmm_runner](README.md) directory.
+
 ## Usage
-Make CHARMM jobs to calculate energies:
+### Using the FFE tools
+Make CHARMM* jobs to calculate energies:
 ```bash
 python ff_energy/ffe/cli.py  -m water_cluster -t pbe0dz -e tip3 -chmj
 ```
+[*uses the CHARMM executable to calculate energies]
 
 Make Molpro jobs to calculate energies:
 ```bash
@@ -57,7 +65,8 @@ Gather data:
 python ff_energy/ffe/cli.py -d -m water_cluster -t pbe0dz -e tip3
 ```
 
-
+### PyDCM
+Scripts available, CLI in development.
 
 ## Contributing
 Eric D. Boittier
