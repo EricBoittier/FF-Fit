@@ -77,7 +77,6 @@ class PyCHARMM_Runner:
         """Uses the charmm linguo utility to run DCM
         """
         _str = """! DCM SETUP ! the xyz file to dump coords!
-the DCM file to load the input
 {OPEN_DUMP}
 open unit 10 card read name {DCM_FILE_PATH}
 ! start the DCM module
