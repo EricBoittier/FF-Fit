@@ -4,6 +4,7 @@ import pycharmm.minimize as minimize
 import pycharmm.crystal as crystal
 import pycharmm.read as read
 import pycharmm.write as write
+import pycharmm.image as image
 
 from ff_energy.pycharmm_runner.nbonds_dicts import DEFAULT_NBONDS_DICT
 from ff_energy.pycharmm_runner.mini_dicts import ABNR_DICT
@@ -112,6 +113,13 @@ close unit 10"""
 
         crystal.define_cubic(side_length)
         crystal.build(cutoff)
+
+        # CHARMM scripting: image byres xcen 0 ycen 0 zcen 0
+        # select resname tip3 end
+        image.setup_residue(0.0, 0.0, 0.0, 'TIP3')
+        # CHARMM scripting: image byres xcen 0 ycen 0 zcen 0
+        # select resname ion_type end
+        image.setup_residue(0.0, 0.0, 0.0, 'DCM')
 
     def minimize(self, dict=None, type="abnr"):
         """Minimize the structure

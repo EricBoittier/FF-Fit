@@ -45,6 +45,7 @@ def count_same(l):
 
     return o
 
+
 def get_dcds(dcd_dir):
     """
     Get the path to the dcd files, assumes they are named step5_1.dcd, step5_2.dcd, etc.
@@ -60,6 +61,7 @@ def get_dcds(dcd_dir):
     print(dcd)
     return dcd
 
+
 def get_psf(psf_dir):
     """
     Get the path to the psf file
@@ -68,7 +70,6 @@ def get_psf(psf_dir):
     :return:
     """
     return "/home/boittier/pcbach/charmmions/step3_pbcsetup.psf"
-
 
 
 def save_N_atoms(u, Natoms, resname,
@@ -84,18 +85,19 @@ def save_N_atoms(u, Natoms, resname,
     xyz_out_name = f"{Natoms}_{resname}.xyz"
     W = Writer(xyz_out_name, Natoms)
 
-    xyz_counter = 0
+    xyz_counter = 0  # counter for the number of xyz files
     n_atoms = []
     pdb_paths = []
     for i, t in enumerate(u.trajectory):
         res_sel1 = u.select_atoms(selectStringTypes, updating=False, periodic=False)
-        # loop thru the residues of the required type
-        for j in [_.resid for _ in res_sel1]:
+        # loop through the residues of the required type
+        for j in range(len(res_sel1)):
             counter = 0
             n_current = 0
             #  try to avoid an index error
-            try:
-                # j = j - len(res_sel1)
+            print(j, len(res_sel1))
+            if j:
+                j = j - len(res_sel1)
                 #  initialize the selection
                 res = u.select_atoms(selectStringTypes, updating=True,
                                      periodic=False)
@@ -150,11 +152,6 @@ def save_N_atoms(u, Natoms, resname,
                     #  write to the xyz writer
                     W.write(res)
 
-            #  handle errors
-            except IndexError as e:
-                if verbose:
-                    print(e)
-
     # close the file
     W.close()
 
@@ -168,13 +165,36 @@ def save_N_atoms(u, Natoms, resname,
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--n_atoms", type=int, default=10)
     parser.add_argument("-r", "--resname", type=str, default="POT")
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
+    parser.add_argument("-dl", "--dcd_list", default=None,
+                        nargs="+", help="list of dcd files")
+    parser.add_argument("-d", "--dcd_dir", type=str, default=None,
+                        help="dcd directory")
+    parser.add_argument("-p", "--psf", type=str, required=True, help="psf file")
     args = parser.parse_args()
-    print(args)
-    dcds = get_dcds("")
-    psf = get_psf("")
+
+    #  print the arguments
+    for k, v in args.__dict__.items():
+        print(k, v)
+
+    #  get the dcds
+    if args.dcd_list is None and args.dcd_dir is not None:
+        dcds = get_dcds(args.dcd_dir)
+    elif args.dcd_list is not None:
+        dcds = args.dcd_list
+    else:
+        raise ValueError("No DCD files provided")
+
+    # get the psf
+    if args.psf is not None:
+        psf = args.psf
+    else:
+        psf = None
+        raise ValueError("No PSF file provided")
+
     u = mda.Universe(psf, dcds)
     save_N_atoms(u, args.n_atoms, args.resname, verbose=args.verbose)
