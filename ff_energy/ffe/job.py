@@ -1,7 +1,7 @@
 import os
 import pickle
 from pathlib import Path
-from ff_energy import (
+from ff_energy.ffe.templates import (
     molpro_job_template,
     m_slurm_template,
     orbkit_ci_template,
@@ -12,8 +12,8 @@ from ff_energy import (
     molpro_pol_template,
     orbkit_pol_template,
 )
+from ff_energy.ffe.templates import esp_view_template, vmd_template, g_template
 
-from ff_energy import esp_view_template, vmd_template, g_template
 from shutil import copy
 import pandas as pd
 import ff_energy as constants

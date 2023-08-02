@@ -5,9 +5,9 @@ from multiprocessing.pool import Pool
 from itertools import repeat
 from tqdm import tqdm
 
-from ff_energy import Job
-from ff_energy import Structure
-from ff_energy import atom_types
+from ff_energy.ffe.job import Job
+from ff_energy.ffe.structure import Structure
+from ff_energy.ffe.constants import atom_types
 
 
 def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):

@@ -1,14 +1,15 @@
-from ff_energy import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
-    clusterNCCR, clusterBEETHOVEN
-from ff_energy import MakeJob, charmm_jobs
-from ff_energy import pickle_output
-from ff_energy import PKL_PATH
-from ff_energy import ConfigMaker, system_names, THEORY
-from ff_energy import Config
-from ff_energy import Data
-from pathlib import Path
-from ff_energy import SlurmJobHandler
 import sys
+from pathlib import Path
+
+from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
+    clusterNCCR, clusterBEETHOVEN
+from ff_energy.utils.ffe_utils import MakeJob, charmm_jobs
+from ff_energy.utils.ffe_utils import PKL_PATH, pickle_output
+from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
+from ff_energy.ffe.config import Config
+from ff_energy.ffe.data import Data
+from ff_energy.ffe.slurm import SlurmJobHandler
+
 
 
 def load_config_maker(theory, system, elec):

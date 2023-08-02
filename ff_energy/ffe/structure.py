@@ -2,10 +2,15 @@ import itertools
 import os
 import numpy as np
 
-from ff_energy import PSF
-from ff_energy import sqrt_einsum_T
+from ff_energy.ffe.templates import PSF
+
 import ff_energy as constants
 from ase.io import read
+
+def sqrt_einsum_T(data):
+    a, b = data[1]
+    a_min_b = a - b
+    return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))
 
 
 def valid_atom_key_pairs(atom_keys):
