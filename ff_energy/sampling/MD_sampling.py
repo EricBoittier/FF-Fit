@@ -1,6 +1,8 @@
 import MDAnalysis as mda
 from pathlib import Path
 import os
+import numpy as np
+
 from MDAnalysis import Writer
 
 
@@ -90,14 +92,18 @@ def save_N_atoms(u, Natoms, resname,
     pdb_paths = []
     for i, t in enumerate(u.trajectory):
         res_sel1 = u.select_atoms(selectStringTypes, updating=False, periodic=False)
+        nres_to_do = len(res_sel1)
+        range_to_do = range(nres_to_do) if nres_to_do < 10 else [
+            np.random.randint(0, nres_to_do) for _ in range(10)
+        ]
         # loop through the residues of the required type
-        for j in range(len(res_sel1)):
+        for j in range_to_do:
             counter = 0
             n_current = 0
             #  try to avoid an index error
             print(j, len(res_sel1))
             if j:
-                j = j - len(res_sel1)
+                # j = j - len(res_sel1)
                 #  initialize the selection
                 res = u.select_atoms(selectStringTypes, updating=True,
                                      periodic=False)
@@ -114,11 +120,13 @@ def save_N_atoms(u, Natoms, resname,
                         rx=rx, ry=ry, rz=rz, r=defaultR, resid=j)
                     #  make the selection again
                     res = u.select_atoms(_selectstringdist,
-                                         updating=False, periodic=True)
+                                         updating=True, periodic=False)
                     #  change the radius
                     if len(res) < Natoms:
+                        # increase the radius
                         defaultR += dr
                     else:
+                        # decrease the radius
                         defaultR -= dr
                     counter += 1
                     n_current = len(res)

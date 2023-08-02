@@ -7,19 +7,25 @@ system_names = ["water_cluster",
                 "methanol_cluster",
                 "water_tests",
                 "lithium",
-                "ions"]
+                "ions",
+                "dcm"]
+
 pdbs = ["pdbs/pdbs4/",
         "pdbs/dimer3d/",
         "pdbs/pdbsclean/",
         "pdbs/water_tests/",
         "pdbs/lithium/",
-        "pdbs/ions/"]
+        "pdbs/ions/",
+        "pdbs/dcm/"]
+
 system_types = ["water",
                 "water",
                 "methanol",
                 "water",
                 "water",
-                "water"]
+                "water",
+                "dcm"
+                ]
 
 SYSTEMS = {
     k: {"system_name": k, "pdbs": p, "system_type": s}

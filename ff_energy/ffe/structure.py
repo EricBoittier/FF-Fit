@@ -7,6 +7,7 @@ from ff_energy import sqrt_einsum_T
 import ff_energy as constants
 from ase.io import read
 
+
 def valid_atom_key_pairs(atom_keys):
     atom_key_pairs = list(itertools.combinations(atom_keys, 2))
     atom_key_pairs = [(a, b) if a < b else (b, a) for a, b in atom_key_pairs]
@@ -19,6 +20,8 @@ atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 
 atom_name_fix = {"CL": "Cl", "PO": "K"}
+
+
 def get_atom_names(atoms):
     ans = np.array([_.split()[2] for _ in atoms])
     for i, _ in enumerate(ans):
@@ -26,8 +29,6 @@ def get_atom_names(atoms):
             if k in _:
                 ans[i] = atom_name_fix[k]
     return ans
-
-
 
 
 class Structure:
@@ -95,7 +96,6 @@ class Structure:
                 chg += 1
         return chg
 
-
     def read_pdb(self, path):
         self.lines = open(path).readlines()
         self.atoms = [_ for _ in self.lines if _.startswith("ATOM")
@@ -114,7 +114,6 @@ class Structure:
         resids_old = list(set(self.resids))
         resids_old.sort()
         resids_new = list(range(1, len(resids_old) + 1))
-
 
         print(self.resids)
         self.resids = [resids_new[resids_old.index(_)] for _ in self.resids]
@@ -143,7 +142,6 @@ class Structure:
                     self.atomnames[i] = "H1"
                     self.atomnames[i + 1] = "H2"
 
-
     def load_dcm(self, path):
         """Load dcm file"""
         self.n_res = len(set(self.resids))
@@ -152,7 +150,7 @@ class Structure:
         self.dcm = [
             [float(_) for _ in line.split()[1:]] for line in lines[2:]
         ]  # skip first two lines
-        self.dcm_charges = self.dcm[len(self.atoms) :]
+        self.dcm_charges = self.dcm[len(self.atoms):]
         dcm_charges_per_res = len(self.dcm_charges) // self.n_res // 3
         self.dcm_charges_mask = {
             r: np.array(
@@ -350,6 +348,3 @@ REMARK
         atoms = read(name)
         os.remove(name)
         return atoms
-
-
-

@@ -33,7 +33,7 @@ pip install -e .
 ### PyCHARMM (Energy Evaluations and MD in CHARMM)
 The python interface for the Havard Molecular Mechanics (CHARMM) program is required for the CHARMM energy calculations.  The PyCHARMM package is not available on PyPI and must be installed manually.
 
-Instructions, from Dr. Kai Toepfer, included in the [pycharmm_runner](README.md) directory.
+Instructions, from Dr. Kai Toepfer, are included in the [pycharmm_runner](README.md) directory.
 
 ## Usage
 ### Using the FFE tools
@@ -64,6 +64,15 @@ Gather data:
 ```bash
 python ff_energy/ffe/cli.py -d -m water_cluster -t pbe0dz -e tip3
 ```
+
+### Sampling
+#### MD (CHARMM)
+Choose residues based on name, extract residue and nearest neighbours from
+the trajectory:
+```bash
+python MD_sampling.py -v -dl /home/boittier/pcbach/charmmions/step5_1.dcd /home/boittier/pcbach/charmmions/step5_2.dcd /home/boittier/pcbach/charmmions/step5_3.dcd /home/boittier/pcbach/charmmions/step5_4.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf -r POT -n 35
+```
+
 
 ### PyDCM
 Scripts available, CLI in development.
