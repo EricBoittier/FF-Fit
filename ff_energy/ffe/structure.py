@@ -128,6 +128,8 @@ class Structure:
         self.xyzs = np.array(
             [[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms]
         )
+        print(self.restypes, self.atomnames)
+        print(self.atom_types)
         self.chm_typ = np.array(
             [self.atom_types[(a, b)] for a, b in zip(self.restypes, self.atomnames)]
         )

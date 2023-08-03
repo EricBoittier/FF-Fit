@@ -39,6 +39,7 @@ water_kmdcm = [
     "water_kern/x_fit.txt",
     *[f"water_kern/coefs{i}.txt" for i in range(18)],
 ]
+
 MODELS = {
     "water": {
         "pc": DCM_STATES("pbe0_dz.pc"),
@@ -50,6 +51,9 @@ MODELS = {
         "pc": DCM_STATES("meoh_pbe0dz.pc"),
         "mdcm": DCM_STATES("meoh_pbe0dz.pc"),
     },
+    "dcm": {
+        "pc": DCM_STATES("dcm_pbe0dz.pc"),
+    }
 }
 
 THEORY = {
@@ -119,6 +123,13 @@ ATOM_TYPES = {
         ("TIP3", "OH2"): "OT",
         ("TIP3", "H1"): "HT",
         ("TIP3", "H2"): "HT",
+    },
+    "dcm": {
+        ("DCM", "C"): "C",
+        ("DCM", "CL1"): "CL",
+        ("DCM", "CL2"): "H",
+        ("DCM", "H1"): "H",
+        ("DCM", "H2"): "H",
     },
 }
 
