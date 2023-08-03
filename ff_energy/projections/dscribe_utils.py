@@ -3,9 +3,6 @@ from scipy.spatial.distance import pdist, squareform
 import numpy as np
 from sklearn.decomposition import PCA
 
-
-
-
 order_of_soap_features = """
 for Z in atomic numbers in increasing order:
    for Z' in atomic numbers in increasing order:
@@ -35,4 +32,5 @@ def soap_dist(molecule_soaps):
 
 
 WATER_SOAP = soap()
+DCM_SOAP = soap(species=("H", "C", "Cl"))
 
