@@ -1,0 +1,203 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   34.944   34.944   34.944  90.00  90.00  90.00 P 1           1
+ATOM      1  C   DCM X   2      12.928  -4.290   4.358  1.00  0.00      X       
+ATOM      2  CL1 DCM X   2      13.625  -5.879   4.263  1.00  0.00      X       
+ATOM      3  CL2 DCM X   2      12.994  -3.698   2.748  1.00  0.00      X       
+ATOM      4  H1  DCM X   2      13.572  -3.515   4.937  1.00  0.00      X       
+ATOM      5  H2  DCM X   2      11.906  -4.383   4.706  1.00  0.00      X       
+ATOM      6  C   DCM X   6       3.756 -12.726   4.295  1.00  0.00      X       
+ATOM      7  CL1 DCM X   6       4.830 -14.108   3.779  1.00  0.00      X       
+ATOM      8  CL2 DCM X   6       2.513 -12.301   3.045  1.00  0.00      X       
+ATOM      9  H1  DCM X   6       4.387 -11.831   4.477  1.00  0.00      X       
+ATOM     10  H2  DCM X   6       3.195 -13.089   5.187  1.00  0.00      X       
+ATOM     11  C   DCM X   9      10.362  -9.999  13.547  1.00  0.00      X       
+ATOM     12  CL1 DCM X   9      11.023 -11.132  14.837  1.00  0.00      X       
+ATOM     13  CL2 DCM X   9       9.423  -8.655  14.283  1.00  0.00      X       
+ATOM     14  H1  DCM X   9       9.656 -10.603  12.865  1.00  0.00      X       
+ATOM     15  H2  DCM X   9      11.189  -9.517  12.973  1.00  0.00      X       
+ATOM     16  C   DCM X  21       5.866 -15.132   6.970  1.00  0.00      X       
+ATOM     17  CL1 DCM X  21       4.411 -16.003   6.449  1.00  0.00      X       
+ATOM     18  CL2 DCM X  21       5.553 -13.392   7.276  1.00  0.00      X       
+ATOM     19  H1  DCM X  21       6.607 -15.214   6.150  1.00  0.00      X       
+ATOM     20  H2  DCM X  21       6.239 -15.528   7.967  1.00  0.00      X       
+ATOM     21  C   DCM X  36      10.043 -14.101  13.313  1.00  0.00      X       
+ATOM     22  CL1 DCM X  36      10.588 -13.545  11.652  1.00  0.00      X       
+ATOM     23  CL2 DCM X  36       9.526 -15.769  13.234  1.00  0.00      X       
+ATOM     24  H1  DCM X  36       9.215 -13.476  13.737  1.00  0.00      X       
+ATOM     25  H2  DCM X  36      10.976 -14.012  13.953  1.00  0.00      X       
+ATOM     26  C   DCM X  44       7.799 -11.537   5.076  1.00  0.00      X       
+ATOM     27  CL1 DCM X  44       8.860 -12.506   4.077  1.00  0.00      X       
+ATOM     28  CL2 DCM X  44       8.509 -11.391   6.625  1.00  0.00      X       
+ATOM     29  H1  DCM X  44       6.852 -12.106   5.194  1.00  0.00      X       
+ATOM     30  H2  DCM X  44       7.594 -10.580   4.576  1.00  0.00      X       
+ATOM     31  C   DCM X  60      17.727 -13.692   9.591  1.00  0.00      X       
+ATOM     32  CL1 DCM X  60      18.108 -13.822  11.310  1.00  0.00      X       
+ATOM     33  CL2 DCM X  60      15.944 -13.396   9.434  1.00  0.00      X       
+ATOM     34  H1  DCM X  60      18.052 -14.657   9.110  1.00  0.00      X       
+ATOM     35  H2  DCM X  60      18.197 -12.796   9.165  1.00  0.00      X       
+ATOM     36  C   DCM X  62      16.152 -11.589   5.622  1.00  0.00      X       
+ATOM     37  CL1 DCM X  62      16.305 -10.463   6.969  1.00  0.00      X       
+ATOM     38  CL2 DCM X  62      17.482 -12.762   5.516  1.00  0.00      X       
+ATOM     39  H1  DCM X  62      16.270 -11.047   4.681  1.00  0.00      X       
+ATOM     40  H2  DCM X  62      15.137 -12.058   5.679  1.00  0.00      X       
+ATOM     41  C   DCM X 104      11.168  -4.246   8.024  1.00  0.00      X       
+ATOM     42  CL1 DCM X 104       9.599  -4.501   7.147  1.00  0.00      X       
+ATOM     43  CL2 DCM X 104      11.378  -2.556   8.457  1.00  0.00      X       
+ATOM     44  H1  DCM X 104      11.959  -4.565   7.340  1.00  0.00      X       
+ATOM     45  H2  DCM X 104      11.174  -4.696   9.045  1.00  0.00      X       
+ATOM     46  C   DCM X 110       5.173 -13.771  -0.561  1.00  0.00      X       
+ATOM     47  CL1 DCM X 110       6.884 -13.515  -0.649  1.00  0.00      X       
+ATOM     48  CL2 DCM X 110       4.452 -12.595  -1.622  1.00  0.00      X       
+ATOM     49  H1  DCM X 110       4.881 -13.557   0.466  1.00  0.00      X       
+ATOM     50  H2  DCM X 110       4.876 -14.776  -0.862  1.00  0.00      X       
+ATOM     51  C   DCM X 181      14.266 -13.883  -0.991  1.00  0.00      X       
+ATOM     52  CL1 DCM X 181      15.876 -14.111  -1.631  1.00  0.00      X       
+ATOM     53  CL2 DCM X 181      14.238 -14.741   0.594  1.00  0.00      X       
+ATOM     54  H1  DCM X 181      13.532 -14.378  -1.704  1.00  0.00      X       
+ATOM     55  H2  DCM X 181      14.101 -12.810  -0.848  1.00  0.00      X       
+ATOM     56  C   DCM X 184      15.213  -8.912   2.429  1.00  0.00      X       
+ATOM     57  CL1 DCM X 184      15.413  -8.698   4.225  1.00  0.00      X       
+ATOM     58  CL2 DCM X 184      13.999  -7.784   1.755  1.00  0.00      X       
+ATOM     59  H1  DCM X 184      14.789  -9.943   2.274  1.00  0.00      X       
+ATOM     60  H2  DCM X 184      16.197  -8.825   1.873  1.00  0.00      X       
+ATOM     61  C   DCM X 199      12.811 -14.738   8.138  1.00  0.00      X       
+ATOM     62  CL1 DCM X 199      13.362 -14.722   6.429  1.00  0.00      X       
+ATOM     63  CL2 DCM X 199      12.511 -13.021   8.662  1.00  0.00      X       
+ATOM     64  H1  DCM X 199      13.478 -15.301   8.832  1.00  0.00      X       
+ATOM     65  H2  DCM X 199      11.819 -15.229   8.120  1.00  0.00      X       
+ATOM     66  C   DCM X 204       9.605  -7.283   1.888  1.00  0.00      X       
+ATOM     67  CL1 DCM X 204       9.577  -5.606   2.376  1.00  0.00      X       
+ATOM     68  CL2 DCM X 204       8.129  -8.057   2.446  1.00  0.00      X       
+ATOM     69  H1  DCM X 204      10.485  -7.732   2.361  1.00  0.00      X       
+ATOM     70  H2  DCM X 204       9.635  -7.351   0.791  1.00  0.00      X       
+ATOM     71  C   DCM X 208      14.704 -12.529  14.124  1.00  0.00      X       
+ATOM     72  CL1 DCM X 208      14.779 -11.214  15.327  1.00  0.00      X       
+ATOM     73  CL2 DCM X 208      13.945 -11.845  12.617  1.00  0.00      X       
+ATOM     74  H1  DCM X 208      14.018 -13.367  14.502  1.00  0.00      X       
+ATOM     75  H2  DCM X 208      15.717 -12.937  13.879  1.00  0.00      X       
+ATOM     76  C   DCM X 211      14.748  -7.022  13.669  1.00  0.00      X       
+ATOM     77  CL1 DCM X 211      14.278  -8.025  15.090  1.00  0.00      X       
+ATOM     78  CL2 DCM X 211      14.087  -7.804  12.254  1.00  0.00      X       
+ATOM     79  H1  DCM X 211      15.818  -6.841  13.645  1.00  0.00      X       
+ATOM     80  H2  DCM X 211      14.152  -6.078  13.789  1.00  0.00      X       
+ATOM     81  C   DCM X 214      12.311  -9.566  -1.481  1.00  0.00      X       
+ATOM     82  CL1 DCM X 214      12.359 -10.996  -2.588  1.00  0.00      X       
+ATOM     83  CL2 DCM X 214      10.650  -9.208  -0.903  1.00  0.00      X       
+ATOM     84  H1  DCM X 214      12.664  -8.673  -2.013  1.00  0.00      X       
+ATOM     85  H2  DCM X 214      13.037  -9.707  -0.654  1.00  0.00      X       
+ATOM     86  C   DCM X 216      10.956 -12.690   1.378  1.00  0.00      X       
+ATOM     87  CL1 DCM X 216      10.589 -13.027  -0.334  1.00  0.00      X       
+ATOM     88  CL2 DCM X 216      12.477 -11.764   1.513  1.00  0.00      X       
+ATOM     89  H1  DCM X 216      11.057 -13.580   2.012  1.00  0.00      X       
+ATOM     90  H2  DCM X 216      10.133 -12.092   1.838  1.00  0.00      X       
+ATOM     91  C   DCM X 220       7.888 -17.114  10.103  1.00  0.00      X       
+ATOM     92  CL1 DCM X 220       8.044 -15.346   9.870  1.00  0.00      X       
+ATOM     93  CL2 DCM X 220       7.826 -17.811   8.461  1.00  0.00      X       
+ATOM     94  H1  DCM X 220       6.936 -17.394  10.642  1.00  0.00      X       
+ATOM     95  H2  DCM X 220       8.791 -17.540  10.640  1.00  0.00      X       
+ATOM     96  C   DCM X 226      11.793  -9.255   5.809  1.00  0.00      X       
+ATOM     97  CL1 DCM X 226      10.844  -7.797   5.720  1.00  0.00      X       
+ATOM     98  CL2 DCM X 226      11.264 -10.251   4.470  1.00  0.00      X       
+ATOM     99  H1  DCM X 226      11.479  -9.802   6.734  1.00  0.00      X       
+ATOM    100  H2  DCM X 226      12.886  -9.127   5.746  1.00  0.00      X       
+CONECT    1    2    3    4    5
+CONECT    2    1
+CONECT    3    1
+CONECT    4    1
+CONECT    5    1
+CONECT    6    7    8    9   10
+CONECT    7    6
+CONECT    8    6
+CONECT    9    6
+CONECT   10    6
+CONECT   11   12   13   14   15
+CONECT   12   11
+CONECT   13   11
+CONECT   14   11
+CONECT   15   11
+CONECT   16   17   18   19   20
+CONECT   17   16
+CONECT   18   16
+CONECT   19   16
+CONECT   20   16
+CONECT   21   22   23   24   25
+CONECT   22   21
+CONECT   23   21
+CONECT   24   21
+CONECT   25   21
+CONECT   26   27   28   29   30
+CONECT   27   26
+CONECT   28   26
+CONECT   29   26
+CONECT   30   26
+CONECT   31   32   33   34   35
+CONECT   32   31
+CONECT   33   31
+CONECT   34   31
+CONECT   35   31
+CONECT   36   37   38   39   40
+CONECT   37   36
+CONECT   38   36
+CONECT   39   36
+CONECT   40   36
+CONECT   41   42   43   44   45
+CONECT   42   41
+CONECT   43   41
+CONECT   44   41
+CONECT   45   41
+CONECT   46   47   48   49   50
+CONECT   47   46
+CONECT   48   46
+CONECT   49   46
+CONECT   50   46
+CONECT   51   52   53   54   55
+CONECT   52   51
+CONECT   53   51
+CONECT   54   51
+CONECT   55   51
+CONECT   56   57   58   59   60
+CONECT   57   56
+CONECT   58   56
+CONECT   59   56
+CONECT   60   56
+CONECT   61   62   63   64   65
+CONECT   62   61
+CONECT   63   61
+CONECT   64   61
+CONECT   65   61
+CONECT   66   67   68   69   70
+CONECT   67   66
+CONECT   68   66
+CONECT   69   66
+CONECT   70   66
+CONECT   71   72   73   74   75
+CONECT   72   71
+CONECT   73   71
+CONECT   74   71
+CONECT   75   71
+CONECT   76   77   78   79   80
+CONECT   77   76
+CONECT   78   76
+CONECT   79   76
+CONECT   80   76
+CONECT   81   82   83   84   85
+CONECT   82   81
+CONECT   83   81
+CONECT   84   81
+CONECT   85   81
+CONECT   86   87   88   89   90
+CONECT   87   86
+CONECT   88   86
+CONECT   89   86
+CONECT   90   86
+CONECT   91   92   93   94   95
+CONECT   92   91
+CONECT   93   91
+CONECT   94   91
+CONECT   95   91
+CONECT   96   97   98   99  100
+CONECT   97   96
+CONECT   98   96
+CONECT   99   96
+CONECT  100   96
+END

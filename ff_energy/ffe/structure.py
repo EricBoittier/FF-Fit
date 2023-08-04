@@ -352,6 +352,8 @@ REMARK
         """returns ase atoms object
         workaround by saving to file..."""
         name = str(self.path.absolute()) + ".tmp.xyz"
+        # make the dir if not exists
+        os.makedirs(os.path.dirname(name), exist_ok=True)
         self.save_xyz(name)
         atoms = read(name)
         os.remove(name)
