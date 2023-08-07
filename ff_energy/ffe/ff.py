@@ -469,9 +469,9 @@ class FF:
         best = self.get_best_loss()
         return best["x"].values[0]
 
-    def eval_best_parm(self) -> pd.DataFrame:
+    def eval_best_parm(self, func=None) -> pd.DataFrame:
         """evaluate the best parameters"""
         self.set_best_parm()
-        tmp = self.eval_func(self.opt_parm)
+        tmp = self.eval_func(self.opt_parm, func=func)
         self.df = tmp
         return tmp

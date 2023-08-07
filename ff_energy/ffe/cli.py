@@ -9,8 +9,7 @@ from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
 from ff_energy.ffe.config import Config
 from ff_energy.ffe.data import Data
 from ff_energy.ffe.slurm import SlurmJobHandler
-
-
+from ff_energy.logs.logging import logger
 
 def load_config_maker(theory, system, elec):
     cm = ConfigMaker(theory, system, elec)
@@ -49,12 +48,12 @@ def load_all_theory():
 
 def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     shj = SlurmJobHandler(max_jobs=max_jobs, cluster=cluster)
-    print("Running jobs.py: ", shj.get_running_jobs())
+    logger.info("Running jobs.py: ", shj.get_running_jobs())
     for j in jobs:
         shj.add_job(j)
 
-    print("Jobs: ", len(shj.jobs))
-    print(len(shj.jobs))
+    logger.info("Jobs: ", len(shj.jobs))
+
     shj.shuffle_jobs()
     shj.submit_jobs(Check=Check)
 
@@ -113,7 +112,7 @@ def molpro_submit_small(cluster, jobmakers, max_jobs=120, Check=True):
 def molpro_jobs_big(CMS, DRY):
     jobmakers = []
     for cms in CMS:
-        print("ConfigManager:", cms)
+        logger.info("ConfigManager:", cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
@@ -131,7 +130,7 @@ def molpro_jobs_big(CMS, DRY):
 def molpro_jobs_small(CMS, DRY):
     jobmakers = []
     for cms in CMS:
-        print(cms)
+        logger.info("Job config:", cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}",
             cms,
@@ -150,8 +149,12 @@ def data_jobs(CMS, molpro_small_path):
     jobmakers = []
     cms = None
     jm = None
+    if molpro_small_path is not None:
+        logger.info("Molpro small path:", molpro_small_path)
+    else:
+        logger.warning("Molpro small path is None")
+
     for cms in CMS:
-        print(cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
             cms,
@@ -242,22 +245,27 @@ if __name__ == "__main__":
     )
     print("----")
 
-    # parser.add_argument('filename')           # positional argument
     parser.add_argument(
-        "-d", "--data", required=False, default=False, action="store_true"
-    )  # option that takes a value
-    parser.add_argument(
-        "-a", "--all", required=False, default=False, action="store_true"
+        "-d", "--data", required=False, default=False, action="store_true",
+        help="Gather data from output files"
     )
     parser.add_argument(
-        "-at", "--all_theory", required=False, default=False, action="store_true"
+        "-a", "--all", required=False, default=False, action="store_true",
+        help="Collect all the output"
     )
     parser.add_argument(
-        "-c", "--cluster", required=False, default=False, action="store_true"
+        "-at", "--all_theory", required=False, default=False, action="store_true",
+        help="Run jobs using all the defined levels of theory"
     )
     parser.add_argument(
-        "-x", "--config", required=False, default=False, action="store_true"
+        "-c", "--cluster", required=False, default=False, action="store_true",
+        help="Run the cluster calculations"
     )
+    parser.add_argument(
+        "-x", "--config", required=False, default=False, action="store_true",
+        help="Run the jobs from a config file"
+    )
+    # TODO: add options to show levels of theory available
     parser.add_argument("-t", "--theory", required=False, default=None)
     parser.add_argument("-m", "--model", required=False, default=None)
     parser.add_argument("-e", "--elec", required=False, default=None)
@@ -279,7 +287,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "-mjs", "--molpro_small", required=False, default=False, action="store_true"
     )
-    parser.add_argument("-msp", "--molpro_small_path", required=False, default=None)
+    parser.add_argument("-msp", "--molpro_small_path", required=False, default=None,
+                        help="Path to molpro small files")
+    parser.add_argument(
+        "-mbp", "--molpro_big_path", required=False, default=None,
+        help="Path to molpro big files"
+    )
 
     parser.add_argument(
         "-dry", "--dry", required=False, default=False, action="store_true"
@@ -290,27 +303,28 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.verbose:
-        print(args)
+        logger.info(args)
 
     if args.all:
         if args.verbose:
-            print("Loading all data")
+            logger.info("Loading all data")
         CMS = load_all_theory_and_elec()
     elif args.all_theory:
         if args.verbose:
-            print("Loading all theory")
+            logger.info("Loading all theory")
         CMS = load_all_theory()
     elif args.config:
         if args.verbose:
-            print("Making Configs: ", args.config)
+            logger.info("Making Configs: ", args.config)
         CMS = load_config_from_input(args.config)
     else:
-        print("parameters:", args.theory, args.model, args.elec)
+        logger.info(f"parameters: { str(args.theory)},"
+                    f" {str(args.model)}, {str(args.elec)}")
         if args.theory and args.model and args.elec:
             CMS = load_config_maker(args.theory, args.model, args.elec)
         else:
-            print("Missing one of args.theory and args.model and args.elec")
-            print(parser.print_help())
+            logger.warning("Missing one of args.theory and args.model and args.elec")
+            logger.warning(parser.print_help())
             sys.exit(1)
 
     if CMS is not None:
@@ -320,20 +334,20 @@ if __name__ == "__main__":
 
         if args.molpro:
             if args.verbose:
-                print("Making big Molpro Jobs")
+                logger.info("Making big Molpro Jobs")
             jobmakers = molpro_jobs_big(CMS, args.dry)
             if args.submit:
                 if args.verbose:
-                    print("Submitting Molpro Jobs")
+                    logger.info("Submitting Molpro Jobs")
                 molpro_submit_big(clusterBACH, jobmakers, max_jobs=400, Check=True)
 
         if args.molpro_small:
             if args.verbose:
-                print("Making small Molpro Jobs")
+                logger.info("Making small Molpro Jobs")
             jobmakers = molpro_jobs_small(CMS, args.dry)
             if args.submit:
                 if args.verbose:
-                    print("Submitting Molpro Jobs")
+                    logger.info("Submitting Molpro Jobs")
                 molpro_submit_small(clusterNCCR, jobmakers, max_jobs=400, Check=True)
 
         if args.esp_view:
@@ -342,31 +356,30 @@ if __name__ == "__main__":
             jobmakers = esp_view_jobs(CMS, args.dry)
             if args.submit:
                 if args.verbose:
-                    print("Submitting ESP View Jobs")
+                    logger.info("Submitting ESP View Jobs")
                 esp_view_submit(clusterNCCR, jobmakers, max_jobs=400, Check=True)
 
         if args.chm:
             if args.verbose:
-                print("Making CHARMM Jobs")
+                logger.info("Making CHARMM Jobs")
             jobmakers = charmm_jobs(CMS)
             if args.submit:
                 if args.verbose:
-                    print("Submitting CHM Jobs")
+                    logger.info("Submitting CHM Jobs")
                 charmm_submit(clusterBEETHOVEN, jobmakers, max_jobs=120, Check=False)
 
         if args.coulomb:
             if args.verbose:
-                print("Making Coloumb Jobs")
+                logger.info("Making Coloumb Jobs")
             jobmakers = coloumb_jobs(CMS, args.dry, cluster=args.molpro_small_path)
             if args.submit:
                 if args.verbose:
-                    print("Submitting Coloumb Jobs")
+                    logger.info("Submitting Coloumb Jobs")
                 coloumb_submit(clusterBEETHOVEN, jobmakers, max_jobs=120, Check=True)
 
         if args.data:
             if args.verbose:
-                print("Gathering Data")
-            print("MSP:", args.molpro_small_path)
+                logger.info("Gathering Data")
             jobmakers = data_jobs(CMS, args.molpro_small_path)
 
     else:

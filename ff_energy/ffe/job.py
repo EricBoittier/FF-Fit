@@ -18,6 +18,8 @@ from shutil import copy
 import pandas as pd
 import ff_energy as constants
 
+from ff_energy.logs.logging import logger
+
 h2kcalmol = 627.5095
 # path to the charmm files
 CHM_FILES_PATH = Path("/home/boittier/Documents/"
@@ -376,8 +378,9 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 )
 
     def gather_charmm(self, chm_path=None):
-        #  charmm data
         charmm_output = [_ for _ in chm_path.glob("*inp.out") if _.is_file()]
+        #  report the charmm data
+        # logger.info(f"Found {len(charmm_output)} charmm output files")
         TOTAL = None
         ELEC = None
         VDW = None
@@ -405,6 +408,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         ]
         monomers_data = {}
         monomers_df = None
+        failed = []
         for m in monomers_output:
             with open(m, "r") as f:
                 lines = f.readlines()
@@ -413,8 +417,11 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[0]), "KEY": k}
                 monomers_df = pd.DataFrame(monomers_data).T
             except Exception as e:
-                print("Failed reading monomer data:", m, e)
                 monomers_df = None
+                failed.append(k)
+        n_fails = len(failed)
+        if n_fails > 0:
+            logger.warning(f"Failed reading {n_fails} monomer files, e.g. {failed[0]}")
 
         monomers_sum_df = None
         if monomers_df is not None and len(monomers_df) > 0:
@@ -427,6 +434,11 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 index=[self.name],
             )
             if len(monomers_df) != len(list(set(self.structure.resids))):
+                logger.warning(
+                    f"Found {len(monomers_df)} monomer files,"
+                    f" but {len(list(set(self.structure.resids)))} residues,"
+                    f" setting monomers_sum_df to None"
+                )
                 monomers_sum_df = None
 
         return monomers_data, monomers_df, monomers_sum_df
@@ -446,20 +458,31 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                     "C_ENERGY": float(lines[-3].split()[0])
                 }
             except Exception as e:
-                print(f"{self.name}, {e}")
+                logger.warning(f"No cluster data: {self.name}, {e}")
 
         cluster_df = pd.DataFrame(cluster_data).T
         return cluster_df
 
     def gather_pairs(self, pairs_path, monomers_data):
         #  pairs data
+        logger.info(f"Looking for pairs in {pairs_path}, {self.name}")
         pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out") if _.is_file()]
         pairs_data = {}
         for p in pairs_output:
             with open(p, "r") as f:
                 lines = f.readlines()
-            key, a, b = p.stem.split("_")
+            #  split the path by underscores
+            pathsplit = p.stem.split("_")
+            #  find the index of the first string
+            str_idx = [i for i, x in enumerate(pathsplit)
+                       if x.isalpha()][0]
+            #  get the key as the characters before the first string
+            key = "_".join(pathsplit[:-2])
+            #  get the pairs as the two characters after the first string
+            a = pathsplit[-2]
+            b = pathsplit[-1]
             pairs = (int(a), int(b))
+            logger.info(f"key: {key}, pairs: {pairs}")
             try:
                 pairs_data[p.stem] = {"p_ENERGY": float(lines[-3].split()[0])}
                 pairs_data[p.stem]["p_m1_ENERGY"] = monomers_data[
@@ -474,7 +497,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                     - pairs_data[p.stem]["p_m2_ENERGY"]
                 )
             except Exception as e:
-                print(p.stem, e)
+                logger.warning(p.stem, e)
 
         pairs_df = pd.DataFrame(pairs_data).T
 

@@ -10,6 +10,8 @@ from ff_energy.ffe.geometry import dihedral3, bisector, angle, dist
 from ff_energy.ffe.potential import Ecoloumb
 from ff_energy.ffe.bonded_terms import FitBonded
 
+from ff_energy.logs.logging import logger
+
 import numpy as np
 
 H2KCALMOL = 627.503
@@ -34,62 +36,63 @@ def validate_data(_):
 
 
 def unload_data(output):
-    # print(output)
-    _ = [_["coloumb_total"] for _ in output if _["coloumb_total"] is not None]
-    ctot = validate_data(_)
+    """
+    Unload data
+    :param output:
+    :return:
+    """
+    logger.info("Unloading data, output keys: {}".format(output[0].keys()))
+    fields = ["coloumb_total", "coloumb", "charmm", "monomers_sum",
+              "cluster", "pairs", "pairs_sum", "monomers"]
 
-    _ = [_["coloumb"] for _ in output if _["coloumb"] is not None]
-    col = validate_data(_)
+    data = {}
 
-    chm_df = validate_data([_["charmm"] for _ in output if _["charmm"] is not None])
+    for field in fields:
+        _ = [_[field] for _ in output if _[field] is not None]
+        _ = validate_data(_)
+        if _ is not None and len(_) > 0 and not all_none(_):
+            data[field] = _
+        else:
+            logger.warning("No data for {}".format(field))
 
-    _ = [_["monomers_sum"] for _ in output if _["monomers_sum"] is not None]
-    monomer_df = validate_data(_)
+    print("data.keys()", data.keys())
+    print("data", data)
 
-    _ = list(itertools.chain([_["cluster"] for _ in output if len(_["cluster"]) > 0]))
-    cluster_df = validate_data(_)
+    select_data = {k: v for k, v in data.items() if k not in ["pairs", "monomers"]}
+    data_df = concat_dataframes(select_data)
 
-    _ = [_["pairs"] for _ in output if _["pairs"] is not None]
-    pairs_df = validate_data(_)
+    data["n_pairs"] = [
+        len(x["pairs"]) for x in output
+        if x["pairs"] is not None
+    ]
 
-    _ = [_["pairs_sum"] for _ in output if _["pairs_sum"] is not None]
-    pairs_sum_df = validate_data(_)
+    return data_df, data
 
-    _ = [_["monomers"] for _ in output if _["monomers"] is not None]
-    monomers_df = validate_data(_)
 
+def concat_dataframes(dataframes: dict) -> pd.DataFrame:
+    """
+    Concatenate dataframes
+    :param dataframes:
+    :return:
+    """
     data = pd.DataFrame()
-    for df in [ctot, chm_df, monomer_df, pairs_sum_df, cluster_df]:
-        data = pd.concat([data, df], axis=1)
-
-    data["n_pairs"] = [len(x["pairs"]) for x in output if x["pairs"] is not None]
-
-    return data, ctot, col, chm_df, monomers_df, cluster_df, pairs_df, monomer_df
+    for k, v in dataframes.items():
+        if v is not None:
+            data = pd.concat([data, v], axis=1)
+    return data
 
 
-def plot_ecol(data):
-    data = data.dropna()
-    data = data[data["ECOL"] < -50]
-    plot_energy_MSE(data, "ECOL", "ELEC", xlabel="Coulomb integral [kcal/mol]",
-                    ylabel="CHM ELEC [kcal/mol]", elec="ECOL", CMAP="plasma")
-
-
-def plot_intE(data):
-    data["nb_intE"] = data["ELEC"] + data["VDW"]
-    plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
-                    ylabel="NBONDS [kcal/mol]", elec="ELEC", CMAP="viridis")
-
-
-def plot_LJintE(data, ax=None, elec="ELEC"):
-    data["nb_intE"] = data[elec] + data["LJ"]
-    data = data.dropna()
-    ax = plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
-                         ylabel="NBONDS [kcal/mol]", elec=elec, CMAP="viridis", ax=ax)
-    return ax
+def all_none(_):
+    """
+    Check if all elements in a list are None
+    :param _:
+    :return:
+    """
+    return all([x is None for x in _])
 
 
 class Data:
-    def __init__(self, output_path, system="water_cluster", min_m_E=None):
+    def __init__(self, output_path, system="dcm", min_m_E=None):
         self.system = system
         self.output_path = output_path
         # print("output_path", output_path)
@@ -97,24 +100,27 @@ class Data:
         # print("output", self.output)
         (
             data,
-            ctot,
-            col,
-            chm_df,
-            monomers_df,
-            cluster_df,
-            pairs_df,
-            monomer_df,
+            ddict,
         ) = unload_data(self.output)
+        #  Unload the dictionary
+        ctot = ddict["coloumb_total"] if "coloumb_total" in ddict.keys() else None
+        col = ddict["coloumb"] if "coloumb" in ddict.keys() else None
+        chm_df = ddict["charmm"] if "charmm" in ddict.keys() else None
+        monomers_df = ddict["monomers_sum"] if "monomers_sum" in ddict.keys() else None
+        cluster_df = ddict["cluster"] if "cluster" in ddict.keys() else None
+        pairs_df = ddict["pairs"] if "pairs" in ddict.keys() else None
+        monomer_df = ddict["monomers"] if "monomers" in ddict.keys() else None
+        #  Unload the data
         self.data = data
+        print("data", data)
         self.coloumb = col
-
         if (
                 "M_ENERGY" in data.keys()
                 and cluster_df is not None
                 and monomers_df is not None
         ):
             self.data["intE"] = (
-                                        self.data["C_ENERGY"] - self.data["M_ENERGY"]
+                    self.data["C_ENERGY"] - self.data["M_ENERGY"]
                                 ) * H2KCALMOL
 
         self.ctot = ctot
@@ -124,15 +130,23 @@ class Data:
         self.cluster_df = cluster_df
         self.pairs_df = pairs_df
 
-        if self.monomers_df is not None:
-            index = self.monomers_df.index
-            self.monomers_df["key"] = [x.split("_")[0] for x in index]
-            self.monomers_df["monomer"] = [int(x.split("_")[1]) for x in index]
+        self.prepare_monomers()
 
-            index = list(self.pairs_df.index)
-            self.pairs_df["key"] = [x.split("_")[0] for x in index]
+    def prepare_monomers(self):
+        if self.monomers_df is not None:
+
+            self.monomers_df["key"] = [x.split("_")[-1]
+                                       for x in self.monomers_df.index]
+
+            self.monomers_df["monomer"] = [int(x.split("_")[-1])
+                                           for x in self.monomers_df.index]
+
+            self.pairs_df["key"] = ["_".join(_.split("_")[:-2])
+                                    for _ in self.pairs_df.index]
+
             self.pairs_df["pair"] = [
-                (int(x.split("_")[1]), int(x.split("_")[2])) for x in index
+                (int(x.split("_")[-2]), int(x.split("_")[-1]))
+                for x in self.pairs_df.index
             ]
 
             sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
@@ -143,13 +157,15 @@ class Data:
                 p.split(".")[0]: s for p, s in zip(self.pdbs, self.structures)
             }
 
-            if min_m_E is None:
-                self.min_m_E = self.monomers_df["m_ENERGY"].min()
+            self.min_m_E = self.monomer_df["m_ENERGY"].min()
+            if self.system.__contains__("water"):
+                self.add_internal_dof()
+                self.bonded_fit = FitBonded(self.monomers_df, self.min_m_E)
+                self.data["m_E_tot"] = self.bonded_fit.sum_monomer_df["m_E_tot"]
+                self.data["p_m_E_tot"] = self.bonded_fit.sum_monomer_df["p_m_E_tot"]
+            else:
+                self.bonded_fit = None
 
-            self.add_internal_dof()
-            self.bonded_fit = FitBonded(self.monomers_df, self.min_m_E)
-            self.data["m_E_tot"] = self.bonded_fit.sum_monomer_df["m_E_tot"]
-            self.data["p_m_E_tot"] = self.bonded_fit.sum_monomer_df["p_m_E_tot"]
             if "C_ENERGY" in self.data.keys():
                 self.data["C_ENERGY_kcalmol"] = self.data["C_ENERGY"] * H2KCALMOL
 
@@ -165,16 +181,13 @@ class Data:
         key = x.key
         a, b = pair
         _m = self.monomers_df[self.monomers_df["key"] == key]
-        if len(_m) < 190:
-            try:
-                aE = _m[_m["monomer"] == a]["m_ENERGY"]
-                bE = _m[_m["monomer"] == b]["m_ENERGY"]
-                # print(aE,bE)
-                return float(aE) + float(bE)
-            except Exception as e:
-                print(e)
-                return None
-        return None
+        try:
+            aE = _m[_m["monomer"] == a]["m_ENERGY"]
+            bE = _m[_m["monomer"] == b]["m_ENERGY"]
+            return float(aE) + float(bE)
+        except Exception as e:
+            logger.warning(e)
+            return None
 
     def data(self) -> pd.DataFrame:
         return self.data.copy()
@@ -196,7 +209,9 @@ class Data:
         for r in self.monomers_df.iterrows():
             key = r[1]["key"]
             monomer = r[1]["monomer"]
-            a, r1, r2 = self.get_internals_water(key, monomer)
+            a, r1, r2 = self.get_internals_water(
+                key, monomer
+            )
             a_s.append(a)
             r1_s.append(r1)
             r2_s.append(r2)
@@ -209,7 +224,7 @@ class Data:
         _ = self.data[self.data["n_pairs"] == 190].copy()
         _ = _[_["P_intE"] < 1]
         _ = _[_["intE"] < 1]
-        print("n:", len(_))
+        logger.info("n:", len(_))
 
         plot_energy_MSE(_, "intE", "P_intE", xlabel="intE [kcal/mol]",
                         ylabel="pair_monomer_E [kcal/mol]", elec="intE", CMAP="viridis")
@@ -222,10 +237,7 @@ class Data:
             plot_energy_MSE(_, "intE", "nb_intE", xlabel="intE [kcal/mol]",
                             ylabel="NBONDS [kcal/mol]", elec="ECOL", CMAP="viridis")
         else:
-            print("Data not available")
-
-    def plot_ecol(self) -> None:
-        plot_ecol(self.data)
+            logger.warning("Data not available")
 
 
 def pairs_data(

@@ -32,6 +32,10 @@ def plot_energy_MSE(
         cbar_bounds=(-120, 0),
 ):
     """Plot the energy MSE"""
+
+    if key1 == "ECOL":
+        CMAP = "plasma"
+
     df = df.copy()
     _ax = ax
     if ax is None:
@@ -144,6 +148,25 @@ def plot_energy_MSE(
 
     return ax, cbar, stats
 
+def plot_ecol(data):
+    data = data.dropna()
+    data = data[data["ECOL"] < -50]
+    plot_energy_MSE(data, "ECOL", "ELEC", xlabel="Coulomb integral [kcal/mol]",
+                    ylabel="CHM ELEC [kcal/mol]", elec="ECOL", CMAP="plasma")
+
+
+def plot_intE(data):
+    data["nb_intE"] = data["ELEC"] + data["VDW"]
+    plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
+                    ylabel="NBONDS [kcal/mol]", elec="ELEC", CMAP="viridis")
+
+
+def plot_LJintE(data, ax=None, elec="ELEC"):
+    data["nb_intE"] = data[elec] + data["LJ"]
+    data = data.dropna()
+    ax = plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
+                         ylabel="NBONDS [kcal/mol]", elec=elec, CMAP="viridis", ax=ax)
+    return ax
 
 def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
     """

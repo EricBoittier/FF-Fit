@@ -4,7 +4,8 @@ import numpy as np
 
 from scipy.optimize import minimize
 
-from ff_energy.utils.ffe_utils import load_config_maker, charmm_jobs
+from ff_energy.utils.ffe_utils import charmm_jobs
+from ff_energy.ffe.cli import load_config_maker
 from ff_energy.ffe.potential import LJ, DE
 from ff_energy.ffe.ff import FF
 from ff_energy.ffe.data import Data
@@ -139,6 +140,7 @@ def fit_repeat(
     ff.get_best_loss()
     # ff.eval_best_parm()
     pickle_output(ff, outname)
+    return ff
 
 
 def fit_func(
