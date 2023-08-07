@@ -2,14 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from matplotlib import rcParams
-
-#  set font to Arial
-
-plt.style.use(['science', 'ieee', ])
-
-rcParams['font.family'] = 'sans-serif'
-rcParams['font.sans-serif'] = ['Arial']
 
 
 def plot_energy_MSE(

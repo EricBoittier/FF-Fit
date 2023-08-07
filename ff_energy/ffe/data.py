@@ -42,11 +42,10 @@ def unload_data(output):
     :return:
     """
     logger.info("Unloading data, output keys: {}".format(output[0].keys()))
+
     fields = ["coloumb_total", "coloumb", "charmm", "monomers_sum",
               "cluster", "pairs", "pairs_sum", "monomers"]
-
     data = {}
-
     for field in fields:
         _ = [_[field] for _ in output if _[field] is not None]
         _ = validate_data(_)
@@ -54,9 +53,6 @@ def unload_data(output):
             data[field] = _
         else:
             logger.warning("No data for {}".format(field))
-
-    print("data.keys()", data.keys())
-    print("data", data)
 
     select_data = {k: v for k, v in data.items() if k not in ["pairs", "monomers"]}
     data_df = concat_dataframes(select_data)
@@ -95,9 +91,7 @@ class Data:
     def __init__(self, output_path, system="dcm", min_m_E=None):
         self.system = system
         self.output_path = output_path
-        # print("output_path", output_path)
         self.output = load_pickles(output_path)
-        # print("output", self.output)
         (
             data,
             ddict,
@@ -130,9 +124,9 @@ class Data:
         self.cluster_df = cluster_df
         self.pairs_df = pairs_df
 
-        self.prepare_monomers()
+        self.prepare_monomers(min_m_E=min_m_E)
 
-    def prepare_monomers(self):
+    def prepare_monomers(self, min_m_E=None):
         if self.monomers_df is not None:
 
             self.monomers_df["key"] = [x.split("_")[-1]
@@ -156,8 +150,9 @@ class Data:
             self.structure_key_pairs = {
                 p.split(".")[0]: s for p, s in zip(self.pdbs, self.structures)
             }
+            if min_m_E is None:
+                self.min_m_E = self.monomer_df["m_ENERGY"].min()
 
-            self.min_m_E = self.monomer_df["m_ENERGY"].min()
             if self.system.__contains__("water"):
                 self.add_internal_dof()
                 self.bonded_fit = FitBonded(self.monomers_df, self.min_m_E)
@@ -340,7 +335,6 @@ def pairs_data(
         )
 
         theta = angle(bisector1, bisector2)
-
         a1 = angle(dcm1[1, :] + bisector1, dcm1[1, :] + dcm2[1, :])
         a2 = angle(dcm2[1, :] + bisector2, dcm1[1, :] + dcm2[1, :])
         if (60 - a1 - a2) < 0:

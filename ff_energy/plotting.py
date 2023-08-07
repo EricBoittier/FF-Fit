@@ -3,11 +3,13 @@ Matplotlib Style Sheet based on Science Plots
 """
 
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from matplotlib import rcParams
+#  set font to Arial
 
+plt.style.use(['science', 'ieee', ])
 
 def set_style():
     plt.style.use('science')
@@ -18,7 +20,7 @@ def set_style():
     rcParams['ytick.labelsize'] = 18
     rcParams['legend.fontsize'] = 18
     rcParams['font.family'] = 'san-serif'
-    rcParams['font.sans-serif'] = ['DejaVu Sans']
+    rcParams['font.sans-serif'] = ['Arial']
     # bold title and labels
     rcParams['axes.labelweight'] = 'bold'
     rcParams['axes.titleweight'] = 'bold'
