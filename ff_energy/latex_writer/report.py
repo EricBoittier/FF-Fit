@@ -1,9 +1,12 @@
 import os
 import jinja2 as j2
 from pathlib import Path
+import shutil
 
 from ff_energy.ffe.constants import FFEPATH, CONFIG_PATH, REPORTS_PATH
 from ff_energy.latex_writer.templates import TEMPLATE_ENV, REPORT_TEMPLATE
+from ff_energy.latex_writer.figure import Figure
+from ff_energy.logs.logging import logger
 
 class Report:
     """
@@ -16,8 +19,12 @@ class Report:
         #  the location of the files
         if path is None:
             path = REPORTS_PATH / name
-            # make if not exists
-            path.mkdir(parents=True, exist_ok=True)
+        if not isinstance(path, Path):
+            path = Path(path)
+        # make if not exists
+        path.mkdir(parents=True, exist_ok=True)
+        self.fig_path = path / "figures"
+        self.fig_path.mkdir(parents=True, exist_ok=True)
 
         self.filename = name + ".tex"
         self.path = path
@@ -71,12 +78,21 @@ class Report:
         """
         self.tables.append(table)
 
-    def add_section(self, section):
+    def add_section(self, section: Figure):
         """
         Add a section to the report
         :param section:
         :return:
         """
+        if isinstance(section, Figure):
+            # move the file to the figures directory
+            old = section.filepath
+            new = self.fig_path / section.filepath.name
+            shutil.copy(old, new)
+            section.set_filepath( f"figures/{section.filepath.stem}")
+            section = section.make_figure()
+
+        logger.info(section)
         self.sections.append(section)
 
     def join_sections(self):
@@ -99,15 +115,21 @@ class Report:
         Write the document to the path
         :return:
         """
+        self.join_sections()
         with open(self.path / self.filename, "w") as f:
             f.write(self.render())
 
     def compile(self):
         os.chdir(self.path)
-        os.system("pdflatex {} ".format(
-            str(self.path / self.filename)
+        logger.info(f"Compiling {self.filename}")
+        logger.info(f"Current directory: {os.getcwd()}")
+        command = "pdflatex {} -output-directory {}".format(
+            self.filename,
+            self.path
         )
-        )
+        logger.info(command)
+        os.system(command)
+
 
 
 

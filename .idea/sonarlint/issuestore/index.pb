@@ -537,9 +537,6 @@ E
 ff_energy/__init__.py,a/a/aaf70a2245e136d6e325fa62a3311678e5f580af
 N
 ff_energy/plotting/__init__.py,4/1/41d79f90701ef23ac38392fd9519d10643e3241a
-:
-
-.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 E
 ff_energy/ffe/data.py,8/0/80d6d35f5dc55d5bfe3bc7236f51e66c6534d94d
 U

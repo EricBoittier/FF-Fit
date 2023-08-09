@@ -9,7 +9,7 @@ class MyTestCase(unittest.TestCase):
 
     def ex_fig(self) -> Figure:
         p = "/home/boittier/Documents/phd/ff_energy/latex_reports/test/energy_hist.pdf"
-        f = Figure(p, "test caption", "test label")
+        f = Figure(p, "This is a test caption", "testlabel")
         return f
 
     def test_report_save(self):
@@ -18,6 +18,8 @@ class MyTestCase(unittest.TestCase):
         r.set_short_title("Test Report")
         r.set_abstract("This is a test report")
         r.add_section("Test Section")
+        r.add_section(self.ex_fig())
+        r.add_section("Test Section 2")
         r.write_document()
         r.compile()
 

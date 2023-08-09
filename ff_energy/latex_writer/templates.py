@@ -7,7 +7,7 @@ TEMPLATE_ENV = j2.Environment(
     trim_blocks=True,
     lstrip_blocks=True,
     comment_start_string="%",
-    comment_end_string="",
+    comment_end_string="%",
 )
 
 REPORT_TEMPLATE = TEMPLATE_ENV.get_template("report.tex")
