@@ -1,6 +1,6 @@
 
 from ff_energy.latex_writer.templates import (
-    TEMPLATE_ENV, REPORT_TEMPLATE, FIGURE_TEMPLATE
+    TEMPLATE_ENV, FIGURE_TEMPLATE
 )
 
 
@@ -21,4 +21,8 @@ class Figure:
         Make the figure
         :return:
         """
-        pass
+        return FIGURE_TEMPLATE.render(
+            filepath=self.filepath,
+            caption=self.caption,
+            label=self.label,
+        )
