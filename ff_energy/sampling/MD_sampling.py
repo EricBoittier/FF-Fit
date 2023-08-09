@@ -2,8 +2,11 @@ import MDAnalysis as mda
 from pathlib import Path
 import os
 import numpy as np
-
 from MDAnalysis import Writer
+
+from ff_energy.logs.logging import logger
+
+LIMIT = 50
 
 
 def pdb_to_coords(pdb_path, n_atoms_per_res):
@@ -60,7 +63,7 @@ def get_dcds(dcd_dir):
     dcd = ["/home/boittier/pcbach/charmmions/step5_{}.dcd".format(i + 1) for i in
            range(Ndcds)]
     dcd = [_ for _ in dcd if os.path.exists(_) and (os.stat(_).st_size > 0)]
-    print(dcd)
+    logger.info("DCD file:", dcd)
     return dcd
 
 
@@ -75,8 +78,8 @@ def get_psf(psf_dir):
 
 
 def save_N_atoms(u, Natoms, resname,
-                 maxTries=100,
-                 dr=0.05,
+                 maxTries=1000,
+                 dr=0.02,
                  defaultR=4.750,
                  verbose=False,
                  ):
@@ -90,20 +93,21 @@ def save_N_atoms(u, Natoms, resname,
     xyz_counter = 0  # counter for the number of xyz files
     n_atoms = []
     pdb_paths = []
+
+    logger.info(f"resname: {resname} n-frames: {len(u.trajectory)}")
+
     for i, t in enumerate(u.trajectory):
         res_sel1 = u.select_atoms(selectStringTypes, updating=False, periodic=False)
         nres_to_do = len(res_sel1)
-        range_to_do = range(nres_to_do) if nres_to_do < 10 else [
-            np.random.randint(0, nres_to_do) for _ in range(10)
+        range_to_do = range(nres_to_do) if nres_to_do < LIMIT else [
+            np.random.randint(0, nres_to_do) for _ in range(LIMIT)
         ]
         # loop through the residues of the required type
         for j in range_to_do:
             counter = 0
             n_current = 0
             #  try to avoid an index error
-            print(j, len(res_sel1))
             if j:
-                # j = j - len(res_sel1)
                 #  initialize the selection
                 res = u.select_atoms(selectStringTypes, updating=True,
                                      periodic=False)
@@ -120,7 +124,7 @@ def save_N_atoms(u, Natoms, resname,
                         rx=rx, ry=ry, rz=rz, r=defaultR, resid=j)
                     #  make the selection again
                     res = u.select_atoms(_selectstringdist,
-                                         updating=True, periodic=False)
+                                         updating=False, periodic=False)
                     #  change the radius
                     if len(res) < Natoms:
                         # increase the radius
@@ -134,13 +138,13 @@ def save_N_atoms(u, Natoms, resname,
                 #  exiting the while loop
                 #  ....printing for debugging
                 if verbose and counter >= maxTries:
-                    print("conditions not met:", n_current)
+                    logger.info(f"conditions not met: {n_current}")
 
                 n_current = len(res)
                 # check for success
                 if n_current == Natoms:
                     if verbose:
-                        print("success: ", n_current, defaultR, counter)
+                        logger.info(f"success: { n_current} , {defaultR:.1f} , {counter}")
                     xyz_counter += 1
                     resids = [_.resid for _ in res]
                     # paths
@@ -167,7 +171,7 @@ def save_N_atoms(u, Natoms, resname,
     with open(xyz_out_name) as f:
         if len(f.readlines()) < 2:
             if verbose:
-                print("deleting ", xyz_out_name)
+                logger.info("deleting ", xyz_out_name)
             os.system(f"rm {xyz_out_name}")
 
 
@@ -175,7 +179,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--n_atoms", type=int, default=10)
+    parser.add_argument("-n", "--n_atoms", type=int, default=LIMIT)
     parser.add_argument("-r", "--resname", type=str, default="POT")
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
     parser.add_argument("-dl", "--dcd_list", default=None,

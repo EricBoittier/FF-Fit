@@ -11,5 +11,7 @@ class Report:
     latex document. It is the main latex document to compile.
     """
     def __init__(self):
-        pass
+        self.figures = []
+        self.tables = []
+        self.sections = []
 
