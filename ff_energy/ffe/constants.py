@@ -1,18 +1,20 @@
 from pathlib import Path
 
+#  paths
 FFEPATH = Path(__file__).parent.parent.parent
+CONFIG_PATH = FFEPATH / "configs"
+REPORTS_PATH = FFEPATH / "latex_reports"
 
+#  cluster details
 clusterBACH = ("ssh", "boittier@pc-bach")
 clusterBEETHOVEN = ("ssh", "boittier@beethoven")
 clusterNCCR = ("ssh", "boittier@pc-nccr-cluster")
-
+# drive details
 CLUSTER_DRIVE = {
     "boittier@pc-bach": "/home/boittier/pcbach",
     "boittier@beethoven": "/home/boittier/homeb",
     "boittier@pc-nccr-cluster": "/home/boittier/pcnccr",
 }
-
-CONFIG_PATH = FFEPATH / "configs"
 
 atom_types = {
     ("TIP3", "O"): "OT",

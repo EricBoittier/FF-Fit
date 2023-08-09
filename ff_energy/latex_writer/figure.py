@@ -1,11 +1,24 @@
 
+from ff_energy.latex_writer.templates import (
+    TEMPLATE_ENV, REPORT_TEMPLATE, FIGURE_TEMPLATE
+)
+
+
+
 class Figure:
     """
     Class for writing figures to latex
     - all figures have an id, a caption, and a path
     The figure may also contain multiple figures, which are subfigures.
     """
-    def __init__(self):
-        self.filepath = None
-        self.caption = None
-        self.label = None
+    def __init__(self, filepath, caption, label):
+        self.filepath = filepath
+        self.caption = caption
+        self.label = label
+
+    def make_figure(self):
+        """
+        Make the figure
+        :return:
+        """
+        pass
