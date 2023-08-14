@@ -84,7 +84,9 @@ def save_N_atoms(u, Natoms, resname,
                  verbose=False,
                  ):
     selectStringTypes = f"(byres resname {resname})"
-    selectStringDist = "(byres point {rx} {ry} {rz} {r}) or resid {resid}"
+    # selectStringDist = "(byres point {rx} {ry} {rz} {r}) or resid {resid}"
+    selectStringDist = "(byres point {rx} {ry} {rz} {r})"
+
 
     # outfile for a xyz trajectory
     xyz_out_name = f"{Natoms}_{resname}.xyz"
