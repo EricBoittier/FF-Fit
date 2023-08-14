@@ -70,8 +70,6 @@ V
 \
 ,ff_energy/pycharmm_runner/source/dcm/dcm.dcm,6/8/68fa6e0fa1af1ec0ea58398611427f0226460491
 W
-'ff_energy/pycharmm_runner/dyna_dicts.py,3/0/30093eedd162231d5246783cefc1038fd283dd23
-W
 'ff_energy/pycharmm_runner/mini_dicts.py,3/4/34f22cc70a5d6aa4004b3bfd582466717d0e39a5
 Y
 )ff_energy/pycharmm_runner/nbonds_dicts.py,d/0/d0f9024b483140b71bb1af43ac17167ea7517294
@@ -512,13 +510,9 @@ Q
 V
 &ff_energy/projections/dscribe_utils.py,8/9/891b085342936639222fdec31cc74c43787beed0
 L
-ff_energy/ffe/configmaker.py,c/f/cf0bad9977c67fc8742b6fa244b89f0a50d0a7f1
-L
 experiments/ff_fit/exp1.json,0/d/0d1b41a59e7b9f576468420a2a17f81ef503d69d
 L
 ff_energy/utils/ffe_utils.py,8/e/8e94e252d29aa68d973b63c70dbde3a357154694
-J
-ff_energy/ffe/structure.py,2/0/20d3b36f4d5c26b3c17164719d69631d52532a9f
 R
 "ff_energy/latex_writer/__init__.py,e/1/e11f793f40453ba322c194a8ca0b19f916a71bbe
 D
@@ -531,14 +525,10 @@ J
 ff_energy/logs/__init__.py,a/9/a93b286bc1b1872ce101ef36689ab6cd74860af5
 b
 2ff_energy/projections/tests/test_describe_utils.py,0/d/0dcc0f3f5c0d3a147002b453530ad65e6c07a937
-I
-notebooks/data/data.ipynb,3/4/34add50114b0e82cc09a85146a558f8691f4d79a
 E
 ff_energy/__init__.py,a/a/aaf70a2245e136d6e325fa62a3311678e5f580af
 N
 ff_energy/plotting/__init__.py,4/1/41d79f90701ef23ac38392fd9519d10643e3241a
-E
-ff_energy/ffe/data.py,8/0/80d6d35f5dc55d5bfe3bc7236f51e66c6534d94d
 U
 %pdbs/ions_extended/35_24_POT_23_1.pdb,c/4/c42162e47b7b033e82c83bd2ca852ce94c4c941c
 S

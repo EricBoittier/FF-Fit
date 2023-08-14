@@ -37,12 +37,12 @@ def set_style():
         color=plt.cm.Dark2.colors)
 
 
-def save_fig(fig, filename, path=None):
+def save_fig(fig, filename, path=None) -> Path:
     """
     Save the figure to the path
     :param fig:
     :param path:
-    :return:
+    :return: path to the figure
     """
     if path is not None:
         if isinstance(path, str):
@@ -53,3 +53,9 @@ def save_fig(fig, filename, path=None):
         #  make the dir if not exists
         path.mkdir(parents=True, exist_ok=True)
         fig.savefig(path / filename)
+    else:
+        fig.savefig(filename)
+
+    if path is None:
+        return Path(filename)
+    return path / filename

@@ -18,6 +18,8 @@ class Figure:
 
         if not isinstance(filepath, Path):
             self.filepath = Path(filepath)
+        elif isinstance(filepath, Path):
+            self.filepath = filepath
 
         #  check the file exists
         if not self.filepath.exists():
@@ -36,7 +38,7 @@ class Figure:
 
 
 
-    def make_figure(self, path=None):
+    def make_figure(self, path=None, width=0.55):
         """
         Make the figure
         :return:
@@ -52,5 +54,5 @@ class Figure:
             FILE=path,
             CAPTION=self.caption,
             LABEL=self.label,
-            WIDTH="1.0\\textwidth",
+            WIDTH=f"{width}\\textwidth",
         )

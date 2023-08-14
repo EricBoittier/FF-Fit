@@ -62,7 +62,7 @@ class Report:
         """
         self.short_title = short_title
 
-    def add_figure(self, figure):
+    def add_figure(self, figure: Figure):
         """
         Add a figure to the report
         :param figure:
@@ -78,7 +78,7 @@ class Report:
         """
         self.tables.append(table)
 
-    def add_section(self, section: Figure):
+    def add_section(self, section, width=0.55):
         """
         Add a section to the report
         :param section:
@@ -88,9 +88,10 @@ class Report:
             # move the file to the figures directory
             old = section.filepath
             new = self.fig_path / section.filepath.name
-            shutil.copy(old, new)
+            if old != new:
+                shutil.copy(old, new)
             section.set_filepath( f"figures/{section.filepath.stem}")
-            section = section.make_figure()
+            section = section.make_figure(width=width)
 
         logger.info(section)
         self.sections.append(section)

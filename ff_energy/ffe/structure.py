@@ -12,6 +12,9 @@ def sqrt_einsum_T(data):
     a, b = data[1]
     a_min_b = a - b
     return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))
+def _sqrt_einsum_T(a,b):
+    a_min_b = a - b
+    return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))
 
 
 def valid_atom_key_pairs(atom_keys):
@@ -235,10 +238,13 @@ class Structure:
                 xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
                 #  case for same atom types
                 if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                    self.distances[i].append(sqrt_einsum_T(xyza.T, xyzb.T))
+                    _d = _sqrt_einsum_T(xyza.T, xyzb.T)
+                    self.distances[i].append(
+                        _d
+                    )
                     self.distances_pairs[i][(res_a, res_b)] = []
                     self.distances_pairs[i][(res_a, res_b)].append(
-                        sqrt_einsum_T(xyza.T, xyzb.T)
+                        _d
                     )
                 #  case for different atom types
                 if a != b:
@@ -252,10 +258,9 @@ class Structure:
                     xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
                     xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
                     if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                        self.distances[i].append(sqrt_einsum_T(xyza.T, xyzb.T))
-                        self.distances_pairs[i][(res_a, res_b)].append(
-                            sqrt_einsum_T(xyza.T, xyzb.T)
-                        )
+                        _d = _sqrt_einsum_T(xyza.T, xyzb.T)
+                        self.distances[i].append(_d)
+                        self.distances_pairs[i][(res_a, res_b)].append(_d)
 
     def get_monomers(self):
         """returns list of monomers"""
