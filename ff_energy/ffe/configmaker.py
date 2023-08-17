@@ -11,7 +11,7 @@ system_names = [
     "lithium",
     "ions",
     "dcm",
-    "ions_ext"
+    "ions_ext",
 ]
 
 pdbs = [
@@ -22,19 +22,10 @@ pdbs = [
     "pdbs/lithium/",
     "pdbs/ions/",
     "pdbs/dcm/",
-    "pdbs/ions_ext/"
+    "pdbs/ions_ext/",
 ]
 
-system_types = [
-    "water",
-    "water",
-    "methanol",
-    "water",
-    "water",
-    "water",
-    "dcm",
-    "water"
-]
+system_types = ["water", "water", "methanol", "water", "water", "water", "dcm", "water"]
 
 SYSTEMS = {
     k: {"system_name": k, "pdbs": p, "system_type": s}
@@ -61,7 +52,7 @@ MODELS = {
     },
     "dcm": {
         "pc": DCM_STATES("dcm_pbe0dz.pc"),
-    }
+    },
 }
 
 THEORY = {
@@ -88,7 +79,7 @@ explicit,ri_basis=jkfit,df_basis=mp2fit,df_basis_exch=jkfit
 cfit,basis=mp2fit
 """,
         "m_method": "{df-hf,basis=jkfit}"
-                    "\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
+        "\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
         "m_memory": "950",
     },
 }

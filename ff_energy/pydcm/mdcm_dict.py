@@ -4,6 +4,8 @@ import pandas as pd
 from pathlib import Path, PosixPath
 
 from ff_energy import mdcm_set_up
+
+
 class MDCM:
     def __init__(self, mdcm_dict):
         self.mdcm_dict = mdcm_dict
@@ -19,7 +21,7 @@ class MDCM:
         if mdcm_dict is not None:
             if type(mdcm_dict) is str:
                 # Load the dictionary from a json file
-                with open(mdcm_dict, 'r') as json_file:
+                with open(mdcm_dict, "r") as json_file:
                     self.mdcm_dict = json.load(json_file)
             elif type(mdcm_dict) is dict:
                 # Unload the contents of the dictionary into the class
@@ -35,16 +37,17 @@ class MDCM:
         if filename is None:
             return json.dumps(self.mdcm_dict)
         else:
-            json.dump(self.mdcm_dict, open(filename, 'w'))
+            json.dump(self.mdcm_dict, open(filename, "w"))
 
     def get_mdcm(self):
-        return mdcm_set_up(self.mdcm_esp, self.mdcm_dens,
-                           self.mdcm_xyz, self.mdcm_clcl,
-                            self.local_pos)
+        return mdcm_set_up(
+            self.mdcm_esp, self.mdcm_dens, self.mdcm_xyz, self.mdcm_clcl, self.local_pos
+        )
 
 
 def load_from_json(filename):
     return MDCM(filename)
+
 
 # m = load_from_json("water.json")
 # print(m.mdcm_dict)

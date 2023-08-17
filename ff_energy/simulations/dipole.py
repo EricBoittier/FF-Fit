@@ -2,6 +2,7 @@ import MDAnalysis as mda
 
 # Statistics
 from statsmodels.tsa.stattools import acovf
+
 # Miscellaneous
 import ase.units as units
 
@@ -57,7 +58,7 @@ def get_mag_dipole(dipole):
     vector in units of angstrom and atomic mass units
     and returns the magnitude in Debye
     """
-    dipole_mag = np.sqrt(np.sum(dipole ** 2))
+    dipole_mag = np.sqrt(np.sum(dipole**2))
     converted_dipole = dipole_mag / angstrom_charge_to_debye
     return converted_dipole
 
@@ -85,7 +86,7 @@ def load_from_dcd(psf_path, dcd_path):
     print(u.trajectory)
 
     # select the first residue
-    atom_group = u.select_atoms('resid 1')
+    atom_group = u.select_atoms("resid 1")
 
     total_dipole_vectors = []
     Ds = []
@@ -98,8 +99,7 @@ def load_from_dcd(psf_path, dcd_path):
             atoms.append(atom.position)
             charges.append(atom.charge)
             mass.append(atom.mass)
-        vector, D = calculate_dipole(
-            np.array(atoms), np.array(mass), np.array(charges))
+        vector, D = calculate_dipole(np.array(atoms), np.array(mass), np.array(charges))
         Ds.append(D)
         total_dipole_vectors.append(vector)
     return total_dipole_vectors, Ds
@@ -110,9 +110,9 @@ def load_from_dcm(file):
     Ds = []
     with open(file, "r") as f:
         for i, line in enumerate(f.readlines()):
-            vector = np.array([float(line.split()[0]),
-                               float(line.split()[1]),
-                               float(line.split()[2])])
+            vector = np.array(
+                [float(line.split()[0]), float(line.split()[1]), float(line.split()[2])]
+            )
             total_dipole_vectors.append(vector)
             Ds.append(get_mag_dipole(vector))
     return total_dipole_vectors, Ds
@@ -125,8 +125,11 @@ def plot_dipole_timeseries(Ds, NSKIP=0, filename=None, effective_timestep=1.0):
     time = np.arange(len(Ds)) * effective_timestep
     plt.plot(time, Ds)
     plt.axhline(np.mean(Ds), color="k", linestyle="--")
-    plt.title("$\hat{\mu} =$" + " {:.1f}".format(np.mean(Ds)) + " Debye",
-              fontsize=20, fontweight="bold")
+    plt.title(
+        "$\hat{\mu} =$" + " {:.1f}".format(np.mean(Ds)) + " Debye",
+        fontsize=20,
+        fontweight="bold",
+    )
     plt.xlabel("Time (ps)", fontsize=20, fontweight="bold")
     plt.ylabel("Dipole moment (Debye)", fontsize=20, fontweight="bold")
 
@@ -162,7 +165,7 @@ def calc_spectra(total_dipole_vectors, NSKIP=0, filename=None, effective_timeste
     const = beta * hbar  # atomic units
     cminvtoau = 1.0 / 2.1947e7  # inv cm to atomic units
 
-    qcf = np.tanh(const * freq * cminvtoau / 2.)
+    qcf = np.tanh(const * freq * cminvtoau / 2.0)
 
     # Dipole-Dipole autocorrelation function
     acvx = acovf(dipo_list[:, 0], fft=True)
@@ -182,9 +185,19 @@ def calc_spectra(total_dipole_vectors, NSKIP=0, filename=None, effective_timeste
     return freq, spectra
 
 
-def plot_spectra(freq, spectra, filename=None, csv=False,
-                 ax = None,
-                 Nsmooth=10, xlim=None, ylim=None, plot_methanol=False, plot_water=False, axvlines=False):
+def plot_spectra(
+    freq,
+    spectra,
+    filename=None,
+    csv=False,
+    ax=None,
+    Nsmooth=10,
+    xlim=None,
+    ylim=None,
+    plot_methanol=False,
+    plot_water=False,
+    axvlines=False,
+):
     if csv:
         df = pd.read_csv(csv)
         df = df[df["freq"] > 800]
@@ -195,23 +208,28 @@ def plot_spectra(freq, spectra, filename=None, csv=False,
 
     # create a moving average
     window = np.ones(Nsmooth) / Nsmooth
-    spectra = np.convolve(spectra, window, 'same')
+    spectra = np.convolve(spectra, window, "same")
     spectra = spectra / spectra.max()
-    
+
     if ax is None:
         ax = plt.gca()
-    
+
     if plot_methanol:
-        ax.plot(methanol_exp_spectrum[0], methanol_exp_spectrum[1],
-                 linewidth=1, color="k", label="Exp. (Methanol)")
+        ax.plot(
+            methanol_exp_spectrum[0],
+            methanol_exp_spectrum[1],
+            linewidth=1,
+            color="k",
+            label="Exp. (Methanol)",
+        )
     if plot_water:
         ax.plot(freq, spectra, linewidth=1)
-        
+
         ax.set_xlabel("Frequency (cm$^{-1}$)", fontsize=20, fontweight="bold")
-        
+
     ax.plot(freq, spectra, linewidth=1)
     ax.set_xlabel("Frequency (cm$^{-1}$)", fontsize=20, fontweight="bold")
-        
+
     if xlim is None:
         ax.set_xlim(500, 4000)
     else:
@@ -239,27 +257,39 @@ def plot_spectra(freq, spectra, filename=None, csv=False,
         filename = filename + "_spectra" + ".pdf"
         plt.savefig(filename, bbox_inches="tight")
 
-    #plt.show()
+    # plt.show()
     return ax
+
 
 def dipole_dcm(filename, dcm, NSKIP=0, effective_timestep=1.0, nsmooth=10):
     total_dipole_vectors, Ds = load_from_dcm(dcm)
-    plot_dipole_timeseries(Ds, NSKIP=NSKIP, filename=filename,
-                           effective_timestep=effective_timestep)
-    freq, spectra = calc_spectra(total_dipole_vectors, NSKIP=NSKIP,
-                                 filename=filename,
-                                 effective_timestep=effective_timestep)
+    plot_dipole_timeseries(
+        Ds, NSKIP=NSKIP, filename=filename, effective_timestep=effective_timestep
+    )
+    freq, spectra = calc_spectra(
+        total_dipole_vectors,
+        NSKIP=NSKIP,
+        filename=filename,
+        effective_timestep=effective_timestep,
+    )
     plot_spectra(freq, spectra, filename=filename, csv=False, Nsmooth=nsmooth)
 
 
-def dipole_dcd(filename, psf_path, dcd_path, NSKIP=0, effective_timestep=1.0,
-               nsmooth=10):
+def dipole_dcd(
+    filename, psf_path, dcd_path, NSKIP=0, effective_timestep=1.0, nsmooth=10
+):
     total_dipole_vectors, Ds = load_from_dcd(psf_path, dcd_path)
-    plot_dipole_timeseries(Ds, NSKIP=NSKIP, filename=filename,
-                           effective_timestep=effective_timestep)
-    freq, spectra = calc_spectra(total_dipole_vectors, NSKIP=NSKIP, filename=filename,
-                                 effective_timestep=effective_timestep)
+    plot_dipole_timeseries(
+        Ds, NSKIP=NSKIP, filename=filename, effective_timestep=effective_timestep
+    )
+    freq, spectra = calc_spectra(
+        total_dipole_vectors,
+        NSKIP=NSKIP,
+        filename=filename,
+        effective_timestep=effective_timestep,
+    )
     plot_spectra(freq, spectra, filename=filename, csv=False, Nsmooth=nsmooth)
+
 
 # psf_path = "/home/boittier/pcbach/param/methanol/charmm/r0.0.0/t298.15/gas2/min/int
 # .psf" dcd_path = "/home/boittier/pcbach/param/methanol/charmm/r0.0.0/t298.15/gas2

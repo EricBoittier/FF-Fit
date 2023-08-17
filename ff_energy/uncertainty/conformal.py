@@ -30,9 +30,8 @@ def calculate_conformal_uncertainty(data_dict, verbose=False, error=0.05):
         print("test_preds", test_preds.shape)
         print(test_preds)
 
-    conformal_intervals = \
-        OneDimensionalUncertaintyConformalRegressor(
-        ).conformal_interval(
+    conformal_intervals = (
+        OneDimensionalUncertaintyConformalRegressor().conformal_interval(
             error=error,
             val_preds=val_preds,
             val_uncertainties=val_uncertainties,
@@ -40,4 +39,5 @@ def calculate_conformal_uncertainty(data_dict, verbose=False, error=0.05):
             test_uncertainties=test_uncertainties,
             val_targets=val_targets,
         )
+    )
     return conformal_intervals

@@ -29,7 +29,7 @@ class Scan:
 
         # Default values of optional parameters
         self.default = {
-            "system_file_type": 'xyz',
+            "system_file_type": "xyz",
             "system_total_charge": 0,
             "system_spin_multiplicity": 1,
             "scan_dofs": None,
@@ -44,160 +44,188 @@ class Scan:
             "scan_cpus_per_task": 1,
             "scan_memory_per_task": 1000,
             "scan_overwrite": False,
-            "scan_time_check_tasks": 60
+            "scan_time_check_tasks": 60,
         }
 
         # Keywords and definition
         self.keywords = {
             "system_label": (
-                    "type(str):\n"
-                    + "  Label tag of your system for file identification.\n"
-                    + "  Each written file includes this label."),
+                "type(str):\n"
+                + "  Label tag of your system for file identification.\n"
+                + "  Each written file includes this label."
+            ),
             "system_file_coord": (
-                    "type(str):\n"
-                    + "  Path to a cartesian 'xyz' or z-matrix 'zmat' file."),
+                "type(str):\n" + "  Path to a cartesian 'xyz' or z-matrix 'zmat' file."
+            ),
             "system_file_type": (
-                    "type(str): ('xyz', 'zmat'), default 'xyz'\n"
-                    + "  Type identifier of your coordinate file as\n"
-                    + "  cartesian 'xyz' or z-matrix 'zmat' file."),
+                "type(str): ('xyz', 'zmat'), default 'xyz'\n"
+                + "  Type identifier of your coordinate file as\n"
+                + "  cartesian 'xyz' or z-matrix 'zmat' file."
+            ),
             "system_total_charge": (
-                    "type(int), optional: default '{:s}'\n".format(
-                        str(self.default["system_total_charge"]))
-                    + "  Total charge of your system.\n"
-                    + "  Only integer charges are possible."),
+                "type(int), optional: default '{:s}'\n".format(
+                    str(self.default["system_total_charge"])
+                )
+                + "  Total charge of your system.\n"
+                + "  Only integer charges are possible."
+            ),
             "system_spin_multiplicity": (
-                    "type(int), optional: default '{:s}'\n".format(
-                        str(self.default["system_spin_multiplicity"]))
-                    + "  Spin multiplicity of your system.\n"
-                    + "  The multiplicity is related to your total spin S by:\n"
-                    + "    multiplicity = 2*S + 1"),
+                "type(int), optional: default '{:s}'\n".format(
+                    str(self.default["system_spin_multiplicity"])
+                )
+                + "  Spin multiplicity of your system.\n"
+                + "  The multiplicity is related to your total spin S by:\n"
+                + "    multiplicity = 2*S + 1"
+            ),
             "scan_dofs": (
-                    "type(list), optional: default '{:s}'\n".format(
-                        str(self.default["scan_dofs"]))
-                    + "  List defining the degrees of freedom to scan over.\n"
-                    + "  In case of 'xyz' coordination file format, the list\n"
-                    + "  must contain sublists of atom indices. The length of the\n"
-                    + "  sublist defines the type 'bond', 'angle', 'dihedral'.\n"
-                    + "  To match the parameter value, only the respectively last\n"
-                    + "  atom in the list is moved.\n"
-                    + "    Example:\n"
-                    + "      scan_dofs = [\n"
-                    + "          [0, 1],        # <- Bond between atom 0 and 1\n"
-                    + "          [1, 0, 2],     # <- Angle between atoms 1<-0->2\n"
-                    + "          [2, 0, 1, 3]   # <- Dihedral angle\n"
-                    + "      ]"
-                    + "\n"
-                    + "  In case of 'zmat' coordination file format, the list\n"
-                    + "  must contain sublists of the respective variable label\n"
-                    + "  in the zmat file and the type definition.\n"
-                    + "    Example:\n"
-                    + "      Z-matrix file:\n"
-                    + "        O\n"
-                    + "        O 1 dOO\n"
-                    + "        H 1 dHO1 2 aHOO1\n"
-                    + "        H 2 dHO2 1 aHOO2 3 dihHOOH\n"
-                    + "\n"
-                    + "        dOO     = 1.2\n"
-                    + "        dHO1    = 1.0\n"
-                    + "        dHO2    = 1.0\n"
-                    + "        aHOO1   = 60.0\n"
-                    + "        aHOO2   = 60.0\n"
-                    + "        dihHOOH = 180.0\n"
-                    + "      ----\n"
-                    + "      scan_dofs = [\n"
-                    + "          ['dOO', 'bond'],\n"
-                    + "          ['aHOO1', 'angle'],\n"
-                    + "          ['dihHOOH', 'dihdral'],\n"
-                    + "      ]"
-                    + "\n"
-                    + "  If scan_dofs is not defined or as None, only the system\n"
-                    + "  conformation in the coordinate file is evaluated."),
+                "type(list), optional: default '{:s}'\n".format(
+                    str(self.default["scan_dofs"])
+                )
+                + "  List defining the degrees of freedom to scan over.\n"
+                + "  In case of 'xyz' coordination file format, the list\n"
+                + "  must contain sublists of atom indices. The length of the\n"
+                + "  sublist defines the type 'bond', 'angle', 'dihedral'.\n"
+                + "  To match the parameter value, only the respectively last\n"
+                + "  atom in the list is moved.\n"
+                + "    Example:\n"
+                + "      scan_dofs = [\n"
+                + "          [0, 1],        # <- Bond between atom 0 and 1\n"
+                + "          [1, 0, 2],     # <- Angle between atoms 1<-0->2\n"
+                + "          [2, 0, 1, 3]   # <- Dihedral angle\n"
+                + "      ]"
+                + "\n"
+                + "  In case of 'zmat' coordination file format, the list\n"
+                + "  must contain sublists of the respective variable label\n"
+                + "  in the zmat file and the type definition.\n"
+                + "    Example:\n"
+                + "      Z-matrix file:\n"
+                + "        O\n"
+                + "        O 1 dOO\n"
+                + "        H 1 dHO1 2 aHOO1\n"
+                + "        H 2 dHO2 1 aHOO2 3 dihHOOH\n"
+                + "\n"
+                + "        dOO     = 1.2\n"
+                + "        dHO1    = 1.0\n"
+                + "        dHO2    = 1.0\n"
+                + "        aHOO1   = 60.0\n"
+                + "        aHOO2   = 60.0\n"
+                + "        dihHOOH = 180.0\n"
+                + "      ----\n"
+                + "      scan_dofs = [\n"
+                + "          ['dOO', 'bond'],\n"
+                + "          ['aHOO1', 'angle'],\n"
+                + "          ['dihHOOH', 'dihdral'],\n"
+                + "      ]"
+                + "\n"
+                + "  If scan_dofs is not defined or as None, only the system\n"
+                + "  conformation in the coordinate file is evaluated."
+            ),
             "scan_steps": (
-                    "type(list), optional: default '{:s}'\n".format(
-                        str(self.default["scan_steps"]))
-                    + "  List defining the grid steps for the degrees of freedom\n"
-                    + "  defined in 'scan_dofs'. Bonds are given in Angstrom and\n"
-                    + "  angular parameter in degree.\n"
-                    + "    Example (see example coordinates in 'scan_dofs'):\n"
-                    + "      scan_steps = [\n"
-                    + "          [0.9, 1.0, 1.1],    # <- Bond distances\n"
-                    + "          [50, 60, 70, 80],   # <- Angles\n"
-                    + "          [0., 90., 180.]     # <- Dihedral angles\n"
-                    + "      ]"
-                    + "\n"
-                    + "  If scan_steps is not defined or as None, only the system\n"
-                    + "  conformation in the coordinate file is evaluated."),
+                "type(list), optional: default '{:s}'\n".format(
+                    str(self.default["scan_steps"])
+                )
+                + "  List defining the grid steps for the degrees of freedom\n"
+                + "  defined in 'scan_dofs'. Bonds are given in Angstrom and\n"
+                + "  angular parameter in degree.\n"
+                + "    Example (see example coordinates in 'scan_dofs'):\n"
+                + "      scan_steps = [\n"
+                + "          [0.9, 1.0, 1.1],    # <- Bond distances\n"
+                + "          [50, 60, 70, 80],   # <- Angles\n"
+                + "          [0., 90., 180.]     # <- Dihedral angles\n"
+                + "      ]"
+                + "\n"
+                + "  If scan_steps is not defined or as None, only the system\n"
+                + "  conformation in the coordinate file is evaluated."
+            ),
             "scan_constrained_opt": (
-                    "type(bool), optional: default '{:s}'\n".format(
-                        str(self.default["scan_constrained_opt"]))
-                    + "  Whether if perform constrained optimization for each\n"
-                    + "  grid point in the scan or just single point."),
+                "type(bool), optional: default '{:s}'\n".format(
+                    str(self.default["scan_constrained_opt"])
+                )
+                + "  Whether if perform constrained optimization for each\n"
+                + "  grid point in the scan or just single point."
+            ),
             "scan_write_esp_cube": (
-                    "type(bool), optional: default '{:s}'\n".format(
-                        str(self.default["scan_write_esp_cube"]))
-                    + "  Write a cube file with the electrostatic potential."),
+                "type(bool), optional: default '{:s}'\n".format(
+                    str(self.default["scan_write_esp_cube"])
+                )
+                + "  Write a cube file with the electrostatic potential."
+            ),
             "scan_write_dens_cube": (
-                    "type(bool), optional: default '{:s}'\n".format(
-                        str(self.default["scan_write_dens_cube"]))
-                    + "  Write a cube file with the electron density."),
+                "type(bool), optional: default '{:s}'\n".format(
+                    str(self.default["scan_write_dens_cube"])
+                )
+                + "  Write a cube file with the electron density."
+            ),
             "scan_qm_program": (
-                    "type(str), optional: default '{:s}'\n".format(
-                        str(self.default["scan_qm_program"]))
-                    + "  QM calculation program for evaluating potential,\n"
-                    + "  electron density and ESP."),
+                "type(str), optional: default '{:s}'\n".format(
+                    str(self.default["scan_qm_program"])
+                )
+                + "  QM calculation program for evaluating potential,\n"
+                + "  electron density and ESP."
+            ),
             "scan_qm_method": (
-                    "type(str), optional: default '{:s}'\n".format(
-                        str(self.default["scan_qm_method"]))
-                    + "  QM method, see documentation for available methods with\n"
-                    + "  the respective QM program."),
+                "type(str), optional: default '{:s}'\n".format(
+                    str(self.default["scan_qm_method"])
+                )
+                + "  QM method, see documentation for available methods with\n"
+                + "  the respective QM program."
+            ),
             "scan_qm_basis_set": (
-                    "type(str), optional: default '{:s}'\n".format(
-                        str(self.default["scan_qm_basis_set"]))
-                    + "  QM atom centred basis set, see documentation for\n"
-                    + "  available basis set in the respective QM program."),
+                "type(str), optional: default '{:s}'\n".format(
+                    str(self.default["scan_qm_basis_set"])
+                )
+                + "  QM atom centred basis set, see documentation for\n"
+                + "  available basis set in the respective QM program."
+            ),
             "scan_parallel_tasks": (
-                    "type(int), optional: default '{:s}'\n".format(
-                        str(self.default["scan_parallel_tasks"]))
-                    + "  Number of parallel QM calculations on your machine."),
+                "type(int), optional: default '{:s}'\n".format(
+                    str(self.default["scan_parallel_tasks"])
+                )
+                + "  Number of parallel QM calculations on your machine."
+            ),
             "scan_cpus_per_task": (
-                    "type(int), optional: default '{:s}'\n".format(
-                        str(self.default["scan_cpus_per_task"]))
-                    + "  Number of available CPUs per task."),
+                "type(int), optional: default '{:s}'\n".format(
+                    str(self.default["scan_cpus_per_task"])
+                )
+                + "  Number of available CPUs per task."
+            ),
             "scan_memory_per_task": (
-                    "type(int), optional: default '{:s}'\n".format(
-                        str(self.default["scan_memory_per_task"]))
-                    + "  Amount of requested memory per single CPU in MB.\n"
-                    + "  In general, declared memory available in the QM programm\n"
-                    + "  is usually just 90% of the total memory declared in the\n"
-                    + "  bash script file."),
+                "type(int), optional: default '{:s}'\n".format(
+                    str(self.default["scan_memory_per_task"])
+                )
+                + "  Amount of requested memory per single CPU in MB.\n"
+                + "  In general, declared memory available in the QM programm\n"
+                + "  is usually just 90% of the total memory declared in the\n"
+                + "  bash script file."
+            ),
             "scan_overwrite": (
-                    "type(bool), optional: default '{:s}'\n".format(
-                        str(self.default["scan_overwrite"]))
-                    + "  Whether to recompute the system at grid points even if \n"
-                    + "  all output files are given and viable (successful run)."),
+                "type(bool), optional: default '{:s}'\n".format(
+                    str(self.default["scan_overwrite"])
+                )
+                + "  Whether to recompute the system at grid points even if \n"
+                + "  all output files are given and viable (successful run)."
+            ),
             "scan_time_check_tasks": (
-                    "type(int), optional: default '{:s}'\n".format(
-                        str(self.default["scan_time_check_tasks"]))
-                    + "  Time delay in seconds to check the status of the tasks\n"
-                    + "  and submit next ones.")
+                "type(int), optional: default '{:s}'\n".format(
+                    str(self.default["scan_time_check_tasks"])
+                )
+                + "  Time delay in seconds to check the status of the tasks\n"
+                + "  and submit next ones."
+            ),
         }
 
         if config is not None:
-
             self.initialize_scan(config)
 
         else:
-
             self.config = None
 
     def print_doc(self, keys=None):
-
         if keys is None:
             keys = self.keywords.keys()
 
         # Print documentation of each keyword in config dictionary
         for key in keys:
-
             print(key)
             print("-" * (len(key) + 2))
             print(self.keywords[key])
@@ -218,21 +246,17 @@ class Scan:
             config = load_content(config)
 
         if isinstance(config, dict):
-
             # Check dictionary keys
             unknown = False
             for key in config.keys():
-
                 if key not in self.keywords.keys():
-                    msg = "Keyword '{:s}' not recognized.\n".format(
-                        key)
+                    msg = "Keyword '{:s}' not recognized.\n".format(key)
                     print(msg)
 
                     unknown = True
 
             # If unknown key in config, print key list
             if unknown:
-
                 print("Perhaps you have mixed up on of these:\n")
 
                 for key, item in self.keywords.items():
@@ -372,8 +396,7 @@ class Scan:
         self.dirs_main = os.getcwd()
 
         # Module directory
-        self.dirs_modl = "/" + os.path.join(
-            *os.path.realpath(__file__).split("/")[:-1])
+        self.dirs_modl = "/" + os.path.join(*os.path.realpath(__file__).split("/")[:-1])
 
         # Template directory
         self.dirs_tmpl = "templates"
@@ -426,7 +449,6 @@ class Scan:
 
         # Read reference structure
         if self.syst_tcrd == "xyz":
-
             # Read system
             self.syst_refr = ase.io.read(self.syst_fcrd)
 
@@ -438,23 +460,26 @@ class Scan:
             for istp, step_indc in enumerate(self.scan_dofs):
                 if len(step_indc) == 2:
                     self.scan_pref[istp] = self.syst_refr.get_distance(
-                        step_indc[0], step_indc[1])
+                        step_indc[0], step_indc[1]
+                    )
                 elif len(step_indc) == 3:
                     self.scan_pref[istp] = self.syst_refr.get_angle(
-                        step_indc[0], step_indc[1], step_indc[2])
+                        step_indc[0], step_indc[1], step_indc[2]
+                    )
                 elif len(step_indc) == 4:
                     self.scan_pref[istp] = self.syst_refr.get_dihedral(
-                        step_indc[0], step_indc[1], step_indc[2], step_indc[3])
+                        step_indc[0], step_indc[1], step_indc[2], step_indc[3]
+                    )
                 else:
                     print(step_indc)
                     raise IOError(
                         "Length of above  atom index list in 'scan_dofs' do not"
-                        + " match requirements")
+                        + " match requirements"
+                    )
 
         elif self.syst_tcrd == "zmat":
-
             # Read z-matrix file
-            with open(self.syst_fcrd, 'r') as f:
+            with open(self.syst_fcrd, "r") as f:
                 step_lzmt = f.readlines()
 
             # Determine matrix and parameter part
@@ -488,8 +513,7 @@ class Scan:
         self.scan_epot = np.zeros(len(self.scan_grid), dtype=float)
 
         # Positions list
-        self.scan_crds = np.zeros(
-            (len(self.scan_grid), self.scan_Natm, 3), dtype=float)
+        self.scan_crds = np.zeros((len(self.scan_grid), self.scan_Natm, 3), dtype=float)
 
         # Density and ESP cube file lists
         self.scan_fdns = [""] * len(self.scan_grid)
@@ -503,16 +527,16 @@ class Scan:
 
         # Respective program template files
         self.scan_trun = os.path.join(
-            self.dirs_modl, self.dirs_tmpl,
-            self.tmps_srun.format(self.scan_prgm))
+            self.dirs_modl, self.dirs_tmpl, self.tmps_srun.format(self.scan_prgm)
+        )
         self.scan_tinp = os.path.join(
-            self.dirs_modl, self.dirs_tmpl,
-            self.tmps_sinp.format(self.scan_prgm))
+            self.dirs_modl, self.dirs_tmpl, self.tmps_sinp.format(self.scan_prgm)
+        )
 
         # Write scan configuration to file
         save_config(
-            os.path.join(self.dirs_main, self.data_cnfg.format(self.syst_ltag)),
-            config)
+            os.path.join(self.dirs_main, self.data_cnfg.format(self.syst_ltag)), config
+        )
 
         # Check program version
         if self.scan_prgm == "gaussian":
@@ -536,8 +560,15 @@ class Scan:
         step_sdns = self.data_dnsc.format(self.scan_prgm, istp, self.syst_ltag)
         step_sesp = self.data_espc.format(self.scan_prgm, istp, self.syst_ltag)
 
-        return step_srun, step_sinp, step_sout, step_schk, step_sfck, \
-               step_sdns, step_sesp
+        return (
+            step_srun,
+            step_sinp,
+            step_sout,
+            step_schk,
+            step_sfck,
+            step_sdns,
+            step_sesp,
+        )
 
     def prepare_input(self, istp):
         """
@@ -548,14 +579,12 @@ class Scan:
         stpi = self.scan_grid[istp]
 
         if self.syst_tcrd == "xyz":
-
             # Copy working reference system
             step_syst = self.syst_refr.copy()
 
         elif self.syst_tcrd == "zmat":
-
             # Read z-matrix file
-            with open(self.syst_fcrd, 'r') as f:
+            with open(self.syst_fcrd, "r") as f:
                 step_lzmt = f.readlines()
 
             # Determine matrix and parameter part
@@ -581,8 +610,15 @@ class Scan:
             step_ipar = ilne
 
         # Prepare file names
-        step_srun, step_sinp, step_sout, step_schk, step_sfck, step_sdns, \
-        step_sesp = self.prepare_files(istp)
+        (
+            step_srun,
+            step_sinp,
+            step_sout,
+            step_schk,
+            step_sfck,
+            step_sdns,
+            step_sesp,
+        ) = self.prepare_files(istp)
 
         # Check if results already exists
         step_done = True
@@ -596,54 +632,53 @@ class Scan:
                 step_done = False
 
         if self.syst_tcrd == "xyz":
-
             # Iterate over scan parameter
             for indx, step_indc in enumerate(self.scan_dofs):
-
                 # Set step parameter
                 if len(step_indc) == 2:
                     step_syst.set_distance(
-                        step_indc[0], step_indc[1],
-                        stpi[indx], fix=0)
+                        step_indc[0], step_indc[1], stpi[indx], fix=0
+                    )
                 elif len(step_indc) == 3:
                     if self.scan_pref[indx] == 180.0:
                         step_syst.positions[step_indc[0], 0] += 1e-4
                     step_syst.set_angle(
-                        step_indc[0], step_indc[1], step_indc[2],
-                        stpi[indx])
+                        step_indc[0], step_indc[1], step_indc[2], stpi[indx]
+                    )
                     if self.scan_pref[indx] == 180.0:
                         step_syst.positions[step_indc[0], 0] -= 1e-4
                 elif len(step_indc) == 4:
                     step_syst.set_dihedral(
-                        step_indc[0], step_indc[1], step_indc[2], step_indc[3],
-                        stpi[indx])
+                        step_indc[0],
+                        step_indc[1],
+                        step_indc[2],
+                        step_indc[3],
+                        stpi[indx],
+                    )
 
             # XYZ step lines
             step_lcrd = [
                 "{:s}   {:>20.15f}   {:>20.15f}   {:>20.15f}\n".format(
-                    step_syst.symbols[ia], *step_syst.positions[ia])
-                for ia in range(len(step_syst))]
-            step_lcrd = ("".join(step_lcrd))
+                    step_syst.symbols[ia], *step_syst.positions[ia]
+                )
+                for ia in range(len(step_syst))
+            ]
+            step_lcrd = "".join(step_lcrd)
 
         elif self.syst_tcrd == "zmat":
-
             # Set step parameter
             for indx, step_indc in enumerate(self.scan_dofs):
-
                 for ilne in range(step_imtx, step_ipar):
-
                     if step_indc[0] in step_lzmt[ilne]:
-
-                        step_lzmt[ilne] = (
-                            "{:s} = {:.4f} F\n".format(
-                                step_indc[0], float(stpi[indx])))
+                        step_lzmt[ilne] = "{:s} = {:.4f} F\n".format(
+                            step_indc[0], float(stpi[indx])
+                        )
 
                         # Prevent linear angle
-                        if (step_indc[1] == "angle"
-                                and float(stpi[indx]) == 180.0):
-                            step_lzmt[ilne] = (
-                                "{:s} = {:.4f} F\n".format(
-                                    step_indc[0], stpi[indx] - 1e-4))
+                        if step_indc[1] == "angle" and float(stpi[indx]) == 180.0:
+                            step_lzmt[ilne] = "{:s} = {:.4f} F\n".format(
+                                step_indc[0], stpi[indx] - 1e-4
+                            )
 
             # Z-matrix lines
             step_lcrd = ""
@@ -656,15 +691,15 @@ class Scan:
         # ///////////////////////////////////////////////
         sinp = None
         if self.scan_prgm == "gaussian":
-
             # Read scan program template input file
-            with open(self.scan_tinp, 'r') as f:
+            with open(self.scan_tinp, "r") as f:
                 sinp = f.read()
 
             # Prepare parameters
             sinp = sinp.replace("%CPU%", "{:d}".format(self.scan_cpus))
-            sinp = sinp.replace("%MEM%", "{:d}".format(
-                int(0.9 * self.scan_cpus * self.scan_memr)))
+            sinp = sinp.replace(
+                "%MEM%", "{:d}".format(int(0.9 * self.scan_cpus * self.scan_memr))
+            )
             sinp = sinp.replace("%CHK%", step_schk)
             sinp = sinp.replace("%MTD%", self.scan_mthd)
             sinp = sinp.replace("%BSS%", self.scan_bsst)
@@ -673,31 +708,30 @@ class Scan:
             sinp = sinp.replace("%CRD%", str(step_lcrd))
             scan_modr = ""
             if self.scan_copt:
-
                 if self.syst_tcrd == "xyz" and self.scan_vprg == "16":
-
                     sinp = sinp.replace("%OPT%", "opt geom(AddGIC)")
 
                     for indx, step_indc in enumerate(self.scan_dofs):
                         if len(step_indc) == 2:
                             scan_modr += "R({:d},{:d}) Freeze\n".format(
-                                *(np.array(step_indc, dtype=int) + 1))
+                                *(np.array(step_indc, dtype=int) + 1)
+                            )
                         elif len(step_indc) == 3:
                             if stpi[indx] == 180.0:
-                                scan_modr += (
-                                    "L({:d},{:d},{:d},0,-1) Freeze\n".format(
-                                        *(np.array(step_indc, dtype=int) + 1)))
-                                scan_modr += (
-                                    "L({:d},{:d},{:d},0,-2) Freeze\n".format(
-                                        *(np.array(step_indc, dtype=int) + 1)))
+                                scan_modr += "L({:d},{:d},{:d},0,-1) Freeze\n".format(
+                                    *(np.array(step_indc, dtype=int) + 1)
+                                )
+                                scan_modr += "L({:d},{:d},{:d},0,-2) Freeze\n".format(
+                                    *(np.array(step_indc, dtype=int) + 1)
+                                )
                             else:
-                                scan_modr += (
-                                    "A({:d},{:d},{:d}) Freeze\n".format(
-                                        *(np.array(step_indc, dtype=int) + 1)))
+                                scan_modr += "A({:d},{:d},{:d}) Freeze\n".format(
+                                    *(np.array(step_indc, dtype=int) + 1)
+                                )
                         elif len(step_indc) == 4:
-                            scan_modr += (
-                                "D({:d},{:d},{:d},{:d}) Freeze\n".format(
-                                    *(np.array(step_indc, dtype=int) + 1)))
+                            scan_modr += "D({:d},{:d},{:d},{:d}) Freeze\n".format(
+                                *(np.array(step_indc, dtype=int) + 1)
+                            )
 
                     sinp = sinp.replace("%MOD%", scan_modr)
 
@@ -708,57 +742,59 @@ class Scan:
                     if len(step_indc) == 2:
                         if len(step_indc) == 2:
                             scan_modr += "{:d},{:d} F\n".format(
-                                *(np.array(step_indc, dtype=int) + 1))
+                                *(np.array(step_indc, dtype=int) + 1)
+                            )
                         elif len(step_indc) == 3:
                             if stpi[indx] == 180.0:
-                                print("linear angle... "
-                                      "Gaussian is not gonna like this :(")
-                                scan_modr += (
-                                    "{:d} {:d} {:d} F\n".format(
-                                        *(np.array(step_indc, dtype=int) + 1)))
-                                scan_modr += (
-                                    "{:d} {:d} {:d} F\n".format(
-                                        *(np.array(step_indc, dtype=int) + 1)))
+                                print(
+                                    "linear angle... "
+                                    "Gaussian is not gonna like this :("
+                                )
+                                scan_modr += "{:d} {:d} {:d} F\n".format(
+                                    *(np.array(step_indc, dtype=int) + 1)
+                                )
+                                scan_modr += "{:d} {:d} {:d} F\n".format(
+                                    *(np.array(step_indc, dtype=int) + 1)
+                                )
                             else:
-                                scan_modr += (
-                                    "{:d},{:d},{:d} F\n".format(
-                                        *(np.array(step_indc, dtype=int) + 1)))
+                                scan_modr += "{:d},{:d},{:d} F\n".format(
+                                    *(np.array(step_indc, dtype=int) + 1)
+                                )
                         elif len(step_indc) == 4:
-                            scan_modr += (
-                                "{:d} {:d} {:d} {:d} F\n".format(
-                                    *(np.array(step_indc, dtype=int) + 1)))
+                            scan_modr += "{:d} {:d} {:d} {:d} F\n".format(
+                                *(np.array(step_indc, dtype=int) + 1)
+                            )
 
                     sinp = sinp.replace("%MOD%", scan_modr)
                     scan_modr += "{:d} {:d} F\n".format(
-                        *(np.array(step_indc, dtype=int) + 1))
+                        *(np.array(step_indc, dtype=int) + 1)
+                    )
 
                 elif len(step_indc) == 3:
                     if stpi[indx] == 180.0:
                         print("linear angle... Gaussian is not gonna like this :(")
-                        scan_modr += (
-                            "L({:d},{:d},{:d},0,-1) Freeze\n".format(
-                                *(np.array(step_indc, dtype=int) + 1)))
-                        scan_modr += (
-                            "L({:d},{:d},{:d},0,-2) Freeze\n".format(
-                                *(np.array(step_indc, dtype=int) + 1)))
+                        scan_modr += "L({:d},{:d},{:d},0,-1) Freeze\n".format(
+                            *(np.array(step_indc, dtype=int) + 1)
+                        )
+                        scan_modr += "L({:d},{:d},{:d},0,-2) Freeze\n".format(
+                            *(np.array(step_indc, dtype=int) + 1)
+                        )
                     else:
-                        scan_modr += (
-                            "{:d} {:d} {:d} F\n".format(
-                                *(np.array(step_indc, dtype=int) + 1)))
+                        scan_modr += "{:d} {:d} {:d} F\n".format(
+                            *(np.array(step_indc, dtype=int) + 1)
+                        )
                 elif len(step_indc) == 4:
-                    scan_modr += (
-                        "{:d} {:d} {:d} {:d} F\n".format(
-                            *(np.array(step_indc, dtype=int) + 1)))
+                    scan_modr += "{:d} {:d} {:d} {:d} F\n".format(
+                        *(np.array(step_indc, dtype=int) + 1)
+                    )
 
                 sinp = sinp.replace("%MOD%", scan_modr)
 
             else:
-
                 sinp = sinp.replace("%OPT%", "opt=Z-Matrix")
                 sinp = sinp.replace("%MOD%", "")
 
         else:
-
             sinp = sinp.replace("%OPT%", "")
             sinp = sinp.replace("%MOD%", "")
 
@@ -767,16 +803,13 @@ class Scan:
             f.write(sinp)
 
         # Read scan program template run file
-        with open(self.scan_trun, 'r') as f:
+        with open(self.scan_trun, "r") as f:
             srun = f.read()
 
         # Prepare parameters
-        srun = srun.replace("%JOBNME%", "g_{:s}_{:d}".format(
-            self.syst_ltag, istp))
-        srun = srun.replace("%NTASKS%", "{:d}".format(
-            self.scan_cpus))
-        srun = srun.replace("%MEMCPU%", "{:d}".format(
-            self.scan_memr))
+        srun = srun.replace("%JOBNME%", "g_{:s}_{:d}".format(self.syst_ltag, istp))
+        srun = srun.replace("%NTASKS%", "{:d}".format(self.scan_cpus))
+        srun = srun.replace("%MEMCPU%", "{:d}".format(self.scan_memr))
         srun = srun.replace("%WORKDIR%", self.dirs_work)
         srun = srun.replace("%DATADIR%", self.dirs_data)
         srun = srun.replace("%INPFILE%", step_sinp)
@@ -790,9 +823,9 @@ class Scan:
         with open(os.path.join(self.dirs_work, step_srun), "w") as f:
             f.write(srun)
 
-    # ///////////////////////////////////////////////
-    # End Gaussian related part
-    # ///////////////////////////////////////////////
+        # ///////////////////////////////////////////////
+        # End Gaussian related part
+        # ///////////////////////////////////////////////
 
         # Return execution file and flag if results exits
         return step_srun, step_done
@@ -805,7 +838,6 @@ def prepare_scan(self, steps=None):
 
     # Iterate over grid points
     for istp, stpi in enumerate(self.scan_grid):
-
         # If just certain steps are requested
         if steps is not None:
             if istp in steps:
@@ -822,15 +854,21 @@ def evaluate_scan(self, steps=None):
 
     # Iterate over grid points
     for istp, stpi in enumerate(self.scan_grid):
-
         # If just certain steps are requested
         if steps is not None:
             if istp in steps:
                 continue
 
         # Prepare file names
-        step_srun, step_sinp, step_sout, step_schk, step_sfck, step_sdns, \
-        step_sesp = self.prepare_files(istp)
+        (
+            step_srun,
+            step_sinp,
+            step_sout,
+            step_schk,
+            step_sfck,
+            step_sdns,
+            step_sesp,
+        ) = self.prepare_files(istp)
 
         # Check output
         if not os.path.exists(os.path.join(self.dirs_data, step_sout)):
@@ -841,18 +879,16 @@ def evaluate_scan(self, steps=None):
             if not os.path.exists(os.path.join(self.dirs_data, step_sdns)):
                 continue
             else:
-                self.scan_fdns[istp] = os.path.join(
-                    self.dirs_data, step_sdns)
+                self.scan_fdns[istp] = os.path.join(self.dirs_data, step_sdns)
 
         if self.scan_espc:
             if not os.path.exists(os.path.join(self.dirs_data, step_sesp)):
                 continue
             else:
-                self.scan_fesp[istp] = os.path.join(
-                    self.dirs_data, step_sesp)
+                self.scan_fesp[istp] = os.path.join(self.dirs_data, step_sesp)
 
         # Read output
-        with open(os.path.join(self.dirs_data, step_sout), 'r') as f:
+        with open(os.path.join(self.dirs_data, step_sout), "r") as f:
             sout = f.readlines()
 
         # ///////////////////////////////////////////////
@@ -860,7 +896,6 @@ def evaluate_scan(self, steps=None):
         # ///////////////////////////////////////////////
 
         if self.scan_prgm == "gaussian":
-
             # Get start line of result block
             step_lrst = 0
             for ilne, line in enumerate(sout):
@@ -871,11 +906,9 @@ def evaluate_scan(self, steps=None):
             ilne = 0
             step_rslt = ""
             while scan_stll:
-
                 if (ilne + step_lrst) > len(sout):
                     break
-                if "The archive entry for this job" in \
-                        sout[step_lrst + ilne]:
+                if "The archive entry for this job" in sout[step_lrst + ilne]:
                     scan_stll = False
                     break
                 else:
@@ -899,8 +932,8 @@ def evaluate_scan(self, steps=None):
 
             # Read positions
             step_syst = ase.io.read(
-                os.path.join(self.dirs_data, step_sout),
-                format='gaussian-out')
+                os.path.join(self.dirs_data, step_sout), format="gaussian-out"
+            )
             self.scan_crds[istp, :, :] = step_syst.positions[:, :]
 
         # ///////////////////////////////////////////////
@@ -919,7 +952,6 @@ def execute_scan(self, steps=None):
 
     # Iterate over grid points
     for istp, stpi in enumerate(self.scan_grid):
-
         # If just certain steps are requested
         if steps is not None:
             if istp in steps:
@@ -934,18 +966,16 @@ def execute_scan(self, steps=None):
 
         # Check number of active tasks
         while len(self.scan_tids) >= self.scan_tsks:
-
             # Get active tasks
-            scan_tlst = subprocess.run(
-                ['squeue'], capture_output=True)
+            scan_tlst = subprocess.run(["squeue"], capture_output=True)
             scan_actv = [
                 int(tkid.split()[0])
-                for tkid in scan_tlst.stdout.decode().split('\n')[1:-1]]
+                for tkid in scan_tlst.stdout.decode().split("\n")[1:-1]
+            ]
 
             # Check if task are active
             scan_aids = []
             for tkid in self.scan_tids:
-
                 if tkid in scan_actv:
                     scan_aids.append(tkid)
 
@@ -957,24 +987,21 @@ def execute_scan(self, steps=None):
 
         # Run calculation
         os.chdir(self.dirs_work)
-        task = subprocess.run(['sbatch', step_srun], capture_output=True)
+        task = subprocess.run(["sbatch", step_srun], capture_output=True)
         self.scan_tids.append(int(task.stdout.decode().split()[-1]))
         os.chdir(self.dirs_main)
 
     # Wait until all jobs.py are done
     while len(self.scan_tids):
-
         # Get active tasks
-        scan_tlst = subprocess.run(
-            ['squeue'], capture_output=True)
+        scan_tlst = subprocess.run(["squeue"], capture_output=True)
         scan_actv = [
-            int(tkid.split()[0])
-            for tkid in scan_tlst.stdout.decode().split('\n')[1:-1]]
+            int(tkid.split()[0]) for tkid in scan_tlst.stdout.decode().split("\n")[1:-1]
+        ]
 
         # Check if task are active
         scan_aids = []
         for tkid in self.scan_tids:
-
             if tkid in scan_actv:
                 scan_aids.append(tkid)
 

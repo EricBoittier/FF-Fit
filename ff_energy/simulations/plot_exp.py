@@ -6,7 +6,7 @@ from scipy import stats
 import os
 
 ureg = UnitRegistry()
-plt.style.use(['science', "no-latex", "nature"])
+plt.style.use(["science", "no-latex", "nature"])
 
 # methanol_density
 #  experimental data
@@ -27,7 +27,7 @@ K = [298.15, 313.15, 333.15]
 # https://pubs.acs.org/doi/full/10.1021/je060415l
 # units: 10^3 K^-1
 # therm_expan = np.array([1.204, 1.254, 1.332])/10**3
-therm_expan = np.array([11.43, 11.66, 11.90, 12.15, 12.40, 12.67, 12.94]) / 10 ** 4
+therm_expan = np.array([11.43, 11.66, 11.90, 12.15, 12.40, 12.67, 12.94]) / 10**4
 K_alpha = [273.15, 283.15, 293.15, 303.15, 313.15, 323.15, 333.15]
 
 # Diffusion coefficients of methanol and water and
@@ -54,8 +54,9 @@ H_vap_K = [298.15, 337.80]
 #  https://webbook.nist.gov/cgi/cbook.cgi?ID=C67561&Mask=2
 heat_capacity = pd.read_csv("csv_data/heatcapacity_methanol.csv")
 
-heat_capacity["cal mol K"] = \
-    (heat_capacity["J mol K"].to_numpy() * ureg("J/(mol*K)")).to("cal/(mol*K)")
+heat_capacity["cal mol K"] = (
+    heat_capacity["J mol K"].to_numpy() * ureg("J/(mol*K)")
+).to("cal/(mol*K)")
 
 Cp_alpha = [273.15, 283.15, 293.15, 303.15, 313.15, 323.15, 333.15]
 Cp = np.array([2391.1, 2439.5, 2494.1, 2555.1, 2622.7, 2697.3, 2779.1])
@@ -63,7 +64,7 @@ Cp = np.array([2391.1, 2439.5, 2494.1, 2555.1, 2622.7, 2697.3, 2779.1])
 dHv = pd.read_csv("csv_data/heat_of_vap_methanol.csv")
 dHv["dH"] = (dHv["Molar Enthalpy [J/mol]"].to_numpy() * ureg("J/mol")).to("kcal/mol")
 
-isothermal_compress = np.array([0.120, 0.135, 0.158]) * 10 ** -3 * ureg("1/bar")
+isothermal_compress = np.array([0.120, 0.135, 0.158]) * 10**-3 * ureg("1/bar")
 isothermal_compress.to("1/atm")
 
 
@@ -81,19 +82,30 @@ def plot_traj_data(df):
         axs[i, 0].plot(_df["times"], _df["temperatures"], c="red", linewidth=0.1)
         # axs[i,0].axhline(_df["avgTemp"])
         axs[i, 0].text(
-            0.5, 0.6, "{:.1f}".format(_df["avgTemp"]), horizontalalignment='center',
-            verticalalignment='center', transform=axs[i, 0].transAxes,
-            fontsize=10)
+            0.5,
+            0.6,
+            "{:.1f}".format(_df["avgTemp"]),
+            horizontalalignment="center",
+            verticalalignment="center",
+            transform=axs[i, 0].transAxes,
+            fontsize=10,
+        )
 
         axs[i, 1].plot(_df["times"], _df["energies"], c="blue", linewidth=0.1)
         axs[i, 2].plot(_df["times"], _df["volumes"], c="green", linewidth=0.1)
 
-        pressure_str = "{:.2f}\n $\pm$ {:.1f}".format(_df["average_pressure"].magnitude,
-                                                      _df["sd_pressure"].magnitude)
+        pressure_str = "{:.2f}\n $\pm$ {:.1f}".format(
+            _df["average_pressure"].magnitude, _df["sd_pressure"].magnitude
+        )
         axs[i, 3].text(
-            0.5, 0.5, pressure_str, horizontalalignment='center',
-            verticalalignment='center', transform=axs[i, 3].transAxes,
-            fontsize=10)
+            0.5,
+            0.5,
+            pressure_str,
+            horizontalalignment="center",
+            verticalalignment="center",
+            transform=axs[i, 3].transAxes,
+            fontsize=10,
+        )
         axs[i, 3].set_axis_off()
 
         if i == 0:
@@ -118,18 +130,27 @@ def plot_properties(data_dfs, data_labels, FONTSIZE=20, show=False):
         EF
         """
     fig = plt.figure(constrained_layout=True, figsize=(8, 8))
-    ax_dict = fig.subplot_mosaic(mosaic, sharex=True, gridspec_kw={
-        "bottom": 0.25,
-        "top": 0.95,
-        "left": 0.1,
-        "right": 0.5,
-        "wspace": 0,
-        "hspace": 0,
-    }, )
+    ax_dict = fig.subplot_mosaic(
+        mosaic,
+        sharex=True,
+        gridspec_kw={
+            "bottom": 0.25,
+            "top": 0.95,
+            "left": 0.1,
+            "right": 0.5,
+            "wspace": 0,
+            "hspace": 0,
+        },
+    )
 
     #  density
-    ax_dict["A"].plot(methanol_density["Temp. (K)"], methanol_density["Density"],
-                      "-o", label="Exp.", markevery=10)
+    ax_dict["A"].plot(
+        methanol_density["Temp. (K)"],
+        methanol_density["Density"],
+        "-o",
+        label="Exp.",
+        markevery=10,
+    )
     ax_dict["A"].set_ylabel(r"$\rho$ [kg/cm$^{3}$]", fontsize=FONTSIZE)
     #  isothermal compressibility
     ax_dict["C"].set_ylabel(r"$\kappa$ [atm$^{-1}$]", fontsize=FONTSIZE)
@@ -141,23 +162,21 @@ def plot_properties(data_dfs, data_labels, FONTSIZE=20, show=False):
     #  Self-diffusion coefficient
     ax_dict["B"].set_ylabel(r"$D$ [$10^{-5}$ cm$^{2}$s$^{-1}$]", fontsize=FONTSIZE)
     ax_dict["B"].yaxis.set_label_position("right")
-    ax_dict["B"].tick_params(axis='y', which='both', labelleft=False,
-                             labelright=True)
+    ax_dict["B"].tick_params(axis="y", which="both", labelleft=False, labelright=True)
     ax_dict["B"].plot(K_D2, D2, "-o", label="Exp.")
     #  heat of vaporization
     ax_dict["D"].set_ylabel(r"$\Delta H_{vap}$ [kcal mol$^{-1}$]", fontsize=FONTSIZE)
     ax_dict["D"].yaxis.set_label_position("right")
-    ax_dict["D"].tick_params(axis='y', which='both', labelleft=False,
-                             labelright=True)
+    ax_dict["D"].tick_params(axis="y", which="both", labelleft=False, labelright=True)
     ax_dict["D"].plot(dHv["T"], dHv["dH"], "-o", label="Exp.")
     #  heat capacity
     ax_dict["F"].set_ylabel(r"$C_{p}$ [cal mol$^{-1}$K$^{-1}$]", fontsize=FONTSIZE)
     ax_dict["F"].set_xlabel(r"T [K]", fontsize=FONTSIZE)
     ax_dict["F"].yaxis.set_label_position("right")
-    ax_dict["F"].tick_params(axis='y', which='both', labelleft=False,
-                             labelright=True)
-    ax_dict["F"].plot(heat_capacity["K"], heat_capacity["cal mol K"], "-o",
-                      label="Exp.", markevery=2)
+    ax_dict["F"].tick_params(axis="y", which="both", labelleft=False, labelright=True)
+    ax_dict["F"].plot(
+        heat_capacity["K"], heat_capacity["cal mol K"], "-o", label="Exp.", markevery=2
+    )
 
     for i in range(len(data_dfs)):
         # just plot magnitudes
@@ -169,18 +188,12 @@ def plot_properties(data_dfs, data_labels, FONTSIZE=20, show=False):
         __dHvap = [_.magnitude for _ in data_dfs[i]["dHvap"]]
         __C_p = [_.magnitude for _ in data_dfs[i]["C_p"]]
 
-        ax_dict["A"].plot(__avg_T, __dens, "-o",
-                          label=data_labels[i])
-        ax_dict["C"].plot(__avg_T, __kappa, "-o",
-                          label=data_labels[i])
-        ax_dict["E"].plot(__avg_T, __alpha, "-o",
-                          label=data_labels[i])
-        ax_dict["B"].plot(__avg_T, __D, "-o",
-                          label=data_labels[i])
-        ax_dict["D"].plot(__avg_T, __dHvap, "-o",
-                          label=data_labels[i])
-        ax_dict["F"].plot(__avg_T, __C_p, "-o",
-                          label=data_labels[i])
+        ax_dict["A"].plot(__avg_T, __dens, "-o", label=data_labels[i])
+        ax_dict["C"].plot(__avg_T, __kappa, "-o", label=data_labels[i])
+        ax_dict["E"].plot(__avg_T, __alpha, "-o", label=data_labels[i])
+        ax_dict["B"].plot(__avg_T, __D, "-o", label=data_labels[i])
+        ax_dict["D"].plot(__avg_T, __dHvap, "-o", label=data_labels[i])
+        ax_dict["F"].plot(__avg_T, __C_p, "-o", label=data_labels[i])
 
     ax_dict["D"].set_ylim(7.5, 10)
 
@@ -210,8 +223,10 @@ def get_params(df):
     path = os.path.join(directory, "job.inp")
     lines = open(path).readlines()
     lines_to_keep = [line.split()[:4] for line in lines if keep_line(line)]
-    lines_to_keep = [[line[0], float(line[1]), float(line[2]), float(line[3])]
-                     for line in lines_to_keep]
+    lines_to_keep = [
+        [line[0], float(line[1]), float(line[2]), float(line[3])]
+        for line in lines_to_keep
+    ]
 
     out_dict = {}
     for line in lines_to_keep:
@@ -269,16 +284,16 @@ def test_properties(df, label, plot=False):
 
     # isothermal compressibility kappa
     output["kappa_error"] = np.sum(
-        (fit_kappa * 10 ** 4 - np.array(kappa_sim[2:]) * 10 ** 4) ** 2)
+        (fit_kappa * 10**4 - np.array(kappa_sim[2:]) * 10**4) ** 2
+    )
 
     # Hvap
-    slope, intercept, r_value, p_value, std_err = stats.linregress(
-        sim_temp, dHvap_sim)
+    slope, intercept, r_value, p_value, std_err = stats.linregress(sim_temp, dHvap_sim)
 
     hvap_t1_error = abs(8.94 - (slope * 289.15 + intercept))
     hvap_t2_error = abs(8.42 - (slope * 337.85 + intercept))
 
-    output["Hvap_error"] = np.sum([hvap_t1_error ** 2, hvap_t2_error ** 2])
+    output["Hvap_error"] = np.sum([hvap_t1_error**2, hvap_t2_error**2])
 
     output.update(get_params(df))
 

@@ -38,7 +38,6 @@ class Simulation:
         self.TEMP = float(T)
         self.update_paths()
 
-
     def update_paths(self):
         if not self.updated:
             self.kwargs["job_path"] = self.job_path / f"k{self.T}"
@@ -46,7 +45,6 @@ class Simulation:
         else:
             self.kwargs["job_path"] = self.job_path.parents[0] / f"k{self.T}"
             self.kwargs["BASEPATHNAME"] = self.basepathname.parents[0] / f"k{self.T}"
-
 
         self.job_path = self.kwargs["job_path"]
         self.basepathname = self.kwargs["BASEPATHNAME"]
@@ -67,7 +65,6 @@ class Simulation:
             f.write(sub)
 
     def copy_files(self):
-
         self.kwargs["extrafiles"].append(self.kwargs["PSFNAME"])
         self.kwargs["extrafiles"].append(self.kwargs["CRDNAME"])
 
@@ -77,7 +74,6 @@ class Simulation:
         for fi in self.kwargs["extrafiles"]:
             print(fi)
             if fi in input_file_names:
-                copyfile(input_files / fi,
-                         self.job_path / fi)
+                copyfile(input_files / fi, self.job_path / fi)
             else:
                 raise FileNotFoundError(f"{fi} not found in {input_files}")

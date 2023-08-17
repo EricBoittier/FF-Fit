@@ -47,6 +47,7 @@ def read_energies(energies):
 
 # DYNA EXTERN>     1526.65445  -9553.35670      0.00000      0.00000      0.00000
 
+
 def read_extern(externs):
     try:
         x = externs
@@ -91,10 +92,13 @@ def read_charmm_lines(lines):
                 print(dcdfilename)
                 dcds.append(dcdfilename)
 
-    df = pd.concat([pd.DataFrame(externs,
-                                 columns=["vdw", "elec", "user", "dyna", "dcd"]),
-                    pd.DataFrame(energies, columns=["time", "temp", "tot", "energy"]),
-                    pd.DataFrame(pressures, columns=["volume", "pressi", "presse"])],
-                   axis=1)
+    df = pd.concat(
+        [
+            pd.DataFrame(externs, columns=["vdw", "elec", "user", "dyna", "dcd"]),
+            pd.DataFrame(energies, columns=["time", "temp", "tot", "energy"]),
+            pd.DataFrame(pressures, columns=["volume", "pressi", "presse"]),
+        ],
+        axis=1,
+    )
 
     return df

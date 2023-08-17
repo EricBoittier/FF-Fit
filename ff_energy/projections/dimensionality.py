@@ -9,12 +9,11 @@ def get_pca(data, n_components=2) -> (PCA, np.ndarray):
     return pca, X_new
 
 
-def get_random_projection(data,
-                      n_components=None, type="gaussian"
-                      ) -> (random_projection, np.ndarray):
-
+def get_random_projection(
+    data, n_components=None, type="gaussian"
+) -> (random_projection, np.ndarray):
     if n_components is None:
-        n_components = 'auto'
+        n_components = "auto"
 
     if type == "gaussian":
         rp = random_projection.GaussianRandomProjection(n_components=n_components)
@@ -29,9 +28,7 @@ def get_random_projection(data,
 
 def get_rp_pca(data) -> (random_projection, PCA, np.ndarray):
     #  project to slightly lower dimensions
-    rp = random_projection.SparseRandomProjection(
-        eps=0.9, random_state=None
-    )
+    rp = random_projection.SparseRandomProjection(eps=0.9, random_state=None)
     X_new1 = rp.fit_transform(data)
     # project back to 2D
     pca = PCA(n_components=2)

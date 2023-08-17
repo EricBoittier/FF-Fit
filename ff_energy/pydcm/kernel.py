@@ -28,9 +28,7 @@ def graipher(pts, K, start=False) -> (np.ndarray, np.ndarray):
     if len(pts.shape) != 2:
         raise ValueError("pts must be a 2D array")
     # initialize the farthest points array
-    farthest_pts = np.zeros(
-        (K, pts.shape[1])
-    )
+    farthest_pts = np.zeros((K, pts.shape[1]))
     farthest_pts_ids = []
     if start:
         farthest_pts[0] = start
@@ -72,7 +70,6 @@ class KernelFit:
         self.uuid = str(uuid.uuid4())
         self.lcs = None
         self.pkls = None
-
 
     def __int__(self):
         self.init()
@@ -123,14 +120,16 @@ class KernelFit:
             f.write(string_)
         return string_
 
-    def fit(self,
-            alpha=1e-3,
-            N_SAMPLE_POINTS=None,
-            start=False,
-            model_type=KernelRidge,
-            kernel=RBF(),
-            N_factor=10,
-            l2=None):
+    def fit(
+        self,
+        alpha=1e-3,
+        N_SAMPLE_POINTS=None,
+        start=False,
+        model_type=KernelRidge,
+        kernel=RBF(),
+        N_factor=10,
+        l2=None,
+    ):
         """
 
         :param alpha:
@@ -144,15 +143,11 @@ class KernelFit:
         self.l2 = l2
         # sample N_SAMPLE_POINTS
         if N_SAMPLE_POINTS is None:
-            N_SAMPLE_POINTS = len(self.X)//N_factor
+            N_SAMPLE_POINTS = len(self.X) // N_factor
             print("len(X)", len(self.X))
             print("N_SAMPLE_POINTS set to {}".format(N_SAMPLE_POINTS))
 
-        points, ids = graipher(
-            self.X,
-            N_SAMPLE_POINTS,
-            start=start
-        )
+        points, ids = graipher(self.X, N_SAMPLE_POINTS, start=start)
         npoints = len(self.X)
         inx_vals = np.arange(npoints)
         self.train_ids = ids
@@ -163,8 +158,7 @@ class KernelFit:
 
         # a kernel for each axis of each charge
         for chgindx in range(self.y.shape[1]):
-            lcs_ = np.array([np.array(_).flatten()[chgindx]
-                             for _ in self.y])
+            lcs_ = np.array([np.array(_).flatten()[chgindx] for _ in self.y])
             y = lcs_
             y_train = np.array([y[i] for i in ids])
             y_test = np.array([y[i] for i in test_ids])
@@ -178,17 +172,14 @@ class KernelFit:
             train_predictions = model.predict(self.X_train)
             test_predictions = model.predict(self.X_test)
 
-            r2_train = sklearn.metrics.r2_score(y_train,
-                                                train_predictions)
-            r2_test = sklearn.metrics.r2_score(y_test,
-                                               test_predictions)
+            r2_train = sklearn.metrics.r2_score(y_train, train_predictions)
+            r2_test = sklearn.metrics.r2_score(y_test, test_predictions)
             #  save the model
             self.models.append(model)
             self.scale_parms.append((lcs_.min(), lcs_.max()))
             self.r2s.append([r2_test, r2_train])
             self.test_results.append((y_test, test_predictions))
             self.train_results.append((y_train, train_predictions))
-
 
     def move_clcls(self, m):
         clcl = m.mdcm_clcl
@@ -202,19 +193,16 @@ class KernelFit:
                 local_pos.append(model.predict([i]))
             # get the new clcl array
             new_clcl = get_clcl(local_pos, charges)
-            Path(f"pkls/{self.uuid}")\
-                .mkdir(parents=True, exist_ok=True)
+            Path(f"pkls/{self.uuid}").mkdir(parents=True, exist_ok=True)
             fn = f"pkls/{self.uuid}/{self.cubes[index].stem}.pkl"
-            filehandler = open(
-                fn, "wb")
+            filehandler = open(fn, "wb")
             files.append(fn)
             pickle.dump(new_clcl, filehandler)
             filehandler.close()
         return files
 
     def predict(self, X):
-        return np.array([model.predict(X)
-                         for model in self.models])
+        return np.array([model.predict(X) for model in self.models])
 
     def pca(self):
         pca = PCA(n_components=2)
@@ -225,30 +213,29 @@ class KernelFit:
         pca = self.pca()
         markers = [5 if "nms" in str(_) else 2 for _ in self.pkls]
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        sc = ax.scatter(pca[:, 0], pca[:, 1],
-                   c=rmses, s=markers, cmap="viridis")
+        sc = ax.scatter(pca[:, 0], pca[:, 1], c=rmses, s=markers, cmap="viridis")
         ax.set_xlabel("PCA 1")
         ax.set_ylabel("PCA 2")
         import matplotlib as mpl
+
         norm = mpl.colors.Normalize(vmin=0, vmax=1)
-        fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap="viridis"),
-                     ax=ax, label="RMSE")
+        fig.colorbar(
+            mpl.cm.ScalarMappable(norm=norm, cmap="viridis"), ax=ax, label="RMSE"
+        )
 
         if title is not None:
             ax.set_title(title)
         plt.tight_layout()
         if name is not None:
-            plt.savefig(f"pngs/{self.uuid}_{name}.png", bbox_inches='tight')
+            plt.savefig(f"pngs/{self.uuid}_{name}.png", bbox_inches="tight")
 
     def plot_fits(self, rmses, name=None):
         N = len(self.models) // 3
         fig, ax = plt.subplots(N, 2, figsize=(5, 15))
         test_rmses = [rmses[i] for i in self.test_ids]
         train_rmses = [rmses[i] for i in self.train_ids]
-        print("n test", len(test_rmses),
-              "n train", len(train_rmses))
-        print(np.mean(test_rmses),
-              np.mean(train_rmses))
+        print("n test", len(test_rmses), "n train", len(train_rmses))
+        print(np.mean(test_rmses), np.mean(train_rmses))
 
         for i in range(N):
             for j in range(3):
@@ -256,16 +243,12 @@ class KernelFit:
                 y_test, test_predictions = self.test_results[ij]
                 y_train, train_predictions = self.train_results[ij]
 
-                ax[i][0].scatter(y_test, test_predictions,
-                                 c=test_rmses)
+                ax[i][0].scatter(y_test, test_predictions, c=test_rmses)
 
-                ax[i][0].set_title("{} test r2: {:.2f}".format(
-                    i, self.r2s[ij][0]))
+                ax[i][0].set_title("{} test r2: {:.2f}".format(i, self.r2s[ij][0]))
 
-                ax[i][1].scatter(y_train, train_predictions,
-                                 c=train_rmses)
-                ax[i][1].set_title("{} train r2: {:.2f}".format(
-                    i, self.r2s[ij][1]))
+                ax[i][1].scatter(y_train, train_predictions, c=train_rmses)
+                ax[i][1].set_title("{} train r2: {:.2f}".format(i, self.r2s[ij][1]))
 
                 ax[i][0].set_xlabel("actual")
                 ax[i][0].set_ylabel("predicted")
@@ -278,10 +261,7 @@ class KernelFit:
 
         plt.tight_layout()
         if name is not None:
-            plt.savefig(name, bbox_inches='tight')
-
-
-
+            plt.savefig(name, bbox_inches="tight")
 
 
 """
@@ -290,10 +270,10 @@ Plotting
 
 
 def plot3d(i, ax, test_results, test_angle):
-    plt.set_cmap('CMRmap')
+    plt.set_cmap("CMRmap")
     # plt.set_cmap('jet')
     # fig, ax = plt.subplots(1,2,subplot_kw=dict(projection='3d'))
-    ax[0].set_proj_type('ortho')
+    ax[0].set_proj_type("ortho")
     ax[0].view_init(20, -120)
 
     X, Y, Z = test_results[i][0], test_results[i + 1][0], test_results[i + 2][0]
@@ -302,39 +282,37 @@ def plot3d(i, ax, test_results, test_angle):
 
     # Create cubic bounding box to simulate equal aspect ratio
     max_range = np.array(
-        [X.max() - X.min(), Y.max() - Y.min(), Z.max() - Z.min()]).max()
+        [X.max() - X.min(), Y.max() - Y.min(), Z.max() - Z.min()]
+    ).max()
     Xb = 0.5 * max_range * np.mgrid[-1:2:2, -1:2:2, -1:2:2][0].flatten() + 0.5 * (
-                X.max() + X.min())
+        X.max() + X.min()
+    )
     Yb = 0.5 * max_range * np.mgrid[-1:2:2, -1:2:2, -1:2:2][1].flatten() + 0.5 * (
-                Y.max() + Y.min())
+        Y.max() + Y.min()
+    )
     Zb = 0.5 * max_range * np.mgrid[-1:2:2, -1:2:2, -1:2:2][2].flatten() + 0.5 * (
-                Z.max() + Z.min())
+        Z.max() + Z.min()
+    )
 
-    ax[0].plot(X, Z, zs=Yb.max(), zdir='y',
-               label='points in (x, z)', c="g", alpha=0.1)
-    ax[0].plot(Y, Z, zs=Xb.max(), zdir='x',
-               label='points in (x, z)', c="r", alpha=0.1)
-    ax[0].plot(X, Y, zs=Zb.min(), zdir='z',
-               label='points in (x, z)', c="b", alpha=0.1)
+    ax[0].plot(X, Z, zs=Yb.max(), zdir="y", label="points in (x, z)", c="g", alpha=0.1)
+    ax[0].plot(Y, Z, zs=Xb.max(), zdir="x", label="points in (x, z)", c="r", alpha=0.1)
+    ax[0].plot(X, Y, zs=Zb.min(), zdir="z", label="points in (x, z)", c="b", alpha=0.1)
     for xb, yb, zb in zip(Xb, Yb, Zb):
-        ax[0].plot([xb], [yb], [zb], 'w')
+        ax[0].plot([xb], [yb], [zb], "w")
     # plt.show()
 
-    plt.set_cmap('CMRmap')
-    ax[1].set_proj_type('ortho')
+    plt.set_cmap("CMRmap")
+    ax[1].set_proj_type("ortho")
 
     X, Y, Z = test_results[i][1], test_results[i + 1][1], test_results[i + 2][1]
     X, Y, Z = np.array(X), np.array(Y), np.array(Z)
-    ax[1].plot(X, Z, zs=Yb.max(), zdir='y',
-               label='points in (x, z)', c="g", alpha=0.1)
-    ax[1].plot(Y, Z, zs=Xb.max(), zdir='x',
-               label='points in (x, z)', c="r", alpha=0.1)
-    ax[1].plot(X, Y, zs=Zb.min(), zdir='z',
-               label='points in (x, z)', c="b", alpha=0.1)
+    ax[1].plot(X, Z, zs=Yb.max(), zdir="y", label="points in (x, z)", c="g", alpha=0.1)
+    ax[1].plot(Y, Z, zs=Xb.max(), zdir="x", label="points in (x, z)", c="r", alpha=0.1)
+    ax[1].plot(X, Y, zs=Zb.min(), zdir="z", label="points in (x, z)", c="b", alpha=0.1)
 
     # Comment or uncomment following both lines to test the fake bounding box:
     for xb, yb, zb in zip(Xb, Yb, Zb):
-        ax[1].plot([xb], [yb], [zb], 'w')
+        ax[1].plot([xb], [yb], [zb], "w")
 
     ax[1].scatter(X, Y, Z, c=np.array(test_angle))
     ax[1].view_init(20, -120)
@@ -342,10 +320,10 @@ def plot3d(i, ax, test_results, test_angle):
 
 def plot3d(i, ax, test_results, test_angle, test_rmses):
     # plt.set_cmap('CMRmap')
-    plt.set_cmap('viridis_r')
-    fig, ax = plt.subplots(1, 3, figsize=(14, 3), sharey=False,
-                           gridspec_kw={"width_ratios": [2, 2,
-                                                         3]})
+    plt.set_cmap("viridis_r")
+    fig, ax = plt.subplots(
+        1, 3, figsize=(14, 3), sharey=False, gridspec_kw={"width_ratios": [2, 2, 3]}
+    )
     plt.subplots_adjust(wspace=0.7)
 
     X, Y, Z = test_results[i][0], test_results[i + 1][0], test_results[i + 2][0]
@@ -367,8 +345,11 @@ def plot3d(i, ax, test_results, test_angle, test_rmses):
     ax[2].scatter(data1["dist"], data2["dist"], c=test_rmses, alpha=0.5)
     ax[2].set_xlim(data1["dist"].min(), data1["dist"].max())
     ax[2].set_ylim(data1["dist"].min(), data1["dist"].max())
-    ax[2].plot([data1["dist"].min(), data1["dist"].max()],
-               [data1["dist"].min(), data1["dist"].max()], c="k")
+    ax[2].plot(
+        [data1["dist"].min(), data1["dist"].max()],
+        [data1["dist"].min(), data1["dist"].max()],
+        c="k",
+    )
     ax[2].set_aspect(1)
 
     ax[0].set_ylim(data1["dist"].min(), data1["dist"].max())
@@ -377,5 +358,3 @@ def plot3d(i, ax, test_results, test_angle, test_rmses):
     ax[0].set_xlabel("$\\theta _{\mathrm{HOC}}$ [$^{\circ}$]", fontsize=20)
     ax[1].set_xlabel("$\\theta _{\mathrm{HOC}}$ [$^{\circ}$]", fontsize=20)
     plt.savefig(f"{i}_charges3d.pdf", bbox_inches="tight")
-
-

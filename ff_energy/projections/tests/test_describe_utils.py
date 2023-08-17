@@ -22,15 +22,13 @@ class MyTestCase(unittest.TestCase):
         # add assertion here
 
     def load_data(self):
-        structures2, pdbs2 = get_structures(
-            "dcm")
+        structures2, pdbs2 = get_structures("dcm")
         atoms2 = [_.get_ase() for _ in structures2]
         return atoms2
 
     def get_soap(self):
         atoms2 = self.load_data()
-        dcm_soap = get_dcm_soap(
-            average="inner").create(atoms2)
+        dcm_soap = get_dcm_soap(average="inner").create(atoms2)
         return dcm_soap
 
     def test_plot_pca(self):
@@ -42,8 +40,7 @@ class MyTestCase(unittest.TestCase):
     def test_plot_pca2(self):
         set_style()
         dcm_soap = self.get_soap()
-        rp, pca, \
-            new_x1, new_x2 = get_rp_pca(dcm_soap)
+        rp, pca, new_x1, new_x2 = get_rp_pca(dcm_soap)
         ax = plot_pca(pca, new_x2)
         plt.show()
 
@@ -54,5 +51,5 @@ class MyTestCase(unittest.TestCase):
         plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

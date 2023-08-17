@@ -7,9 +7,9 @@ stop = -1
 step = 1
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Description of your program')
-    parser.add_argument('-p', '--path', help='path to data', required=True)
-    parser.add_argument('-l', '--label', help='data label', required=True)
+    parser = argparse.ArgumentParser(description="Description of your program")
+    parser.add_argument("-p", "--path", help="path to data", required=True)
+    parser.add_argument("-l", "--label", help="data label", required=True)
     args = vars(parser.parse_args())
 
     path = args["path"]

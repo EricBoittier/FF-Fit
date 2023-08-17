@@ -16,8 +16,7 @@ for Z in atomic numbers in increasing order:
 """
 
 
-def soap(rcut=6.0, nmax=8, lmax=6,
-         species=("H", "O"), average='off', weighting=None):
+def soap(rcut=6.0, nmax=8, lmax=6, species=("H", "O"), average="off", weighting=None):
     # Setting up the SOAP descriptor
     soap = SOAP(
         species=species,
@@ -26,7 +25,7 @@ def soap(rcut=6.0, nmax=8, lmax=6,
         n_max=nmax,
         l_max=lmax,
         average=average,
-        weighting=weighting
+        weighting=weighting,
     )
     return soap
 
@@ -40,13 +39,17 @@ def soap_dist(molecule_soaps):
 WATER_SOAP = soap()
 
 
-def get_dcm_soap(rcut=3.0, nmax=8, lmax=6, average='off',
-                 species=("H", "C", "Cl"), weighting=None):
-    return soap(species=species,
-                average=average,
-                nmax=nmax,
-                lmax=lmax,
-                rcut=rcut,
-                weighting=weighting)
+def get_dcm_soap(
+    rcut=3.0, nmax=8, lmax=6, average="off", species=("H", "C", "Cl"), weighting=None
+):
+    return soap(
+        species=species,
+        average=average,
+        nmax=nmax,
+        lmax=lmax,
+        rcut=rcut,
+        weighting=weighting,
+    )
+
 
 weighting_exp = {"function": "exp", "r0": 0.5, "c": 1, "d": 1}

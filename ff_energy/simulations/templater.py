@@ -33,16 +33,16 @@ class Templater:
 class SimTemplate(Templater):
     def __init__(self, kwargs):
         super().__init__()
-        self.templates['sim'] = sim_template
-        self.templates['submit'] = submit_template
+        self.templates["sim"] = sim_template
+        self.templates["submit"] = submit_template
         self.kwargs = kwargs
         #  assign kwargs to self
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-        if 'PAR' not in self.kwargs.keys():
+        if "PAR" not in self.kwargs.keys():
             self.kwargs["PAR"] = None
-        if 'TOP' not in self.kwargs.keys():
+        if "TOP" not in self.kwargs.keys():
             self.kwargs["TOP"] = None
 
         if self.kwargs["PAR"] is not None:
@@ -50,11 +50,12 @@ class SimTemplate(Templater):
         if self.kwargs["TOP"] is not None:
             self.kwargs["TOP"] = open_toppar(self.kwargs["TOP"])
 
-        self.kwargs["JOBNAME"] = self.kwargs["JOBNAME"] \
-                                 + "_{}".format(self.kwargs["TEMP"])
+        self.kwargs["JOBNAME"] = self.kwargs["JOBNAME"] + "_{}".format(
+            self.kwargs["TEMP"]
+        )
 
     def get_sim(self):
-        return self.render('sim', **self.kwargs)
+        return self.render("sim", **self.kwargs)
 
     def get_submit(self):
-        return self.render('submit', **self.kwargs)
+        return self.render("submit", **self.kwargs)

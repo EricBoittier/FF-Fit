@@ -1,5 +1,6 @@
 from ff_energy import dcm_fortran
 import numpy as np
+
 # Basics
 import os
 import subprocess
@@ -8,6 +9,7 @@ from pathlib import Path, PosixPath
 import pickle
 import pandas as pd
 import argparse
+
 # Optimization
 from scipy.optimize import minimize
 
@@ -22,26 +24,19 @@ print("FFE:", FFE_PATH)
 
 mdcm = dcm_fortran
 
-espform = FFE_PATH / "cubes/dcm/nms/" \
-                     "test_nms_0_0.xyz_esp.cube"
-densform = FFE_PATH / "cubes/dcm/nms/" \
-                      "test_nms_0_0.xyz_dens.cube"
+espform = FFE_PATH / "cubes/dcm/nms/" "test_nms_0_0.xyz_esp.cube"
+densform = FFE_PATH / "cubes/dcm/nms/" "test_nms_0_0.xyz_dens.cube"
 
 scan_fesp = [espform]
 scan_fdns = [densform]
 
-mdcm_cxyz = FFE_PATH / "ff_energy/pydcm/sources/" \
-                       "dcm8.xyz"
-mdcm_clcl = FFE_PATH / "ff_energy/pydcm/sources/" \
-                       "dcm.mdcm"
+mdcm_cxyz = FFE_PATH / "ff_energy/pydcm/sources/" "dcm8.xyz"
+mdcm_clcl = FFE_PATH / "ff_energy/pydcm/sources/" "dcm.mdcm"
 
 local_pos = None
 
 
-def mdcm_set_up(scan_fesp, scan_fdns,
-                mdcm_cxyz=None,
-                mdcm_clcl=None,
-                local_pos=None):
+def mdcm_set_up(scan_fesp, scan_fdns, mdcm_cxyz=None, mdcm_clcl=None, local_pos=None):
     # convert PosixPath to string
     if isinstance(scan_fesp, PosixPath):
         scan_fesp = str(scan_fesp)
@@ -55,11 +50,17 @@ def mdcm_set_up(scan_fesp, scan_fdns,
     # Load MDCM global and local files
     mdcm.dealloc_all()
     Nfiles = len(scan_fesp)
-    Nchars = int(np.max([
-        len(str(filename)) for filelist in [scan_fesp, scan_fdns]
-        for filename in filelist]))
-    esplist = np.empty([Nfiles, Nchars], dtype='c')
-    dnslist = np.empty([Nfiles, Nchars], dtype='c')
+    Nchars = int(
+        np.max(
+            [
+                len(str(filename))
+                for filelist in [scan_fesp, scan_fdns]
+                for filename in filelist
+            ]
+        )
+    )
+    esplist = np.empty([Nfiles, Nchars], dtype="c")
+    dnslist = np.empty([Nfiles, Nchars], dtype="c")
     for ifle in range(Nfiles):
         esplist[ifle] = "{0:{1}s}".format(str(scan_fesp[ifle]), Nchars)
         dnslist[ifle] = "{0:{1}s}".format(str(scan_fdns[ifle]), Nchars)
@@ -119,8 +120,7 @@ def optimize_mdcm(mdcm, clcl, outname, l2, fname, esp):
         mdcm.set_clcl(_clcl_)
         rmse = mdcm.get_rmse()
         if local_ref is not None:
-            l2diff = l2 * np.sum((local_pos - local_ref) ** 2) \
-                     / local_pos.shape[0]
+            l2diff = l2 * np.sum((local_pos - local_ref) ** 2) / local_pos.shape[0]
             # print(rmse, l2diff)
             rmse += l2diff
         return rmse
@@ -128,30 +128,37 @@ def optimize_mdcm(mdcm, clcl, outname, l2, fname, esp):
     # Apply simple minimization without any feasibility check (!)
     # Leads to high amplitudes of MDCM charges and local positions
     res = minimize(
-        mdcm_rmse, local_pos,
+        mdcm_rmse,
+        local_pos,
         method="L-BFGS-B",
-        options={'disp': None, 'maxls': 20, 'iprint': -1, 'gtol': 1e-06,
-                 'eps': 1e-09, 'maxiter': 15000,
-                 'ftol': 1e-8, 'maxcor': 10, 'maxfun': 15000})
+        options={
+            "disp": None,
+            "maxls": 20,
+            "iprint": -1,
+            "gtol": 1e-06,
+            "eps": 1e-09,
+            "maxiter": 15000,
+            "ftol": 1e-8,
+            "maxcor": 10,
+            "maxfun": 15000,
+        },
+    )
     print(res)
     # Recompute final RMSE each
     rmse = mdcm.get_rmse()
     print(rmse)
     mdcm.write_cxyz_files()
-    outfn = esp + "_" + fname + "_" + "opt" +\
-            "_" + uuid + ".xyz"
+    outfn = esp + "_" + fname + "_" + "opt" + "_" + uuid + ".xyz"
     # rename the file
     os.rename(esp + ".mdcm.xyz", outfn)
     #  get the local charges array after optimization
     clcl_out = get_clcl(res.x, charges)
-    difference = np.sum((res.x - local_ref) ** 2) \
-                 / local_pos.shape[0]
+    difference = np.sum((res.x - local_ref) ** 2) / local_pos.shape[0]
     print("charge RMSD:", difference)
 
     outname = f"{outname}_l2_{l2:.1e}_rmse_{rmse:.4f}_rmsd_{difference:.4f}"
-    on = outname.split('/')[-1]
-    obj_name = f"{FFE_PATH}/" \
-               f"cubes/clcl/{fname}/{l2}/{on}_clcl.obj"
+    on = outname.split("/")[-1]
+    obj_name = f"{FFE_PATH}/" f"cubes/clcl/{fname}/{l2}/{on}_clcl.obj"
 
     # make parent directory if it does not exist
     if not os.path.exists(os.path.dirname(obj_name)):
@@ -160,7 +167,7 @@ def optimize_mdcm(mdcm, clcl, outname, l2, fname, esp):
         except Exception as e:
             print(e)
     #  save as pickle
-    with open(obj_name, 'wb') as filehandler:
+    with open(obj_name, "wb") as filehandler:
         pickle.dump(clcl_out, filehandler)
 
     # Not necessary but who knows when it becomes important to deallocate all
@@ -168,17 +175,19 @@ def optimize_mdcm(mdcm, clcl, outname, l2, fname, esp):
     mdcm.dealloc_all()
 
 
-def eval_kernel(clcls,
-                esp_path,
-                dens_path,
-                mdcm_clcl=None,
-                mdcm_xyz=None,
-                load_pkl=False,
-                opt=False,
-                l2=None,
-                verbose=True,
-                fname=None,
-                uuid=None,):
+def eval_kernel(
+    clcls,
+    esp_path,
+    dens_path,
+    mdcm_clcl=None,
+    mdcm_xyz=None,
+    load_pkl=False,
+    opt=False,
+    l2=None,
+    verbose=True,
+    fname=None,
+    uuid=None,
+):
     """
     Evaluate kernel for a set of ESP and DENS files
     """
@@ -192,34 +201,35 @@ def eval_kernel(clcls,
     dens_path.sort()
 
     if mdcm_clcl is None:
-        mdcm_clcl = f'{FFE_PATH}/ff_energy/pydcm/sources/' \
-                    f'dcm.mdcm '
+        mdcm_clcl = f"{FFE_PATH}/ff_energy/pydcm/sources/" f"dcm.mdcm "
     if mdcm_xyz is None:
-        mdcm_xyz = f'{FFE_PATH}/ff_energy/pydcm/sources/' \
-                   f'dcm8.xyz '
+        mdcm_xyz = f"{FFE_PATH}/ff_energy/pydcm/sources/" f"dcm8.xyz "
 
     for i in range(N):
         ESP_PATH = esp_path[i]
         DENS_PATH = dens_path[i]
-        job_command = f'python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH} ' \
-                      f' -mdcm_clcl {mdcm_clcl} -mdcm_xyz {mdcm_xyz} '
+        job_command = (
+            f"python {DCM_PY_PATH} -esp {ESP_PATH} -dens {DENS_PATH} "
+            f" -mdcm_clcl {mdcm_clcl} -mdcm_xyz {mdcm_xyz} "
+        )
         #  if loading the local charges from a pickle file
         if load_pkl:
-            job_command += f' -l {clcls[i]} '
+            job_command += f" -l {clcls[i]} "
         if uuid is not None:
             if opt:
-                job_command += f' -uuid opt-{uuid} '
+                job_command += f" -uuid opt-{uuid} "
             else:
-                job_command += f' -uuid rmse-{uuid} '
+                job_command += f" -uuid rmse-{uuid} "
         #  if optimizing
         if opt:
             _optname = Path(ESP_PATH).stem
-            job_command += f' -opt True -l2 {l2} ' \
-                           f'-o {FFE_PATH}/cubes/clcl/{fname}/{l2}/{_optname}'
+            job_command += (
+                f" -opt True -l2 {l2} "
+                f"-o {FFE_PATH}/cubes/clcl/{fname}/{l2}/{_optname}"
+            )
 
-        job_command += f' -fname {fname}'
-        Path(path__
-             ).mkdir(parents=True, exist_ok=True)
+        job_command += f" -fname {fname}"
+        Path(path__).mkdir(parents=True, exist_ok=True)
         if verbose:
             print(job_command)
 
@@ -228,10 +238,7 @@ def eval_kernel(clcls,
     procs = []
     for command in commands:
         p = subprocess.Popen(
-            command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
+            command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         procs.append(p)
         time.sleep(0.3)
@@ -252,37 +259,37 @@ def eval_kernel(clcls,
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Scan and average for fMDCM')
-    parser.add_argument('-n', '--nodes_to_avg',
-                        help='', required=False, type=int)
-    parser.add_argument('-l', '--local_pos',
-                        help='', default=None, type=str)
-    parser.add_argument('-l2', '--l2',
-                        help='lambda coef. for l2 reg.',
-                        default=100.0, type=float)
-    parser.add_argument('-o', '--outdir',
-                        help='', default=None, type=str)
-    parser.add_argument('-opt', '--opt',
-                        help='', default=False, type=bool)
-    parser.add_argument('-esp', '--esp',
-                        help='format string for esp files',
-                        default=None, type=str)
-    parser.add_argument('-dens', '--dens',
-                        help='format string for density files',
-                        default=None, type=str)
-    parser.add_argument('-mdcm_clcl', '--mdcm_clcl',
-                        help='mdcm clcl file',
-                        default=None, type=str)
-    parser.add_argument('-mdcm_xyz', '--mdcm_xyz',
-                        help='mdcm xyz file',
-                        default=None, type=str)
-    parser.add_argument('-fname', '--fname',
-                        help='name of the molecule')
-    parser.add_argument('-uuid', '--uuid',
-                        help='uuid of the molecule', default=None, type=str)
+    parser = argparse.ArgumentParser(description="Scan and average for fMDCM")
+    parser.add_argument("-n", "--nodes_to_avg", help="", required=False, type=int)
+    parser.add_argument("-l", "--local_pos", help="", default=None, type=str)
+    parser.add_argument(
+        "-l2", "--l2", help="lambda coef. for l2 reg.", default=100.0, type=float
+    )
+    parser.add_argument("-o", "--outdir", help="", default=None, type=str)
+    parser.add_argument("-opt", "--opt", help="", default=False, type=bool)
+    parser.add_argument(
+        "-esp", "--esp", help="format string for esp files", default=None, type=str
+    )
+    parser.add_argument(
+        "-dens",
+        "--dens",
+        help="format string for density files",
+        default=None,
+        type=str,
+    )
+    parser.add_argument(
+        "-mdcm_clcl", "--mdcm_clcl", help="mdcm clcl file", default=None, type=str
+    )
+    parser.add_argument(
+        "-mdcm_xyz", "--mdcm_xyz", help="mdcm xyz file", default=None, type=str
+    )
+    parser.add_argument("-fname", "--fname", help="name of the molecule")
+    parser.add_argument(
+        "-uuid", "--uuid", help="uuid of the molecule", default=None, type=str
+    )
 
     args = parser.parse_args()
-    print(' '.join(f'{k}={v}\n' for k, v in vars(args).items()))
+    print(" ".join(f"{k}={v}\n" for k, v in vars(args).items()))
 
     if args.local_pos is not None:
         local = pd.read_pickle(args.local_pos)
@@ -339,22 +346,16 @@ if __name__ == "__main__":
         ESPF = [esp]
         DENSF = [dens]
 
-    mdcm = mdcm_set_up(ESPF, DENSF,
-                       mdcm_cxyz=mdcm_xyz,
-                       mdcm_clcl=mdcm_clcl,
-                       local_pos=local)
+    mdcm = mdcm_set_up(
+        ESPF, DENSF, mdcm_cxyz=mdcm_xyz, mdcm_clcl=mdcm_clcl, local_pos=local
+    )
 
     clcl = mdcm.mdcm_clcl
 
     if args.opt:
         print(f"Optimizing: {args.outdir}")
         outname = esp.format(i).split("/")[-1]
-        optimize_mdcm(mdcm,
-                      clcl,
-                      args.outdir,
-                      args.l2,
-                      fname,
-                      esp)
+        optimize_mdcm(mdcm, clcl, args.outdir, args.l2, fname, esp)
     else:
         rmse = mdcm.get_rmse()
         #  save the global charges to a file
@@ -362,7 +363,7 @@ if __name__ == "__main__":
         cxyz = mdcm.mdcm_cxyz
         outfn = esp + "_" + fname + "_" + uuid + ".xyz"
         # rename the file
-        os.rename(esp+".mdcm.xyz", outfn)
+        os.rename(esp + ".mdcm.xyz", outfn)
         np.save(outfn, cxyz)
         print("Saved global charges to:", outfn)
         print("RMSE:", rmse)

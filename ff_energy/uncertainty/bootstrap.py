@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def calculate_bootstrap_uncertainty(df):
     # Placeholder for the actual implementation
     from scipy.stats import bootstrap
@@ -18,4 +19,3 @@ def calculate_bootstrap_uncertainty(df):
         "rseMax": rseMax,
     }
     return out_dict
-

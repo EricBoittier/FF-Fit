@@ -1,8 +1,7 @@
 from itertools import permutations, product
 
-def cube_to_permutable_copies(cubefile: str,
-                              perm_idxs: list,
-                              fname: str) -> None:
+
+def cube_to_permutable_copies(cubefile: str, perm_idxs: list, fname: str) -> None:
     """
     Given a list of lists of permutable atoms for each
     atom type in the cube file (with permutable atoms),
@@ -17,7 +16,7 @@ def cube_to_permutable_copies(cubefile: str,
 
     # Get the number of atoms
     natoms = int(lines[2].split()[0])
-    atom_lines = lines[6:6+natoms]
+    atom_lines = lines[6 : 6 + natoms]
     atom_dict = {i: v for i, v in enumerate(atom_lines)}
     # number of permutations
     nperms = len(perm_idxs)
@@ -34,9 +33,10 @@ def cube_to_permutable_copies(cubefile: str,
 
     print(combinations)
 
-    comb_dict = {i: {combinations[0][0][j]: _[j]
-                     for j in range(len(_))}
-                 for i, _ in enumerate(combinations[0])}
+    comb_dict = {
+        i: {combinations[0][0][j]: _[j] for j in range(len(_))}
+        for i, _ in enumerate(combinations[0])
+    }
 
     # for each combination, generate the new cube file
     for i, comb in enumerate(combinations[0]):
@@ -51,7 +51,7 @@ def cube_to_permutable_copies(cubefile: str,
                 new_atom_lines.append(atom_dict[comb_dict[i][j]])
 
         # get the new cube lines
-        new_cube_lines = lines[:6] + new_atom_lines + lines[6+natoms:]
+        new_cube_lines = lines[:6] + new_atom_lines + lines[6 + natoms :]
         fname_stem = cubefile.split("/")[-1]
 
         fname_stem = fname_stem.replace("meoh", f"{fname}_perm_{i}")
@@ -67,24 +67,15 @@ def cube_to_permutable_copies(cubefile: str,
 
 if __name__ == "__main__":
     from pathlib import Path
+
     # loop thru esp files
     fname = "methanol"
     cubes_path = "/home/boittier/Documents/phd/ff_energy/cubes/methanol/scan/"
 
     files = Path(cubes_path).glob("*_esp.cube")
     for f in files:
-        cube_to_permutable_copies(
-            str(f),
-            [[3,4,5]],
-            fname
-        )
+        cube_to_permutable_copies(str(f), [[3, 4, 5]], fname)
     # loop thru density files
     files = Path(cubes_path).glob("*_dens.cube")
     for f in files:
-        cube_to_permutable_copies(
-            str(f),
-            [[3,4,5]],
-            fname
-        )
-
-
+        cube_to_permutable_copies(str(f), [[3, 4, 5]], fname)

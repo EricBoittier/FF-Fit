@@ -9,14 +9,8 @@ G
 tests/test_potential.py,d/6/d698fb7bf3cb285a083144482ca92073f94abc62
 X
 (configs/pbe0dz-water_cluster-tip3.config,b/f/bf90d370a3d768325fc7952609a78d4ea72ffe67
-N
-ff_energy/simulations/plots.py,6/f/6f673ea67645ae080de4cbd77acc321198000b44
 W
 'configs/hfdz-methanol_cluster-pc.config,f/2/f22b14993bc7a60983348139c60190dbe30d3b96
-M
-ff_energy/uncertainty/pipe.py,3/5/3559627441848d1f0bd3657b507f9db80d59171e
-P
- ff_energy/uncertainty/plotter.py,a/a/aa4e7f82468f9322720a96b288228592449e436a
 _
 /notebooks/pycharmm/examples/Script_fad_water.py,7/3/731c5e72ab8685a538c6b731309038e05101aec5
 \
@@ -51,16 +45,10 @@ S
 #ff_energy/pycharmm_runner/README.md,9/2/923c40f5813526b4b3b34380f4bc3099efd1259e
 S
 #ff_energy/ffe/charmm_files/test.dcm,3/3/333ba6777135635ec74340fa1eacf04e75187197
-W
-'ff_energy/pycharmm_runner/ase_helper.py,e/c/ec1ac2a65fb100dc5e7121f1c1fcb048ae486ae6
-P
- ff_energy/pycharmm_runner/pyc.py,0/0/004eb3d2be1ce440454019ec7ab3e44215e79c4d
 F
 ff_energy/ffe/slurm.py,9/f/9f993d64a560e99acf69a3c1f52306030bcbcd78
 J
 ff_energy/ffe/templates.py,9/3/939f56a21704cf31a9ec6b4d81af85fbd3162333
-X
-(ff_energy/pycharmm_runner/input_dicts.py,c/4/c4de4ab9ccd2e8d68248c912dcfb0dc7fc1cfe34
 U
 %notebooks/pycharmm/dcm/dcm_toppar.str,e/f/ef7a9ddaf55b31facfe0b087709f2754efd15236
 K
@@ -69,16 +57,6 @@ V
 &ff_energy/packmol/files/dcm_toppar.str,d/6/d674b90781c72e45812043ca3cf752ea32e75351
 \
 ,ff_energy/pycharmm_runner/source/dcm/dcm.dcm,6/8/68fa6e0fa1af1ec0ea58398611427f0226460491
-W
-'ff_energy/pycharmm_runner/mini_dicts.py,3/4/34f22cc70a5d6aa4004b3bfd582466717d0e39a5
-Y
-)ff_energy/pycharmm_runner/nbonds_dicts.py,d/0/d0f9024b483140b71bb1af43ac17167ea7517294
-N
-ff_energy/packmol/densities.py,a/b/ab9509ea014e6c9a86848a996ffe747679ee6d1f
-I
-ff_energy/sampling/nms.py,2/7/2756d0bec92a809ee178cb84e466439f3103627f
-F
-ff_energy/pydcm/dcm.py,d/2/d2a3633aa30dcd1132b7cc3d919b71d780f06600
 L
 ff_energy/utils/sim_utils.py,3/1/31344515f511d4aff7a051f6cf7f94a685cf7e47
 M
@@ -97,8 +75,6 @@ Q
 !pdbs/dcm/100_4322_DCM_499_988.pdb,4/0/40d4a3c5d0c37a57c79517bdba17e2af91d3bf23
 I
 ff_energy/ffe/jobmaker.py,a/c/acbe0d26151201771607cb3e06c1ab0e94e4dbfe
-G
-ff_energy/ffe/config.py,8/e/8e7729ce7a38fbdc8dffcef845d786362f0ae71e
 T
 $notebooks/descriptors/C20H40Cl40.pov,1/8/1825a2f266ec17bb0ee8ec54906cd2b66c5bb886
 T
@@ -503,28 +479,16 @@ R
 "pdbs/dcm/100_2413_DCM_282_1216.pdb,e/6/e6748895d2eed4790a33e2c134145fd80b41290e
 Q
 !pdbs/dcm/100_2242_DCM_262_349.pdb,1/0/10c1783f524192581f8d575eba38c5c1d5527a4b
-W
-'ff_energy/projections/dimensionality.py,e/3/e3d1b72d4aafe530389f21f9d03b4ad78bac9027
 Q
 !pdbs/dcm/100_3431_DCM_400_472.pdb,e/2/e2c288879294e793505622e9eb0cc7044f232a50
-V
-&ff_energy/projections/dscribe_utils.py,8/9/891b085342936639222fdec31cc74c43787beed0
 L
 experiments/ff_fit/exp1.json,0/d/0d1b41a59e7b9f576468420a2a17f81ef503d69d
 L
 ff_energy/utils/ffe_utils.py,8/e/8e94e252d29aa68d973b63c70dbde3a357154694
 R
 "ff_energy/latex_writer/__init__.py,e/1/e11f793f40453ba322c194a8ca0b19f916a71bbe
-D
-ff_energy/ffe/cli.py,e/1/e1c83edcc1ac978a6e072ce66c43543d33d2ca93
-D
-ff_energy/ffe/job.py,6/8/68101cd4a2f8f0a2f04d9a161f5a5cfa1b14f6d9
-G
-ff_energy/ffe/ff_fit.py,6/2/62aefc677214fd841d4fd317c1f5821d32eabad3
 J
 ff_energy/logs/__init__.py,a/9/a93b286bc1b1872ce101ef36689ab6cd74860af5
-b
-2ff_energy/projections/tests/test_describe_utils.py,0/d/0dcc0f3f5c0d3a147002b453530ad65e6c07a937
 E
 ff_energy/__init__.py,a/a/aaf70a2245e136d6e325fa62a3311678e5f580af
 N

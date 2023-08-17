@@ -12,10 +12,17 @@ angle_label = "Angle ($^{\circ}$)"
 volume_label = "$V$ ($\AA^3$)"
 font_size = 14
 
-color_dict = {"temp": "#EA6759", "tot": "#457b9d", "elec": "#F3C65F",
-              "vdw": "#8BC28C", "user": "#6667AB", "volume": "#F88F58",
-              "angle": "#219ebc", "rdf": "#e63946", "hbonds": "#457b9d",
-              }
+color_dict = {
+    "temp": "#EA6759",
+    "tot": "#457b9d",
+    "elec": "#F3C65F",
+    "vdw": "#8BC28C",
+    "user": "#6667AB",
+    "volume": "#F88F58",
+    "angle": "#219ebc",
+    "rdf": "#e63946",
+    "hbonds": "#457b9d",
+}
 
 
 def running_average(x, n=100):
@@ -29,8 +36,13 @@ def plot_timeseries(ax, x, y, label=None, n=100, **kwargs):
     ax.plot(x, y, label=label, **kwargs)
     # plot the running average
     if len(x) > n * 2:
-        ax.plot(x[n // 2 - 2:-(n // 2 + 1)], running_average(y, n=n),
-                label=f"{label} (avg)", c="k", alpha=0.5)
+        ax.plot(
+            x[n // 2 - 2 : -(n // 2 + 1)],
+            running_average(y, n=n),
+            label=f"{label} (avg)",
+            c="k",
+            alpha=0.5,
+        )
 
 
 def plot_energy_types(df, skip=None, filename=None):
@@ -44,15 +56,17 @@ def plot_energy_types(df, skip=None, filename=None):
 
     dyna_name = df["dyna"].iloc[0]
     # make a 2 x 3 grid of plots
-    fig, ax = plt.subplots(2, 3, figsize=(12, 8), sharex=True,
-                           gridspec_kw={"hspace": 0.3, "wspace": 0.5})
+    fig, ax = plt.subplots(
+        2, 3, figsize=(12, 8), sharex=True, gridspec_kw={"hspace": 0.3, "wspace": 0.5}
+    )
 
     title = df["title"].iloc[0]
     suptitle = f"{title}\n {dyna_name} [{time_period} ps]"
     fig.suptitle(suptitle, fontsize=font_size, fontweight="bold")
 
-    plot_timeseries(ax[0, 0], df["time"], df["temp"],
-                    label="temperature", color=color_dict["temp"])
+    plot_timeseries(
+        ax[0, 0], df["time"], df["temp"], label="temperature", color=color_dict["temp"]
+    )
 
     ax[0, 0].title.set_text("Temperature")
     ax[0, 0].set_xlabel(time_label)
@@ -103,16 +117,18 @@ def plot_fluctuations(df, skip=None, filename=None):
     time_period = (df["time"].iloc[-1] - df["time"].iloc[0]) // 1
 
     # make a 2 x 3 grid of plots
-    fig, ax = plt.subplots(2, 3, figsize=(12, 8),
-                           gridspec_kw={"hspace": 0.5, "wspace": 0.5})
+    fig, ax = plt.subplots(
+        2, 3, figsize=(12, 8), gridspec_kw={"hspace": 0.5, "wspace": 0.5}
+    )
 
     title = df["title"].iloc[0]
     suptitle = f"{title}\n{dyna_name} [{time_period} ps]"
     fig.suptitle(suptitle, fontsize=font_size, fontweight="bold")
 
     # plot the energy types
-    ax[0, 0].hist(df["temp"] - df["temp"].mean(), label="temperature",
-                  color=color_dict["temp"])
+    ax[0, 0].hist(
+        df["temp"] - df["temp"].mean(), label="temperature", color=color_dict["temp"]
+    )
     ax[0, 0].title.set_text("T [{:.0f} K]".format(df["temp"].mean()))
     # ax[0,0].set_xlabel(time_label)
     ax[0, 0].set_xlabel(temp_label)
@@ -122,8 +138,9 @@ def plot_fluctuations(df, skip=None, filename=None):
     # ax[0,1].set_xlabel(time_label)
     ax[0, 1].set_xlabel(energy_label)
 
-    ax[1, 0].hist(df["elec"] - df["elec"].mean(), label="elec",
-                  color=color_dict["elec"])
+    ax[1, 0].hist(
+        df["elec"] - df["elec"].mean(), label="elec", color=color_dict["elec"]
+    )
     ax[1, 0].title.set_text("Elec [{:.0f} kcal/mol]".format(df["elec"].mean()))
     # ax[1,0].set_xlabel(time_label)
     ax[1, 0].set_xlabel(energy_label)
@@ -133,14 +150,16 @@ def plot_fluctuations(df, skip=None, filename=None):
     # ax[1,1].set_xlabel(time_label)
     ax[1, 1].set_xlabel(energy_label)
 
-    ax[0, 2].hist(df["user"] - df["user"].mean(), label="user",
-                  color=color_dict["user"])
+    ax[0, 2].hist(
+        df["user"] - df["user"].mean(), label="user", color=color_dict["user"]
+    )
     ax[0, 2].title.set_text("User [{:.0f} kcal/mol]".format(df["user"].mean()))
     # ax[0,2].set_xlabel(time_label)
     ax[0, 2].set_xlabel(energy_label)
 
-    ax[1, 2].hist(df["volume"] - df["volume"].mean(), label="volume",
-                  color=color_dict["volume"])
+    ax[1, 2].hist(
+        df["volume"] - df["volume"].mean(), label="volume", color=color_dict["volume"]
+    )
     ax[1, 2].title.set_text("Volume [{:.0f}".format(df["volume"].mean()) + "$\AA^{3}$]")
     # ax[1,2].set_xlabel(time_label)
     ax[1, 2].set_xlabel(volume_label)
@@ -168,7 +187,6 @@ def make_plots(df, save=False, skips=None, psf="water.2000.psf", ind=False):
     plot_filenames = []
 
     for i, dyna_key in enumerate(dyna_keys):
-
         if ind:
             i = ind
 
@@ -179,18 +197,23 @@ def make_plots(df, save=False, skips=None, psf="water.2000.psf", ind=False):
         #  Plot energy components
         fig, ax = plot_energy_types(df_, skip=skips[i])
         if save:
-            plot_filename = f"/home/boittier/Documents/simreports/" \
-                            f"figures/figs/{title}_{i}_energy_types.pdf"
+            plot_filename = (
+                f"/home/boittier/Documents/simreports/"
+                f"figures/figs/{title}_{i}_energy_types.pdf"
+            )
             fig.savefig(plot_filename, dpi=300)
             plot_filenames.append(trim_filename(plot_filename))
 
         # Plot fluctuations of energy components
         fig, ax = plot_fluctuations(df_, skip=skips[i])
         if save:
-            plot_filename = f"/home/boittier/Documents/" \
-                            f"simreports/figures/figs/{title}_{i}_fluctuations.pdf"
+            plot_filename = (
+                f"/home/boittier/Documents/"
+                f"simreports/figures/figs/{title}_{i}_fluctuations.pdf"
+            )
             fig.savefig(plot_filename, dpi=300)
             plot_filenames.append(trim_filename(plot_filename))
+
 
 water_rdf_1 = """2.4615076480275357 0.059468174017968334
 2.512692313398513 0.3882072509136556
@@ -249,7 +272,8 @@ water_rdf_2 = """2.412776412776413 0.03828650785172538
 9.93120393120393 1.01440017092191
 """
 
-def plot_rdf_exp(ax, shift=0, c="k", lw=1, linestyle="--", marker='o'):
+
+def plot_rdf_exp(ax, shift=0, c="k", lw=1, linestyle="--", marker="o"):
     # exp. data
     ex = []
     ey = []
@@ -258,8 +282,16 @@ def plot_rdf_exp(ax, shift=0, c="k", lw=1, linestyle="--", marker='o'):
             ex.append(float(_.split(" ")[0]))
             ey.append(float(_.split(" ")[1]) + shift)
 
-    ax.plot(ex, ey, linestyle, fillstyle='none',
-            marker=marker, c=c, label="Exp. 1", linewidth=lw)
+    ax.plot(
+        ex,
+        ey,
+        linestyle,
+        fillstyle="none",
+        marker=marker,
+        c=c,
+        label="Exp. 1",
+        linewidth=lw,
+    )
     # exp. data
     ex = []
     ey = []
@@ -268,8 +300,16 @@ def plot_rdf_exp(ax, shift=0, c="k", lw=1, linestyle="--", marker='o'):
             ex.append(float(_.split(" ")[0]))
             ey.append(float(_.split(" ")[1]) + shift)
 
-    ax.plot(ex, ey, linestyle, fillstyle='none',
-            c=c, marker=marker, label="Exp. 2", linewidth=lw)
+    ax.plot(
+        ex,
+        ey,
+        linestyle,
+        fillstyle="none",
+        c=c,
+        marker=marker,
+        label="Exp. 2",
+        linewidth=lw,
+    )
     return ax
 
 
@@ -277,7 +317,6 @@ def plot_rdf_from_file(title, ax, label=None):
     df = pd.read_csv(title)
     ax.plot(df["r"], df["g(r)"], c="k", label=label)
     return ax
-
 
 
 def plot_rdf(ax, u, title=False, step=100):
@@ -292,9 +331,6 @@ def plot_rdf(ax, u, title=False, step=100):
 
     # ax.plot(p[:3], irdf.results.rdf[peaks][:3], "x", c=color_dict["angle"])
 
-
-
-
     ax.set_xlabel("$r$ ($\mathrm{\AA}$)", fontsize=font_size)
     ax.set_ylabel("$g(r)$", fontsize=font_size)
     ax.set_title("RDF", fontsize=font_size, fontweight="bold")
@@ -303,9 +339,9 @@ def plot_rdf(ax, u, title=False, step=100):
     print(p, irdf.results.rdf[peaks])
 
     if title:
-        odf = pd.DataFrame({"r": irdf.results.bins,
-                            "g(r)": irdf.results.rdf},
-                           index=irdf.results.bins)
+        odf = pd.DataFrame(
+            {"r": irdf.results.bins, "g(r)": irdf.results.rdf}, index=irdf.results.bins
+        )
         odf.to_csv(f"{title}_rdf.csv")
 
     return ax

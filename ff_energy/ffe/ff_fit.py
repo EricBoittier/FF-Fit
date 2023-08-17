@@ -14,12 +14,11 @@ from ff_energy.utils.ffe_utils import pickle_output, read_from_pickle, PKL_PATH
 
 sig_bound = (0.001, 2.5)
 ep_bound = (0.001, 2.5)
-chg_bound = (100,2000)
+chg_bound = (100, 2000)
 
-CHGPEN_bound = [(chg_bound),(chg_bound),(chg_bound),(chg_bound),(0,2000)]
+CHGPEN_bound = [(chg_bound), (chg_bound), (chg_bound), (chg_bound), (0, 2000)]
 LJ_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound))
-DE_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound),
-            (1, 8), (6, 20))
+DE_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound), (1, 8), (6, 20))
 
 func_bounds = {"LJ": (LJ, LJ_bound), "DE": (DE, DE_bound)}
 

@@ -22,7 +22,6 @@ def nbonds_setup(dict=None):
 
 class PyCHARMM_Runner:
     def __init__(self, kwargs):
-
         self.load_dcm = False
 
         # set the default values (pdb name, toppar stream, sequence)
@@ -58,25 +57,21 @@ class PyCHARMM_Runner:
             self.load_dcm = True
 
     def __repr__(self):
-        rep_str = "".join([f"{key}: {value}\n"
-                           for key, value in self.__dict__.items()])
+        rep_str = "".join([f"{key}: {value}\n" for key, value in self.__dict__.items()])
         return rep_str
 
     def setup(self):
         """Set up the system by reading a toppar stream file and build the
         system from the sequence, then read in the pdb file for coordinates
         """
-        pycharmm.lingo.charmm_script('bomlev 0')
+        pycharmm.lingo.charmm_script("bomlev 0")
         pycharmm.lingo.charmm_script(self.toppar_stream)
         read.sequence_string(self.sequence)
-        gen.new_segment(
-            seg_name='X',
-            setup_ic=True)
+        gen.new_segment(seg_name="X", setup_ic=True)
         read.pdb(self.pdb_name)
 
     def dcm_setup(self, dump=False):
-        """Uses the charmm linguo utility to run DCM
-        """
+        """Uses the charmm linguo utility to run DCM"""
         _str = """! DCM SETUP ! the xyz file to dump coords!
 {OPEN_DUMP}
 open unit 10 card read name {DCM_FILE_PATH}
@@ -93,14 +88,12 @@ close unit 10"""
             load_dump = ""
 
         _str = _str.format(
-            DCM_FILE_PATH=self.dcm_file_path,
-            OPEN_DUMP=open_dump,
-            LOAD_DUMP=load_dump
+            DCM_FILE_PATH=self.dcm_file_path, OPEN_DUMP=open_dump, LOAD_DUMP=load_dump
         )
         pycharmm.lingo.charmm_script(_str)
 
     def imageinit(self, side_length=None, cutoff=None):
-        """ Set up the cubic periodic boundary conditions
+        """Set up the cubic periodic boundary conditions
 
         :param side_length: None or float
         :param cutoff: None or float
@@ -116,14 +109,13 @@ close unit 10"""
 
         # CHARMM scripting: image byres xcen 0 ycen 0 zcen 0
         # select resname tip3 end
-        image.setup_residue(0.0, 0.0, 0.0, 'TIP3')
+        image.setup_residue(0.0, 0.0, 0.0, "TIP3")
         # CHARMM scripting: image byres xcen 0 ycen 0 zcen 0
         # select resname ion_type end
-        image.setup_residue(0.0, 0.0, 0.0, 'DCM')
+        image.setup_residue(0.0, 0.0, 0.0, "DCM")
 
     def minimize(self, dict=None, type="abnr"):
-        """Minimize the structure
-        """
+        """Minimize the structure"""
         if type == "abnr":
             if dict is None:
                 _dict = ABNR_DICT
@@ -132,7 +124,7 @@ close unit 10"""
             minimize.run_abnr(**_dict)
 
     def write_res_dcd(self, resname):
-        """ Write the restart and dcd files
+        """Write the restart and dcd files
 
         :param resname: str of the key for saving the files
                         KEY.res and KEY.dcd will be created in
@@ -140,37 +132,44 @@ close unit 10"""
         :return: None
         """
         res_file = pycharmm.CharmmFile(
-            file_name=f'{self.output_path}/{resname}.res',
-            file_unit=2, formatted=True, read_only=False)
+            file_name=f"{self.output_path}/{resname}.res",
+            file_unit=2,
+            formatted=True,
+            read_only=False,
+        )
         dcd_file = pycharmm.CharmmFile(
-            file_name=f'{self.output_path}/{resname}.dcd',
-            file_unit=1, formatted=False, read_only=False)
+            file_name=f"{self.output_path}/{resname}.dcd",
+            file_unit=1,
+            formatted=False,
+            read_only=False,
+        )
         return res_file, dcd_file
 
     def read_restart(self, resname):
-        """ Read the restart file into UNIT 3
-        """
+        """Read the restart file into UNIT 3"""
         print(f"Reading restart file {self.output_path}/{resname}.res")
         restart_file = pycharmm.CharmmFile(
-            file_name=f'{self.output_path}/{resname}.res',
-            file_unit=3, formatted=True,
-            read_only=True)
+            file_name=f"{self.output_path}/{resname}.res",
+            file_unit=3,
+            formatted=True,
+            read_only=True,
+        )
         return restart_file
 
     def write_info(self, key, note=""):
-        """ Write the pdb and psf files for the structure
-        """
+        """Write the pdb and psf files for the structure"""
         write.coor_pdb(f"{self.output_path}/{key}.pdb", title=f"{key}: {note}")
         write.psf_card(f"{self.output_path}/{key}.psf", title=f"{key}: {note}")
 
-    def dynamics(self,
-                 resname="heat",
-                 dynatype="heat",
-                 restart=False,
-                 pmass=None,
-                 nstep=10000,
-                 timestep=0.0005):
-
+    def dynamics(
+        self,
+        resname="heat",
+        dynatype="heat",
+        restart=False,
+        pmass=None,
+        nstep=10000,
+        timestep=0.0005,
+    ):
         # prepare the dynamics script
         res_file, dcd_file = self.write_res_dcd(resname)
 
@@ -180,9 +179,15 @@ close unit 10"""
             restart_file = None
 
         dyna_dict = get_dynamics_dict(
-            timestep, res_file, dcd_file,
-            dynatype=dynatype, restart=restart_file, str_file=restart_file,
-            pmass=pmass, nstep=nstep)
+            timestep,
+            res_file,
+            dcd_file,
+            dynatype=dynatype,
+            restart=restart_file,
+            str_file=restart_file,
+            pmass=pmass,
+            nstep=nstep,
+        )
 
         # load the dynamics script
         dyn_ = pycharmm.DynamicsScript(**dyna_dict)
@@ -195,7 +200,7 @@ close unit 10"""
             restart_file.close()
 
     def routine(self):
-        """ Basic routine for doing minimization, heating, equilibration
+        """Basic routine for doing minimization, heating, equilibration
         and production dynamics
 
         :return: None
@@ -217,17 +222,15 @@ close unit 10"""
         self.write_info("dcm_box_heat", note="dcm_box_heat")
 
         #  equilibration
-        self.dynamics(dynatype="equil", nstep=10000,
-                      resname="equil",
-                      restart="heat",
-                      pmass=pmass)
+        self.dynamics(
+            dynatype="equil", nstep=10000, resname="equil", restart="heat", pmass=pmass
+        )
         self.write_info("dcm_box_equil", note="dcm_box_equil")
 
         # production dynamics
-        self.dynamics(dynatype="prod", nstep=10000,
-                      resname="prod",
-                      restart="equil",
-                      pmass=pmass)
+        self.dynamics(
+            dynatype="prod", nstep=10000, resname="prod", restart="equil", pmass=pmass
+        )
         self.write_info("dcm_box_prod", note="dcm_box_prod")
 
 

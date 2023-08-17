@@ -91,21 +91,21 @@ class FitBonded:
 
         self.kb, self.ka, self.r0, self.a0 = self.x
 
-        self.sum_monomer_df = self.get_loss_df(self.x).groupby(
-            "key", group_keys=True
-        ).sum()  # .apply(lambda x: x)
+        self.sum_monomer_df = (
+            self.get_loss_df(self.x).groupby("key", group_keys=True).sum()
+        )  # .apply(lambda x: x)
 
-        self.sum_monomer_df["m_ENERGY"] = self.sum_monomer_df["m_ENERGY"] \
-            .astype(np.float64).interpolate()
+        self.sum_monomer_df["m_ENERGY"] = (
+            self.sum_monomer_df["m_ENERGY"].astype(np.float64).interpolate()
+        )
 
         self.sum_monomer_df["m_E_tot"] = (
-                self.sum_monomer_df["m_ENERGY"] - self.min_m_E * H2KCALMOL * 20
+            self.sum_monomer_df["m_ENERGY"] - self.min_m_E * H2KCALMOL * 20
         )
 
         self.sum_monomer_df["p_m_E_tot"] = (
-                self.sum_monomer_df["E_pred"] + self.min_m_E * H2KCALMOL * 20
+            self.sum_monomer_df["E_pred"] + self.min_m_E * H2KCALMOL * 20
         )
-
 
     def get_loss_df(self, x):
         """Return the loss function applied to a dataframe"""

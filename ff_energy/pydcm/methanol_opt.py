@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 import pandas as pd
 import argparse
+
 # Optimization
 from scipy.optimize import minimize
 
@@ -13,14 +14,23 @@ bohr_to_a = 0.529177
 # Load FDCM modules
 
 
-
 mdcm_cxyz = "/home/unibas/boittier/fdcm_project/mdcms/methanol/10charges.xyz"
-mdcm_clcl = "/home/unibas/boittier/MDCM/examples/multi-conformer/5-charmm-files" \
-            "/10charges.dcm "
+mdcm_clcl = (
+    "/home/unibas/boittier/MDCM/examples/multi-conformer/5-charmm-files"
+    "/10charges.dcm "
+)
 
-skip = {21: 0.0451368804, 22: -0.0495151376, 23: 0.0907668513, 24: -0.0451821166,
-        25: -0.0495151376, 26: 0.0907853319, 27: -0.1208309661, 28: 0.079150342,
-        29: 0.114283958}
+skip = {
+    21: 0.0451368804,
+    22: -0.0495151376,
+    23: 0.0907668513,
+    24: -0.0451821166,
+    25: -0.0495151376,
+    26: 0.0907853319,
+    27: -0.1208309661,
+    28: 0.079150342,
+    29: 0.114283958,
+}
 
 
 def get_clcl(local_pos, charges):
@@ -41,21 +51,29 @@ def set_bounds(local_pos, change=0.1):
     return tuple(bounds)
 
 
-def mdcm_set_up(scan_fesp, scan_fdns,
-                mdcm_cxyz="/home/unibas/boittier/fdcm_project/mdcms/methanol"
-                          "/10charges.xyz",
-                mdcm_clcl="/home/unibas/boittier/MDCM/examples/multi-conformer/5"
-                          "-charmm-files/10charges.dcm",
-                local_pos=None):
+def mdcm_set_up(
+    scan_fesp,
+    scan_fdns,
+    mdcm_cxyz="/home/unibas/boittier/fdcm_project/mdcms/methanol" "/10charges.xyz",
+    mdcm_clcl="/home/unibas/boittier/MDCM/examples/multi-conformer/5"
+    "-charmm-files/10charges.dcm",
+    local_pos=None,
+):
     mdcm_.dealloc_all()
 
     Nfiles = len(scan_fesp)
-    Nchars = int(np.max([
-        len(filename) for filelist in [scan_fesp, scan_fdns]
-        for filename in filelist]))
+    Nchars = int(
+        np.max(
+            [
+                len(filename)
+                for filelist in [scan_fesp, scan_fdns]
+                for filename in filelist
+            ]
+        )
+    )
 
-    esplist = np.empty([Nfiles, Nchars], dtype='c')
-    dnslist = np.empty([Nfiles, Nchars], dtype='c')
+    esplist = np.empty([Nfiles, Nchars], dtype="c")
+    dnslist = np.empty([Nfiles, Nchars], dtype="c")
 
     for ifle in range(Nfiles):
         esplist[ifle] = "{0:{1}s}".format(scan_fesp[ifle], Nchars)
@@ -114,11 +132,21 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
     # Apply simple minimization without any feasibility check (!)
     # Leads to high amplitudes of MDCM charges and local positions
     res = minimize(
-        mdcm_rmse, local_pos,
+        mdcm_rmse,
+        local_pos,
         method="L-BFGS-B",
-        options={'disp': None, 'maxls': 20, 'iprint': -1, 'gtol': 1e-06,
-                 'eps': 1e-09, 'maxiter': 15000,
-                 'ftol': 1e-8, 'maxcor': 10, 'maxfun': 15000})
+        options={
+            "disp": None,
+            "maxls": 20,
+            "iprint": -1,
+            "gtol": 1e-06,
+            "eps": 1e-09,
+            "maxiter": 15000,
+            "ftol": 1e-8,
+            "maxcor": 10,
+            "maxfun": 15000,
+        },
+    )
     print(res)
     # Recompute final RMSE each
     rmse = mdcm.get_rmse()
@@ -144,21 +172,20 @@ def optimize_mdcm(mdcm, clcl, outdir, outname, l2=100.0):
 
 
 if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description='Scan and average for fMDCM')
+    parser = argparse.ArgumentParser(description="Scan and average for fMDCM")
 
     # parser.add_argument('-f', '--first',
     #                     help='', required=False, default=False,
     #                     type=bool)
 
-    parser.add_argument('-n', '--nodes_to_avg', help='', required=True,
-                        type=int)
+    parser.add_argument("-n", "--nodes_to_avg", help="", required=True, type=int)
 
-    parser.add_argument('-l', '--local_pos', help='', default=None, type=str)
-    parser.add_argument('-l2', '--l2', help='lambda coef. for l2 reg.', default=100.0,
-                        type=float)
-    parser.add_argument('-o', '--outdir', help='', default=None, type=str)
-    parser.add_argument('-opt', '--opt', help='', default=False, type=bool)
+    parser.add_argument("-l", "--local_pos", help="", default=None, type=str)
+    parser.add_argument(
+        "-l2", "--l2", help="lambda coef. for l2 reg.", default=100.0, type=float
+    )
+    parser.add_argument("-o", "--outdir", help="", default=None, type=str)
+    parser.add_argument("-opt", "--opt", help="", default=False, type=bool)
 
     args = parser.parse_args()
     # print(' '.join(f'{k}={v}\n' for k, v in vars(args).items()))
@@ -177,13 +204,22 @@ if __name__ == "__main__":
     mdcm_clcl = "/home/unibas/boittier/methanol_kern/10charges.dcm"
     mdcm_cxyz = "/home/unibas/boittier/methanol_kern/refined.xyz"
 
-    esp = "/data/unibas/boittier/pydcm_data/meoh_pbe0dz/" \
-          "gaussian_{}_meoh_pbe0_adz_esp.cube"
-    dens = "/data/unibas/boittier/pydcm_data/meoh_pbe0dz/" \
-           "gaussian_{}_meoh_pbe0_adz_dens.cube"
+    esp = (
+        "/data/unibas/boittier/pydcm_data/meoh_pbe0dz/"
+        "gaussian_{}_meoh_pbe0_adz_esp.cube"
+    )
+    dens = (
+        "/data/unibas/boittier/pydcm_data/meoh_pbe0dz/"
+        "gaussian_{}_meoh_pbe0_adz_dens.cube"
+    )
 
-    mdcm_ = mdcm_set_up([esp.format(i)], [dens.format(i)], mdcm_cxyz=mdcm_cxyz,
-                        mdcm_clcl=mdcm_clcl, local_pos=local)
+    mdcm_ = mdcm_set_up(
+        [esp.format(i)],
+        [dens.format(i)],
+        mdcm_cxyz=mdcm_cxyz,
+        mdcm_clcl=mdcm_clcl,
+        local_pos=local,
+    )
 
     clcl = mdcm_.mdcm_clcl
 

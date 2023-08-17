@@ -22,8 +22,9 @@ from ff_energy.logs.logging import logger
 
 h2kcalmol = 627.5095
 # path to the charmm files
-CHM_FILES_PATH = Path("/home/boittier/Documents/"
-                      "phd/ff_energy/ff_energy/ffe/charmm_files")
+CHM_FILES_PATH = Path(
+    "/home/boittier/Documents/" "phd/ff_energy/ff_energy/ffe/charmm_files"
+)
 #  dictionary to convert from molpro commands to gaussian
 M_to_G = {"gdirect;\n{ks,pbe0}": "PBE1PBE", "hf": "hf", "avdz": "aug-cc-pVDZ"}
 
@@ -67,7 +68,7 @@ class Job:
                 "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
                 "c_files": ["poly_hf.dcm"],
                 "c_dcm_command": "open unit 11 card read name"
-                                 " poly_hf.dcm \nDCM FLUX 11 IUDCM 11 TSHIFT XYZ 15",
+                " poly_hf.dcm \nDCM FLUX 11 IUDCM 11 TSHIFT XYZ 15",
             }
         self.kwargs = kwargs
 
@@ -147,20 +148,24 @@ class Job:
         for pair in pairs:
             orbkit_str = orbkit_ci_template.render(
                 M1=f"{self.name}_{pair[0]}.molden".lower(),
-                M2=f"{self.name}_{pair[1]}.molden".lower()
+                M2=f"{self.name}_{pair[1]}.molden".lower(),
             )
-            orbkit_job = self.path / "coloumb" / \
-                         f"{self.name}_{pair[0]}_{pair[1]}.py".lower()
+            orbkit_job = (
+                self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.py".lower()
+            )
             with open(orbkit_job, "w") as f:
                 f.write(orbkit_str)
-            command = f"export LIBCINTDIR=/opt/cluster/programs/libcint/lib64 " \
-                      f"\n python {orbkit_job.name} > {orbkit_job.name}.out"
+            command = (
+                f"export LIBCINTDIR=/opt/cluster/programs/libcint/lib64 "
+                f"\n python {orbkit_job.name} > {orbkit_job.name}.out"
+            )
 
             slurm_job = o_slurm_template.render(
                 NAME=f"{self.name}_{pair[0]}_{pair[1]}", COMMAND=command
             )
-            slurm_file = self.path / "coloumb" / \
-                         f"{self.name}_{pair[0]}_{pair[1]}.sh".lower()
+            slurm_file = (
+                self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.sh".lower()
+            )
             with open(slurm_file, "w") as f:
                 f.write(slurm_job)
                 self.slurm_files["coloumb"][
@@ -474,8 +479,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             #  split the path by underscores
             pathsplit = p.stem.split("_")
             #  find the index of the first string
-            str_idx = [i for i, x in enumerate(pathsplit)
-                       if x.isalpha()][0]
+            str_idx = [i for i, x in enumerate(pathsplit) if x.isalpha()][0]
             #  get the key as the characters before the first string
             key = "_".join(pathsplit[:-2])
             #  get the pairs as the two characters after the first string
@@ -623,7 +627,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
 
     def pickle_output(self, output):
         pickle_path = Path(
-            f'pickles/{self.structure.system_name}/'
+            f"pickles/{self.structure.system_name}/"
             f'{self.kwargs["theory_name"]}/'
             f'{self.kwargs["c_files"][0]}/{self.name}.pickle'
         )

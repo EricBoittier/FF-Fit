@@ -18,20 +18,18 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )
 
-ext1 = Extension(
-    name="dcm_fortran",
-    sources=["dcm_fortran.F90"])
+ext1 = Extension(name="dcm_fortran", sources=["dcm_fortran.F90"])
 
 if __name__ == "__main__":
     from numpy.distutils.core import setup
 
     setup(
-        name='f2py_dcm',
+        name="f2py_dcm",
         description="F2PY DCM module",
         author="Kai Toepfer",
         author_email="kai.toepfer@unibas.ch",
-        ext_modules=[ext1]
+        ext_modules=[ext1],
     )

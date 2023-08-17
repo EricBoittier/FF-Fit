@@ -1,8 +1,6 @@
 from pathlib import Path
 
-from ff_energy.latex_writer.templates import (
-    TEMPLATE_ENV, FIGURE_TEMPLATE
-)
+from ff_energy.latex_writer.templates import TEMPLATE_ENV, FIGURE_TEMPLATE
 
 
 class Figure:
@@ -23,9 +21,7 @@ class Figure:
 
         #  check the file exists
         if not self.filepath.exists():
-            raise FileNotFoundError(
-                f"File {self.filepath} does not exist"
-            )
+            raise FileNotFoundError(f"File {self.filepath} does not exist")
 
     def set_filepath(self, filepath):
         """
@@ -35,8 +31,6 @@ class Figure:
         """
         if not isinstance(filepath, Path):
             self.filepath = Path(filepath)
-
-
 
     def make_figure(self, path=None, width=0.55):
         """

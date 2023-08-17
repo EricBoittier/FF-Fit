@@ -12,7 +12,9 @@ def sqrt_einsum_T(data):
     a, b = data[1]
     a_min_b = a - b
     return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))
-def _sqrt_einsum_T(a,b):
+
+
+def _sqrt_einsum_T(a, b):
     a_min_b = a - b
     return np.sqrt(np.einsum("ij,ij->j", a_min_b, a_min_b))
 
@@ -94,7 +96,6 @@ class Structure:
         return chg
 
     def get_pair_charge(self, res_a, res_b):
-
         restypes = np.array(self.restypes)
         res_types = restypes[self.res_mask[res_a] + self.res_mask[res_b]]
         chg = 0
@@ -107,8 +108,9 @@ class Structure:
 
     def read_pdb(self, path):
         self.lines = open(path).readlines()
-        self.atoms = [_ for _ in self.lines if _.startswith("ATOM")
-                      or _.startswith("HETATM")]
+        self.atoms = [
+            _ for _ in self.lines if _.startswith("ATOM") or _.startswith("HETATM")
+        ]
         self.atomnames = get_atom_names(self.atoms)
         self.keys = [(_[17:21].strip(), _[12:17].strip()) for _ in self.atoms]
         self.resids = [int(_[22:27].strip()) for _ in self.atoms]
@@ -161,7 +163,7 @@ class Structure:
         self.dcm = [
             [float(_) for _ in line.split()[1:]] for line in lines[2:]
         ]  # skip first two lines
-        self.dcm_charges = self.dcm[len(self.atoms):]
+        self.dcm_charges = self.dcm[len(self.atoms) :]
         dcm_charges_per_res = len(self.dcm_charges) // self.n_res // 3
         self.dcm_charges_mask = {
             r: np.array(
@@ -239,13 +241,9 @@ class Structure:
                 #  case for same atom types
                 if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                     _d = _sqrt_einsum_T(xyza.T, xyzb.T)
-                    self.distances[i].append(
-                        _d
-                    )
+                    self.distances[i].append(_d)
                     self.distances_pairs[i][(res_a, res_b)] = []
-                    self.distances_pairs[i][(res_a, res_b)].append(
-                        _d
-                    )
+                    self.distances_pairs[i][(res_a, res_b)].append(_d)
                 #  case for different atom types
                 if a != b:
                     b, a = akp

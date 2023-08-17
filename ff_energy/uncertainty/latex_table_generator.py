@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class LatexTableGenerator:
     def __init__(self, data, uncertainty):
         self.data = data

@@ -7,23 +7,23 @@ from pint import UnitRegistry
 import warnings
 
 # ignore the casting errors for units
-warnings.simplefilter('ignore')
+warnings.simplefilter("ignore")
 ureg = UnitRegistry()
 
 #  matplotlib styles
-plt.style.use(['science', "no-latex", "ieee"])
+plt.style.use(["science", "no-latex", "ieee"])
 
 #  constants
-Avogadro_const = 6.02214129 * 10 ** 23 * ureg("1/mol")  # % mol-1
+Avogadro_const = 6.02214129 * 10**23 * ureg("1/mol")  # % mol-1
 Boltzmann_const = 1.38064852 * 10 ** (-23) * ureg("J/K")  # % J K-1
 Gas_const = 8.3144621 * ureg("J/(mol*K)")  # % JK^−1mol^−1
 Cal2Joule = 4.184  # % J
 J2kcal = 0.000239006
-J2kcm = 1.43932643164436e+20  # ;
+J2kcm = 1.43932643164436e20  # ;
 atm2Pa = 101325  # ;
 ang2m = 10 ** (-10)  # ;
 Pa2atm = 1 / atm2Pa  # ;
-angsqr_to_msqr = 1E-27
+angsqr_to_msqr = 1e-27
 Jm2kcm = 0.000239005736
 k_B_kcal_mol_K = 1.987204259 * 10 ** (-3) * ureg("kcal/(mol*K)")
 
@@ -31,6 +31,7 @@ k_B_kcal_mol_K = 1.987204259 * 10 ** (-3) * ureg("kcal/(mol*K)")
 @dataclass
 class PropertyRun:
     """Class for keeping track of all the data from a simulation run"""
+
     directory: str
     MW: float
     Nmol: int
@@ -101,8 +102,9 @@ class PropertyRun:
         self.average_energy = np.mean(self.energies)
         self.average_potential = np.mean(self.potentials)
         self.potential_per_molecule = self.average_potential / self.Nmol
-        self.average_volume = np.mean(self.volumes,
-                                      dtype=np.float64).to("angstrom cubed")
+        self.average_volume = np.mean(self.volumes, dtype=np.float64).to(
+            "angstrom cubed"
+        )
         self.average_pressure = np.mean(self.pressures)
         self.sd_pressure = np.std(self.pressures)
         self.densities = get_density(self.volumes, self.Nmol, self.MW)
@@ -115,14 +117,19 @@ class PropertyRun:
         self.avgV2 = np.mean(self.volumes * self.volumes)
         self.kappa = get_kappa(self.average_volume, self.avgV2, self.avgTemp)
         self.Cp_SF = get_C_p_STANDARD_FLUCTUATIONS(
-            self.avgH, self.avg_H_2, self.Nmol, self.avgTemp)
-        self.dHvap = self.avgUgas - self.potential_per_molecule + \
-                     self.avgTemp * Gas_const.to("kcal/(mol*K)")
+            self.avgH, self.avg_H_2, self.Nmol, self.avgTemp
+        )
+        self.dHvap = (
+            self.avgUgas
+            - self.potential_per_molecule
+            + self.avgTemp * Gas_const.to("kcal/(mol*K)")
+        )
 
 
 @dataclass
 class MultiPropertyRun:
     """group simulations with similar conditions"""
+
     directory: str
     multirun: list[PropertyRun] = field(default_factory=list)
     multirun_df: pd.DataFrame = field(init=False)
@@ -190,7 +197,7 @@ def get_density(volume, N_res, MW):
 def get_D(time, msd, skip=5):
     # msd = msd.to_value(ureg.dimensionless_unscaled)
     """Get self-diffusion coefficient by fitting a linear line to the MSD vs Time
-    graph """
+    graph"""
     coef = np.polyfit(time[skip:], msd[skip:], 1)
     return float(coef[0]), float(coef[1])
 
@@ -222,7 +229,7 @@ def get_kappa(Vavg, V2avg, T):
 
 def get_enthalpy(energy, volume, pressure=1.0 * ureg("atm")):
     """return the enthalpy in kcal/mol"""
-    enthalpy = (energy + (volume * pressure.to("Pa")) * Avogadro_const)
+    enthalpy = energy + (volume * pressure.to("Pa")) * Avogadro_const
     return enthalpy
 
 
@@ -271,7 +278,7 @@ def get_C_p_STANDARD_FLUCTUATIONS(avgH, avg_H2_, N, T):
     """
     #  convert units
     avgH2 = avgH * avgH
-    C_p = (avg_H2_ - avgH2) / (N * k_B_kcal_mol_K * (T ** 2)) + 3 * Gas_const
+    C_p = (avg_H2_ - avgH2) / (N * k_B_kcal_mol_K * (T**2)) + 3 * Gas_const
     C_p = C_p.to("cal/(mol*K)")
     return C_p
 
@@ -279,7 +286,7 @@ def get_C_p_STANDARD_FLUCTUATIONS(avgH, avg_H2_, N, T):
 #  Helper functions
 def fill_property_dataclass(path, MW=34.02, nMol=202):
     """starting from the directory, get and fill all the required data for the
-    dataclass """
+    dataclass"""
     #  paths
     volumes_path = os.path.join(path, "pressure.raw")
     dyna_path = os.path.join(path, "dyna.raw")
@@ -292,8 +299,11 @@ def fill_property_dataclass(path, MW=34.02, nMol=202):
     gas_energies = []
     gas_pots = []
     gas_temps = []
-    outfiles = [x for x in os.listdir(gas_dyna_path)
-                if x.startswith("job") and x.endswith("out")]
+    outfiles = [
+        x
+        for x in os.listdir(gas_dyna_path)
+        if x.startswith("job") and x.endswith("out")
+    ]
 
     for file in outfiles:
         _ = os.path.join(gas_dyna_path, file)
@@ -323,22 +333,33 @@ def fill_property_dataclass(path, MW=34.02, nMol=202):
 
     #  create dataclass object
     prop_run = PropertyRun(
-        path, MW, nMol, energy, potential, temp,
-        gas_energy, gas_pot, gas_temp, volumes,
-        pressures, time, msds, msd_times
+        path,
+        MW,
+        nMol,
+        energy,
+        potential,
+        temp,
+        gas_energy,
+        gas_pot,
+        gas_temp,
+        volumes,
+        pressures,
+        time,
+        msds,
+        msd_times,
     )
     return prop_run
 
 
 def fill_multirun_prob_dataclass(path):
-    """ fill the dataclass from a single run"""
+    """fill the dataclass from a single run"""
     pruns = fill_multiprop_run(path)
     multirun_prob_run = MultiPropertyRun(path, pruns)
     return multirun_prob_run
 
 
 def fill_multiprop_run(path):
-    """ fill the dataclass from runs at multiple temperatures"""
+    """fill the dataclass from runs at multiple temperatures"""
     subdirs = [_ for _ in os.listdir(path) if os.path.isdir(os.path.join(path, _))]
     pruns = []
     for sd in subdirs:

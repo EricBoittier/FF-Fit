@@ -6,35 +6,33 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import warnings
 from pathlib import Path
+import patchworklib as pw
 
 from ff_energy.latex_writer.report import REPORTS_PATH
 
-warnings.filterwarnings("ignore",
-                        module="matplotlib\..*"
-                        )
+warnings.filterwarnings("ignore", module="matplotlib\..*")
 
 
 def set_style():
-    plt.style.use('science')
-    rcParams['figure.figsize'] = 8, 6
-    rcParams['axes.labelsize'] = 18
-    rcParams['axes.titlesize'] = 22
-    rcParams['xtick.labelsize'] = 18
-    rcParams['ytick.labelsize'] = 18
-    rcParams['legend.fontsize'] = 18
+    plt.style.use("science")
+    rcParams["figure.figsize"] = 8, 6
+    rcParams["axes.labelsize"] = 18
+    rcParams["axes.titlesize"] = 22
+    rcParams["xtick.labelsize"] = 18
+    rcParams["ytick.labelsize"] = 18
+    rcParams["legend.fontsize"] = 18
     # rcParams['font.family'] = 'san-serif'
     # rcParams['font.sans-serif'] = ['Arial']
     # bold title and labels
-    rcParams['axes.labelweight'] = 'bold'
-    rcParams['axes.titleweight'] = 'bold'
-    rcParams['axes.linewidth'] = 2
-    rcParams['xtick.major.width'] = 2
-    rcParams['ytick.major.width'] = 2
-    rcParams['xtick.minor.width'] = 2
-    rcParams['ytick.minor.width'] = 2
+    rcParams["axes.labelweight"] = "bold"
+    rcParams["axes.titleweight"] = "bold"
+    rcParams["axes.linewidth"] = 2
+    rcParams["xtick.major.width"] = 2
+    rcParams["ytick.major.width"] = 2
+    rcParams["xtick.minor.width"] = 2
+    rcParams["ytick.minor.width"] = 2
     # set colors
-    rcParams['axes.prop_cycle'] = plt.cycler(
-        color=plt.cm.Dark2.colors)
+    rcParams["axes.prop_cycle"] = plt.cycler(color=plt.cm.Dark2.colors)
 
 
 def save_fig(fig, filename, path=None) -> Path:
@@ -44,6 +42,13 @@ def save_fig(fig, filename, path=None) -> Path:
     :param path:
     :return: path to the figure
     """
+    def save_(f, filename):
+        if isinstance(f, list):
+            fig = patchwork_grid(f)
+            fig.savefig(filename)
+        else:
+            f.savefig(filename)
+
     if path is not None:
         if isinstance(path, str):
             path = Path(path)
@@ -52,10 +57,29 @@ def save_fig(fig, filename, path=None) -> Path:
             path = REPORTS_PATH / path
         #  make the dir if not exists
         path.mkdir(parents=True, exist_ok=True)
-        fig.savefig(path / filename)
+        save_(fig, path / filename)
     else:
-        fig.savefig(filename)
+        #  save locally or to the default path
+        save_(fig, filename)
 
     if path is None:
         return Path(filename)
+
     return path / filename
+
+
+def patchwork_grid(axes):
+    n = len(axes)
+    sqrt_n = int(n ** 0.5)
+    if sqrt_n ** 2 == n:
+        rows = sqrt_n
+        cols = sqrt_n
+    else:
+        cols = sqrt_n + 1
+    row_axes = [pw.stack(axes[i : i + cols], operator="|", margin=0.2)
+                for i in range(0, n, cols)]
+    fig = pw.stack(row_axes, operator="/", margin=0.2)
+    return fig
+
+
+

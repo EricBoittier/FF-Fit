@@ -1,8 +1,13 @@
 import sys
 from pathlib import Path
 
-from ff_energy.ffe.constants import CONFIG_PATH, CLUSTER_DRIVE, clusterBACH, \
-    clusterNCCR, clusterBEETHOVEN
+from ff_energy.ffe.constants import (
+    CONFIG_PATH,
+    CLUSTER_DRIVE,
+    clusterBACH,
+    clusterNCCR,
+    clusterBEETHOVEN,
+)
 from ff_energy.utils.ffe_utils import MakeJob, charmm_jobs
 from ff_energy.utils.ffe_utils import PKL_PATH, pickle_output
 from ff_energy.ffe.configmaker import ConfigMaker, system_names, THEORY
@@ -10,6 +15,7 @@ from ff_energy.ffe.config import Config
 from ff_energy.ffe.data import Data
 from ff_energy.ffe.slurm import SlurmJobHandler
 from ff_energy.logs.logging import logger
+
 
 def load_config_maker(theory, system, elec):
     cm = ConfigMaker(theory, system, elec)
@@ -185,8 +191,9 @@ def data_jobs(CMS, molpro_small_path):
         jobmakers.append(jm)
 
     #  convert data to data object
-    pp = Path(PKL_PATH / f"{cms.system_name}/{cms.theory_name}/"
-                         f"{jm.kwargs['c_files'][0]}")
+    pp = Path(
+        PKL_PATH / f"{cms.system_name}/{cms.theory_name}/" f"{jm.kwargs['c_files'][0]}"
+    )
     print("Saving data to: ", pp)
     data = Data(pp)
     pickle_output(data, PKL_PATH / f"{cms.system_name}_{cms.theory_name}_{cms.elec}")
@@ -240,30 +247,50 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="Force Field Energy",
         description="Manages jobs and data for force field"
-                    " energy calculations and fitting",
+        " energy calculations and fitting",
         epilog="more info: https://github.com/EricBoittier/ff_energy",
     )
     print("----")
 
     parser.add_argument(
-        "-d", "--data", required=False, default=False, action="store_true",
-        help="Gather data from output files"
+        "-d",
+        "--data",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Gather data from output files",
     )
     parser.add_argument(
-        "-a", "--all", required=False, default=False, action="store_true",
-        help="Collect all the output"
+        "-a",
+        "--all",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Collect all the output",
     )
     parser.add_argument(
-        "-at", "--all_theory", required=False, default=False, action="store_true",
-        help="Run jobs using all the defined levels of theory"
+        "-at",
+        "--all_theory",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Run jobs using all the defined levels of theory",
     )
     parser.add_argument(
-        "-c", "--cluster", required=False, default=False, action="store_true",
-        help="Run the cluster calculations"
+        "-c",
+        "--cluster",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Run the cluster calculations",
     )
     parser.add_argument(
-        "-x", "--config", required=False, default=False, action="store_true",
-        help="Run the jobs from a config file"
+        "-x",
+        "--config",
+        required=False,
+        default=False,
+        action="store_true",
+        help="Run the jobs from a config file",
     )
     # TODO: add options to show levels of theory available
     parser.add_argument("-t", "--theory", required=False, default=None)
@@ -287,11 +314,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "-mjs", "--molpro_small", required=False, default=False, action="store_true"
     )
-    parser.add_argument("-msp", "--molpro_small_path", required=False, default=None,
-                        help="Path to molpro small files")
     parser.add_argument(
-        "-mbp", "--molpro_big_path", required=False, default=None,
-        help="Path to molpro big files"
+        "-msp",
+        "--molpro_small_path",
+        required=False,
+        default=None,
+        help="Path to molpro small files",
+    )
+    parser.add_argument(
+        "-mbp",
+        "--molpro_big_path",
+        required=False,
+        default=None,
+        help="Path to molpro big files",
     )
 
     parser.add_argument(
@@ -318,8 +353,9 @@ if __name__ == "__main__":
             logger.info("Making Configs: ", args.config)
         CMS = load_config_from_input(args.config)
     else:
-        logger.info(f"parameters: { str(args.theory)},"
-                    f" {str(args.model)}, {str(args.elec)}")
+        logger.info(
+            f"parameters: { str(args.theory)}," f" {str(args.model)}, {str(args.elec)}"
+        )
         if args.theory and args.model and args.elec:
             CMS = load_config_maker(args.theory, args.model, args.elec)
         else:

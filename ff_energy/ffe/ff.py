@@ -9,8 +9,17 @@ from jax import grad
 import jax.numpy as jnp
 
 from ff_energy.ffe.structure import valid_atom_key_pairs
-from ff_energy.ffe.potential import LJflat, LJRUN_LOSS, LJRUN, combination_rules, \
-    akp_indx, DERUN, DERUN_LOSS, CHGPENRUN, CHGPEN_LOSS
+from ff_energy.ffe.potential import (
+    LJflat,
+    LJRUN_LOSS,
+    LJRUN,
+    combination_rules,
+    akp_indx,
+    DERUN,
+    DERUN_LOSS,
+    CHGPENRUN,
+    CHGPEN_LOSS,
+)
 from ff_energy.ffe.potential import ecol, ecol_seg
 
 
@@ -111,8 +120,9 @@ class FF:
             if pairs:
                 self.data["intE"] = self.data["P_intE"]
             else:
-                self.data["intE"] = (self.data["C_ENERGY"]
-                                     - self.data["M_ENERGY"]) * 627.509
+                self.data["intE"] = (
+                    self.data["C_ENERGY"] - self.data["M_ENERGY"]
+                ) * 627.509
         #  harmonic fit
         elif self.intern == "harmonic":
             if pairs:
@@ -160,8 +170,7 @@ class FF:
         self.out_akps = jnp.array(out_akps)
 
     def set_targets(self):
-        """Set the targets for the objective function: intE - elec = targets
-        """
+        """Set the targets for the objective function: intE - elec = targets"""
         self.targets = jnp.array(
             self.data[self.intE].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )

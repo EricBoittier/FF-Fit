@@ -8,6 +8,7 @@ from ff_energy.latex_writer.templates import TEMPLATE_ENV, REPORT_TEMPLATE
 from ff_energy.latex_writer.figure import Figure
 from ff_energy.logs.logging import logger
 
+
 class Report:
     """
     A report is a class that combines tables, figures, summaries into a single
@@ -90,7 +91,7 @@ class Report:
             new = self.fig_path / section.filepath.name
             if old != new:
                 shutil.copy(old, new)
-            section.set_filepath( f"figures/{section.filepath.stem}")
+            section.set_filepath(f"figures/{section.filepath.stem}")
             section = section.make_figure(width=width)
 
         logger.info(section)
@@ -124,13 +125,6 @@ class Report:
         os.chdir(self.path)
         logger.info(f"Compiling {self.filename}")
         logger.info(f"Current directory: {os.getcwd()}")
-        command = "pdflatex {} -output-directory {}".format(
-            self.filename,
-            self.path
-        )
+        command = "pdflatex {} -output-directory {}".format(self.filename, self.path)
         logger.info(command)
         os.system(command)
-
-
-
-

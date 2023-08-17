@@ -43,8 +43,16 @@ def unload_data(output):
     """
     logger.info("Unloading data, output keys: {}".format(output[0].keys()))
 
-    fields = ["coloumb_total", "coloumb", "charmm", "monomers_sum",
-              "cluster", "pairs", "pairs_sum", "monomers"]
+    fields = [
+        "coloumb_total",
+        "coloumb",
+        "charmm",
+        "monomers_sum",
+        "cluster",
+        "pairs",
+        "pairs_sum",
+        "monomers",
+    ]
     data = {}
     for field in fields:
         _ = [_[field] for _ in output if _[field] is not None]
@@ -57,10 +65,7 @@ def unload_data(output):
     select_data = {k: v for k, v in data.items() if k not in ["pairs", "monomers"]}
     data_df = concat_dataframes(select_data)
 
-    data["n_pairs"] = [
-        len(x["pairs"]) for x in output
-        if x["pairs"] is not None
-    ]
+    data["n_pairs"] = [len(x["pairs"]) for x in output if x["pairs"] is not None]
 
     return data_df, data
 
@@ -109,13 +114,13 @@ class Data:
         print("data", data)
         self.coloumb = col
         if (
-                "M_ENERGY" in data.keys()
-                and cluster_df is not None
-                and monomers_df is not None
+            "M_ENERGY" in data.keys()
+            and cluster_df is not None
+            and monomers_df is not None
         ):
             self.data["intE"] = (
-                    self.data["C_ENERGY"] - self.data["M_ENERGY"]
-                                ) * H2KCALMOL
+                self.data["C_ENERGY"] - self.data["M_ENERGY"]
+            ) * H2KCALMOL
 
         self.ctot = ctot
         self.chm_df = chm_df
@@ -128,15 +133,15 @@ class Data:
 
     def prepare_monomers(self, min_m_E=None):
         if self.monomers_df is not None:
+            self.monomers_df["key"] = [x.split("_")[-1] for x in self.monomers_df.index]
 
-            self.monomers_df["key"] = [x.split("_")[-1]
-                                       for x in self.monomers_df.index]
+            self.monomers_df["monomer"] = [
+                int(x.split("_")[-1]) for x in self.monomers_df.index
+            ]
 
-            self.monomers_df["monomer"] = [int(x.split("_")[-1])
-                                           for x in self.monomers_df.index]
-
-            self.pairs_df["key"] = ["_".join(_.split("_")[:-2])
-                                    for _ in self.pairs_df.index]
+            self.pairs_df["key"] = [
+                "_".join(_.split("_")[:-2]) for _ in self.pairs_df.index
+            ]
 
             self.pairs_df["pair"] = [
                 (int(x.split("_")[-2]), int(x.split("_")[-1]))
@@ -204,9 +209,7 @@ class Data:
         for r in self.monomers_df.iterrows():
             key = r[1]["key"]
             monomer = r[1]["monomer"]
-            a, r1, r2 = self.get_internals_water(
-                key, monomer
-            )
+            a, r1, r2 = self.get_internals_water(key, monomer)
             a_s.append(a)
             r1_s.append(r1)
             r2_s.append(r2)
@@ -221,24 +224,38 @@ class Data:
         _ = _[_["intE"] < 1]
         logger.info("n:", len(_))
 
-        plot_energy_MSE(_, "intE", "P_intE", xlabel="intE [kcal/mol]",
-                        ylabel="pair_monomer_E [kcal/mol]", elec="intE", CMAP="viridis")
+        plot_energy_MSE(
+            _,
+            "intE",
+            "P_intE",
+            xlabel="intE [kcal/mol]",
+            ylabel="pair_monomer_E [kcal/mol]",
+            elec="intE",
+            CMAP="viridis",
+        )
 
     def plot_intE(self) -> None:
         if self.chm_df is not None:
             self.data["NBONDS"] = self.data["ELEC"] + self.data["VDW"]
             self.data["nb_intE"] = self.data["ELEC"] + self.data["VDW"]
             _ = self.data[self.data["ECOL"] < -40].copy()
-            plot_energy_MSE(_, "intE", "nb_intE", xlabel="intE [kcal/mol]",
-                            ylabel="NBONDS [kcal/mol]", elec="ECOL", CMAP="viridis")
+            plot_energy_MSE(
+                _,
+                "intE",
+                "nb_intE",
+                xlabel="intE [kcal/mol]",
+                ylabel="NBONDS [kcal/mol]",
+                elec="ECOL",
+                CMAP="viridis",
+            )
         else:
             logger.warning("Data not available")
 
 
 def pairs_data(
-        data,
-        name="PC",
-        dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
+    data,
+    name="PC",
+    dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
 ):
     """
 

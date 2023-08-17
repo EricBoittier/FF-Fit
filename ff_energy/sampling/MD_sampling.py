@@ -15,9 +15,10 @@ def pdb_to_coords(pdb_path, n_atoms_per_res):
     total = 0
 
     for n in n_atoms_per_res:
-        tmp_lines = lines[total:total + n]
-        tmp_lines = [f"{_.split()[2][:1]} {_[31:38]} {_[39:46]} {_[47:54]}" for _ in
-                     tmp_lines]
+        tmp_lines = lines[total : total + n]
+        tmp_lines = [
+            f"{_.split()[2][:1]} {_[31:38]} {_[39:46]} {_[47:54]}" for _ in tmp_lines
+        ]
         coords.append(tmp_lines)
         total += n
 
@@ -60,8 +61,10 @@ def get_dcds(dcd_dir):
     """
     dcdspath = "/home/boittier/pcbach/charmmions/"
     Ndcds = len(list(Path(dcdspath).glob("step5*dcd")))
-    dcd = ["/home/boittier/pcbach/charmmions/step5_{}.dcd".format(i + 1) for i in
-           range(Ndcds)]
+    dcd = [
+        "/home/boittier/pcbach/charmmions/step5_{}.dcd".format(i + 1)
+        for i in range(Ndcds)
+    ]
     dcd = [_ for _ in dcd if os.path.exists(_) and (os.stat(_).st_size > 0)]
     logger.info("DCD file:", dcd)
     return dcd
@@ -77,16 +80,18 @@ def get_psf(psf_dir):
     return "/home/boittier/pcbach/charmmions/step3_pbcsetup.psf"
 
 
-def save_N_atoms(u, Natoms, resname,
-                 maxTries=1000,
-                 dr=0.02,
-                 defaultR=4.750,
-                 verbose=False,
-                 ):
+def save_N_atoms(
+    u,
+    Natoms,
+    resname,
+    maxTries=1000,
+    dr=0.02,
+    defaultR=4.750,
+    verbose=False,
+):
     selectStringTypes = f"(byres resname {resname})"
     # selectStringDist = "(byres point {rx} {ry} {rz} {r}) or resid {resid}"
     selectStringDist = "(byres point {rx} {ry} {rz} {r})"
-
 
     # outfile for a xyz trajectory
     xyz_out_name = f"{Natoms}_{resname}.xyz"
@@ -101,9 +106,11 @@ def save_N_atoms(u, Natoms, resname,
     for i, t in enumerate(u.trajectory):
         res_sel1 = u.select_atoms(selectStringTypes, updating=False, periodic=False)
         nres_to_do = len(res_sel1)
-        range_to_do = range(nres_to_do) if nres_to_do < LIMIT else [
-            np.random.randint(0, nres_to_do) for _ in range(LIMIT)
-        ]
+        range_to_do = (
+            range(nres_to_do)
+            if nres_to_do < LIMIT
+            else [np.random.randint(0, nres_to_do) for _ in range(LIMIT)]
+        )
         # loop through the residues of the required type
         for j in range_to_do:
             counter = 0
@@ -111,8 +118,7 @@ def save_N_atoms(u, Natoms, resname,
             #  try to avoid an index error
             if j:
                 #  initialize the selection
-                res = u.select_atoms(selectStringTypes, updating=True,
-                                     periodic=False)
+                res = u.select_atoms(selectStringTypes, updating=True, periodic=False)
                 #  gather the appropriate data
                 resname = res_sel1[j].resname
                 rx = res_sel1[j].position[0]
@@ -123,10 +129,12 @@ def save_N_atoms(u, Natoms, resname,
                 while n_current != Natoms and counter < maxTries:
                     # format the distance string
                     _selectstringdist = selectStringDist.format(
-                        rx=rx, ry=ry, rz=rz, r=defaultR, resid=j)
+                        rx=rx, ry=ry, rz=rz, r=defaultR, resid=j
+                    )
                     #  make the selection again
-                    res = u.select_atoms(_selectstringdist,
-                                         updating=False, periodic=False)
+                    res = u.select_atoms(
+                        _selectstringdist, updating=False, periodic=False
+                    )
                     #  change the radius
                     if len(res) < Natoms:
                         # increase the radius
@@ -146,7 +154,9 @@ def save_N_atoms(u, Natoms, resname,
                 # check for success
                 if n_current == Natoms:
                     if verbose:
-                        logger.info(f"success: { n_current} , {defaultR:.1f} , {counter}")
+                        logger.info(
+                            f"success: { n_current} , {defaultR:.1f} , {counter}"
+                        )
                     xyz_counter += 1
                     resids = [_.resid for _ in res]
                     # paths
@@ -184,10 +194,10 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--n_atoms", type=int, default=LIMIT)
     parser.add_argument("-r", "--resname", type=str, default="POT")
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
-    parser.add_argument("-dl", "--dcd_list", default=None,
-                        nargs="+", help="list of dcd files")
-    parser.add_argument("-d", "--dcd_dir", type=str, default=None,
-                        help="dcd directory")
+    parser.add_argument(
+        "-dl", "--dcd_list", default=None, nargs="+", help="list of dcd files"
+    )
+    parser.add_argument("-d", "--dcd_dir", type=str, default=None, help="dcd directory")
     parser.add_argument("-p", "--psf", type=str, required=True, help="psf file")
     args = parser.parse_args()
 

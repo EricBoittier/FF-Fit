@@ -83,4 +83,3 @@ class Config:
     def read_config(self, filename):
         with open(filename, "r") as f:
             self.__dict__.update(json.loads(f.read()))
-

@@ -6,7 +6,12 @@ import seaborn as sns
 from ff_energy.projections.dimensionality import get_pca
 from ff_energy.projections.dscribe_utils import weighting_exp
 
-def plot_pca(pca, x, ax=None):
+
+import patchworklib as pw
+
+
+
+def plot_pca(pca, x, ax=None, c=None):
     """
     Plot PCA of data
     :param pca:
@@ -14,10 +19,10 @@ def plot_pca(pca, x, ax=None):
     :return:
     """
     if ax is None:
-        plt.scatter(x[:, 0], x[:, 1])
+        plt.scatter(x[:, 0], x[:, 1], c=c)
         ax = plt.gca()
     else:
-        ax.scatter(x[:, 0], x[:, 1])
+        ax.scatter(x[:, 0], x[:, 1], c=c)
     # label explained variance
     exp_var = pca.explained_variance_ratio_
     exp_var_cum = np.cumsum(exp_var)
@@ -30,13 +35,13 @@ def plot_pca(pca, x, ax=None):
     return ax
 
 
-def plot_values_of_l(function, ase_atoms):
+def plot_values_of_l(function, ase_atoms, c=None):
     l_values = range(1, 7)
     print(l_values)
     soaps = [
-        function(average="inner", lmax=l,
-                 rcut=None, weighting=weighting_exp
-                 ).create(ase_atoms)
+        function(average="inner", lmax=l, rcut=None, weighting=weighting_exp).create(
+            ase_atoms
+        )
         for l in l_values
     ]
     for s in soaps:
@@ -51,34 +56,24 @@ def plot_values_of_l(function, ase_atoms):
 
     rng = np.random.RandomState(42)
 
-    reshaped = [
-        reshape_soap(soap) for soap in soaps
-    ]
+    reshaped = [reshape_soap(soap) for soap in soaps]
 
     by_l = []
     last_idx = 0
     for _ in reshaped:
-        print("last_idx", last_idx)
+        # print("last_idx", last_idx)
         by_l.append(_[:, last_idx:])
-        print("shape", by_l[-1].shape)
+        # print("shape", by_l[-1].shape)
         last_idx = _[0].shape[0]
 
-    pcas = [
-        get_pca(_) for _ in by_l
-    ]
+    pcas = [get_pca(_) for _ in by_l]
+    axes = []
 
-    n_pcas = len(pcas)
-    fs_m = 6
-    _, axs = plt.subplots(n_pcas, 1, sharex=True, sharey=True,
-                          figsize=(fs_m, fs_m*n_pcas))
+    for i, (pca_output) in enumerate(zip(pcas)):
+        pca, xnew = pca_output[0]
+        ax = pw.Brick(figsize=(3, 2))
+        plot_pca(pca, xnew, ax=ax, c=c)
+        ax.set_title(f"$l$={i+1}", fontsize=10)
+        axes.append(ax)
 
-    assert len(axs) == len(pcas)
-
-    for i, (pca_output, ax) in enumerate(zip(pcas, axs)):
-        print(ax)
-        plot_pca(*pca_output, ax=ax)
-        ax.set_title(f"l={i+1}", fontsize=10)
-    plt.tight_layout()
-
-    return soaps, pcas
-
+    return soaps, pcas, axes

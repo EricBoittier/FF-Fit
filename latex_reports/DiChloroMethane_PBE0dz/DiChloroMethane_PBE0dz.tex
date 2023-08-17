@@ -35,6 +35,26 @@ the ab initio data and the data modelled by molecular mechanics force fields is 
 \label{tab:energy_stats}
 \begin{tabular}{lrrrr}
 \toprule
+{} &  M\_ENERGY &  C\_ENERGY &  P\_intE &    intE \\
+\midrule
+count &    500.00 &    500.00 &  500.00 &  500.00 \\
+mean  &  -1527.15 &  -1527.24 &  -57.98 &  -60.22 \\
+std   &      0.01 &      0.02 &   10.63 &   13.22 \\
+min   &  -1527.17 &  -1527.33 &  -91.34 & -102.62 \\
+25\%   &  -1527.15 &  -1527.26 &  -65.72 &  -68.75 \\
+50\%   &  -1527.15 &  -1527.24 &  -58.34 &  -60.85 \\
+75\%   &  -1527.14 &  -1527.23 &  -50.43 &  -51.07 \\
+max   &  -1527.12 &  -1527.18 &  -27.18 &  -25.02 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[b!]
+\centering
+\caption{Summary statistics for the energy data.}
+\label{tab:energy_stats}
+\begin{tabular}{lrrrr}
+\toprule
 {} &  M\_ENERGY &  C\_ENERGY &  P\_intE &   intE \\
 \midrule
 count &    201.00 &    201.00 &  201.00 & 201.00 \\
@@ -49,35 +69,41 @@ max   & -19187.31 & -19187.32 &   -2.91 &  -2.59 \\
 \end{tabular}
 \end{table}
 
-\subsection{Distribution of Energies} 
+\subsection{waterclusterpbe0dzpc}
+\subsubsection{Distribution of Energies} 
  The following figures show the distribution of energies for the monomers, pairs, and clusters.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.25\textwidth]{figures/intE}
-    \caption{ Distribution of intE }
-    \label{fig:_intE}
+    \includegraphics[width=0.5\textwidth]{figures/MENERGY}
+    \caption{ Distribution of  M E N E R G Y }
+    \label{fig:singlekey}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.25\textwidth]{figures/PintE}
-    \caption{ Distribution of PintE }
-    \label{fig:_PintE}
+    \includegraphics[width=1.0\textwidth]{figures/intE_P_intE}
+    \caption{ Analysis of $\Delta H$ [kcal/mol] and $\Delta H{\mathrm{pairs}}$ [kcal/mol] }
+    \label{fig:_intE_P_intE}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.25\textwidth]{figures/CENERGY}
-    \caption{ Distribution of CENERGY }
-    \label{fig:_CENERGY}
+    \includegraphics[width=1.0\textwidth]{figures/C_ENERGY_M_ENERGY}
+    \caption{ Analysis of $\Delta H{\mathrm{cluster}}$ [Hartree] and $\Delta H{\mathrm{monomers}}$ [Hartree] }
+    \label{fig:_C_ENERGY_M_ENERGY}
 \end{figure}
+\newpage 
+ \subsection{Fitting Results}
+\subsection{dcmpbe0dzpc}
+\subsubsection{Distribution of Energies} 
+ The following figures show the distribution of energies for the monomers, pairs, and clusters.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.25\textwidth]{figures/MENERGY}
-    \caption{ Distribution of MENERGY }
-    \label{fig:_MENERGY}
+    \includegraphics[width=0.5\textwidth]{figures/MENERGY}
+    \caption{ Distribution of  M E N E R G Y }
+    \label{fig:singlekey}
 \end{figure}
 
 \begin{figure}

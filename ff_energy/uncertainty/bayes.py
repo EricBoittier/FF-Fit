@@ -9,7 +9,7 @@ import jax.numpy as jnp
 import jax.random as random
 from numpyro.infer import Predictive
 
-plt.rcParams['axes.facecolor'] = 'white'
+plt.rcParams["axes.facecolor"] = "white"
 
 plt.style.use("bmh")
 if "NUMPYRO_SPHINXBUILD" in os.environ:
@@ -26,8 +26,7 @@ def get_random_seed():
 
 def regression_model(fit, targets, targets_sd):
     #  std
-    sigma = numpyro.sample("sigma",
-                           dist.Exponential(1.0))
+    sigma = numpyro.sample("sigma", dist.Exponential(1.0))
 
     #  sample the scale factor
     a = numpyro.sample("a", dist.Normal(0.0, 0.5))
@@ -35,12 +34,9 @@ def regression_model(fit, targets, targets_sd):
     #  computer the mean
     mu = fit * a
     #  assume a distribution for the fit
-    fit_dist = numpyro.sample("fit_dist",
-                              dist.Normal(mu, sigma))
+    fit_dist = numpyro.sample("fit_dist", dist.Normal(mu, sigma))
     #  compare to targets
-    numpyro.sample("obs",
-                   dist.Normal(fit_dist, targets_sd),
-                   obs=targets)
+    numpyro.sample("obs", dist.Normal(fit_dist, targets_sd), obs=targets)
 
 
 def get_kernel(regression_model):
@@ -84,11 +80,12 @@ def get_predictions(mcmc, rng_key_, data, target_sd=None):
         target_sd = jnp.ones(data["TARGET_scaled"].shape[0])
 
     predictive = Predictive(mcmc.sampler.model, mcmc.get_samples())
-    predictions = predictive(rng_key_,
-                             fit=data["FIT_scaled"].values,
-                             targets=data["TARGET_scaled"].values,
-                             targets_sd=target_sd,
-                             )
+    predictions = predictive(
+        rng_key_,
+        fit=data["FIT_scaled"].values,
+        targets=data["TARGET_scaled"].values,
+        targets_sd=target_sd,
+    )
     return predictions
 
 
@@ -101,8 +98,7 @@ def get_residuals(predictions, CI=0.9):
     residuals_dict["obs"] = predictions["obs"]
     residuals_dict["obs_mean"] = predictions["obs"].mean(axis=0)
     residuals_dict["obs_hpdi"] = hpdi(predictions["obs"], CI)
-    residuals_dict["obs_mean_hpdi"] = hpdi(
-        predictions["obs"].mean(axis=0), CI)
+    residuals_dict["obs_mean_hpdi"] = hpdi(predictions["obs"].mean(axis=0), CI)
     err = abs(residuals_dict["obs_hpdi"][0] - residuals_dict["obs_mean_hpdi"][0])
     residuals_dict["err"] = err
     return residuals_dict

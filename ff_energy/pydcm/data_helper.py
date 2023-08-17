@@ -12,8 +12,7 @@ def get_cclib_data(filename):
     return data
 
 
-def prepare_paired_df(ds: pd.DataFrame,
-                      csv_dict: dict):
+def prepare_paired_df(ds: pd.DataFrame, csv_dict: dict):
     key1s = []
     key2s = []
     alphas = []
@@ -48,13 +47,17 @@ def prepare_paired_df(ds: pd.DataFrame,
 
     ALPHA = "$\\alpha$"
     LAMBDA = "$\lambda$"
-    ds_paired = pd.DataFrame({"key1": key1s,
-                              "key2": key2s,
-                              "split": split,
-                              "rmse_kernel": rmse1,
-                              "rmse_opt": rmse2,
-                              ALPHA: alphas,
-                              LAMBDA: lambdas})
+    ds_paired = pd.DataFrame(
+        {
+            "key1": key1s,
+            "key2": key2s,
+            "split": split,
+            "rmse_kernel": rmse1,
+            "rmse_opt": rmse2,
+            ALPHA: alphas,
+            LAMBDA: lambdas,
+        }
+    )
 
     return ds_paired
 
@@ -89,7 +92,7 @@ def prepare_dataframe(csv_dict: dict):
             "alpha": alphas,
             "rmse": rmses,
             "class": evaluated,
-            "uuid": uuids
+            "uuid": uuids,
         }
     )
 
@@ -111,8 +114,7 @@ def read_global_charges(filename):
     Nchg = int(lines[0].split()[0])
     charges = np.zeros((Nchg, 4))
     for i in range(Nchg):
-        charges[i, :] = [float(x) for x in
-                         lines[i + 2].split()[1:]]
+        charges[i, :] = [float(x) for x in lines[i + 2].split()[1:]]
     RMSE = None
     for _ in lines:
         if "RMSE" in _:

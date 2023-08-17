@@ -5,23 +5,23 @@ import seaborn as sns
 
 
 def plot_energy_MSE(
-        df,
-        key1,
-        key2,
-        FONTSIZE=10,
-        xlabel="",
-        ylabel="",
-        elec="ele",
-        CMAP="viridis",
-        cbar_label="ELEC (kcal/mol)",
-        ax=None,
-        bootstrap=True,
-        title=True,
-        bounds=None,
-        alpha=0.5,
-        s=1,
-        save=False,
-        cbar_bounds=(-120, 0),
+    df,
+    key1,
+    key2,
+    FONTSIZE=10,
+    xlabel="",
+    ylabel="",
+    elec="ele",
+    CMAP="viridis",
+    cbar_label="ELEC (kcal/mol)",
+    ax=None,
+    bootstrap=True,
+    title=True,
+    bounds=None,
+    alpha=0.5,
+    s=1,
+    save=False,
+    cbar_bounds=(-120, 0),
 ):
     """Plot the energy MSE"""
 
@@ -34,7 +34,7 @@ def plot_energy_MSE(
         fig, ax = plt.subplots()
     # calculate MSE
     ERROR = df[key1] - df[key2]
-    MSE = np.mean(ERROR ** 2)
+    MSE = np.mean(ERROR**2)
     df["SE"] = ERROR.copy() ** 2
 
     if bootstrap:
@@ -137,28 +137,51 @@ def plot_energy_MSE(
     if save:
         plt.savefig(save, dpi=300)
 
-
     return ax, cbar, stats
+
 
 def plot_ecol(data):
     data = data.dropna()
     data = data[data["ECOL"] < -50]
-    plot_energy_MSE(data, "ECOL", "ELEC", xlabel="Coulomb integral [kcal/mol]",
-                    ylabel="CHM ELEC [kcal/mol]", elec="ECOL", CMAP="plasma")
+    plot_energy_MSE(
+        data,
+        "ECOL",
+        "ELEC",
+        xlabel="Coulomb integral [kcal/mol]",
+        ylabel="CHM ELEC [kcal/mol]",
+        elec="ECOL",
+        CMAP="plasma",
+    )
 
 
 def plot_intE(data):
     data["nb_intE"] = data["ELEC"] + data["VDW"]
-    plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
-                    ylabel="NBONDS [kcal/mol]", elec="ELEC", CMAP="viridis")
+    plot_energy_MSE(
+        data,
+        "intE",
+        "nb_intE",
+        xlabel="intE [kcal/mol]",
+        ylabel="NBONDS [kcal/mol]",
+        elec="ELEC",
+        CMAP="viridis",
+    )
 
 
 def plot_LJintE(data, ax=None, elec="ELEC"):
     data["nb_intE"] = data[elec] + data["LJ"]
     data = data.dropna()
-    ax = plot_energy_MSE(data, "intE", "nb_intE", xlabel="intE [kcal/mol]",
-                         ylabel="NBONDS [kcal/mol]", elec=elec, CMAP="viridis", ax=ax)
+    ax = plot_energy_MSE(
+        data,
+        "intE",
+        "nb_intE",
+        xlabel="intE [kcal/mol]",
+        ylabel="NBONDS [kcal/mol]",
+        elec=elec,
+        CMAP="viridis",
+        ax=ax,
+    )
     return ax
+
 
 def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
     """
@@ -172,7 +195,7 @@ def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
     bins = np.arange(key_min, key_max, key_range / NBINS)
     ff_pairs.data[f"{key}_bin"] = np.digitize(ff_pairs.data[key], bins=bins)
     ff_pairs.data[f"{key}_bin"] = (
-            key_min + ff_pairs.data[f"{key}_bin"] * key_range / NBINS
+        key_min + ff_pairs.data[f"{key}_bin"] * key_range / NBINS
     )
     ff_pairs.elec = ecol
     ff_pairs.func = ff_fit.func
@@ -182,9 +205,8 @@ def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
     """
     ff_pairs.data["DUMMY"] = [0] * len(ff_pairs.data)
     MSE = (
-            (ff_pairs.data.groupby("key")[ecol].sum() - ff_fit.data.sort_index()[
-                "ELEC"])
-            ** 2
+        (ff_pairs.data.groupby("key")[ecol].sum() - ff_fit.data.sort_index()["ELEC"])
+        ** 2
     ).mean()
     RMSE = np.sqrt(MSE)
     print(MSE, RMSE)
@@ -275,8 +297,8 @@ def plot_ff_fit(ff_pairs, ff_fit, ecol="ECOL_PC", EB=("sd", 3), suptitle=None):
         axes = [axs["e)"], axs["d)"], axs["f)"]]
         stats = [spp, spc, scc]
         for (
-                ax_,
-                s,
+            ax_,
+            s,
         ) in zip(axes, stats):
             ax_.text(
                 1.0,
@@ -373,36 +395,57 @@ def plot_dists(fit, ax):
 
 
 def cor_pairs(fit, ax):
-    ax, _, stats = plot_energy_MSE(fit.groupby("key").sum(), "intE", "nb_intE",
-                                   FONTSIZE=10, xlabel="$E_{DFT}$ [kcal/mol]",
-                                   ylabel="$E_{Model}$ [kcal/mol]", elec="ECOL_PC",
-                                   ax=ax, bootstrap=True, title=False,
-                                   bounds=(-100, -20))
+    ax, _, stats = plot_energy_MSE(
+        fit.groupby("key").sum(),
+        "intE",
+        "nb_intE",
+        FONTSIZE=10,
+        xlabel="$E_{DFT}$ [kcal/mol]",
+        ylabel="$E_{Model}$ [kcal/mol]",
+        elec="ECOL_PC",
+        ax=ax,
+        bootstrap=True,
+        title=False,
+        bounds=(-100, -20),
+    )
     return ax, stats
 
 
 def cor_pairs_cluster(fit, ax):
     ax, _, stats = plot_energy_MSE(
-        fit, "intE", "P_intE", FONTSIZE=10,
+        fit,
+        "intE",
+        "P_intE",
+        FONTSIZE=10,
         xlabel="$E_{Clusters}$ [kcal/mol]",
-        ylabel="$E_{Pairs}$ [kcal/mol]", elec="ECOL", ax=ax,
-        bootstrap=True, title=False, bounds=(-100, -20))
+        ylabel="$E_{Pairs}$ [kcal/mol]",
+        elec="ECOL",
+        ax=ax,
+        bootstrap=True,
+        title=False,
+        bounds=(-100, -20),
+    )
     return ax, stats
 
 
 def cor_cluster(fit, ax):
     ax, _, stats = plot_energy_MSE(
-        fit, "intE", "nb_intE", FONTSIZE=10,
+        fit,
+        "intE",
+        "nb_intE",
+        FONTSIZE=10,
         xlabel="$E_{DFT}$ [kcal/mol]",
-        ylabel="$E_{Model}$ [kcal/mol]", elec="ECOL", ax=ax,
-        bootstrap=True, title=False, bounds=(-100, -20))
+        ylabel="$E_{Model}$ [kcal/mol]",
+        elec="ECOL",
+        ax=ax,
+        bootstrap=True,
+        title=False,
+        bounds=(-100, -20),
+    )
     return ax, stats
 
 
 def residuals_plot(df, ax, x, y, hue=None, **kwargs):
     resplot = sns.residplot(
-        x=x, y=y, data=df, ax=ax, color="k",
-        scatter_kws={"alpha": 0.3},
-        **kwargs
+        x=x, y=y, data=df, ax=ax, color="k", scatter_kws={"alpha": 0.3}, **kwargs
     )
-
