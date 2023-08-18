@@ -279,6 +279,9 @@ MASS  1  CG331     12.01100 ! aliphatic C for methyl group (-CH3)
 MASS  2  HGP1       1.00800 ! polar H
 MASS  3  HGA3       1.00800 ! alphatic proton, CH3
 MASS  4  OG311     15.99940 ! hydroxyl oxygen
+MASS  -1  CG321     12.01100 ! aliphatic C for CH2
+MASS  -1  CLGA1     35.45300 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+MASS  -1  HGA2       1.00800 ! alphatic proton, CH2
 
 DEFA FIRS NONE LAST NONE
 AUTO ANGLES DIHE PATCH DRUDE
@@ -312,6 +315,21 @@ ANGLE {{H}} {{O}} {{H1}}             ! required
 ACCEPTOR {{O}}
 PATCHING FIRS NONE LAST NONE
 
+RESI DCM       0.000 ! param penalty=   4.000 ; charge penalty=   0.000
+
+GROUP            ! CHARGE   CH_PENALTY
+ATOM C      CG321  -0.018 !    0.000
+ATOM CL1    CLGA1  -0.081 !    0.000
+ATOM CL2    CLGA1  -0.081 !    0.000
+ATOM H1     HGA2    0.090 !    0.000
+ATOM H2     HGA2    0.090 !    0.000
+
+BOND H1   C
+BOND C    CL1
+BOND C    CL2
+BOND C    H2
+PATCHING FIRS NONE LAST NONE
+
 END
 """
 )
@@ -336,7 +354,7 @@ PRNLev 5
 OPEN UNIT 1 READ FORM NAME {{PDB}}
 READ SEQU PDB UNIT 1
 CLOSE UNIT 1
-GENERATE LIG FIRST NONE LAST NONE SETUP NOANG NODIHED
+GENERATE {{RES}} FIRST NONE LAST NONE SETUP NOANG NODIHED
 
 OPEN UNIT 1 READ FORM NAME {{PDB}}
 READ COOR PDB UNIT 1
@@ -364,6 +382,9 @@ MASS  1  CG331     12.01100 ! aliphatic C for methyl group (-CH3)
 MASS  2  HGP1       1.00800 ! polar H
 MASS  3  HGA3       1.00800 ! alphatic proton, CH3
 MASS  4  OG311     15.99940 ! hydroxyl oxygen
+MASS  -1  CG321     12.01100 ! aliphatic C for CH2
+MASS  -1  CLGA1     35.45300 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+MASS  -1  HGA2       1.00800 ! alphatic proton, CH2
 
 BONDS
 CG331  OG311  428.0     1.420
@@ -371,6 +392,8 @@ CG331  HGA3   322.0     1.111
 OG311  HGP1   545.0     0.960
 OT  HT  450.0 0.9572 ! ALLOW WAT
 HT  HT    0.0 1.5139 ! ALLOW WAT
+CG321  CLGA1   220.00     1.7880 ! CLET, chloroethane
+CG321  HGA2    309.00     1.1110 ! PROT alkane update, adm jr., 3/2/92
 
 ANGLES
 OG311  CG331 HGA3 45.90  108.8900
@@ -378,6 +401,9 @@ HGA3   CG331 HGA3 35.50  108.4000
 CG331  OG311 HGP1 57.50  106.0000
 HT  OT  HT   55.0 104.52 ! ALLOW WAT
 OT  HT  HT   55.0 104.52 ! ALLOW WAT
+CLGA1  CG321  CLGA1    95.00    109.00 ! dcm_freq , from CLGA1 CG311 CLGA1, PENALTY= 4
+CLGA1  CG321  HGA2     42.00    107.00 ! CLET, chloroethane
+HGA2   CG321  HGA2     35.50    109.00    5.40   1.80200 ! PROT alkane update, adm jr., 3/2/92
 
 DIHEDRALS
 HGA3 CG331 OG311 HGP1     0.18        3     0.0000
@@ -391,6 +417,9 @@ HGP1     0.0       -0.046    0.225                 ! polar H
 HGA3     0.0       -0.024    1.340                 ! alkane, yin and mackerell, 4/98
 OT     0.00  -0.1521  1.7682 ! ALLOW   WAT
 HT     0.00  -0.0460  0.2245 ! ALLOW WAT
+CG321    0.0       -0.0560     2.0100   0.0 -0.01 1.9 ! alkane (CT2), 4/98, yin, adm jr, also used by viv
+CLGA1    0.0       -0.3430     1.9100 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+HGA2     0.0       -0.0240     1.3400 ! alkane, yin and mackerell, 4/98
 
 END"""
 
@@ -404,11 +433,16 @@ MASS  1  CG331     12.01100 ! aliphatic C for methyl group (-CH3)
 MASS  2  HGP1       1.00800 ! polar H
 MASS  3  HGA3       1.00800 ! alphatic proton, CH3
 MASS  4  OG311     15.99940 ! hydroxyl oxygen
+MASS  -1  CG321     12.01100 ! aliphatic C for CH2
+MASS  -1  CLGA1     35.45300 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+MASS  -1  HGA2       1.00800 ! alphatic proton, CH2
 
 BONDS
 CG331  OG311  428.0     1.420
 CG331  HGA3   322.0     1.111
 OG311  HGP1   545.0     0.960
+CG321  CLGA1   220.00     1.7880 ! CLET, chloroethane
+CG321  HGA2    309.00     1.1110 ! PROT alkane update, adm jr., 3/2/92
 OT  HT  450.0 0.9572 ! ALLOW WAT
 HT  HT    0.0 1.5139 ! ALLOW WAT
 
@@ -418,6 +452,10 @@ HGA3   CG331 HGA3 35.50  108.4000
 CG331  OG311 HGP1 57.50  106.0000
 HT  OT  HT   55.0 104.52 ! ALLOW WAT
 OT  HT  HT   55.0 104.52 ! ALLOW WAT
+CLGA1  CG321  CLGA1    95.00    109.00 ! dcm_freq , from CLGA1 CG311 CLGA1, PENALTY= 4
+CLGA1  CG321  HGA2     42.00    107.00 ! CLET, chloroethane
+HGA2   CG321  HGA2     35.50    109.00    5.40   1.80200 ! PROT alkane update, adm jr., 3/2/92
+
 
 DIHEDRALS
 HGA3 CG331 OG311 HGP1     0.18        3     0.0000
@@ -431,6 +469,9 @@ HGP1     0.0       {HGP1_e}    {HGP1_s}                 ! polar H
 HGA3     0.0       {HGA3_e}   {HGA3_s}                 ! alkane, yin and mackerell, 4/98
 OT       0.0    {OT_e}  {OT_s} ! ALLOW   WAT
 HT       0.0    {HT_e}  {HT_s} ! ALLOW WAT
+CG321    0.0       -0.0560     2.0100   0.0 -0.01 1.9 ! alkane (CT2), 4/98, yin, adm jr, also used by viv
+CLGA1    0.0       -0.3430     1.9100 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+HGA2     0.0       -0.0240     1.3400 ! alkane, yin and mackerell, 4/98
 
 END
 """

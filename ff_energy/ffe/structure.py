@@ -304,16 +304,25 @@ TITLE
 REMARK
 """
         pdb_format = (
-            "{:6s}{:5d} {:^4s}{:1s}{:4s}{:1s}{:4d}{:1s}   "
+            "{:6s}{:5d} {:<4s}{:1s}{:4s}{:1s}{:4d}{:1s}   "
             "{:8.3f}{:8.3f}{:8.3f}{:6.2f}{:6.2f}"
             "          {:>2s}{:2s}\n"
         )
         _str = header
+
         for i, line in enumerate(self.atoms):
-            # print(i, self.atomnames[i], self.restypes[i], self.resids[i])
+            AN = self.atomnames[i]
+            if AN == "Cl":
+                print(i, line)
+                if self.atomnames[i - 1] == "Cl":
+                    AN = "Cl2"
+                else:
+                    AN = "Cl1"
+                print(self.atomnames[i], AN)
+
             _1 = "ATOM"
             _2 = i + 1
-            _3 = self.atomnames[i]
+            _3 = AN
             _4 = ""
             _5 = self.restypes[i]
             _6 = ""

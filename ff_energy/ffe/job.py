@@ -95,20 +95,23 @@ class Job:
         self.make_dir(self.charmm_path)
         self.structure.atom_types = atom_types
         self.structure.read_pdb(self.structure.path)
-        with open(self.structure.path, "w") as f:
+        sname = str(self.structure.path).lower()
+        print(sname)
+        with open(sname, "w") as f:
             f.write(self.structure.get_pdb())
         #  move pdb file to charmm directory
-        copy(self.structure.path, self.charmm_path)
+        copy(sname, self.charmm_path)
         dcm_command = None
         if self.kwargs["c_files"] is not None:
             for file in self.kwargs["c_files"]:
                 copy(CHM_FILES_PATH / file, self.charmm_path)
             dcm_command = self.kwargs["c_dcm_command"]
-
+        #  render the charmm template
         charmm_job = c_job_template.render(
-            NAME=self.name,
+            NAME=str(self.name).lower(),
             PAR=PAR,
-            PDB=self.structure.name,
+            RES="DCM", # TODO: make this a parameter
+            PDB=str(self.structure.name).lower(),
             DCM_COMMAND=dcm_command,
             PSF=self.structure.get_psf(),
         )
