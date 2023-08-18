@@ -16,7 +16,7 @@ from ff_energy.ffe.templates import esp_view_template, vmd_template, g_template
 
 from shutil import copy
 import pandas as pd
-import ff_energy as constants
+from ff_energy.ffe.constants import atom_types
 
 from ff_energy.logs.logging import logger
 
@@ -93,7 +93,7 @@ class Job:
 
     def generate_charmm(self):
         self.make_dir(self.charmm_path)
-        self.structure.atom_types = constants.atom_types
+        self.structure.atom_types = atom_types
         self.structure.read_pdb(self.structure.path)
         with open(self.structure.path, "w") as f:
             f.write(self.structure.get_pdb())
