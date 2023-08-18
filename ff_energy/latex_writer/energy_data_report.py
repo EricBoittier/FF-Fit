@@ -76,6 +76,7 @@ class EnergyReport:
             names = [safe_latex_string(Path(p).stem) for p in pickle_paths]
         if descriptions is None:
             descriptions = ["" for p in pickle_paths]
+
         def check_cond(pp):
             return isinstance(pp, str) or isinstance(pp, Path)
 
@@ -88,7 +89,6 @@ class EnergyReport:
                 self.load_data(path)
                 self.data_names.append(names[i])
                 self.data_descriptions.append(descriptions[i])
-
 
     def generate_data_report(self):
         #  make the tables
@@ -118,6 +118,10 @@ class EnergyReport:
                 " following figures show the distribution of energies"
                 " for the monomers, pairs, and clusters."
             )
+
+            figs = self.make_mol_pics(i=i)
+            for f in figs:
+                self.report.add_section(f, width="0.85")
 
             #  Figures for single distributions
             single_keys = [
@@ -153,9 +157,25 @@ class EnergyReport:
             _["label"],
         )
 
+    def make_mol_pics(self, i=0):
+        _ = self.data_plots[i].mol_pics(
+            ["intE", "P_intE", "C_ENERGY", "M_ENERGY"],
+            self.report.fig_path,
+            self.data_names[i]
+        )
+        figures = [
+            Figure(
+                path,
+                caption,
+                label,
+            )
+            for path, caption, label in zip(_[0], _[1], _[2])]
+
+        return figures
 
     def make_kde_figs(self, keys, i=0):
-        _ = self.data_plots[0].hist_kde(keys, path=self.report.fig_path)
+        _ = self.data_plots[0].hist_kde(
+            keys, path=self.report.fig_path)
         return Figure(
             _["path"],
             _["caption"],
@@ -178,11 +198,6 @@ class EnergyReport:
             )
             self.report.add_section(energy_table)
 
-    def report_energies(self):
-        pass
-
-    def report_fitting(self):
-        pass
 
 
 if __name__ == "__main__":
@@ -199,7 +214,7 @@ if __name__ == "__main__":
         "Water clusters at PBE0/aug-dz",
         "DCM clusters at PBE0/aug-dz",
     ]
-    er = EnergyReport(report_name="DiChloroMethane_PBE0dz")
+    er = EnergyReport(report_name="Report_PBE0dz")
     er.add_pickles(pkl_paths, names=plk_names, descriptions=pkl_descriptions)
     er.generate_data_report()
     er.compile_report()

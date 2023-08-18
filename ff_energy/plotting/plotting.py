@@ -47,7 +47,7 @@ def save_fig(fig, filename, path=None) -> Path:
             fig = patchwork_grid(f)
             fig.savefig(filename)
         else:
-            f.savefig(filename)
+            f.savefig(filename, bbox_inches="tight")
 
     if path is not None:
         if isinstance(path, str):

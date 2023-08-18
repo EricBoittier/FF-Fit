@@ -36,8 +36,7 @@ def plot_pca(pca, x, ax=None, c=None):
 
 
 def plot_values_of_l(function, ase_atoms, c=None):
-    l_values = range(1, 7)
-    print(l_values)
+    l_values = range(1, 4)
     soaps = [
         function(average="inner", lmax=l, rcut=None, weighting=weighting_exp).create(
             ase_atoms
@@ -68,12 +67,20 @@ def plot_values_of_l(function, ase_atoms, c=None):
 
     pcas = [get_pca(_) for _ in by_l]
     axes = []
-
-    for i, (pca_output) in enumerate(zip(pcas)):
-        pca, xnew = pca_output[0]
-        ax = pw.Brick(figsize=(3, 2))
-        plot_pca(pca, xnew, ax=ax, c=c)
-        ax.set_title(f"$l$={i+1}", fontsize=10)
-        axes.append(ax)
+    if c is not None:
+        for ci in range(len(c)):
+            for i, (pca_output) in enumerate(zip(pcas)):
+                pca, xnew = pca_output[0]
+                ax = pw.Brick(figsize=(3, 2))
+                plot_pca(pca, xnew, ax=ax, c=c[ci])
+                ax.set_title(f"$l$={i+1}", fontsize=10)
+                axes.append(ax)
+    else:
+        for i, (pca_output) in enumerate(zip(pcas)):
+            pca, xnew = pca_output[0]
+            ax = pw.Brick(figsize=(3, 2))
+            plot_pca(pca, xnew, ax=ax,)
+            ax.set_title(f"$l$={i + 1}", fontsize=10)
+            axes.append(ax)
 
     return soaps, pcas, axes
