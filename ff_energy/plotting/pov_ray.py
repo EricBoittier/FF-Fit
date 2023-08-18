@@ -25,8 +25,6 @@ def render_povray(atoms, pov_name,
         'H': [232, 206, 202],
         'X': [200, 200, 200]}
 
-    radius_scale = 0.40
-
     radius_list = []
     for atomic_number in atoms.get_atomic_numbers():
         radius_list.append(radius_scale * covalent_radii[atomic_number])

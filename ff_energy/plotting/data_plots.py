@@ -98,12 +98,18 @@ class DataPlots:
         return out_dict
 
     def hist_kde(self, keys, path=None, label="") -> dict:
-
+        """
+        Plot the histogram and kde of the given keys
+        :param keys:
+        :param path:
+        :param label:
+        :return:
+        """
         n_keys = len(keys)
         axes = [pw.Brick(figsize=(3, 2)) for _ in range(n_keys)]
         for i, key in enumerate(keys):
             ax = axes[i]
-            snshist = sns.histplot(data=self.data, x=key, kde=True, ax=ax)
+            _ = sns.histplot(data=self.data, x=key, kde=True, ax=ax)
             #  set the x axis to scientific notation
             ax.xaxis.set_major_formatter(yfmt)
             ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))

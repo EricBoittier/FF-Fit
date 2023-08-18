@@ -53,7 +53,6 @@ def plot_values_of_l(function, ase_atoms, c=None):
         print(soap.shape)
         return soap
 
-    rng = np.random.RandomState(42)
 
     reshaped = [reshape_soap(soap) for soap in soaps]
 

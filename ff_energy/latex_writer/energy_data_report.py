@@ -75,7 +75,7 @@ class EnergyReport:
         if names is None:
             names = [safe_latex_string(Path(p).stem) for p in pickle_paths]
         if descriptions is None:
-            descriptions = ["" for p in pickle_paths]
+            descriptions = ["" for _ in pickle_paths]
 
         def check_cond(pp):
             return isinstance(pp, str) or isinstance(pp, Path)

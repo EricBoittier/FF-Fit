@@ -72,7 +72,6 @@ def patchwork_grid(axes):
     n = len(axes)
     sqrt_n = int(n ** 0.5)
     if sqrt_n ** 2 == n:
-        rows = sqrt_n
         cols = sqrt_n
     else:
         cols = sqrt_n + 1
