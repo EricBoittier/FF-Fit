@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import ff_energy
-from ff_energy import (
+from ff_energy.pydcm.dcm import (
     mdcm,
     mdcm_set_up,
     scan_fesp,
@@ -24,11 +24,11 @@ from ff_energy import (
     optimize_mdcm,
     eval_kernel,
 )
-from ff_energy import FFE_PATH, espform, densform
-from ff_energy import dcm_utils as du
-from ff_energy import json_utils as ju
-from ff_energy import MDCM
-from ff_energy import KernelFit
+from ff_energy.pydcm.dcm import FFE_PATH, espform, densform
+from ff_energy.utils import dcm_utils as du
+from ff_energy.utils import json_utils as ju
+from ff_energy.pydcm.mdcm_dict import MDCM
+from ff_energy.pydcm.kernel import KernelFit
 
 # model_test_key = "ddc0ceff-f221-45c5-bd4e-3e5e2e1eb705"
 model_test_key = "e73308ad-2677-49b3-a149-270743bd3a83"

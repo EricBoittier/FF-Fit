@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path, PosixPath
 
-from ff_energy import mdcm_set_up
+from ff_energy.pydcm.dcm import mdcm_set_up
 
 
 class MDCM:
