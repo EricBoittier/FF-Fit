@@ -43,8 +43,6 @@ Z
 *ff_energy/pycharmm_runner/output/equil.res,5/3/53a05b1034a891e1eebe86ba0786627e23de88d9
 S
 #ff_energy/pycharmm_runner/README.md,9/2/923c40f5813526b4b3b34380f4bc3099efd1259e
-F
-ff_energy/ffe/slurm.py,9/f/9f993d64a560e99acf69a3c1f52306030bcbcd78
 U
 %notebooks/pycharmm/dcm/dcm_toppar.str,e/f/ef7a9ddaf55b31facfe0b087709f2754efd15236
 K

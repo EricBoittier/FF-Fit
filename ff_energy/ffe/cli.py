@@ -61,7 +61,7 @@ def submit_jobs(jobs, max_jobs=120, Check=True, cluster=clusterBACH):
     logger.info("Jobs: ", len(shj.jobs))
 
     shj.shuffle_jobs()
-    shj.submit_jobs(Check=Check)
+    shj.submit_jobs(Check=Check, NperSubmit=max_jobs)
 
 
 def coloumb_submit(cluster, jobmakers, max_jobs=120, Check=True):

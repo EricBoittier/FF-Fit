@@ -366,7 +366,7 @@ CLOSE UNIT 1
 open unit 15 write card name dcm.xyz
 {{DCM_COMMAND}}
 
-NBONd CUTNb 100.0 CTONnb 90.0 CTOFnb 94.0 E14FAC 0.0 FSWITch VSWItch CDIElectric EPSilon 1.0 NBXMOD 2
+NBONd CUTNb 100.0 CTONnb 90.0 CTOFnb 94.0 E14FAC 0.0 FSWITch VSWItch CDIElectric EPSilon 1.0 NBXMOD 5
 
 ENERGY
 """
