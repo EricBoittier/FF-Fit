@@ -52,6 +52,7 @@ MODELS = {
     },
     "dcm": {
         "pc": DCM_STATES("dcm_pbe0dz.pc"),
+        "mdcm": DCM_STATES("dcm_pbe0dz.mdcm"),
     },
 }
 
