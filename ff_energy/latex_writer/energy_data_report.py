@@ -65,6 +65,17 @@ class EnergyReport:
         self.report.add_section("\\clearpage")
         self.report.set_abstract(abstract)
 
+    def add_data(self, index, data, key):
+        """adds a column to the data
+        :param index: the index of the data to add to
+        :param data: the data to add
+        :param key: the key to add the data under
+        :return: None
+        """
+        self.data[index].data = \
+            self.data[index].data.join(
+                data, how="outer", rsuffix=key)
+
     def add_pickles(self, pickle_paths, names=None, descriptions=None):
         """
         Add the pickle paths to the data
