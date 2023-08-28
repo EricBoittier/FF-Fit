@@ -7,7 +7,17 @@ from ff_energy.latex_writer.figure import Figure
 from ff_energy.latex_writer.format import safe_latex_string
 from ff_energy.plotting.data_plots import DataPlots
 from ff_energy.utils.ffe_utils import pickle_output
+from ff_energy.latex_writer.extra_data import (
+    dcm_elec_, dcm_pol_no_intern
+)
+
 plt.set_loglevel("notset")
+
+
+
+
+
+
 
 abstract = """ This report summaries the findings from 
 ab initio WFT and energy decomposition analysis. These results were used to fit
@@ -65,7 +75,7 @@ class EnergyReport:
         self.report.add_section("\\clearpage")
         self.report.set_abstract(abstract)
 
-    def add_data(self, index, data, key):
+    def add_data(self, index, data, key) -> None:
         """adds a column to the data
         :param index: the index of the data to add to
         :param data: the data to add
@@ -232,8 +242,17 @@ if __name__ == "__main__":
     ]
 
     er = EnergyReport(report_name="Report_PBE0dz")
-    er.add_pickles(pkl_paths, names=plk_names, descriptions=pkl_descriptions)
+    er.add_pickles(pkl_paths,
+                   names=plk_names,
+                   descriptions=pkl_descriptions
+                   )
     er.generate_data_report()
     er.compile_report()
+
+    """
+    Add extra data where available
+    """
+    er.add_data(1, dcm_elec_["ELEC"], "_CI")
+    er.add_data(1, dcm_pol_no_intern["ELEC"], "_POL")
 
     pickle_output(er, "energy_report")
