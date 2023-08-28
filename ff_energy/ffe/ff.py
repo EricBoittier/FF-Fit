@@ -26,15 +26,15 @@ from ff_energy.ffe.potential import ecol, ecol_seg
 class FF:
     def __init__(
         self,
-        data,
-        dists,
-        func,
-        bounds,
-        structure,
-        nobj=4,
-        elec="ELEC",
-        intern="Exact",
-        intE="intE",
+        data, #  the data to fit, type: pd.DataFrame
+        dists, #  the distances to fit
+        func, #  the function to fit
+        bounds, #  the bounds for the function
+        structure, #  the structure to fit
+        nobj=4, #  the number of objects to fit
+        elec="ELEC", #  the name of the electrostatics column
+        intern="Exact", #  the name of the intern column
+        intE="intE", #  the name of the internal energy column
     ):
         self.data = data
         #  make a dummy zero column for the energy

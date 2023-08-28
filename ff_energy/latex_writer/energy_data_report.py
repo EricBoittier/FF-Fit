@@ -86,6 +86,18 @@ class EnergyReport:
             self.data[index].data.join(
                 data, how="outer", rsuffix=key)
 
+
+    def add_ff(self):
+        """ Create the force field object for fitting
+
+        :return:
+        """
+
+        # FF()
+
+
+        pass
+
     def add_pickles(self, pickle_paths, names=None, descriptions=None):
         """
         Add the pickle paths to the data
@@ -113,7 +125,7 @@ class EnergyReport:
 
     def generate_data_report(self):
         #  make the tables
-        self.make_tables()
+        self.summary_tables()
         #  make the figures
         self.make_figures()
 
@@ -166,6 +178,10 @@ class EnergyReport:
 
             self.report.add_section("\\newpage \n \subsection{Fitting Results}")
 
+        self.report.add_section("\\newpage \n \subsection{Appendix}")
+        self.appendix_tables()
+
+
     def make_energy_fig(self, key1, key2, i=0):
         _ = self.data_plots[i].energy_hist(
             path=self.report.fig_path,
@@ -206,7 +222,7 @@ class EnergyReport:
             _["label"],
         )
 
-    def make_tables(self):
+    def summary_tables(self):
         for i in range(len(self.data)):
             energy_table = (
                 self.data_plots[i]
@@ -217,6 +233,21 @@ class EnergyReport:
                     index_names=False,
                     caption="Summary statistics for the energy data.",
                     label=f"tab:energy_stats",
+                    position="b!",
+                )
+            )
+            self.report.add_section(energy_table)
+
+    def appendix_tables(self):
+        for i in range(len(self.data)):
+            energy_table = (
+                self.data_plots[i]
+                .data[energy_cols_1]
+                .to_latex(
+                    float_format="%.2f",
+                    index_names=False,
+                    caption="Energy data.",
+                    label=f"tab:energy_raw",
                     position="b!",
                 )
             )

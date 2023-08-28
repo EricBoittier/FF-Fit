@@ -2,8 +2,8 @@ import unittest
 
 import jax.numpy
 
-from ff_energy import read_from_pickle
-from ff_energy import FF
+from ff_energy.utils.ffe_utils import read_from_pickle
+from ff_energy.ffe.ff import FF
 import jax.numpy as jnp
 
 # load the data

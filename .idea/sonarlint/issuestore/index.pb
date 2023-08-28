@@ -5,8 +5,6 @@ U
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 R
 "ff_energy/ffe/charmm_files/tip3.pc,3/c/3cf7c1240822889a3e18be25693e7f2d04a96865
-G
-tests/test_potential.py,d/6/d698fb7bf3cb285a083144482ca92073f94abc62
 X
 (configs/pbe0dz-water_cluster-tip3.config,b/f/bf90d370a3d768325fc7952609a78d4ea72ffe67
 W

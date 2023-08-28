@@ -133,6 +133,11 @@ class Data:
 
         self.prepare_monomers(min_m_E=min_m_E)
 
+        self.jax_data = None
+        self.pair_ff_data = None
+
+
+
     def prepare_monomers(self, min_m_E=None):
         if self.monomers_df is not None:
             self.monomers_df["key"] = [x.split("_")[-1] for x in self.monomers_df.index]
@@ -265,14 +270,14 @@ def pairs_data(
     # dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
 ):
     """
-
     :param data:
     :param dcm_path:
     :return:
     """
+    logger.info("Preparing pairs_data")
 
     structures, pdbs = get_structures(system)
-    structure_key_pairs = {p.split(".")[0]: s for p, s in zip(pdbs, structures)}
+    structure_key_pairs = {Path(p).stem: s for p, s in zip(pdbs, structures)}
 
     #  lists for the dataframe
     E_col_dcms = []
@@ -345,44 +350,44 @@ def pairs_data(
                     if j == 1 and (i == 0 or i == 2):
                         dists.append(dist)
 
-        CM1 = np.average(dcm1, axis=0)  # , weights=[1,15.99,1])
-        CM2 = np.average(dcm2, axis=0)  # , weights=[1,15.99,1])
-        distance = np.linalg.norm(CM1 - CM2)
+        # CM1 = np.average(dcm1, axis=0)  # , weights=[1,15.99,1])
+        # CM2 = np.average(dcm2, axis=0)  # , weights=[1,15.99,1])
+        # distance = np.linalg.norm(CM1 - CM2)
+        #
+        # bisector1 = bisector(dcm1)
+        # bisector2 = bisector(dcm2)
+        #
+        # dih = dihedral3(
+        #     np.array(
+        #         [dcm1[1, :] + bisector1, dcm1[1, :], dcm2[1, :], dcm2[1, :] + bisector2]
+        #     )
+        # )
+        #
+        # theta = angle(bisector1, bisector2)
+        # a1 = angle(dcm1[1, :] + bisector1, dcm1[1, :] + dcm2[1, :])
+        # a2 = angle(dcm2[1, :] + bisector2, dcm1[1, :] + dcm2[1, :])
+        # if (60 - a1 - a2) < 0:
+        #     theta = theta * -1
+        #
+        # # append data
+        # min_hbond.append(min(dists))
+        # E_col_dcms.append(E)
+        # dist_dcms.append(distance)
+        # angles_dcms.append(theta)
+        # dih_dcms.append(dih)
+        # angle_1.append(a1)
+        # angle_2.append(a2)
+        # dcms_.append([dcm1, dcm2])
 
-        bisector1 = bisector(dcm1)
-        bisector2 = bisector(dcm2)
-
-        dih = dihedral3(
-            np.array(
-                [dcm1[1, :] + bisector1, dcm1[1, :], dcm2[1, :], dcm2[1, :] + bisector2]
-            )
-        )
-
-        theta = angle(bisector1, bisector2)
-        a1 = angle(dcm1[1, :] + bisector1, dcm1[1, :] + dcm2[1, :])
-        a2 = angle(dcm2[1, :] + bisector2, dcm1[1, :] + dcm2[1, :])
-        if (60 - a1 - a2) < 0:
-            theta = theta * -1
-
-        # append data
-        min_hbond.append(min(dists))
-        E_col_dcms.append(E)
-        dist_dcms.append(distance)
-        angles_dcms.append(theta)
-        dih_dcms.append(dih)
-        angle_1.append(a1)
-        angle_2.append(a2)
-        dcms_.append([dcm1, dcm2])
-
-    #  add data to the dataframe
-    data[f"ECOL_{name}"] = E_col_dcms
-    data["angle_1"] = angle_1
-    data["angle_2"] = angle_2
-    data["dih"] = dih_dcms
-    data["theta"] = angles_dcms
-    data["distance"] = dist_dcms
-    data["min_hbond"] = min_hbond
-    data["dcms"] = dcms_
+    # #  add data to the dataframe
+    # data[f"ECOL_{name}"] = E_col_dcms
+    # data["angle_1"] = angle_1
+    # data["angle_2"] = angle_2
+    # data["dih"] = dih_dcms
+    # data["theta"] = angles_dcms
+    # data["distance"] = dist_dcms
+    # data["min_hbond"] = min_hbond
+    # data["dcms"] = dcms_
 
     #  prepare data for jax as dictionary
     jax_data = {
@@ -397,4 +402,6 @@ def pairs_data(
         "cluster_labels": jnp.array(cluster_labels),
     }
 
-    return data, jax_data
+    # return data, jax_data
+    return jax_data
+
