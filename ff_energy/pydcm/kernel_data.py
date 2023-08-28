@@ -1,4 +1,7 @@
-from ff_energy import (
+
+from pathlib import Path
+
+from ff_energy.pydcm.dcm import (
     mdcm,
     mdcm_set_up,
     scan_fesp,
@@ -9,9 +12,8 @@ from ff_energy import (
     get_clcl,
     optimize_mdcm,
 )
-from pathlib import Path
-from ff_energy import dcm_utils as du
-from ff_energy import KernelFit
+from ff_energy.pydcm.kernel import KernelFit
+from ff_energy.utils import dcm_utils as du
 
 
 def generate_data(i, p, l2=0.0):

@@ -4,6 +4,8 @@ from pathlib import Path
 FFEPATH = Path(__file__).parent.parent.parent
 CONFIG_PATH = FFEPATH / "configs"
 REPORTS_PATH = FFEPATH / "latex_reports"
+PKL_PATH = FFEPATH / "pickles"
+PDB_PATH = FFEPATH / "pdbs"
 
 #  cluster details
 clusterBACH = ("ssh", "boittier@pc-bach")
@@ -30,6 +32,7 @@ atom_types = {
     ("HOH", "H2"): "HT",
     ("CLA", "CLA"): "CLA",
     ("POT", "POT"): "POT",
+
     ("CLA", "Cl"): "Cl",
     ("POT", "K"): "K",
     ("TIP3", "OH2"): "OT",

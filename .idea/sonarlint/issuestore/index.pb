@@ -73,8 +73,6 @@ P
  notebooks/descriptors/soap.ipynb,f/2/f28b5ab6894768eaea1a9ae811dc219375f9002e
 L
 experiments/ff_fit/exp1.json,0/d/0d1b41a59e7b9f576468420a2a17f81ef503d69d
-L
-ff_energy/utils/ffe_utils.py,8/e/8e94e252d29aa68d973b63c70dbde3a357154694
 R
 "ff_energy/latex_writer/__init__.py,e/1/e11f793f40453ba322c194a8ca0b19f916a71bbe
 J

@@ -80,8 +80,8 @@ class KernelFit:
         self.r2s = []
         self.test_results = []
         self.train_results = []
-        self.X = None
-        self.y = None
+        # self.X = None
+        # self.y = None
         self.X_train = None
         self.X_test = None
         self.y_train = None
@@ -93,6 +93,7 @@ class KernelFit:
         self.lcs = None
         self.pkls = None
         self.fname = None
+        self.manifest_path = None
 
     def set_data(self, distM, ids, lcs, cubes, pkls, fname=None):
         self.X = distM
@@ -116,6 +117,7 @@ class KernelFit:
         for train in self.train_ids:
             string_ += f"train {train}\n"
 
+        self.manifest_path = path
         with open(path, "w") as f:
             f.write(string_)
         return string_

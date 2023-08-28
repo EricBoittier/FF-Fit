@@ -16,7 +16,7 @@ from ff_energy.ffe.templates import esp_view_template, vmd_template, g_template
 
 from shutil import copy
 import pandas as pd
-from ff_energy.ffe.constants import atom_types
+from ff_energy.ffe.constants import atom_types, PKL_PATH
 
 from ff_energy.logs.logging import logger
 
@@ -629,13 +629,17 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         return output
 
     def pickle_output(self, output):
+        """Save output to pickle file
+                (create directory if not exist)
+        :param output:
+        :return:
+        """
         pickle_path = Path(
-            f"pickles/{self.structure.system_name}/"
+            PKL_PATH /
+            f"{self.structure.system_name}/"
             f'{self.kwargs["theory_name"]}/'
             f'{self.kwargs["c_files"][0]}/{self.name}.pickle'
         )
-
         pickle_path.parents[0].mkdir(parents=True, exist_ok=True)
-
         with open(pickle_path, "wb") as handle:
             pickle.dump(output, handle, protocol=pickle.HIGHEST_PROTOCOL)

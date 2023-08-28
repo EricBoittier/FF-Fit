@@ -1,3 +1,4 @@
+import logging
 import pickle
 from pathlib import Path
 import re
@@ -5,20 +6,24 @@ import numpy as np
 import codecs, json
 
 from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
-from ff_energy.ffe.constants import atom_types
-
+from ff_energy.ffe.constants import atom_types, PDB_PATH
+from ff_energy.logs.logging import logger
 
 def MakeJob(name, config_maker, _atom_types=None, system_name=None):
     if _atom_types is None:
         _atom_types = atom_types
 
-    pickle_exists = get_structures(system_name, pdbpath=config_maker.pdbs)
+    pickle_exists = get_structures(system_name,
+                                   pdbpath=config_maker.pdbs)
     if pickle_exists[0]:
         structures, pdbs = pickle_exists
     else:
-        print(f"pickle ({system_name}) does not exist")
+        logger.warning(f"pickle ({system_name}) does not exist")
+        pdbpath = Path(config_maker.pdbs)
+        pdbpath = PDB_PATH / pdbpath if not pdbpath.is_absolute() else pdbpath
         structures, pdbs = get_structures_pdbs(
-            Path(config_maker.pdbs), atom_types=_atom_types, system_name=system_name
+            pdbpath,
+            atom_types=_atom_types, system_name=system_name
         )
         pickle_output((structures, pdbs), name=system_name)
 
@@ -28,7 +33,7 @@ def MakeJob(name, config_maker, _atom_types=None, system_name=None):
 def charmm_jobs(CMS):
     jobmakers = []
     for cms in CMS:
-        print(cms.elec)
+        logging.info(cms.elec)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
             cms,

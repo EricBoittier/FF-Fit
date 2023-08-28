@@ -23,11 +23,13 @@ def render_povray(atoms, pov_name,
         'C': [61, 61, 64],
         'O': [240, 10, 10],
         'H': [232, 206, 202],
+        'K': [128, 50, 100],
         'X': [200, 200, 200]}
 
     radius_list = []
     for atomic_number in atoms.get_atomic_numbers():
         radius_list.append(radius_scale * covalent_radii[atomic_number])
+
     colors = np.array([color_dict[atom.symbol] for atom in atoms]) / 255
 
     bondpairs = get_bondpairs(atoms, radius=1.1)

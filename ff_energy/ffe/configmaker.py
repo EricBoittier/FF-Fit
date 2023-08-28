@@ -15,14 +15,14 @@ system_names = [
 ]
 
 pdbs = [
-    "pdbs/pdbs4/",
-    "pdbs/dimer3d/",
-    "pdbs/pdbsclean/",
-    "pdbs/water_tests/",
-    "pdbs/lithium/",
-    "pdbs/ions/",
-    "pdbs/dcm/",
-    "pdbs/ions_ext/",
+    "pdbs4/",
+    "dimer3d/",
+    "pdbsclean/",
+    "water_tests/",
+    "lithium/",
+    "ions/",
+    "dcm/",
+    "ions_ext/",
 ]
 
 system_types = ["water", "water", "methanol", "water", "water", "water", "dcm", "water"]
@@ -53,6 +53,10 @@ MODELS = {
     "dcm": {
         "pc": DCM_STATES("dcm_pbe0dz.pc"),
         "mdcm": DCM_STATES("dcm_pbe0dz.mdcm"),
+    },
+    "ions_ext": {
+        "pc": DCM_STATES("ions_ext_pbe0dz.pc"),
+        "mdcm": DCM_STATES("ions_ext_pbe0dz.mdcm"),
     },
 }
 
@@ -125,7 +129,9 @@ ATOM_TYPES = {
     },
     "ions_ext": {
         ("CLA", "CLA"): "CLA",
+        ("CLA", "Cl"): "CLA",
         ("POT", "POT"): "POT",
+        ("POT", "K"): "POT",
         ("TIP3", "OH2"): "OT",
         ("TIP3", "H1"): "HT",
         ("TIP3", "H2"): "HT",

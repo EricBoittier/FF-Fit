@@ -40,17 +40,25 @@ rots = [
 ]
 
 
-
 class DataPlots:
     def __init__(self, data):
         self.data = data.data
         self.obj = data
+
+        indexes = list(self.data.index)
+
         self.ase = [
-            self.obj.structure_key_pairs[s].get_ase() for s in self.data.index
+            self.obj.structure_key_pairs[s].get_ase()
+            if s in self.obj.structure_key_pairs.keys() else None
+            for s in self.data.index
+
         ]
+        print(indexes)
         self.ase_dict = {
-            s: self.obj.structure_key_pairs[s].get_ase() for s in self.data.index
+            s: self.obj.structure_key_pairs[s].get_ase()
+            for s in indexes
         }
+
 
     def get_colors(self, key) -> list:
         """ returns the normalized colors for the given key
@@ -78,15 +86,15 @@ class DataPlots:
         ax = fig.add_subplot(222)
         plot_energy_MSE(
             self.data,
-            "intE",
-            "P_intE",
+            key1,
+            key2,
             elec="intE",
             ax=ax,
             xlabel=labels[key1],
             ylabel=labels[key2],
         )
         #  save file
-        outpath = save_fig(fig, f"{key1}_{key2}.pdf", path=path)
+        outpath = save_fig(fig, f"{label}{key1}{key2}.pdf", path=path)
         #  clear the figure
         plt.clf()
         out_dict = {
@@ -121,10 +129,10 @@ class DataPlots:
 
         #  save file
         key = key.replace(char, emptystr)
-        outpath = save_fig(axes, f"{key}.pdf", path=path)
+        __ = "".join([label, *key])
+        outpath = save_fig(axes, f"{__}{key}.pdf", path=path)
         #  clear the figure
         plt.clf()
-        __ = " ".join([label, *key])
         out_dict = {
             "path": outpath,
             "caption": f"Distribution of {__}",
@@ -150,6 +158,8 @@ class DataPlots:
         Plot the molecules
         :return:
         """
+        #  remove keys if ase object is done
+
         label = ("".join(label.split()[:2])).strip().strip("_").strip("/")
         filenames = []
         descriptions = []
@@ -158,8 +168,18 @@ class DataPlots:
 
         for ki, key in enumerate(keys):
             #  highest
-            id = self.data[key].sort_values().index[-1]
-            min_ = self.ase_dict[id]
+            continu_ = False
+            id = None
+            while not continu_:
+                try:
+                    id = self.data[key].sort_values().index[-1]
+                    min_ = self.ase_dict[id]
+                    continu_ = True
+                except KeyError:
+                    # del self.data[key]
+                    self.data.drop(id, axis=0, inplace=True)
+                    continue
+
             render_povray(min_,
                           path / f"{label}{key}min.pov",
                           rotation=rots[ki]
@@ -172,19 +192,18 @@ class DataPlots:
                                 f"\n (id: {id.replace('_', latexuscore)})")
 
             #  middle
-            id = self.data[key].sort_values().index[len(self.data)//2]
+            id = self.data[key].sort_values().index[len(self.data) // 2]
             mid_ = self.ase_dict[id]
             render_povray(mid_,
-                            path / f"{label}{key}mid.pov",
-                            rotation=rots[ki]
-                            )
+                          path / f"{label}{key}mid.pov",
+                          rotation=rots[ki]
+                          )
             filenames.append(path / f"{label}{key}mid.png")
             _labels.append(f"{label}{key}mid")
-            v = self.data[key].sort_values()[len(self.data)//2]
+            v = self.data[key].sort_values()[len(self.data) // 2]
             values.append(v)
             descriptions.append(f"Mid: {v:.2f} \n {labels[key]} "
                                 f"\n (id: {id.replace('_', latexuscore)})")
-
 
             #  lowest
             id = self.data[key].sort_values().index[0]
@@ -201,7 +220,7 @@ class DataPlots:
                                 f" \n (id: {id.replace('_', latexuscore)})")
 
         #  join all the pngs into one figure with patchworklib
-        fig, axes = plt.subplots(len(keys), 3, figsize=(15, len(keys)*5))
+        fig, axes = plt.subplots(len(keys), 3, figsize=(15, len(keys) * 5))
         for i, f in enumerate(filenames):
             ax = axes[i // 3, i % 3]
             ax.imshow(plt.imread(f))

@@ -1,12 +1,12 @@
 from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
 
 from ff_energy.latex_writer.report import Report
 from ff_energy.latex_writer.figure import Figure
 from ff_energy.latex_writer.format import safe_latex_string
-import pandas as pd
 from ff_energy.plotting.data_plots import DataPlots
-import matplotlib.pyplot as plt
-
+from ff_energy.utils.ffe_utils import pickle_output
 plt.set_loglevel("notset")
 
 abstract = """ This report summaries the findings from 
@@ -120,7 +120,7 @@ class EnergyReport:
             #  subsection
             self.report.add_section("\subsection{" +
                                     safe_latex_string(
-                                        self.data_keys[i].split("/")[-1].split(".")[0]
+                                        self.data_names[i]
                                     )
                                     + "}")
             #  details
@@ -161,6 +161,7 @@ class EnergyReport:
             path=self.report.fig_path,
             key1=key1,
             key2=key2,
+            label=self.data_names[i]
         )
         return Figure(
             _["path"],
@@ -185,8 +186,10 @@ class EnergyReport:
         return figures
 
     def make_kde_figs(self, keys, i=0):
-        _ = self.data_plots[0].hist_kde(
-            keys, path=self.report.fig_path)
+        _ = self.data_plots[i].hist_kde(
+            keys, path=self.report.fig_path,
+            label=self.data_names[i]
+        )
         return Figure(
             _["path"],
             _["caption"],
@@ -203,29 +206,34 @@ class EnergyReport:
                     float_format="%.2f",
                     index_names=False,
                     caption="Summary statistics for the energy data.",
-                    label="tab:energy_stats",
+                    label=f"tab:energy_stats",
                     position="b!",
                 )
             )
             self.report.add_section(energy_table)
 
 
-
 if __name__ == "__main__":
     pkl_paths = [
         "/home/boittier/Documents/phd/ff_energy/pickles/water_cluster_pbe0dz_pc.pkl",
         "/home/boittier/Documents/phd/ff_energy/pickles/dcm_pbe0dz_pc.pkl",
+        "/home/boittier/Documents/phd/ff_energy/pickles/ions_ext_pbe0dz_pc.pkl",
     ]
     pkl_descriptions = [
         "200 snapshots of 20 water molecules sampled at random positions "
         "from MD in periods of 500 ps.",
         "20 snapshots of 20 DCM molecules sampled at random positions",
+        "Mixed ion clusters",
     ]
     plk_names = [
-        "Water clusters at PBE0/aug-dz",
-        "DCM clusters at PBE0/aug-dz",
+        "waterpbe0dzclusters",
+        "dcmpbe0dzclusters",
+        "ionspbe0dzclusters",
     ]
+
     er = EnergyReport(report_name="Report_PBE0dz")
     er.add_pickles(pkl_paths, names=plk_names, descriptions=pkl_descriptions)
     er.generate_data_report()
     er.compile_report()
+
+    pickle_output(er, "energy_report")

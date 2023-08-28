@@ -172,7 +172,6 @@ def data_jobs(CMS, molpro_small_path):
         PCNCCR = f"/home/boittier/pcnccr/{cms.system_name}/{cms.theory_name}"
         COLOUMB = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}"
         CHM = f"/home/boittier/homeb/{cms.system_name}/{cms.theory_name}_{cms.elec}"
-
         PAIRS = PCNCCR
         MONOMERS = PCNCCR
         if molpro_small_path is not None:
@@ -192,11 +191,16 @@ def data_jobs(CMS, molpro_small_path):
 
     #  convert data to data object
     pp = Path(
-        PKL_PATH / f"{cms.system_name}/{cms.theory_name}/" f"{jm.kwargs['c_files'][0]}"
+        PKL_PATH / f"{cms.system_name}/{cms.theory_name}/" 
+                   f"{jm.kwargs['c_files'][0]}"
     )
+
     print("Saving data to: ", pp)
-    data = Data(pp)
-    pickle_output(data, PKL_PATH / f"{cms.system_name}_{cms.theory_name}_{cms.elec}")
+    data = Data(pp,
+                system=cms.system_name)
+    pickle_output(data,
+                  PKL_PATH / f"{cms.system_name}_{cms.theory_name}_{cms.elec}"
+                  )
     return jobmakers
 
 
@@ -243,7 +247,6 @@ def coloumb_jobs(CMS, DRY, cluster=None):
 
 if __name__ == "__main__":
     import argparse
-
     parser = argparse.ArgumentParser(
         prog="Force Field Energy",
         description="Manages jobs and data for force field"
@@ -292,7 +295,6 @@ if __name__ == "__main__":
         action="store_true",
         help="Run the jobs from a config file",
     )
-    # TODO: add options to show levels of theory available
     parser.add_argument("-t", "--theory", required=False, default=None)
     parser.add_argument("-m", "--model", required=False, default=None)
     parser.add_argument("-e", "--elec", required=False, default=None)
@@ -330,7 +332,8 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "-dry", "--dry", required=False, default=False, action="store_true"
+        "-dry", "--dry",
+        required=False, default=False, action="store_true"
     )
     parser.add_argument("-v", "--verbose", action="store_true")  # on/off flag
 
@@ -354,7 +357,8 @@ if __name__ == "__main__":
         CMS = load_config_from_input(args.config)
     else:
         logger.info(
-            f"parameters: { str(args.theory)}," f" {str(args.model)}, {str(args.elec)}"
+            f"parameters: { str(args.theory)},"
+            f" {str(args.model)}, {str(args.elec)}"
         )
         if args.theory and args.model and args.elec:
             CMS = load_config_maker(args.theory, args.model, args.elec)

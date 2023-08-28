@@ -7,12 +7,21 @@ from tqdm import tqdm
 
 from ff_energy.ffe.job import Job
 from ff_energy.ffe.structure import Structure
-from ff_energy.ffe.constants import atom_types
-
+from ff_energy.ffe.constants import atom_types, PDB_PATH
+from ff_energy.logs.logging import logger
 
 def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
+    logger.info(f"Loading structures from {PDBPATH}")
+    logger.info(f"Atom types: {atom_types}")
+    logger.info(f"System name: {system_name}")
+
     structures = []
-    pdbs = [_ for _ in os.listdir(PDBPATH) if _.endswith("pdb")]
+    if not isinstance(PDBPATH, Path):
+        PDBPATH = Path(PDBPATH)
+    if not PDBPATH.is_absolute():
+        PDBPATH = PDB_PATH / PDBPATH
+
+    pdbs = [_ for _ in PDBPATH.glob("*.pdb")]
     for p in pdbs:
         s_path = PDBPATH / p
         s = Structure(s_path, _atom_types=atom_types, system_name=system_name)
@@ -162,8 +171,15 @@ class JobMaker:
         homedir, mp, cp, p_p, c_p, chm_p = args
         if isinstance(homedir, tuple):
             homedir = homedir[0]
-        # print(p)
-        ID = p.split(".")[0]
+        logger.info(f"Making data job for {p}")
+
+        ID = None
+        if isinstance(p, str):
+            ID = p.split(".")[0]
+        else:
+            if isinstance(p, Path):
+                ID = p.name.split(".")[0]
+
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.gather_data(
             monomers_path=Path(mp.format(ID)),

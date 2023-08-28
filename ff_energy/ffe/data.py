@@ -9,7 +9,7 @@ from ff_energy.plotting.data_plots import plot_energy_MSE
 from ff_energy.ffe.geometry import dihedral3, bisector, angle, dist
 from ff_energy.ffe.potential import Ecoloumb
 from ff_energy.ffe.bonded_terms import FitBonded
-
+from ff_energy.ffe.constants import PDB_PATH
 from ff_energy.logs.logging import logger
 
 import numpy as np
@@ -19,8 +19,10 @@ H2KCALMOL = 627.503
 
 def load_pickles(path):
     output = []
-    print("loading pickles from ", path)
-    for x in Path(path).glob("*"):
+    logger.info("loading pickles from ", path)
+    pkls = list(Path(path).glob("*.pickle"))
+    logger.info("loading pickles from ", pkls)
+    for x in pkls:
         a = read_from_pickle(x)
         a = next(a)
         output.append(a)
@@ -93,7 +95,7 @@ def all_none(_):
 
 
 class Data:
-    def __init__(self, output_path, system="dcm", min_m_E=None):
+    def __init__(self, output_path, system, min_m_E=None):
         self.system = system
         self.output_path = output_path
         self.output = load_pickles(output_path)
@@ -151,9 +153,11 @@ class Data:
             sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
             self.data["P_intE"] = [sum_pairs[i] * 627.5 for i in self.data.index]
 
-            self.structures, self.pdbs = get_structures(self.system)
+            self.structures, self.pdbs = get_structures(self.system,
+                                                        pdbpath=PDB_PATH / self.system,
+                                                        )
             self.structure_key_pairs = {
-                p.split(".")[0]: s for p, s in zip(self.pdbs, self.structures)
+                Path(p).stem: s for p, s in zip(self.pdbs, self.structures)
             }
             if min_m_E is None:
                 self.min_m_E = self.monomer_df["m_ENERGY"].min()
@@ -254,8 +258,11 @@ class Data:
 
 def pairs_data(
     data,
-    name="PC",
-    dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
+    # system="water_cluster",
+    system=None,
+    name=None,
+    dcm_path_=None,
+    # dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
 ):
     """
 
@@ -264,7 +271,7 @@ def pairs_data(
     :return:
     """
 
-    structures, pdbs = get_structures("water_cluster")
+    structures, pdbs = get_structures(system)
     structure_key_pairs = {p.split(".")[0]: s for p, s in zip(pdbs, structures)}
 
     #  lists for the dataframe
