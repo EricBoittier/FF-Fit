@@ -25,6 +25,12 @@ A package for calculating the energy of a system of particles using a force fiel
 
 ## Installation
 
+### Requirements
+Installation using conda is recommended.  The following packages are required:
+```bash
+conda env create --file environment.yml
+```
+
 ### Simple (Python Only)
 ```bash
 pip install -e .

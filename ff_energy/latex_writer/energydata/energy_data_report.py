@@ -7,6 +7,7 @@ from ff_energy.latex_writer.figure import Figure
 from ff_energy.latex_writer.format import safe_latex_string
 from ff_energy.plotting.data_plots import DataPlots
 from ff_energy.utils.ffe_utils import pickle_output
+from ff_energy.ffe.constants import PKL_PATH
 from ff_energy.latex_writer.extra_data import (
     dcm_elec_, dcm_pol_no_intern
 )
@@ -248,10 +249,13 @@ class EnergyReport:
 
 if __name__ == "__main__":
     pkl_paths = [
-        "/home/boittier/Documents/phd/ff_energy/pickles/water_cluster_pbe0dz_pc.pkl",
-        "/home/boittier/Documents/phd/ff_energy/pickles/dcm_pbe0dz_pc.pkl",
-        "/home/boittier/Documents/phd/ff_energy/pickles/ions_ext_pbe0dz_pc.pkl",
+        "water_cluster_pbe0dz_pc.pkl",
+        "dcm_pbe0dz_pc.pkl",
+        "ions_ext_pbe0dz_pc.pkl",
     ]
+    #  add the path routes
+    pkl_paths = [PKL_PATH / p for p in pkl_paths]
+
     pkl_descriptions = [
         "200 snapshots of 20 water molecules sampled at random positions "
         "from MD in periods of 500 ps.",
