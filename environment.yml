@@ -236,6 +236,10 @@ dependencies:
     - virtualenv==20.22.0
     - werkzeug==2.2.2
     - wrapt==1.14.1
+    - dscribe==2.0.1
+    - patchworklib==0.6.2
+    - plotnine==0.12.2
+    - scienceplots==2.1.0
 #variables:
 #  CHARMM_DATA_DIR: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/test/data/
 #  CHARMM_LIB_DIR: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/lib/
