@@ -236,9 +236,9 @@ dependencies:
     - virtualenv==20.22.0
     - werkzeug==2.2.2
     - wrapt==1.14.1
-variables:
-  CHARMM_DATA_DIR: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/test/data/
-  CHARMM_LIB_DIR: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/lib/
-  PYCHARMMPATH: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2
-  PYTHONPATH: '/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/PhysNet:/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/PhysNet:/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/tool/pycharmm:/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/PhysNet:'
-prefix: /home/boittier/miniconda3/envs/pycharmm
+#variables:
+#  CHARMM_DATA_DIR: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/test/data/
+#  CHARMM_LIB_DIR: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/lib/
+#  PYCHARMMPATH: /home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2
+#  PYTHONPATH: '/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/PhysNet:/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/PhysNet:/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/physnet_pycharmm_c47a2/tool/pycharmm:/home/boittier/Documents/CHARMM/PhysNet_PyCHARMM/v0/PhysNet:'
+#prefix: /home/boittier/miniconda3/envs/pycharmm

@@ -1,8 +1,6 @@
 
 U
 %ff_energy/ffe/charmm_files/pbe0_dz.pc,7/2/72808f26c0f525059d013b780bb9b3f05d1750a7
-@
-requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
 R
 "ff_energy/ffe/charmm_files/tip3.pc,3/c/3cf7c1240822889a3e18be25693e7f2d04a96865
 X
