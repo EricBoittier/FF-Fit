@@ -1,16 +1,17 @@
 import pandas as pd
 from pathlib import Path
-import itertools
 
 import jax.numpy as jnp
 
-from ff_energy.utils.ffe_utils import read_from_pickle, str2int, get_structures
+from ff_energy.utils.ffe_utils import read_from_pickle, str2int, get_structures, \
+    pickle_output
 from ff_energy.plotting.data_plots import plot_energy_MSE
-from ff_energy.ffe.geometry import dihedral3, bisector, angle, dist
-from ff_energy.ffe.potential import Ecoloumb
+from ff_energy.ffe.geometry import angle, dist
+from ff_energy.ffe.potential import Ecoloumb, LJ, LJ_bound
 from ff_energy.ffe.bonded_terms import FitBonded
 from ff_energy.ffe.constants import PDB_PATH
 from ff_energy.logs.logging import logger
+from ff_energy.ffe.ff import FF
 
 import numpy as np
 
@@ -261,33 +262,39 @@ class Data:
             logger.warning("Data not available")
 
 
+
+def name_pair():
+    pass
+
+
 def pairs_data(
-    data,
-    # system="water_cluster",
+    dataobject,
     system=None,
     name=None,
     dcm_path_=None,
-    # dcm_path_="/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz",
 ):
-    """
-    :param data:
-    :param dcm_path:
-    :return:
-    """
+    """    """
+    if system is None or name is None or dcm_path_ is None:
+        raise ValueError("system, name, and DCM path must be provided")
     logger.info("Preparing pairs_data")
 
-    structures, pdbs = get_structures(system)
-    structure_key_pairs = {Path(p).stem: s for p, s in zip(pdbs, structures)}
+    # structures, pdbs = get_structures(system)
+    # structure_key_pairs = {Path(p).stem: s for p, s in zip(pdbs, structures)}
+
+    data = dataobject.pairs_df
+    structures = dataobject.structures
+    pdbs = dataobject.pdbs
+    structure_key_pairs = dataobject.structure_key_pairs
 
     #  lists for the dataframe
-    E_col_dcms = []
-    dist_dcms = []
-    min_hbond = []
-    angles_dcms = []
-    dih_dcms = []
-    dcms_ = []
-    angle_1 = []
-    angle_2 = []
+    # E_col_dcms = []
+    # dist_dcms = []
+    # min_hbond = []
+    # angles_dcms = []
+    # dih_dcms = []
+    # dcms_ = []
+    # angle_1 = []
+    # angle_2 = []
 
     #  arrays for jax
     dcm_c_idx1 = []  # dcm charge idx1
@@ -404,4 +411,50 @@ def pairs_data(
 
     # return data, jax_data
     return jax_data
+
+
+import pickle
+
+class CustomUnpickler(pickle.Unpickler):
+    def find_class(self, module, name):
+        if name == 'Manager':
+            from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
+            return EnergyReport
+        return super().find_class(module, name)
+
+
+if __name__ == "__main__":
+    from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
+
+    pkl_path = "/home/boittier/Documents/phd/ff_energy/pickles/energy_report.pkl"
+
+    er = CustomUnpickler(open(pkl_path, 'rb')).load()
+    eg_data = er.data_plots[0].obj
+    print(eg_data)
+    eg_dcm_path_ = "/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz"
+
+    jax_ = pairs_data(eg_data,
+               system="water_cluster",
+               name="test",
+               dcm_path_=eg_dcm_path_,
+               )
+
+    dists = {_.name.split(".")[0]: _.distances
+              for _ in eg_data.structures}
+
+    print(dists)
+    print(jax_)
+
+    FUNC = LJ
+    BOUNDS = LJ_bound
+    ff = FF(eg_data.data, dists, FUNC, BOUNDS,
+            eg_data.structures[0], elec="ECOL")
+
+    print(ff)
+
+    # pickle ff
+
+    pickle_output(ff, "test_ff")
+
+    # print(ff.energy(jax_))
 

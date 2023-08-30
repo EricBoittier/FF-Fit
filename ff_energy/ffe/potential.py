@@ -33,6 +33,10 @@ rminhalfs = {
 
 akp_indx = {akp: i for i, akp in enumerate(atom_key_pairs)}
 
+sig_bound = (0.05, 4.0)
+ep_bound = (0.00001, 1.0)
+LJ_bound = [(sig_bound), (sig_bound), (ep_bound), (ep_bound)]
+
 
 def LJ_akp(r, akp, epsilons=None, rminhalfs=None):
     r = np.array(r)

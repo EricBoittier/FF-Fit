@@ -7,24 +7,27 @@ from ase import io
 from ase.io.pov import get_bondpairs
 from ase.data import covalent_radii
 
+default_color_dict = {
+    'Cl': [102, 227, 115],
+    'C': [61, 61, 64],
+    'O': [240, 10, 10],
+    'H': [232, 206, 202],
+    'K': [128, 50, 100],
+    'X': [200, 200, 200]}
+
+
 
 def render_povray(atoms, pov_name,
                   rotation='0x, 0y, 0z',
-                  radius_scale=0.40):
+                  radius_scale=0.40, color_dict=None):
     print("Rendering POV-Ray image...")
     print("path: ", pov_name)
+    if color_dict is None:
+        color_dict = default_color_dict
 
     path = Path(pov_name)
     pov_name = path.name
     base = path.parent
-
-    color_dict = {
-        'Cl': [102, 227, 115],
-        'C': [61, 61, 64],
-        'O': [240, 10, 10],
-        'H': [232, 206, 202],
-        'K': [128, 50, 100],
-        'X': [200, 200, 200]}
 
     radius_list = []
     for atomic_number in atoms.get_atomic_numbers():
