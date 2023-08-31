@@ -272,6 +272,7 @@ def pairs_data(
     system=None,
     name=None,
     dcm_path_=None,
+    dcm_charges_per_res=None,
 ):
     """    """
     if system is None or name is None or dcm_path_ is None:
@@ -299,18 +300,20 @@ def pairs_data(
 
     #  loop through the DF by index (slow)
     for idx, fnkey in enumerate(data.index):
-        k = fnkey.split("_")[0]
-        kab = fnkey.split(".")[0]
+        #  key - split by underscore, join
+        k = "_".join(fnkey.split("_")[:-2])
+        #  a b - keys
+        kab = fnkey.split("_")[-2:]
         s = structure_key_pairs[k]
-
         dcm_path = dcm_path_.format(k)
-        s.load_dcm(dcm_path)
+        s.load_dcm(dcm_path,
+                   dcm_charges_per_res=dcm_charges_per_res)
         dcms = np.array(s.dcm_charges)
 
         # calculate electrostatic energy
         E = 0
         dists = []
-        pairs = [(int(kab.split("_")[1]), int(kab.split("_")[2]))]
+        pairs = [(int(kab[0]), int(kab[1]))]
         for pair in pairs:
             p1, p2 = pair
             mask1 = s.res_mask[p1]
@@ -372,37 +375,21 @@ class CustomUnpickler(pickle.Unpickler):
 
 
 if __name__ == "__main__":
-    # from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
-    #
-    # pkl_path = "/home/boittier/Documents/phd/ff_energy/pickles/energy_report.pkl"
-    #
-    # er = CustomUnpickler(open(pkl_path, 'rb')).load()
-    # eg_data = er.data_plots[0].obj
-    # print(eg_data)
-    # eg_dcm_path_ = "/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz"
-    #
-    # jax_ = pairs_data(eg_data,
-    #            system="water_cluster",
-    #            name="test",
-    #            dcm_path_=eg_dcm_path_,
-    #            )
-    #
-    # dists = {_.name.split(".")[0]: _.distances
-    #           for _ in eg_data.structures}
-    #
-    # print(dists)
-    # print(jax_)
-    #
-    # FUNC = LJ
-    # BOUNDS = LJ_bound
-    # ff = FF(eg_data.data, dists, FUNC, BOUNDS,
-    #         eg_data.structures[0], elec="ECOL")
-    #
-    # print(ff)
-    #
-    # # pickle ff
-    #
-    # pickle_output(ff, "test_ff")
-    pass
-    # print(ff.energy(jax_))
+    from pathlib import Path
+    import pandas as pd
+    from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
+    from ff_energy.utils.ffe_utils import read_from_pickle, pickle_output
+    from ff_energy.ffe.constants import PKL_PATH, PDB_PATH
+    from ff_energy.ffe.data import pairs_data
 
+    pkl_path = "/home/boittier/Documents/phd/ff_energy/pickles/energy_report.pkl"
+    er = pd.read_pickle(pkl_path)
+    eg_dcm_path_ = "/home/boittier/homeb/dcm/pbe0dz_mdcm/{}/charmm/dcm.xyz"
+    data = er.data_plots[1].obj
+    pairs_out = pairs_data(data,
+                           system="dcm",
+                           name="mdcm",
+                           dcm_path_=eg_dcm_path_,
+                           #  some_n_charges_per_line
+                           dcm_charges_per_res=8
+                           )

@@ -155,7 +155,7 @@ class Structure:
                     self.atomnames[i] = "H1"
                     self.atomnames[i + 1] = "H2"
 
-    def load_dcm(self, path):
+    def load_dcm(self, path, dcm_charges_per_res=None):
         """Load dcm file"""
         self.n_res = len(set(self.resids))
         with open(path) as f:
@@ -163,18 +163,23 @@ class Structure:
         self.dcm = [
             [float(_) for _ in line.split()[1:]] for line in lines[2:]
         ]  # skip first two lines
-        self.dcm_charges = self.dcm[len(self.atoms) :]
-        dcm_charges_per_res = len(self.dcm_charges) // self.n_res // 3
+        self.dcm_charges = self.dcm[len(self.atoms):]
+        if dcm_charges_per_res is None:
+            dcm_charges_per_res = len(self.dcm_charges) // self.n_res // 3
+
+        #  make a dictionary which holds the
+        #  mask for dcm charges
+        #  listing the idxs of the charges for each residue type
         self.dcm_charges_mask = {
             r: np.array(
                 [
                     [True] * dcm_charges_per_res
                     if r == _
                     else [False] * dcm_charges_per_res
-                    for _ in self.resids
+                    for _ in range(1, self.n_res + 1)  # for each residue
                 ]
             ).flatten()
-            for r in list(set(self.resids))
+            for r in list(set(self.resids))  # for each residue type
         }
 
     def get_psf(self):
