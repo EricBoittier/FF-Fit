@@ -91,9 +91,10 @@ class DCMReport:
         self.data.append(pd.read_pickle(pkl_path))
         self.data_plots.append(DataPlots(self.data[-1]))
 
-    def compile_report(self):
+    def compile_report(self, compile_pdf=True):
         self.report.write_document()
-        self.report.compile()
+        if compile_pdf:
+            self.report.compile()
 
     def summary_tables(self):
         pass

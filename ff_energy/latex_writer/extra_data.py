@@ -1,10 +1,14 @@
 from pathlib import Path
 import pandas as pd
 
+from ff_energy.ffe.constants import (
+        FFEPATH
+        )
+
 """ Extra Data
 """
 
-extra_data_path = Path("/home/boittier/Documents/phd/ff_energy/notebooks/working/data/")
+extra_data_path = Path(FFEPATH / "notebooks" / "working" / "data")
 
 mikes_data = open(extra_data_path / "mike_elec_dcm.txt", "r").readlines()
 data = [_.split("\t") for _ in mikes_data]

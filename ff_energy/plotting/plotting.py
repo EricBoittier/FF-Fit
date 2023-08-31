@@ -3,6 +3,8 @@ Matplotlib Style Sheet based on Science Plots
 """
 
 import matplotlib.pyplot as plt
+import scienceplots
+
 from matplotlib import rcParams
 import warnings
 from pathlib import Path
