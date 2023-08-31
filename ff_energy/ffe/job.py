@@ -68,7 +68,7 @@ class Job:
                 "modules": "module load cmake/cmake-3.23.0-gcc-11.2.0-openmpi-4.1.3",
                 "c_files": ["poly_hf.dcm"],
                 "c_dcm_command": "open unit 11 card read name"
-                " poly_hf.dcm \nDCM FLUX 11 IUDCM 11 TSHIFT XYZ 15",
+                                 " poly_hf.dcm \nDCM FLUX 11 IUDCM 11 TSHIFT XYZ 15",
             }
         self.kwargs = kwargs
 
@@ -91,11 +91,16 @@ class Job:
         if pol:
             self.generate_polarization()
 
-    def generate_charmm(self):
+    def generate_charmm(self, RES=None):
+        if RES is None:
+            raise ValueError("RES must be specified")
+
         self.make_dir(self.charmm_path)
         self.structure.atom_types = atom_types
         self.structure.read_pdb(self.structure.path)
-        sname = str(self.structure.path).lower()
+        sname = self.structure.path.parents[0] / str(
+            self.structure.path.name
+        ).lower() # make filename lowercase
         print(sname)
         with open(sname, "w") as f:
             f.write(self.structure.get_pdb())
@@ -110,7 +115,7 @@ class Job:
         charmm_job = c_job_template.render(
             NAME=str(self.name).lower(),
             PAR=PAR,
-            RES="DCM", # TODO: make this a parameter
+            RES=RES,
             PDB=str(self.structure.name).lower(),
             DCM_COMMAND=dcm_command,
             PSF=self.structure.get_psf(),
@@ -154,7 +159,7 @@ class Job:
                 M2=f"{self.name}_{pair[1]}.molden".lower(),
             )
             orbkit_job = (
-                self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.py".lower()
+                    self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.py".lower()
             )
             with open(orbkit_job, "w") as f:
                 f.write(orbkit_str)
@@ -167,7 +172,7 @@ class Job:
                 NAME=f"{self.name}_{pair[0]}_{pair[1]}", COMMAND=command
             )
             slurm_file = (
-                self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.sh".lower()
+                    self.path / "coloumb" / f"{self.name}_{pair[0]}_{pair[1]}.sh".lower()
             )
             with open(slurm_file, "w") as f:
                 f.write(slurm_job)
@@ -328,7 +333,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         with open(self.cluster_path / f"{self.name}.sh", "w") as f:
             f.write(slurm_job)
             self.slurm_files["cluster"][self.name] = (
-                self.cluster_path / f"{self.name}.sh"
+                    self.cluster_path / f"{self.name}.sh"
             )
 
     def generate_pairs(self):
@@ -348,16 +353,16 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 CHARGE=CHARGE,
             )
             with open(
-                self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.inp", "w"
+                    self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.inp", "w"
             ) as f:
                 f.write(molpro_job)
             slurm_job = m_slurm_template.render(NAME=NAME, NPROC=self.kwargs["m_nproc"])
             with open(
-                self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh", "w"
+                    self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh", "w"
             ) as f:
                 f.write(slurm_job)
                 self.slurm_files["pairs"][NAME] = (
-                    self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh"
+                        self.pairs_path / f"{self.name}_{pair[0]}_{pair[1]}.sh"
                 )
 
     def generate_monomers(self):
@@ -382,7 +387,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             with open(self.monomers_path / f"{self.name}_{monomer}.sh", "w") as f:
                 f.write(slurm_job)
                 self.slurm_files["monomers"][NAME] = (
-                    self.monomers_path / f"{self.name}_{monomer}.sh"
+                        self.monomers_path / f"{self.name}_{monomer}.sh"
                 )
 
     def gather_charmm(self, chm_path=None):
@@ -499,9 +504,9 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                     "{}_{}".format(key, pairs[1])
                 ]["m_ENERGY"]
                 pairs_data[p.stem]["p_int_ENERGY"] = (
-                    pairs_data[p.stem]["p_ENERGY"]
-                    - pairs_data[p.stem]["p_m1_ENERGY"]
-                    - pairs_data[p.stem]["p_m2_ENERGY"]
+                        pairs_data[p.stem]["p_ENERGY"]
+                        - pairs_data[p.stem]["p_m1_ENERGY"]
+                        - pairs_data[p.stem]["p_m2_ENERGY"]
                 )
             except Exception as e:
                 logger.warning(p.stem, e)
@@ -588,12 +593,12 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         return pol_df, pol_total
 
     def gather_data(
-        self,
-        monomers_path=None,
-        cluster_path=None,
-        pairs_path=None,
-        coloumb_path=None,
-        chm_path=None,
+            self,
+            monomers_path=None,
+            cluster_path=None,
+            pairs_path=None,
+            coloumb_path=None,
+            chm_path=None,
     ):
         if monomers_path is None:
             monomers_path = self.monomers_path

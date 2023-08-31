@@ -217,7 +217,7 @@ class Structure:
             H2M=H2M[0],
             H3M=H3M[0],
             H4M=H4M[0],
-            O=OATOM[0],
+            O="OH2", #  TODO: possible breaking change
             H="H1",
             H1="H2",
             WATER=WATER,
@@ -314,9 +314,13 @@ REMARK
             "          {:>2s}{:2s}\n"
         )
         _str = header
+        last_resid = self.resids[0]
+        res_id_count = 1
 
         for i, line in enumerate(self.atoms):
             AN = self.atomnames[i]
+            RESNAME = self.restypes[i]
+            print(i, RESNAME)
             if AN == "Cl":
                 print(i, line)
                 if self.atomnames[i - 1] == "Cl":
@@ -324,6 +328,12 @@ REMARK
                 else:
                     AN = "Cl1"
                 print(self.atomnames[i], AN)
+            if RESNAME == "CLA":
+                AN = "CLA"
+
+            if self.resids[i] != last_resid:
+                res_id_count += 1
+                last_resid = self.resids[i]
 
             _1 = "ATOM"
             _2 = i + 1
@@ -331,7 +341,7 @@ REMARK
             _4 = ""
             _5 = self.restypes[i]
             _6 = ""
-            _7 = self.resids[i]
+            _7 = res_id_count  #  self.resids[i]
             _8 = ""
             _9 = self.xyzs[i, 0]
             _10 = self.xyzs[i, 1]

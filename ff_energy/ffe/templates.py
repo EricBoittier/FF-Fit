@@ -282,6 +282,8 @@ MASS  4  OG311     15.99940 ! hydroxyl oxygen
 MASS  -1  CG321     12.01100 ! aliphatic C for CH2
 MASS  -1  CLGA1     35.45300 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
 MASS  -1  HGA2       1.00800 ! alphatic proton, CH2
+MASS -1 CLA       35.45000 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+MASS -1 POT      39.09830  ! potassium ion
 
 DEFA FIRS NONE LAST NONE
 AUTO ANGLES DIHE PATCH DRUDE
@@ -329,6 +331,18 @@ BOND C    CL1
 BOND C    CL2
 BOND C    H2
 PATCHING FIRS NONE LAST NONE
+
+
+RESI POT       1.00 ! Potassium Ion
+GROUP
+ATOM POT   POT 1.00
+PATCHING FIRST NONE LAST NONE
+
+RESI CLA      -1.00 ! Chloride Ion
+GROUP
+ATOM CLA  CLA -1.00
+PATCHING FIRST NONE LAST NONE
+
 
 END
 """
@@ -385,6 +399,8 @@ MASS  4  OG311     15.99940 ! hydroxyl oxygen
 MASS  -1  CG321     12.01100 ! aliphatic C for CH2
 MASS  -1  CLGA1     35.45300 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
 MASS  -1  HGA2       1.00800 ! alphatic proton, CH2
+MASS -1 CLA       35.45000 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+MASS -1 POT      39.09830  ! potassium ion
 
 BONDS
 CG331  OG311  428.0     1.420
@@ -420,7 +436,11 @@ HT     0.00  -0.0460  0.2245 ! ALLOW WAT
 CG321    0.0       -0.0560     2.0100   0.0 -0.01 1.9 ! alkane (CT2), 4/98, yin, adm jr, also used by viv
 CLGA1    0.0       -0.3430     1.9100 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
 HGA2     0.0       -0.0240     1.3400 ! alkane, yin and mackerell, 4/98
-
+CLA      0.0       -0.150      2.27     ! Chloride
+                   ! D. Beglovd and B. Roux, dA=-83.87+4.46 = -79.40 kcal/mol
+POT      0.0       -0.0870    1.76375   ! Potassium
+                   ! D. Beglovd and B. Roux, dA=-82.36+2.8 = -79.56 kca/mol
+                   
 END"""
 
 PAR_f = """read parameter card
@@ -436,6 +456,8 @@ MASS  4  OG311     15.99940 ! hydroxyl oxygen
 MASS  -1  CG321     12.01100 ! aliphatic C for CH2
 MASS  -1  CLGA1     35.45300 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
 MASS  -1  HGA2       1.00800 ! alphatic proton, CH2
+MASS -1 CLA       35.45000 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
+MASS -1 POT      39.09830  ! potassium ion
 
 BONDS
 CG331  OG311  428.0     1.420
@@ -472,7 +494,11 @@ HT       0.0    {HT_e}  {HT_s} ! ALLOW WAT
 CG321    0.0       -0.0560     2.0100   0.0 -0.01 1.9 ! alkane (CT2), 4/98, yin, adm jr, also used by viv
 CLGA1    0.0       -0.3430     1.9100 ! CLET, DCLE, chloroethane, 1,1-dichloroethane
 HGA2     0.0       -0.0240     1.3400 ! alkane, yin and mackerell, 4/98
-
+CLA      0.0       -0.150      2.27     ! Chloride
+                   ! D. Beglovd and B. Roux, dA=-83.87+4.46 = -79.40 kcal/mol
+POT      0.0       -0.0870    1.76375   ! Potassium
+                   ! D. Beglovd and B. Roux, dA=-82.36+2.8 = -79.56 kca/mol
+                   
 END
 """
 

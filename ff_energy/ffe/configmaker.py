@@ -59,6 +59,7 @@ MODELS = {
     "ions_ext": {
         "pc": DCM_STATES("ions_ext_pbe0dz.pc"),
         "mdcm": DCM_STATES("ions_ext_pbe0dz.mdcm"),
+        "kmdcm": kMDCM_STATES(water_kmdcm),
     },
 }
 

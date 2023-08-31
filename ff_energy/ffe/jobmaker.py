@@ -10,6 +10,7 @@ from ff_energy.ffe.structure import Structure
 from ff_energy.ffe.constants import atom_types, PDB_PATH
 from ff_energy.logs.logging import logger
 
+
 def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
     logger.info(f"Loading structures from {PDBPATH}")
     logger.info(f"Atom types: {atom_types}")
@@ -32,7 +33,7 @@ def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
 
 
 class JobMaker:
-    def __init__(self, jobdir, pdbs, structures, kwargs):
+    def __init__(self, jobdir, pdbs, structures, kwargs, RES=None):
         self.pdbs = pdbs
         self.jobdir = jobdir
         self.structures = structures
@@ -41,6 +42,7 @@ class JobMaker:
         self.charmm_jobs = {}
         self.coloumb_jobs = {}
         self.data = []
+        self.RES = RES
 
     def loop(self, func, args, **kwargs):
         # Create a thread pool
@@ -193,10 +195,15 @@ class JobMaker:
         #  check if the homedir is a tuple
         if isinstance(homedir, tuple):
             homedir = homedir[0]
-        # print(p)
-        ID = p.split(".")[0]
+        ID = None
+        if isinstance(p, str):
+            ID = p.split(".")[0]
+        elif isinstance(p, Path):
+            ID = p.stem
+        else:
+            raise Exception(f"Unknown type for p *job id* {p}")
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
-        j.generate_charmm()
+        j.generate_charmm(RES=self.RES)
         self.charmm_jobs[ID] = j
 
     def make_esp_view(self, p, s, args):

@@ -9,7 +9,15 @@ from ff_energy.ffe.jobmaker import get_structures_pdbs, JobMaker
 from ff_energy.ffe.constants import atom_types, PDB_PATH
 from ff_energy.logs.logging import logger
 
-def MakeJob(name, config_maker, _atom_types=None, system_name=None):
+sysname_to_res = {
+    "water_cluster": "LIG",
+    "dcm": "DCM",
+    "ions_ext": "LIG",
+}
+
+
+def MakeJob(name, config_maker, _atom_types=None, system_name=None, RES=None):
+    """ """
     if _atom_types is None:
         _atom_types = atom_types
 
@@ -27,7 +35,7 @@ def MakeJob(name, config_maker, _atom_types=None, system_name=None):
         )
         pickle_output((structures, pdbs), name=system_name)
 
-    return JobMaker(name, pdbs, structures, config_maker.make().__dict__)
+    return JobMaker(name, pdbs, structures, config_maker.make().__dict__, RES=RES)
 
 
 def charmm_jobs(CMS):
@@ -39,6 +47,7 @@ def charmm_jobs(CMS):
             cms,
             _atom_types=cms.atom_types,
             system_name=cms.system_name,
+            RES=sysname_to_res[cms.system_name],
         )
         HOMEDIR = "/home/boittier/homeb/"
         f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
