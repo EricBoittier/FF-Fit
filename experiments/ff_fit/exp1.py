@@ -19,6 +19,11 @@ from ff_energy.utils.json_utils import (
     load_json
 )
 
+structure_data = {
+    "dcm": "",
+    "water_cluster": PKL_PATH / "20230823_water_clusters.pkl.pkl"
+}
+
 """
 Variables
 """
@@ -44,8 +49,8 @@ print(f"N experiments: {len(experiments)}")
 def make_ff_objects():
     for i, x in enumerate(experiments):
         print(f"Experiment {i}: {x}")
-
-
+        structure = x["structure"]
+        print(f"Structure: {structure}")
 
 
 def run():
