@@ -51,6 +51,7 @@ class DCMReport:
         :param key: the key to add the data under
         :return: None
         """
+
         self.data[index].data = \
             self.data[index].data.join(
                 data, how="outer", rsuffix=key)

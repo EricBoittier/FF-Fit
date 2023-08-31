@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-from ff_energy.ffe.plot import (
+from ff_energy.plotting.ffe_plots import (
     plot_energy_MSE, plot_ff_fit
 )
 from ff_energy.ffe.ff_fit import (
@@ -30,24 +30,22 @@ CHGPEN_bound = [(chg_bound), (chg_bound), (chg_bound),
 LJ_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound))
 DE_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound),
             (1, 8), (6, 20))
+
 NFIT_COUL = 1
 NFIT_LJ = 4
 NFIT_DE = 6
+
 pkl_files = []
 json_object = load_json("exp1.json")
+#  make a product of all the values in the json object
 experiments = list(it.product(*json_object.values()))
 print(f"N experiments: {len(experiments)}")
 
-for i, x in enumerate(experiments):
-    print(f"Experiment {i}: {x}")
-    pkl_file = f"{x[2]}_{x[0]}_{x[1]}.ff.pkl_{x[3].upper()}" \
-               f".pkl"
-    print(pkl_file)
-    if x[3] != "de":
-        pkl_files.append(pkl_file)
+def make_ff_objects():
+    for i, x in enumerate(experiments):
+        print(f"Experiment {i}: {x}")
 
-print("Pickles path")
-print(PKL_PATH)
+
 
 
 def run():
@@ -181,4 +179,12 @@ def de_fit(ffpkl, elec_type="fit_ECOL"):
     return stats["RMSE"]
 
 
-run()
+if __name__ == "__main__":
+    print(make_ff_objects())
+    import argparse
+    #  argument for which experiment to run
+    parser = argparse.ArgumentParser()
+    parser.add_argument("exp", type=int, help="Experiment number")
+    args = parser.parse_args()
+    print(args.exp)
+

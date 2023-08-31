@@ -3,16 +3,15 @@
     "pbe0dz"
   ],
   "structure": [
-    "clusters",
-    "pairs"
+    "water_cluster"
   ],
   "charge": [
-    "DUMMY",
-    "ECOL",
-    "epol_mike",
-    "kmdcm",
-    "mdcm",
-    "optpc"
+    "ELECnull",
+    "ELECci",
+    "ELECpol",
+    "ELECk",
+    "ELECm",
+    "ELECpc"
   ],
   "ff": [
     "lj",
