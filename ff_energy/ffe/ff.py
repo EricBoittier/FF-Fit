@@ -34,7 +34,8 @@ class FF:
         nobj=4, #  the number of objects to fit
         elec="ELEC", #  the name of the electrostatics column
         intern="Exact", #  the name of the intern column
-        intE="intE", #  the name of the internal energy column
+        intE="intE",  #  the name of the internal energy column
+        jax=None,
     ):
         self.data = data
         #  make a dummy zero column for the energy

@@ -286,16 +286,6 @@ def pairs_data(
     pdbs = dataobject.pdbs
     structure_key_pairs = dataobject.structure_key_pairs
 
-    #  lists for the dataframe
-    # E_col_dcms = []
-    # dist_dcms = []
-    # min_hbond = []
-    # angles_dcms = []
-    # dih_dcms = []
-    # dcms_ = []
-    # angle_1 = []
-    # angle_2 = []
-
     #  arrays for jax
     dcm_c_idx1 = []  # dcm charge idx1
     dcm_c_idx2 = []  # dcm charge idx2
@@ -332,9 +322,8 @@ def pairs_data(
             dcm2 = dcms[mask2]
             dcm1c = dcm1.copy()
             dcm2c = dcm2.copy()
-            dcm1 = dcm1[:, :-1]
-            dcm2 = dcm2[:, :-1]
-
+            # dcm1 = dcm1[:, :-1]
+            # dcm2 = dcm2[:, :-1]
             #  loop through all combinations of charge pairs
             for i, a in enumerate(dcm1c):
                 for j, b in enumerate(dcm2c):
@@ -350,51 +339,11 @@ def pairs_data(
                     dcm_dists_labels.append(idx)
                     dcm_pairs_idx.append(pairs)
                     cluster_labels.append(str2int(k))
-
                     E += Ec
                     if i == 1 and (j == 0 or j == 2):
                         dists.append(dist)
                     if j == 1 and (i == 0 or i == 2):
                         dists.append(dist)
-
-        # CM1 = np.average(dcm1, axis=0)  # , weights=[1,15.99,1])
-        # CM2 = np.average(dcm2, axis=0)  # , weights=[1,15.99,1])
-        # distance = np.linalg.norm(CM1 - CM2)
-        #
-        # bisector1 = bisector(dcm1)
-        # bisector2 = bisector(dcm2)
-        #
-        # dih = dihedral3(
-        #     np.array(
-        #         [dcm1[1, :] + bisector1, dcm1[1, :], dcm2[1, :], dcm2[1, :] + bisector2]
-        #     )
-        # )
-        #
-        # theta = angle(bisector1, bisector2)
-        # a1 = angle(dcm1[1, :] + bisector1, dcm1[1, :] + dcm2[1, :])
-        # a2 = angle(dcm2[1, :] + bisector2, dcm1[1, :] + dcm2[1, :])
-        # if (60 - a1 - a2) < 0:
-        #     theta = theta * -1
-        #
-        # # append data
-        # min_hbond.append(min(dists))
-        # E_col_dcms.append(E)
-        # dist_dcms.append(distance)
-        # angles_dcms.append(theta)
-        # dih_dcms.append(dih)
-        # angle_1.append(a1)
-        # angle_2.append(a2)
-        # dcms_.append([dcm1, dcm2])
-
-    # #  add data to the dataframe
-    # data[f"ECOL_{name}"] = E_col_dcms
-    # data["angle_1"] = angle_1
-    # data["angle_2"] = angle_2
-    # data["dih"] = dih_dcms
-    # data["theta"] = angles_dcms
-    # data["distance"] = dist_dcms
-    # data["min_hbond"] = min_hbond
-    # data["dcms"] = dcms_
 
     #  prepare data for jax as dictionary
     jax_data = {
@@ -409,7 +358,6 @@ def pairs_data(
         "cluster_labels": jnp.array(cluster_labels),
     }
 
-    # return data, jax_data
     return jax_data
 
 
@@ -424,37 +372,37 @@ class CustomUnpickler(pickle.Unpickler):
 
 
 if __name__ == "__main__":
-    from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
-
-    pkl_path = "/home/boittier/Documents/phd/ff_energy/pickles/energy_report.pkl"
-
-    er = CustomUnpickler(open(pkl_path, 'rb')).load()
-    eg_data = er.data_plots[0].obj
-    print(eg_data)
-    eg_dcm_path_ = "/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz"
-
-    jax_ = pairs_data(eg_data,
-               system="water_cluster",
-               name="test",
-               dcm_path_=eg_dcm_path_,
-               )
-
-    dists = {_.name.split(".")[0]: _.distances
-              for _ in eg_data.structures}
-
-    print(dists)
-    print(jax_)
-
-    FUNC = LJ
-    BOUNDS = LJ_bound
-    ff = FF(eg_data.data, dists, FUNC, BOUNDS,
-            eg_data.structures[0], elec="ECOL")
-
-    print(ff)
-
-    # pickle ff
-
-    pickle_output(ff, "test_ff")
-
+    # from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
+    #
+    # pkl_path = "/home/boittier/Documents/phd/ff_energy/pickles/energy_report.pkl"
+    #
+    # er = CustomUnpickler(open(pkl_path, 'rb')).load()
+    # eg_data = er.data_plots[0].obj
+    # print(eg_data)
+    # eg_dcm_path_ = "/home/boittier/homeb/water_cluster/pbe0dz_pc/{}/charmm/dcm.xyz"
+    #
+    # jax_ = pairs_data(eg_data,
+    #            system="water_cluster",
+    #            name="test",
+    #            dcm_path_=eg_dcm_path_,
+    #            )
+    #
+    # dists = {_.name.split(".")[0]: _.distances
+    #           for _ in eg_data.structures}
+    #
+    # print(dists)
+    # print(jax_)
+    #
+    # FUNC = LJ
+    # BOUNDS = LJ_bound
+    # ff = FF(eg_data.data, dists, FUNC, BOUNDS,
+    #         eg_data.structures[0], elec="ECOL")
+    #
+    # print(ff)
+    #
+    # # pickle ff
+    #
+    # pickle_output(ff, "test_ff")
+    pass
     # print(ff.energy(jax_))
 

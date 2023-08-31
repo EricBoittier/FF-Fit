@@ -18,11 +18,11 @@ class SlurmJobHandler:
     """
 
     def __init__(
-        self,
-        max_jobs=5,
-        username="boittier",
-        cluster=("ssh", "boittier@pc-bach"),
-        clustername="pc-bach",
+            self,
+            max_jobs=5,
+            username="boittier",
+            cluster=("ssh", "boittier@pc-bach"),
+            clustername="pc-bach",
     ):
         self.max_jobs = max_jobs
         self.username = username
@@ -36,17 +36,18 @@ class SlurmJobHandler:
     def add_job(self, job_script):
         self.jobs.append(job_script)
 
-    def do_check(self, Check=True):
+    def do_check(self, Check=True, local=False):
         if Check:
-            running_jobs = self.get_running_jobs()
+            running_jobs = self.get_running_jobs(local=local)
             while running_jobs >= self.max_jobs:
                 time.sleep(60)  # wait for 1 minute before checking again
                 running_jobs = self.get_running_jobs()
 
-    def submit_jobs(self, Check=True, NperSubmit=6):
-        jobs = np.array_split(np.array(self.jobs), len(self.jobs) / NperSubmit)
+    def submit_jobs(self, Check=True, NperSubmit=6, local=False):
+        jobs = np.array_split(np.array(self.jobs),
+                              len(self.jobs) / NperSubmit)
         for i, jobs in enumerate(jobs):
-            self.do_check(Check)
+            self.do_check(Check, local=local)
             job_str = "source .bashrc;"
             for job_script in jobs:
                 job_path = Path(job_script)
@@ -55,7 +56,6 @@ class SlurmJobHandler:
                 # print(job_dir)
             print(job_str)
             # subprocess.run(['sbatch', job_path.name], cwd=job_path.parents[0])
-
             output = (
                 subprocess.check_output([self.cluster[0], self.cluster[1], job_str])
                 .decode("utf-8")
@@ -64,22 +64,47 @@ class SlurmJobHandler:
             print(output)
             time.sleep(15)
 
-    def get_running_jobs(self):
+    # def submit_raw_job(self, job_command, Check=True, local=False):
+    #     jobs = [job_command]
+    #     self.do_check(Check, local=local)
+    #     job_str = "source .bashrc;"
+    #     for job_script in jobs:
+    #         job_path = Path(job_script)
+    #         job_dir = "/".join(job_path.parts[4:-1])
+    #         job_str += f"cd {job_dir}; sbatch {job_path.name}; cd -; "
+    #             # print(job_dir)
+    #         print(job_str)
+    #         # subprocess.run(['sbatch', job_path.name], cwd=job_path.parents[0])
+    #         output = (
+    #             subprocess.check_output([self.cluster[0], self.cluster[1], job_str])
+    #             .decode("utf-8")
+    #             .strip()
+    #         )
+    #         print(output)
+    #         time.sleep(15)
+
+    def get_running_jobs(self, local=False):
+        commands = [
+            self.cluster[0],
+            self.cluster[1],
+            "squeue",
+            "-u",
+            self.username,
+        ]
+        if local:
+            commands = ["squeue", "-u", self.username]
         output = subprocess.check_output(
-            [
-                self.cluster[0],
-                self.cluster[1],
-                "squeue",
-                "-u",
-                self.username,
-            ]
+            commands
         ).decode("utf-8")
         print(output)
         return output.count("\n") - 1  # exclude the header line
 
-    def get_job_status(self, job_id):
+    def get_job_status(self, job_id, local=False):
+        commands = [self.cluster[0], self.cluster[1], "squeue", "-j", job_id]
+        if local:
+            commands = ["squeue", "-j", job_id]
         output = subprocess.check_output(
-            [self.cluster[0], self.cluster[1], "squeue", "-j", job_id]
+            commands
         ).decode("utf-8")
         status_lines = output.strip().split("\n")[1:]  # exclude the header line
         print(status_lines)

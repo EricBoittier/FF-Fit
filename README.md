@@ -29,6 +29,8 @@ A package for calculating the energy of a system of particles using a force fiel
 Installation using conda is recommended.  The following packages are required:
 ```bash
 conda env create --file environment.yml
+
+conda install -c conda-forge povray
 ```
 
 ### Simple (Python Only)
