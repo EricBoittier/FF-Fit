@@ -133,6 +133,27 @@ def make_ff_object(x):
         #  which ff_type
 
 
+def ff_fit(x):
+    if x:
+        structure = x[1]
+        elec = x[2]
+        fit = x[3]
+        pair_dists = None
+        ffpkl = f"{elec}_{structure}_{fit}"
+        #  load_ff
+        ff = read_from_pickle(PKL_PATH / ffpkl)
+        ff = next(ff)
+        print(ff)
+
+        loss = "jax"
+
+        LJFF = fit_repeat(
+            ff, 2, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
+        )
+
+        pickle_output(LJFF, f"{ffpkl}_fitted")
+
+
 def run():
     for i in range(len(pkl_files)):
         f = pkl_files[i]
@@ -259,11 +280,17 @@ if __name__ == "__main__":
     #  argument for which experiment to run
     parser = argparse.ArgumentParser()
     parser.add_argument("--x", "-x", type=int, help="Experiment number")
+    parser.add_argument("--m", "-m", type=bool, help="Make the ff object")
+    parser.add_argument("--f", "-f", type=bool, help="Fit the ff object")
     args = parser.parse_args()
     print(args.x)
     job = jobs[args.x]    
     print(job)
-    make_ff_object(job)
+    if args.m:
+        make_ff_object(job)
+    if args.f:
+        ff_fit(job)
+    pass
 
 
 
