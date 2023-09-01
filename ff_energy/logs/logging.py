@@ -10,7 +10,7 @@ def hide_logs():
     logging.getLogger("matplotlib.pyplot").disabled = True
     logging.getLogger("PngImagePlugin").disabled = True
     # pxla, dispatch, and other jax logs
-    logging.getLoger("pxla").disabled = True
+    logging.getLogger("pxla").disabled = True
     logging.getLogger("dispatch").disabled = True
     logging.getLogger("jax").disabled = True
 
