@@ -1634,8 +1634,6 @@ E
 tests/test_reports.py,1/8/1883332e3f45468ac0db300f61481f84f5ef8c85
 Z
 *ff_energy/ffe/charmm_files/dcm_pbe0dz.mdcm,4/b/4bfbc97e599945e20ef070a6ed37cf3f1acd793a
-I
-ff_energy/logs/logging.py,5/7/57118421962bee9d23cbaf9eee9dbd9aea011045
 N
 ff_energy/pydcm/kernel_data.py,9/d/9d623a17cc58ad8dfdf6097c222958913d5ad197
 \
