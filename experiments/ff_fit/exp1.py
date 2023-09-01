@@ -47,11 +47,33 @@ experiments = list(it.product(*json_object.values()))
 print(f"N experiments: {len(experiments)}")
 
 def make_ff_objects():
+    
     for i, x in enumerate(experiments):
         print(f"Experiment {i}: {x}")
-        structure = x["structure"]
-        print(f"Structure: {structure}")
+        structure = x[1]
+        elec = x[2]
+        fit = x[3]
+        if structure == "dcm":
+            #  load the pickle file
+            pkl_file = PKL_PATH / "20230823_dcm.pkl.pkl"
+            pkl_files.append(pkl_file)
+        elif structure == "water_cluster":
+            #  load the pickle file
+            pkl_file = PKL_PATH / "20230823_water_clusters.pkl.pkl"
+            pkl_files.append(pkl_file)
+        else:
+            raise ValueError("Invalid structure")
+        
+        pkl_file = read_from_pickle(pkl_file)
+        structure_data = next(pkl_file)
+        print(structure_data.keys())
+        print(structure_data[elec])
 
+
+
+
+
+        
 
 def run():
     for i in range(len(pkl_files)):
