@@ -798,8 +798,6 @@ I
 notebooks/povray/test.ini,0/d/0dbeb6ef3311d3c22196000b08088cd6944554aa
 Q
 !ff_energy/projections/plotting.py,e/b/ebc88c8ed4d9b0354fac78da89092929036374fe
-N
-ff_energy/plotting/plotting.py,d/f/df5c69a40435ca0aaf8cebb66571c7e0ae984ebc
 P
  pdbs/dcm/100_646_DCM_76_1117.pdb,e/0/e08f5c1f64297cbbcd21b554a2938923f76dab04
 Q
@@ -1992,8 +1990,6 @@ N
 pdbs/ions_ext/37_6_pot_5_1.pdb,b/3/b3ebbc0ceeeb848985dbc2576e706aab15b38927
 S
 #configs/pbe0dz-ions_ext-mdcm.config,f/c/fc8dae7442a6b6c857ae464d905aecad77c4c533
-P
- ff_energy/plotting/data_plots.py,8/0/805595363f3926ff31a329cf30b066cbf5d9532f
 V
 &notebooks/working/20230828_water.ipynb,d/a/da7fa2665d122ac39b925b2d3569994d9f27a7aa
 T

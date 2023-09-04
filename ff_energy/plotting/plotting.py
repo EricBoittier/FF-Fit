@@ -15,8 +15,12 @@ from ff_energy.latex_writer.report import REPORTS_PATH
 warnings.filterwarnings("ignore", module="matplotlib\..*")
 
 
-def set_style():
-    plt.style.use("science")
+def set_style(no_latex=False):
+    if no_latex:
+        plt.style.use(["science", "no-latex"])
+    else:
+        plt.style.use(["science", "bright"])
+
     rcParams["figure.figsize"] = 8, 6
     rcParams["axes.labelsize"] = 18
     rcParams["axes.titlesize"] = 22
