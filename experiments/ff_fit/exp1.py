@@ -141,16 +141,17 @@ def ff_fit(x):
         pair_dists = None
         ffpkl = f"{elec}_{structure}_{fit}"
         #  load_ff
-        ff = read_from_pickle(PKL_PATH / ffpkl)
+        ff = read_from_pickle(PKL_PATH / (ffpkl + ".pkl"))
         ff = next(ff)
         print(ff)
 
         loss = "jax"
 
         LJFF = fit_repeat(
-            ff, 2, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
+            ff, 1000, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
         )
-
+        #        print(LJFF.opt_parm)
+        print(LJFF.opt_results)
         pickle_output(LJFF, f"{ffpkl}_fitted")
 
 
@@ -276,21 +277,21 @@ def de_fit(ffpkl, elec_type="fit_ECOL"):
 if __name__ == "__main__":
     jobs = loop()
     import argparse
-
     #  argument for which experiment to run
     parser = argparse.ArgumentParser()
     parser.add_argument("--x", "-x", type=int, help="Experiment number")
-    parser.add_argument("--m", "-m", type=bool, help="Make the ff object")
-    parser.add_argument("--f", "-f", type=bool, help="Fit the ff object")
+    parser.add_argument("--m", "-m", action='store_true', help="Make the ff object")
+    parser.add_argument("--f", "-f", action='store_true', help="Fit the ff object")
     args = parser.parse_args()
     print(args.x)
     job = jobs[args.x]    
     print(job)
     if args.m:
+        print("Making ff object")
         make_ff_object(job)
     if args.f:
-        ff_fit(job)
-    pass
+        print("Fitting ff object")
+        ff = ff_fit(job)
 
 
 

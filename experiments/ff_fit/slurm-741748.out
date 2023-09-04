@@ -1,0 +1,101 @@
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:472 - Initializing backend 'interpreter'
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:484 - Backend 'interpreter' initialized
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:472 - Initializing backend 'cpu'
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:484 - Backend 'cpu' initialized
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:472 - Initializing backend 'cuda'
+2023-09-01 18:05:52 | INFO | xla_bridge:backends:440 - Unable to initialize backend 'cuda': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:472 - Initializing backend 'rocm'
+2023-09-01 18:05:52 | INFO | xla_bridge:backends:440 - Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:472 - Initializing backend 'tpu'
+2023-09-01 18:05:52 | INFO | xla_bridge:backends:440 - Unable to initialize backend 'tpu': INVALID_ARGUMENT: TpuPlatform is not available.
+2023-09-01 18:05:52 | DEBUG | xla_bridge:_init_backend:472 - Initializing backend 'plugin'
+2023-09-01 18:05:52 | INFO | xla_bridge:backends:440 - Unable to initialize backend 'plugin': xla_extension has no attributes named get_plugin_device_client. Compile TensorFlow with //tensorflow/compiler/xla/python:enable_plugin_device set to true (defaults to false) to enable this.
+2023-09-01 18:05:52 | WARNING | xla_bridge:backends:448 - No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.0004889965057373047 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.00035643577575683594 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.0003452301025390625 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming <lambda> for pjit in 0.0002567768096923828 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming ravel for pjit in 0.00023436546325683594 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.00043392181396484375 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.0004172325134277344 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _broadcast_arrays for pjit in 0.0002536773681640625 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _where for pjit in 0.0008535385131835938 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _take for pjit in 0.004132747650146484 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming true_divide for pjit in 0.00035834312438964844 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.0004074573516845703 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming <lambda> for pjit in 0.0003504753112792969 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.0003426074981689453 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming lj for pjit in 0.0035202503204345703 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming LJflat for pjit in 0.015957355499267578 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _broadcast_arrays for pjit in 0.00017213821411132812 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _squeeze for pjit in 0.00013756752014160156 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming LJRUN for pjit in 0.018704652786254883 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming <lambda> for pjit in 0.00036025047302246094 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _reduce_sum for pjit in 0.00046563148498535156 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _mean for pjit in 0.0012025833129882812 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming LJRUN_LOSS for pjit in 0.021984577178955078 sec
+2023-09-01 18:05:52 | DEBUG | pxla:lower_sharding_computation:2440 - Compiling LJRUN_LOSS for with global shapes and types [ShapedArray(float32[855000]), ShapedArray(int32[855000]), ShapedArray(int32[855000]), ShapedArray(float32[4]), ShapedArray(float32[500])]. Argument mapping: (GSPMDSharding({replicated}), GSPMDSharding({replicated}), GSPMDSharding({replicated}), GSPMDSharding({replicated}), GSPMDSharding({replicated})).
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming fn for pjit in 0.00042939186096191406 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming _broadcast_arrays for pjit in 0.0001709461212158203 sec
+2023-09-01 18:05:52 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming <lambda> for pjit in 0.0007555484771728516 sec
+2023-09-01 18:05:52 | DEBUG | xla_bridge:get_compile_options:125 - get_compile_options: num_replicas=1 num_partitions=1 device_assignment=[[CpuDevice(id=0)]]
+2023-09-01 18:05:53 | DEBUG | dispatch:log_elapsed_time:272 - Finished XLA compilation of jit(LJRUN_LOSS) in 0.44388318061828613 sec
+2023-09-01 18:05:54 | DEBUG | dispatch:log_elapsed_time:272 - Finished tracing + transforming LJRUN for pjit in 0.0019199848175048828 sec
+2023-09-01 18:05:54 | DEBUG | pxla:lower_sharding_computation:2440 - Compiling LJRUN for with global shapes and types [ShapedArray(float32[855000]), ShapedArray(int32[855000]), ShapedArray(int32[855000]), ShapedArray(float32[4])]. Argument mapping: (GSPMDSharding({replicated}), GSPMDSharding({replicated}), GSPMDSharding({replicated}), GSPMDSharding({replicated})).
+2023-09-01 18:05:54 | DEBUG | xla_bridge:get_compile_options:125 - get_compile_options: num_replicas=1 num_partitions=1 device_assignment=[[CpuDevice(id=0)]]
+2023-09-01 18:05:54 | DEBUG | dispatch:log_elapsed_time:272 - Finished XLA compilation of jit(LJRUN) in 0.03887438774108887 sec
+N experiments: 6
+Experiment 0: ('pbe0dz', 'water_cluster', 'ELECnull', 'lj')
+Experiment 1: ('pbe0dz', 'water_cluster', 'ELECci', 'lj')
+Experiment 2: ('pbe0dz', 'water_cluster', 'ELECpol', 'lj')
+Experiment 3: ('pbe0dz', 'water_cluster', 'ELECk', 'lj')
+Experiment 4: ('pbe0dz', 'water_cluster', 'ELECm', 'lj')
+Experiment 5: ('pbe0dz', 'water_cluster', 'ELECp', 'lj')
+5
+('pbe0dz', 'water_cluster', 'ELECp', 'lj')
+Fitting ff object
+FF: LJ water_cluster ELECp Exact intE (jax_coloumb: False)
+[       message: Optimization terminated successfully.
+       success: True
+        status: 0
+           fun: 112.63202667236328
+             x: [ 1.000e-03  1.000e-03  1.776e+00  2.500e+00]
+           nit: 46
+          nfev: 153
+ final_simplex: (array([[ 1.000e-03,  1.000e-03,  1.776e+00,  2.500e+00],
+                       [ 1.000e-03,  1.000e-03,  1.776e+00,  2.500e+00],
+                       ...,
+                       [ 1.000e-03,  1.000e-03,  1.776e+00,  2.500e+00],
+                       [ 1.000e-03,  1.000e-03,  1.776e+00,  2.500e+00]]), array([ 1.126e+02,  1.126e+02,  1.126e+02,  1.126e+02,
+                        1.126e+02])),        message: Optimization terminated successfully.
+       success: True
+        status: 0
+           fun: 112.63202667236328
+             x: [ 1.000e-03  1.000e-03  2.324e+00  2.500e+00]
+           nit: 50
+          nfev: 160
+ final_simplex: (array([[ 1.000e-03,  1.000e-03,  2.324e+00,  2.500e+00],
+                       [ 1.000e-03,  1.000e-03,  2.324e+00,  2.500e+00],
+                       ...,
+                       [ 1.000e-03,  1.000e-03,  2.324e+00,  2.500e+00],
+                       [ 1.000e-03,  1.000e-03,  2.324e+00,  2.500e+00]]), array([ 1.126e+02,  1.126e+02,  1.126e+02,  1.126e+02,
+                        1.126e+02]))]
