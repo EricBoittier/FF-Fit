@@ -261,9 +261,9 @@ class FF:
         print("dists")
         print(len(out_dists))
         print(len(set(out_dists)))
-        print("energy")
-        print(len(out_es))
-        print(len(set(out_es)))
+        # print("energy")
+        # print(len(out_es))
+        # print(len(set(out_es)))
         out = [
             _
             for _ in [out_dists, out_groups, out_akps, out_ks, out_es, out_sig, out_ep]
