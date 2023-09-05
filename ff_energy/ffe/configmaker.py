@@ -39,6 +39,13 @@ water_kmdcm = [
     *[f"water_kern/coefs{i}.txt" for i in range(18)],
 ]
 
+dcm_kmdcm = [
+    "dcm_pbe0dz.kmdcm",
+    "dcm_kern/dcm.kern",
+    "dcm_kern/x_fit.txt",
+    *[f"dcm_kern/coefs{i}.txt" for i in range(18)],
+]
+
 
 
 MODELS = {
@@ -55,6 +62,7 @@ MODELS = {
     "dcm": {
         "pc": DCM_STATES("dcm_pbe0dz.pc"),
         "mdcm": DCM_STATES("dcm_pbe0dz.mdcm"),
+        "kmdcm": kMDCM_STATES("dcm_pbe0dz.kmdcm"),
     },
     "ions_ext": {
         "pc": DCM_STATES("ions_ext_pbe0dz.pc"),

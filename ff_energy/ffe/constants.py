@@ -39,6 +39,7 @@ atom_types = {
     ("TIP3", "H1"): "HT",
     ("TIP3", "H2"): "HT",
     ("DCM", "C"): "C",
+    ("DCM", "CL"): "CL",
     ("DCM", "CL1"): "CL",
     ("DCM", "CL2"): "CL",
     ("DCM", "Cl"): "CL",

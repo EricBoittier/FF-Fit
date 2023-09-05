@@ -1672,20 +1672,14 @@ M
 ff_energy/plotting/pov_ray.py,9/4/94bc83d188876c8ee6fd0f61d9948d707a9381dd
 ?
 environment.yml,5/4/54c391de2500e0856c23737daf64f9d931569110
-J
-ff_energy/ffe/constants.py,b/4/b4f895108d31a7659099a72982d55e73b68bf575
 G
 ff_energy/ffe/ff_fit.py,6/2/62aefc677214fd841d4fd317c1f5821d32eabad3
 K
 reports/PAPERMILLS-FF.ipynb,8/2/826f42c5b48f1bebb36e38455eac5f3b9fa750cc
-G
-ff_energy/ffe/config.py,8/e/8e7729ce7a38fbdc8dffcef845d786362f0ae71e
 ^
 .notebooks/working/data/mike_pol_dcm_intern.txt,c/d/cd70d8b50960af798d41fea4e950169d938c3824
 S
 #notebooks/working/data/ions_pol.txt,8/1/81ccc5ce6c608c3eaf7c40d9846ab0a58c9434d6
-D
-ff_energy/ffe/cli.py,e/1/e1c83edcc1ac978a6e072ce66c43543d33d2ca93
 O
 pdbs/ions_ext/35_1_POT_39_1.pdb,f/f/ffd694757a923cd4e6159ac1ba1542a77ef2fa19
 R
@@ -1996,5 +1990,3 @@ T
 $ff_energy/ff_experiments/__init__.py,e/a/ea96d6ccf6c5e09057313ce52954c9202c0402c2
 T
 $ff_energy/ff_experiments/load_ffs.py,5/0/501213c0437acc0d0c92a539c06cfecc2bffc094
-T
-$notebooks/working/20230828_dcm.ipynb,a/1/a1375e0541478545536fffaf93037d6b53c15d10

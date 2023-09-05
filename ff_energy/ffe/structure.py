@@ -27,7 +27,8 @@ def valid_atom_key_pairs(atom_keys):
     return atom_key_pairs
 
 
-atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT"]
+atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT",
+             "C", "H", "Cl"]
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 
 atom_name_fix = {"CL": "Cl", "PO": "K"}
@@ -74,7 +75,7 @@ class Structure:
         self.dcm_charges_mask = None
         self.atom_types = atom_types
 
-        self.read_pdb(path)
+        self.read_pdb(self.path)
 
     def get_cluster_charge(self):
         chg = 0
@@ -137,7 +138,10 @@ class Structure:
         print(self.restypes, self.atomnames)
         print(self.atom_types)
         self.chm_typ = np.array(
-            [self.atom_types[(a, b)] for a, b in zip(self.restypes, self.atomnames)]
+            [self.atom_types[(
+                a.upper(),
+                b.upper()
+            )] for a, b in zip(self.restypes, self.atomnames)]
         )
         self.chm_typ_mask = {
             ak: np.array([ak == _ for _ in self.chm_typ]) for ak in atom_keys
@@ -227,8 +231,12 @@ class Structure:
     def set_2body(self):
         """Set 2-body distances"""
         #  all interacting pairs
-        print(self.resids)
-        self.pairs = list(itertools.combinations(range(1, max(self.resids) + 1), 2))
+        # print(self.resids)
+        # print(atom_key_pairs)
+        #  all combination of pairs
+        self.pairs = list(itertools.combinations(
+            range(1, max(self.resids) + 1), 2)
+        )
         self.distances = [[] for _ in range(len(atom_key_pairs))]
         self.distances_pairs = [{} for _ in range(len(atom_key_pairs))]
 
@@ -385,3 +393,14 @@ REMARK
         atoms = read(name)
         os.remove(name)
         return atoms
+
+
+if __name__ == "__main__":
+    from ff_energy.utils.ffe_utils import read_from_pickle
+    from ff_energy.ffe.constants import PKL_PATH, FFEPATH
+    dcm_ = next(read_from_pickle(PKL_PATH / "structures" / "dcm.pkl"))
+    test_obj =  dcm_[0][0]
+
+    test_obj.read_pdb(FFEPATH / test_obj.path)
+    test_obj.set_2body()
+    print(test_obj.pairs)
