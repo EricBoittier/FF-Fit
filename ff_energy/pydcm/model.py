@@ -1,6 +1,8 @@
 import json
 from pathlib import Path, PosixPath
 
+from ff_energy.ffe.constants import FFEPATH
+
 
 class DCM:
     """
@@ -20,7 +22,7 @@ if __name__ == "__main__":
     """
     water_dict = {}
     water_mdcm_path = Path(__file__).parents[0] / "sources" / "water"
-    water_cubes_path = Path(__file__).parents[2] / "cubes" / "water"
+    water_cubes_path = FFEPATH / "cubes" / "water"
     print(water_cubes_path)
     water_dict["scan_fesp"] = [
         str(_) for _ in list(water_cubes_path.glob("*/*_esp.cube"))
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     """
     methanol_dict = {}
     methanol_mdcm_path = Path(__file__).parents[0] / "sources" / "methanol"
-    methanol_cubes_path = Path(__file__).parents[2] / "cubes" / "methanol"
+    methanol_cubes_path = FFEPATH / "cubes" / "methanol"
     methanol_dict["scan_fesp"] = [
         str(_) for _ in list(methanol_cubes_path.glob("*/*_esp.cube"))
     ]
@@ -54,7 +56,7 @@ if __name__ == "__main__":
     """
     methanol_dict = {}
     methanol_mdcm_path = Path(__file__).parents[0] / "sources" / "methanol"
-    methanol_cubes_path = Path(__file__).parents[2] / "cubes" / "methanol_perm"
+    methanol_cubes_path = FFEPATH / "cubes" / "methanol_perm"
     methanol_dict["scan_fesp"] = [
         str(_) for _ in list(methanol_cubes_path.glob("*/*_esp.cube"))
     ]
@@ -69,8 +71,8 @@ if __name__ == "__main__":
     Dichloromethane
     """
     dcm_dict = {}
-    dcm_mdcm_path = Path(__file__).parents[0] / "sources" / "dcm"
-    dcm_cubes_path = Path(__file__).parents[2] / "cubes" / "dcm"
+    dcm_mdcm_path = FFEPATH / "ff_energy/pydcm" / "sources" / "dcm"
+    dcm_cubes_path = FFEPATH / "cubes" / "dcm"
     dcm_dict["scan_fesp"] = [str(_) for _ in list(dcm_cubes_path.glob("*/*_esp.cube"))]
     dcm_dict["scan_fdns"] = [str(_) for _ in list(dcm_cubes_path.glob("*/*_dens.cube"))]
     dcm_dict["mdcm_cxyz"] = str(dcm_mdcm_path / "dcm8.xyz")
