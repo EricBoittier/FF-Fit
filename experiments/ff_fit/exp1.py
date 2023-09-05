@@ -147,7 +147,7 @@ def ff_fit(x):
         loss = "jax"
 
         LJFF = fit_repeat(
-            ff, 1, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
+            ff, 100, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
         )
         #        print(LJFF.opt_parm)
         print(LJFF.opt_results)
