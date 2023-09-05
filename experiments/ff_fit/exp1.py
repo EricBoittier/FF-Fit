@@ -73,7 +73,7 @@ def make_ff_object(x):
         #  which structure
         if structure == "dcm":
             #  load the pickle file
-            pkl_file = PKL_PATH / "20230823_dcm.pkl.pkl"
+            pkl_file = PKL_PATH / "20230904_dcm.pkl.pkl"
             pkl_files.append(pkl_file)
         elif structure == "water_cluster":
             #  load the pickle files
@@ -114,6 +114,9 @@ def make_ff_object(x):
         struct_data = structs[0]
         print(struct_data)
         print(pair_dists)
+        for _ in structs:
+            print(_.name)
+            _.set_2body()
         dists = { str(Path(_.name).stem).split(".")[0] : _.distances for _ in structs}
         print(dists.keys())
         #  make the ff object

@@ -46,7 +46,7 @@ class FF:
         self.atom_types = list(
             set(
                 [
-                    structure.atom_types[(a, b)]
+                    structure.atom_types[(a.upper(), b.upper())]
                     for a, b in zip(structure.restypes, structure.atomnames)
                 ]
             )
@@ -242,7 +242,7 @@ class FF:
             #  loop over atom pairs
             for i, akp in enumerate(self.atom_type_pairs):
                 #  if there are distances for this atom pair
-                if len(dists[akp_indx[akp]]) > 0:
+                if (akp in akp_indx.keys()) and (len(dists[akp_indx[akp]]) > 0):
                     ddists = np.array(dists[akp_indx[akp]]).flatten()
                     for d in ddists:
                         out_dists.append(d)
