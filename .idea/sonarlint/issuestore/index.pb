@@ -1672,8 +1672,6 @@ M
 ff_energy/plotting/pov_ray.py,9/4/94bc83d188876c8ee6fd0f61d9948d707a9381dd
 ?
 environment.yml,5/4/54c391de2500e0856c23737daf64f9d931569110
-G
-ff_energy/ffe/ff_fit.py,6/2/62aefc677214fd841d4fd317c1f5821d32eabad3
 K
 reports/PAPERMILLS-FF.ipynb,8/2/826f42c5b48f1bebb36e38455eac5f3b9fa750cc
 ^

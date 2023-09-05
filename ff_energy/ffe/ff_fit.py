@@ -137,7 +137,6 @@ def fit_repeat(
             loss=loss,
         )
     ff.get_best_loss()
-    # ff.eval_best_parm()
     pickle_output(ff, outname)
     return ff
 
@@ -163,7 +162,9 @@ def fit_func(
         "ecol": (ff.get_loss_coulomb, ff.eval_coulomb_nb),
         "chgpen": (ff.get_loss_chgpen, ff.eval_jax_chgpen),
     }
+    print("loss: ", loss)
     func, eval = whichLoss[loss]
+    print(whichLoss[loss])
 
     # make a uniform random guess if no x0 value is provided
     if x0 is None and bounds is not None:

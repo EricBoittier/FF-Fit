@@ -91,6 +91,7 @@ class FF:
         self.dcm_dists_labels = None
         self.cluster_labels = None
         self.coloumb_init = False
+        self.num_segments = None
 
         self.sort_data()
 
@@ -169,6 +170,7 @@ class FF:
         self.out_groups = jnp.array(out_groups)
         self.out_es = jnp.array(out_es)
         self.out_akps = jnp.array(out_akps)
+        self.num_segments = len(out_es)
 
     def set_targets(self):
         """Set the targets for the objective function: intE - elec = targets"""
@@ -252,7 +254,16 @@ class FF:
                         out_ep.append(ep[i])
                         out_sig.append(sig[i])
                         out_es.append(self.func(sig[i], ep[i], d, *args))
-
+        print("debug")
+        print("groups")
+        print(len(out_groups))
+        print(len(set(out_groups)))
+        print("dists")
+        print(len(out_dists))
+        print(len(set(out_dists)))
+        print("energy")
+        print(len(out_es))
+        print(len(set(out_es)))
         out = [
             _
             for _ in [out_dists, out_groups, out_akps, out_ks, out_es, out_sig, out_ep]
@@ -311,6 +322,7 @@ class FF:
             self.out_akps,
             self.out_groups,
             x,
+            num_segments=self.num_segments,
         )
         return LJE
 
@@ -334,6 +346,11 @@ class FF:
         :param x:
         :return:
         """
+        print("get_loss_jax")
+
+        print(set(self.out_groups))
+        print(len(set(self.out_groups)))
+
         return LJRUN_LOSS(
             self.out_dists,
             self.out_akps,
@@ -451,7 +468,6 @@ class FF:
     def get_best_loss(self) -> pd.DataFrame:
         """get the best loss"""
         results = pd.DataFrame(self.opt_results)
-        # results["data"] = [list(_.index) for _ in self.opt_results_df]
         best = results[results["fun"] == results["fun"].min()]
         return best
 

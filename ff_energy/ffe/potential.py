@@ -164,6 +164,8 @@ def charge_penetration(a1, a2, b1, b2, q1, q2, z1, z2, r):
 def LJRUN(dists, indexs, groups, parms, num_segments=500):
     LJE = LJflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(LJE, groups, num_segments=num_segments)
+    jax.debug.print("shapeOUT {x}", x=OUT.shape)
+    jax.debug.print("out {x}", x=OUT)
     return OUT
 
 
@@ -271,24 +273,25 @@ def DEflat(dists, indexs, parms):
 
 
 @partial(jit, static_argnames=["num_segments"])
-def ecol_seg(outE, dcm_dists_labels, num_segments=500):
+def ecol_seg(outE, dcm_dists_labels, num_segments):
     return jax.ops.segment_sum(outE, dcm_dists_labels, num_segments=num_segments)
 
 
 @partial(jit, static_argnames=["num_segments"])
-def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
-    ERROR = LJRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
+def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
+    RES =  LJRUN(dists, indexs, groups, parms, num_segments=num_segments)
+    ERROR = RES - target
     return jnp.mean(ERROR**2)
 
 
 @partial(jit, static_argnames=["num_segments"])
-def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
+def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments):
     ERROR = DERUN(dists, indexs, groups, parms, num_segments=num_segments) - target
     return jnp.mean(ERROR**2)
 
 
 @partial(jit, static_argnames=["num_segments"])
-def CHGPEN_LOSS(dists, indexs, groups, parms, target, num_segments=500):
+def CHGPEN_LOSS(dists, indexs, groups, parms, target, num_segments):
     ERROR = CHGPENRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
     return jnp.mean(ERROR**2)
 

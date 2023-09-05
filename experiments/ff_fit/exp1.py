@@ -147,15 +147,18 @@ def ff_fit(x):
         ff = read_from_pickle(PKL_PATH / (ffpkl + ".pkl"))
         ff = next(ff)
         print(ff)
-
         loss = "jax"
 
         LJFF = fit_repeat(
-            ff, 10, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
+            ff, 1, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss, quiet="false"
         )
         #        print(LJFF.opt_parm)
         print(LJFF.opt_results)
         pickle_output(LJFF, f"{ffpkl}_fitted")
+        jaxeval = LJFF.eval_jax(LJFF.opt_parm)
+        print(jaxeval)
+        jaxloss = LJFF.get_loss_jax(LJFF.opt_parm)
+        print(jaxloss)
 
 
 def run():
