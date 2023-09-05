@@ -1,0 +1,18 @@
+{
+  "theory": [
+    "pbe0dz"
+  ],
+  "structure": [
+"dcm"
+  ],
+  "charge": [
+    "ELECnull",
+    "ELECci",
+    "ELECpol",
+    "ELECm",
+    "ELECp"
+  ],
+  "ff": [
+    "lj"
+  ]
+}

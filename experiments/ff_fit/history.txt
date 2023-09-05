@@ -1,0 +1,1000 @@
+    7  git pull
+    8  cs
+    9  cd ..
+   10  cs
+   11  cd charmmions/
+   12  cs
+   13  vi prod.log 
+   14  cs
+   15  cd ..
+   16  cs
+   17  cd ff_energy/
+   18  cs
+   19  cd ..
+   20  cs
+   21  cd dcm/
+   22  cs
+   23  cd nms/
+   24  cs
+   25  cd ..
+   26  cs
+   27  cd ..
+   28  cs
+   29  cd dcm/
+   30  cs
+   31  obabel -ig09 dcm_freq.out -omol2 -O dcm.mol2
+   32  cs
+   33  module avail 
+   34  cs
+   35  cd
+   36  cs
+   37  cd water_kern/
+   38  cs
+   39  cd ..
+   40  cs
+   41  test_water_sim
+   42  cs
+   43  cd test_water_sim
+   44  cs
+   45  vi dynamics.log 
+   46  cd ..
+   47  cs
+   48  cd mdcm_water_sim
+   49  ls
+   50  vi dynamics.log 
+   51  cs
+   52  vi dynamics.inp
+   53  vi dynamics.inp 
+   54  vi dynamics.log 
+   55  vi dynamics.inp 
+   56  cs
+   57  cd ..
+   58  cs
+   59  cd sims
+   60  cs
+   61  cd kmdcm/
+   62  cs
+   63  cd ..
+   64  cs
+   65  cd kmdcm/
+   66  cd water/k
+   67  cd water/
+   68  cs
+   69  cd k250/
+   70  cs
+   71  vi dynamics.log 
+   72  cs
+   73  cd ..
+   74  cs
+   75  cd k300
+   76  cs
+   77  vi dynamics.log 
+   78  vi dynamics.inp
+   79  vi dynamics.log 
+   80  cs
+   81  squeue
+   82  cs
+   83  squeue
+   84  cs
+   85  sinfo
+   86  squeue
+   87  sinfo
+   88  cs
+   89  cd dcm/
+   90  cs
+   91  cd nms/
+   92  cs
+   93  cd ..
+   94  cs
+   95  cd ..
+   96  cs
+   97  cd charmmions/
+   98  cs
+   99  ls *psf
+  100  cs
+  101  cd .
+  102  cs
+  103  cd
+  104  cs
+  105  Q
+  106  squeue
+  107  cs
+  108  cd water_tests/
+  109  cs
+  110  cd pbe0dz/
+  111  cs
+  112  cd ..
+  113  cs
+  114  cd ..
+  115  cs
+  116  cd water_dimer/
+  117  cs
+  118  cd ..
+  119  cs
+  120  cd clusters/
+  121  cs
+  122  cd ..
+  123  cs
+  124  cd dcm/
+  125  cs
+  126  mkdir molpro
+  127  cs
+  128  cd ..
+  129  cs
+  130  cd clusters/pbe0dz/test1
+  131  cs
+  132  cd monomers/
+  133  cs
+  134  cp test1_20.inp test1_20.sh ~/dcm/molpro/
+  135  cd
+  136  cs
+  137  cd dcm/molpro/
+  138  cs
+  139  vi test1_20.sh
+  140  vi test1_20.inp 
+  141  cs
+  142  sbatch test1_20.sh 
+  143  cs
+  144  Q
+  145  cs
+  146  vi test1_20.out 
+  147  cs
+  148  vi test1_20.inp 
+  149  cs
+  150  cp test1_20.out hf_test1_20.out
+  151  cs
+  152  sbatch test1_20.sh
+  153  cs
+  154  Q
+  155  cs
+  156  Q
+  157  cs
+  158  Q
+  159  vi test1_20.out 
+  160  tail *out
+  161  cs
+  162  tail *out
+  163  tail -n 10 *out
+  164  tail -n 20 *out
+  165  tail -n 200 *out
+  166  cs
+  167  cd
+  168  cs
+  169  cd water_cluster/pbe0dz/test1
+  170  cs
+  171  cd monomers/
+  172  cs
+  173  tail *out
+  174  vi test1_9.out
+  175  cd
+  176  cs
+  177  cd dcm/molpro/
+  178  cs
+  179  vi test1_20.out
+  180  cs
+  181  cd ..
+  182  cs
+  183  vi dcm_freq.out 
+  184  cs
+  185  vi dcm.out 
+  186  cs
+  187  cd 
+  188  cs
+  189  cd ff_energy/
+  190  cs
+  191  git pull
+  192  cs
+  193  cd
+  194  cs
+  195  cd dcm/
+  196  cs
+  197  cd pbe0dz/
+  198  cs
+  199  cd 100_4322_DCM_499_988/
+  200  cs
+  201  cd monomers/
+  202  cs
+  203  sbatch 100_4322_DCM_499_988_20.sh
+  204  cs
+  205  Q
+  206  cs
+  207  Q
+  208  cs
+  209  Q
+  210  cs
+  211  Q
+  212  cs
+  213  Q
+  214  vi 100_4322_DCM_499_988_20.out
+  215  cs
+  216  for x in *.sh; do sbatch $x; done
+  217  cs
+  218  Q
+  219  cd ..
+  220  cs
+  221  cd pairs/
+  222  cs
+  223  for x in *.sh; do sbatch $x; done
+  224  cd ..
+  225  cs
+  226  cd cluster/
+  227  cs
+  228  sbatch 100_4322_DCM_499_988.sh
+  229  cs
+  230  Q
+  231  cs
+  232  Q
+  233  cs
+  234  Q
+  235  cs
+  236  vi 100_4322_DCM_499_988.out
+  237  cs
+  238  cd ..
+  239  cs
+  240  cd pairs/
+  241  cs
+  242  tail *out
+  243  cs
+  244  tail DCM*out
+  245  vi 100_4322_DCM_499_988_12_13.out
+  246  cs
+  247  cd 
+  248  cs
+  249  cd water_cluster/
+  250  cs
+  251  cd pbe0dz
+  252  cs
+  253  cd test60
+  254  cs
+  255  cd cluster/
+  256  cs
+  257  vi test60.out
+  258  cs
+  259  cd ..
+  260  cs
+  261  cd ..
+  262  cs
+  263  cd 
+  264  cs
+  265  cd dcm/
+  266  cs
+  267  cd ..
+  268  cs
+  269  cd ff_energy/
+  270  cs
+  271  git pull
+  272  cs
+  273  cd ..
+  274  cs
+  275  cd dcm/
+  276  cs
+  277  cat dcm.com 
+  278  cat dcm_freq.com
+  279  cd nms/
+  280  cs
+  281  cat test_nms_46_1.xyz.sh
+  282  cs
+  283  cd
+  284  cs
+  285  cd dcm/
+  286  cs
+  287  cd pbe0dz/
+  288  cs
+  289  ls -lrth | wc -l
+  290  cs
+  291  for x in *; do cd $x; cd cluster; echo $x; done
+  292  cd ../..
+  293  for x in *; do cd $x; cd cluster; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  294  cs
+  295  Q
+  296  cs
+  297  Q
+  298  cs
+  299  Q
+  300  cs
+  301  for x in *; do cd $x; cd monomers; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  302  cs
+  303  for x in *; do cd $x; cd pairs; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  304  cs
+  305  Q
+  306  squeue
+  307  cs
+  308  Q
+  309  cs
+  310  cd 100_4087_DCM_476_1139
+  311  cs
+  312  cd monomers/
+  313  cs
+  314  cd ..
+  315  cs
+  316  cd ..
+  317  cs
+  318  cd ..
+  319  cs
+  320  squeue
+  321  cs
+  322  squeue
+  323  cs
+  324  Q
+  325  Q | wc -l
+  326  cs
+  327  cd
+  328  cs
+  329  Q
+  330  cs
+  331  cd dcm/
+  332  cs
+  333  cd pbe0dz/
+  334  cs
+  335  ls */cluster/*.out
+  336  ls */cluster/*DCM*.out
+  337  tail */cluster/*DCM*.out
+  338  tail */cluster/*DCM*.out | grep terminated
+  339  tail */cluster/*DCM*.out | grep terminated | wc -l
+  340  cs
+  341  cd //
+  342  cs
+  343  cd
+  344  cs
+  345  cd dcm/
+  346  cs
+  347  cd pbe0dz/
+  348  cs
+  349  cd 100_1445_DCM_169_519
+  350  cs
+  351  cd pairs/
+  352  cs
+  353  tail *out
+  354  tail *DCM*out
+  355  cs
+  356  cd ..
+  357  cs
+  358  cd ..
+  359  cs
+  360  cd 100_2611_DCM_304_1090
+  361  cs
+  362  cd pairs/
+  363  cs
+  364  cd ../.
+  365  cs
+  366  cd ..
+  367  cs
+  368  pwd
+  369  cs
+  370  cd ..
+  371  cs
+  372  cd
+  373  cs
+  374  cd ff_energy/
+  375  cs
+  376  git pull
+  377  cs
+  378  cd 
+  379  cs
+  380  cd ff_energy/
+  381  cs
+  382  cd
+  383  cs
+  384  cd ff_energy/
+  385  cs
+  386  cd
+  387  cs
+  388  cd ions
+  389  cd ..
+  390  cs
+  391  cd ions_ext/
+  392  cs
+  393  cd pbe0dz/
+  394  cs
+  395  cd 37_9_CLA_10_1
+  396  cs
+  397  cd monomers/
+  398  cs
+  399  sbatch 37_9_CLA_10_1_13.sh
+  400  cs
+  401  Q
+  402  cs
+  403  squeue
+  404  cs
+  405  less 37_9_CLA_10_1_13.out
+  406  cs
+  407  cd ..
+  408  cs
+  409  cd ..
+  410  cs
+  411  for x in *; do cd $x; cd pairs; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  412  cs
+  413  squeue
+  414  cs
+  415  for x in *; do cd $x; cd monomers; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  416  cs
+  417  for x in *; do cd $x; cd clusters; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  418  cs
+  419  cd
+  420  cs
+  421  cd ions
+  422  cd ../ions_ext/
+  423  cs
+  424  cd pbe0dz/
+  425  cs
+  426  for x in *; do cd $x; cd cluster; for y in *.sh; do sbatch $y; done; cd ../.. ; done
+  427  cs
+  428  Q
+  429  cs
+  430  Q
+  431  cs
+  432  ls */*/*out
+  433  ls */*/*POT*out
+  434  tail */*/*POT*out
+  435  cs
+  436  Q
+  437  cs
+  438  Q
+  439  cs
+  440  cd 
+  441  cs
+  442  pdflatex
+  443  cs
+  444  cd ions_ext
+  445  cs
+  446  cd pbe0dz/
+  447  cs
+  448  cd 37_34_POT_35_1
+  449  cs
+  450  cd monomers/
+  451  cs
+  452  tail *out
+  453  cs
+  454  ls *molden
+  455  ls *molden | wc -l
+  456  cs
+  457  tail *POT*out
+  458  cs
+  459  ls slurm-7386*
+  460  ls slurm-7386* | wc -l
+  461  cs
+  462  ls *inp | wc -l
+  463  cs
+  464  cd ..
+  465  cs
+  466  cd cluster/
+  467  cs
+  468  tail *out
+  469  cd ..
+  470  cs
+  471  cd pairs/
+  472  cs
+  473  ls *out
+  474  tail *P*out
+  475  tail *P*en
+  476  cs
+  477  tail *p*en
+  478  ls *p*en | wc -l
+  479  cd ..
+  480  cs
+  481  cd ..
+  482  cs
+  483  pwd
+  484  cs
+  485  cd
+  486  cs
+  487  cd ff_energy/
+  488  cs
+  489  cd tests/
+  490  cs
+  491  cd ..
+  492  cs
+  493  cd ff_energy/
+  494  cs
+  495  cd pydcm/
+  496  cs
+  497  cd tests/
+  498  cs
+  499  cd csvs/s
+  500  cd csvs/
+  501  cs
+  502  cd ..
+  503  cs
+  504  cd pkls/
+  505  cs
+  506  cd 0cb68c2c-e0e1-4d6a-baec-8be6db403291/
+  507  cs
+  508  cd ..
+  509  cs
+  510  cd ..
+  511  cs
+  512  cd models/
+  513  cs
+  514  pwd
+  515  cs
+  516  cd ..
+  517  cs
+  518  cat dcm_test.sh 
+  519  cs
+  520  cd
+  521  cs
+  522  cd ff_energy/
+  523  cs
+  524  git pull
+  525  git stash
+  526  git pull
+  527  rm ff_energy/pydcm/tests/*.json
+  528  git pull
+  529  cs
+  530  conda list env
+  531  conda info env
+  532  cs
+  533  conda env list
+  534  conda activate p
+  535  cs
+  536  conda list env
+  537  conda env list
+  538  cs
+  539  cd latex_reports/
+  540  cs
+  541  cd Report_PBE0dz/
+  542  cs
+  543  cd ..
+  544  cs
+  545  cd ..
+  546  cs
+  547  cd latex_reports/
+  548  cs
+  549  cd Report_PBE0dz/
+  550  cs
+  551  cd figures/
+  552  cs
+  553  cd ..
+  554  cs
+  555  cd ..
+  556  cs
+  557  cd ..
+  558  cs
+  559  cd ff_energy/
+  560  cs
+  561  cd latex_writer/
+  562  cs
+  563  vi energydata/energy_data_report.py 
+  564  cs
+  565  cd ..
+  566  cs
+  567  cd ..
+  568  cs
+  569  vi ff_energy/latex_writer/energydata/energy_data_report.py 
+  570  cs
+  571  conda list
+  572  cs
+  573  cd ..
+  574  cs
+  575  cd ff_energy/
+  576  cs
+  577  git push
+  578  cs
+  579  git add -A
+  580  cs
+  581  git all --all
+  582  cs
+  583  cd experiments/
+  584  cs
+  585  cd kernel_fit/
+  586  cs
+  587  cd ..
+  588  cs
+  589  cd mdcms/
+  590  cs
+  591  cd ..
+  592  cs
+  593  cd ff_fit/
+  594  cs
+  595  cd ..
+  596  cs
+  597  cd ..
+  598  cs
+  599  git log
+  600  cs
+  601  cd experiments/kernel_fit/
+  602  cs
+  603  cd ..
+  604  cs
+  605  git stash pop
+  606  cs
+  607  cd kernel_fit/
+  608  cs
+  609  cd ..
+  610  cs
+  611  vi 1687354366.9854996.txt 
+  612  cs
+  613  cd mdcms/
+  614  cs
+  615  cd ..
+  616  cs
+  617  cd kernel_fit/
+  618  cs
+  619  cd ..
+  620  cs
+  621  cd kernel_fit/
+  622  cs
+  623  cd ..
+  624  cs
+  625  cd ..
+  626  cs
+  627  cd ff_energy/pydcm/
+  628  cs
+  629  cd te
+  630  cd tests/
+  631  cs
+  632  cd csvs/
+  633  cs
+  634  cd ..
+  635  cs
+  636  vi output 
+  637  cs
+  638  cd models/
+  639  cs
+  640  cd ..
+  641  cs
+  642  cd ..
+  643  cs
+  644  cd ..
+  645  cs
+  646  cd ..
+  647  cs
+  648  cd ..
+  649  cs
+  650  module avail
+  651  cs
+  652  conda activate pycharmm
+  653  cs
+  654  wget https://github.com/POV-Ray/povray/releases/download/v3.8.0-beta.2/povunix-v3.8.0-beta.2-src.tar.gz
+  655  cs
+  656  tar -xvf povunix-v3.8.0-beta.2-src.tar.gz 
+  657  cs
+  658  cd povunix-v3.8.0-beta.2-src/
+  659  cs
+  660  cat README
+  661  ./configure COMPILED_BY="your name <email@address>"
+  662  module avail
+  663  conda activate gcc/gcc-12.2.0-cmake-3.25.1-openmpi-4.1.4
+  664  module load gcc/gcc-12.2.0-cmake-3.25.1-openmpi-4.1.4
+  665  ./configure COMPILED_BY="your name <email@address>"
+  666  cs
+  667  cat INSTALL 
+  668  cs
+  669  ./configure --prefix=$PWD COMPILED_BY="your name <email@address>"
+  670  cs
+  671  module avail
+  672  module load openblas/OpenBLAS-0.3.23-gcc-12.2.0
+  673  ./configure --prefix=$PWD COMPILED_BY="your name <email@address>"
+  674  cs
+  675  ./configure --prefix=$PWD COMPILED_BY="your name <email@address>"
+  676  conda install -c conda-forge boost
+  677  ./configure --prefix=$PWD COMPILED_BY="your name <email@address>"
+  678  boost
+  679  cs
+  680  cd
+  681  cs
+  682  vi .bash_profile
+  683  exit
+  684  conda activate pycharmm
+  685  cs
+  686  cd povunix-v3.8.0-beta.2-src/
+  687  cs
+  688  ./configure --prefix=$PWD COMPILED_BY="your name <email@address>"
+  689  cs
+  690  exit
+  691  cs
+  692  cd povunix-v3.8.0-beta.2-src/
+  693  cs
+  694  ./configure --prefix=$PWD COMPILED_BY="your name <email@address>"
+  695  make install
+  696  cs
+  697  cd bin/
+  698  cs
+  699  povray
+  700  cs
+  701  cd ..
+  702  cs
+  703  cat INSTALL 
+  704  make check
+  705  cs
+  706  cd ..
+  707  cs
+  708  vi .bash_profile 
+  709  cs
+  710  exit
+  711  cs
+  712  povray 
+  713  cs
+  714  cd ff_energy/
+  715  cs
+  716  conda activate pycharmm
+  717  history
+  718  python ff_energy/latex_writer/energydata/energy_data_report.py
+  719  kpsewhich pdflatex.ini
+  720  vi ~/.bash_profile 
+  721  python ff_energy/latex_writer/energydata/energy_data_report.py
+  722  cs
+  723  rm *.pov *.ini
+  724  rm -f *.pov *.ini
+  725  cs
+  726  vi info.log 
+  727  cs
+  728  rm info.log 
+  729  cs
+  730  rm info.log 
+  731  cs
+  732  cd latex_reports/
+  733  cs
+  734  cd Report_PBE0dz/
+  735  cs
+  736  cd figures/
+  737  cs
+  738  cd ../..
+  739  cs
+  740  cd ..
+  741  cs
+  742  which pdflatex
+  743  cs
+  744  conda install jupyterlab
+  745  cs
+  746  jupyter lab --no-browser --port 8888
+  747  conda activate pycharmm
+  748  jupyter lab --no-browser --port 8888
+  749  cs
+  750  jupyter lab --no-browser --port 8888
+  751  exit
+  752  conda activate pycharmm
+  753  jupyter lab --no-browser --port 8888
+  754  cs
+  755  cd ff_energy/
+  756  cs
+  757  pip install . -e
+  758  pip install -e .
+  759  cs
+  760  cd ..
+  761  cs
+  762  jupyter lab --no-browser --port 8888
+  763  cs
+  764  cs
+  765  Q
+  766  squeue
+  767  cs
+  768  cd ff_energy/
+  769  cs
+  770  vi ff_energy/latex_writer/dcm_report.py 
+  771  cs
+  772  vi ff_energy/latex_writer/dcm_report.py 
+  773  cs
+  774  git add ff_energy/latex_writer/dcm_report.py 
+  775  git commit -m "test"
+  776  git push
+  777  cs
+  778  htop
+  779  cs
+  780  conda activate p
+  781  cs
+  782  conda deactivate
+  783  cs
+  784  cd ,,
+  785  cs
+  786  cd ..
+  787  cs
+  788  cd
+  789  cs
+  790  cd ff_energy/
+  791  cs
+  792  pdflatex
+  793  cs
+  794  cat requirements.txt 
+  795  conda create -y --name py37 python=3.7
+  796  conda create -y --name py310 python=3.10
+  797  cs
+  798  git pull
+  799  cs
+  800  conda env create --file environment.yml
+  801  cs
+  802  git pull
+  803  conda env create --file environment.yml
+  804  rm -rf /cluster/home/boittier/miniforge3/envs/pycharmm
+  805  conda env create --file environment.yml
+  806  conda activate pycharmm
+  807  cs
+  808  python
+  809  cs
+  810  conda install -c conda-forge texlive-core
+  811  pdflatex
+  812  cs
+  813  git add --all
+  814  cs
+  815  git pull
+  816  cs
+  817  python ff_energy/latex_writer/energydata/energy_data_report.py
+  818  pip install -e .
+  819  python ff_energy/latex_writer/energydata/energy_data_report.py
+  820  pip install patchworklib
+  821  python ff_energy/latex_writer/energydata/energy_data_report.py
+  822  pip install plotnine
+  823  python ff_energy/latex_writer/energydata/energy_data_report.py
+  824  pip install dscribe
+  825  python ff_energy/latex_writer/energydata/energy_data_report.py
+  826  pip install SciencePlots
+  827  python ff_energy/latex_writer/energydata/energy_data_report.py
+  828  vi /cluster/home/boittier/ff_energy/ff_energy/plotting/plotting.py
+  829  cs
+  830  git add /cluster/home/boittier/ff_energy/ff_energy/plotting/plotting.py
+  831  python ff_energy/latex_writer/energydata/energy_data_report.py
+  832  vi /cluster/home/boittier/ff_energy/ff_energy/latex_writer/extra_data.py; git add /cluster/home/boittier/ff_energy/ff_energy/latex_writer/extra_data.py
+  833  cs
+  834  python ff_energy/latex_writer/energydata/energy_data_report.py
+  835  vi /cluster/home/boittier/ff_energy/ff_energy/latex_writer/extra_data.py; git add /cluster/home/boittier/ff_energy/ff_energy/latex_writer/extra_data.py
+  836  python ff_energy/latex_writer/energydata/energy_data_report.py
+  837  cs
+  838  ls
+  839  cs
+  840  git pull
+  841  cs
+  842  python ff_energy/latex_writer/energydata/energy_data_report.py
+  843  vi /cluster/home/boittier/ff_energy/ff_energy/ffe/structure.py
+  844  python ff_energy/latex_writer/energydata/energy_data_report.py
+  845  vi /cluster/home/boittier/ff_energy/ff_energy/ffe/constants.py
+  846  vi /cluster/home/boittier/ff_energy/ff_energy/ffe/structure.py
+  847  cs
+  848  python ff_energy/latex_writer/energydata/energy_data_report.py
+  849  pip install povray
+  850  conda install -c conda-forge povray
+  851  cs
+  852  rm waterpbe0dzclustersintEmin.*
+  853  cs
+  854  cd ..
+  855  cs
+  856  wget https://www.povray.org/redirect/www.povray.org/ftp/pub/povray/Official/Linux/povlinux-3.6.tgz
+  857  cs
+  858  cd ff_energy/
+  859  cs
+  860  sudo yum install povray
+  861  conda install -c conda-forge povray
+  862  cs
+  863  cd experiments/
+  864  cs
+  865  cd kernel_fit/
+  866  cs
+  867  cd ..
+  868  cs
+  869  cd ..
+  870  cs
+  871  cd ff_energy/pydcm/
+  872  cs
+  873  cd te
+  874  cd tests/
+  875  cs
+  876  vi small_test.py 
+  877  cs
+  878  vi meoh_perm_test.sh
+  879  cs
+  880  cd
+  881  cs
+  882  cd ff_energy/
+  883  cs
+  884  cd pickles/
+  885  cs
+  886  pwd
+  887  cs
+  888  cd ff_energy/
+  889  cs
+  890  git push
+  891  cs
+  892  history
+  893  cs
+  894  git add ff_energy/plotting/data_plots.py 
+  895  git commit -m "sciplots update"
+  896  git push
+  897  cs
+  898  git pull
+  899  cs
+  900  git pull
+  901  cs
+  902  git pull
+  903  git stash
+  904  git pull
+  905  cs
+  906  cd experiments/ff_fit/
+  907  cs
+  908  conda activate pycharmm
+  909  python exp1.py 
+  910  cs
+  911  python exp1.py 
+  912  vi exp1.py 
+  913  cs
+  914  python exp1.py 
+  915  vi exp1.py 
+  916  python exp1.py 
+  917  cs
+  918  vi exp1.py 
+  919  cs
+  920  python exp1.py 
+  921  cs
+  922  vi exp1.json 
+  923  cs
+  924  python exp1.py 
+  925  vi exp1.json 
+  926  cs
+  927  git add exp1.json exp1.py
+  928  git commit -m "point charge data key ELECp"
+  929  git push
+  930  cs
+  931  vi exp1.json 
+  932  vi exp1.py 
+  933  cs
+  934  vi exp1.py 
+  935  cs
+  936  pwd
+  937  cs
+  938  cs
+  939  cd charmmions/
+  940  cs
+  941  cat *psf
+  942  cat *prm
+  943  cs
+  944  cat toppar.str
+  945  cat toppar/toppar_water_ions.str 
+  946  cs
+  947  cat toppar/toppar_water_ions.str 
+  948  cs
+  949  cd kmdcm_water_sim
+  950  cs
+  951  vi dynamics.inp 
+  952  cat dynamics.inp 
+  953  cs
+  954  cat water.kmdcm 
+  955  cs
+  956  cat water.kern 
+  957  cs
+  958  ls *xyz
+  959  cs
+  960  cd ..
+  961  cs
+  962  cd kmdcm_water_sim_rkhs
+  963  cs
+  964  cat job.sh 
+  965  cd ..
+  966  cs
+  967  CHARMM=~/dev-release-dcm-rhks/build/cmake/charmm
+  968  cs
+  969  cat $CHARMM
+  970  $CHARMM
+  971  c
+  972  cs
+  973  ls ~/dev-release-dcm-rhks/build/cmake/charmm
+  974  cd ~/dev-release-dcm-rhks/
+  975  cs
+  976  cd ..
+  977  cs
+  978  ls /scratch/boittier/
+  979  cp -rf dev-release-dcm-rhks/ /scratch/boittier
+  980  cs
+  981  cd kmdcm_water_sim
+  982  cs
+  983  ls *kern
+  984  cp -rf dev-release-dcm-rhks/ water.kern water.kmdcm 
+  985  cp -rf water.kern water.kmdcm /scratch/boittier/
+  986  cs
+  987  cp -rf job.sh dynamics.inp /scratch/boittier/
+  988  cat water.kern 
+  989  cs
+  990  cat water.kern 
+  991  cd ..
+  992  cs
+  993  cp -rf water_kern /scratch/boittier/
+  994  ls water_kern/
+  995  ls /scratch/boittier/
+  996  vi /scratch/boittier/dynamics.inp 
+  997  cs
+  998  Q
+  999  cs
+ 1000  cd ff_energy/
+ 1001  cs
+ 1002  cd experiments/ff_fit/
+ 1003  cs
+ 1004  cat info.log 
+ 1005  cs
+ 1006  history > history.txt 
