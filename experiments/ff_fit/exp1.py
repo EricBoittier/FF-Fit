@@ -56,9 +56,6 @@ def loop() -> list:
         jobs.append(x)
     return jobs
 
-#    vim.treesitter.language.add('python', { path = "/path/to/python.so" })
-
-
 pc_charge_models = [
     "ELECnull", "ELECci", "ELECpol", "ELECp"
 ]
@@ -161,17 +158,17 @@ def ff_fit(x):
         print(jaxloss)
 
 
-def run():
-    for i in range(len(pkl_files)):
-        f = pkl_files[i]
-        exp = experiments[i]
-        print(f"Running experiment {x}")
-        print(f"Using pickle {f}")
-        try:
-            experiment(exp, f)
-        except Exception as e:
-            print(e)
-            print("Failed to run experiment")
+# def run():
+#     for i in range(len(pkl_files)):
+#         f = pkl_files[i]
+#         exp = experiments[i]
+#         print(f"Running experiment {x}")
+#         print(f"Using pickle {f}")
+#         try:
+#             experiment(exp, f)
+#         except Exception as e:
+#             print(e)
+#             print("Failed to run experiment")
 
 
 def experiment(exp, ffpkl):

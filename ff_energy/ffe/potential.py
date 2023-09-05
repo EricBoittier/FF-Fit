@@ -161,23 +161,28 @@ def charge_penetration(a1, a2, b1, b2, q1, q2, z1, z2, r):
 
 
 @partial(jit, static_argnames=["num_segments"])
-def LJRUN(dists, indexs, groups, parms, num_segments=500):
+def LJRUN(dists, indexs, groups, parms, num_segments):
+    #  flat array of LJ energies
     LJE = LJflat(dists, indexs, parms)
+    #  sum the energies for each group
     OUT = jax.ops.segment_sum(LJE, groups, num_segments=num_segments)
-    jax.debug.print("shapeOUT {x}", x=OUT.shape)
-    jax.debug.print("out {x}", x=OUT)
+    #  debug
+    # jax.debug.print("shapeOUT {x}", x=OUT.shape)
+    # jax.debug.print("out {x}", x=OUT)
+    # jax.debug.print("shapeLJE {x}", x=LJE.shape)
+    # jax.debug.print("LJE {x}", x=LJE)
     return OUT
 
 
 @partial(jit, static_argnames=["num_segments"])
-def DERUN(dists, indexs, groups, parms, num_segments=500):
+def DERUN(dists, indexs, groups, parms, num_segments):
     DEE = DEflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(DEE, groups, num_segments=num_segments)
     return OUT
 
 
 @partial(jit, static_argnames=["num_segments"])
-def CHGPENRUN(dists, indexs, groups, parms, num_segments=500):
+def CHGPENRUN(dists, indexs, groups, parms, num_segments):
     CP = CHGPENflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(CP, groups, num_segments=num_segments)
     return OUT
@@ -187,14 +192,10 @@ def CHGPENRUN(dists, indexs, groups, parms, num_segments=500):
 def CHGPENflat(dists, indexs, p):
     z2 = 18.0
     z1 = 1.0
-
     q2 = -0.67597213
     q1 = 0.33798606
-
     parms = p
-
     scale = jnp.array([p[4]])
-
     parms = jnp.array(
         [
             parms[0],
@@ -223,7 +224,6 @@ def CHGPENflat(dists, indexs, p):
             z2,
         ]
     )
-
     a1s = jnp.take(parms, indexs + 3 * 0, unique_indices=False)
     a2s = jnp.take(parms, indexs + 3 * 1, unique_indices=False)
     b1s = jnp.take(parms, indexs + 3 * 2, unique_indices=False)
@@ -232,25 +232,35 @@ def CHGPENflat(dists, indexs, p):
     q2s = jnp.take(parms, indexs + 3 * 5, unique_indices=False)
     z1s = jnp.take(parms, indexs + 3 * 6, unique_indices=False)
     z2s = jnp.take(parms, indexs + 3 * 7, unique_indices=False)
-
+    #  add the scale factor and charge penetration
     return scale[0] * charge_penetration(a1s, a2s, b1s, b2s, q1s, q2s, z1s, z2s, dists)
 
 
 @jit
 def LJflat(dists, indexs, parms):
-    parms = jnp.array(
-        [
-            2 * parms[0],
-            parms[0] + parms[1],
-            2 * parms[1],
-            parms[2],
-            jnp.sqrt((parms[2] * parms[3])),
-            parms[3],
-        ]
-    )
-    sigma = jnp.take(parms, indexs, unique_indices=False)
-    eps = jnp.take(parms, indexs + 3, unique_indices=False)
+    n_parms = len(parms)
+    n_types = n_parms // 2
+    n_comb = n_types * (n_types + 1)
+    #  above omits (ans/2) since the array is twice as long
+    comb_parms = jnp.zeros(n_comb, dtype=jnp.float64)
+    for a in range(n_types):
+        for b in range(n_types):
+            if a >= b:
+                sumab = a + b
+                comb_parms = comb_parms.at[sumab].set(parms[a] + parms[b])
+                comb_parms = comb_parms.at[sumab + n_types].set(
+                    jnp.sqrt(parms[a] * parms[b])
+                )
+    sigma = jnp.take(comb_parms, indexs, unique_indices=False)
+    eps = jnp.take(comb_parms, indexs + n_types, unique_indices=False)
     LJE = lj(sigma, eps, dists)
+
+    # jax.debug.print("comb_parms shape {x}", x=comb_parms.shape)
+    # jax.debug.print("sigma_s {x}", x=sigma.shape)
+    # jax.debug.print("sigma {x}", x=sigma)
+    # jax.debug.print("eps_s {x}", x=eps.shape)
+    # jax.debug.print("eps {x}", x=eps)
+
     return LJE
 
 
@@ -279,9 +289,18 @@ def ecol_seg(outE, dcm_dists_labels, num_segments):
 
 @partial(jit, static_argnames=["num_segments"])
 def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
+
+    # jax.debug.print("indexs {x}", x=indexs.shape)
+    # jax.debug.print(" {x}", x=indexs)
+    # jax.debug.print("groups {x}", x=groups.shape)
+    # jax.debug.print(" {x}", x=groups)
+
     RES =  LJRUN(dists, indexs, groups, parms, num_segments=num_segments)
     ERROR = RES - target
-    return jnp.mean(ERROR**2)
+
+    LOSS = jnp.nanmean(ERROR**2) #  TODO:  dangerous to use nanmean here
+    jax.debug.print("LOSS {x}", x=LOSS)
+    return LOSS
 
 
 @partial(jit, static_argnames=["num_segments"])

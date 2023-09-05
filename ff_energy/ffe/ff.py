@@ -23,6 +23,14 @@ from ff_energy.ffe.potential import (
 from ff_energy.ffe.potential import ecol, ecol_seg
 
 
+sig_bound = (0.001, 2.5)
+ep_bound = (0.001, 2.5)
+chg_bound = (100, 2000)
+de_alpha_bound = (1, 8)
+de_beta_bound = (6, 20)
+
+
+
 class FF:
     def __init__(
         self,
@@ -31,7 +39,7 @@ class FF:
         func, #  the function to fit
         bounds, #  the bounds for the function
         structure, #  the structure to fit
-        nobj=4, #  the number of objects to fit
+        nobj=4,
         elec="ELEC", #  the name of the electrostatics column
         intern="Exact", #  the name of the intern column
         intE="intE",  #  the name of the internal energy column
@@ -94,12 +102,8 @@ class FF:
         self.num_segments = None
 
         self.sort_data()
-
-        if len(self.opt_results) > 0:
-            self.p = self.get_best_parm()
-        else:
-            self.p = jnp.array([1.764e00, 2.500e-01, 1.687e-01, 6.871e-03])
-
+        self.init_bounds()
+        self.set_parm()
         #  initialize the interaction energies
         self.set_intE()
         #  initialize the jax arrays
@@ -114,6 +118,29 @@ class FF:
             f" {self.intE}"
             f" (jax_coloumb: {self.coloumb_init})"
         )
+
+    def set_parm(self):
+        """Set the parameters for the function"""
+        if len(self.opt_results) > 0:
+            self.p = self.get_best_parm()
+        else:
+            self.p = self.get_random_parm()
+
+
+    def init_bounds(self):
+        #  initialize bounds
+        # if LJ
+        self.bounds = []
+        for sig in range(len(self.atom_types)):
+            self.bounds.append(sig_bound)
+        for ep in range(len(self.atom_types)):
+            self.bounds.append(ep_bound)
+        # if DE
+        if self.func.__name__ == "DE":
+            self.bounds.append(de_alpha_bound)
+            self.bounds.append(de_beta_bound)
+        print("bounds:")
+        print(self.bounds)
 
     def set_intE(self, pairs=False):
         # Internal energies
@@ -162,14 +189,21 @@ class FF:
             out_sig,
             out_ep,
         ) = self.eval_dist(p)
-        self.out_dists = jnp.array(out_dists)
+        self.out_dists = jnp.array(out_dists, dtype=jnp.float64)
         #  turn groups (str) into group_keys (int)
-        group_key_dict = {g: str2int(g) for g in list(set(out_groups))}
+        # group_key_dict = {g: str2int(g) for g in list(set(out_groups))}
+        group_key_dict = {}
+        idx = 0
+        for g in out_groups:
+            if g not in group_key_dict:
+                group_key_dict[g] = idx
+                idx += 1
+
         self.out_groups_dict = group_key_dict
-        out_groups = jnp.array([group_key_dict[g] for g in out_groups])
-        self.out_groups = jnp.array(out_groups)
-        self.out_es = jnp.array(out_es)
-        self.out_akps = jnp.array(out_akps)
+        out_groups = jnp.array([group_key_dict[g] for g in out_groups], dtype=jnp.int32)
+        self.out_groups = jnp.array(out_groups, dtype=jnp.int32)
+        self.out_es = jnp.array(out_es, dtype=jnp.float64)
+        self.out_akps = jnp.array(out_akps, dtype=jnp.int32)
         self.num_segments = len(out_es)
 
     def set_targets(self):
@@ -181,11 +215,6 @@ class FF:
         self.nTargets = int(len(self.targets))
         assert self.nTargets == len(self.targets)
         assert isinstance(self.nTargets, typing.Hashable) is True
-
-    def eval_coulomb(self, scale=1.0):
-        """Evaluate the coulomb energy for each element in the dist. array"""
-        outE = ecol(scale * self.dcm_c1s, scale * self.dcm_c2s, self.dcm_dists)
-        return outE
 
     def get_coulomb(self, scale=1.0):
         """Get the coulomb energy for each segment"""
@@ -260,10 +289,7 @@ class FF:
         print(len(set(out_groups)))
         print("dists")
         print(len(out_dists))
-        print(len(set(out_dists)))
-        # print("energy")
-        # print(len(out_es))
-        # print(len(set(out_es)))
+
         out = [
             _
             for _ in [out_dists, out_groups, out_akps, out_ks, out_es, out_sig, out_ep]
@@ -346,11 +372,6 @@ class FF:
         :param x:
         :return:
         """
-        print("get_loss_jax")
-
-        print(set(self.out_groups))
-        print(len(set(self.out_groups)))
-
         return LJRUN_LOSS(
             self.out_dists,
             self.out_akps,
