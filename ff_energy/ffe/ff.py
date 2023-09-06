@@ -211,9 +211,8 @@ class FF:
         self.targets = jnp.array(
             self.data[self.intE].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )
-
         self.nTargets = int(len(self.targets))
-        assert self.nTargets == len(self.targets)
+        self.num_segments == self.nTargets
         assert isinstance(self.nTargets, typing.Hashable) is True
 
     def get_coulomb(self, scale=1.0):

@@ -1,0 +1,98 @@
+from ff_energy.utils.ffe_utils import pickle_output, read_from_pickle, str2int, PKL_PATH
+from ff_energy.utils.json_utils import load_json
+from pathlib import Path
+import pandas as pd
+import jax.numpy as jnp
+import itertools as it
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import patchworklib as pw
+
+
+def residuals_plot(df_test, label, title=""):
+    pw.overwrite_axisgrid()
+    FIGSIZE = (3, 3)
+
+    target_mean = df_test["target"].mean()
+    residuals_mean = df_test["residuals"].mean()
+    vals_mean = df_test["vals"].mean()
+    target_sd = df_test["target"].std()
+    residuals_sd = df_test["residuals"].std()
+    vals_sd = df_test["vals"].std()
+    target_max = df_test["target"].max()
+    residuals_max = df_test["residuals"].max()
+    vals_max = df_test["vals"].max()
+    target_min = df_test["target"].min()
+    residuals_min = df_test["residuals"].min()
+    vals_min = df_test["vals"].min()
+
+    RMSE = np.sqrt(np.mean(df_test["residuals"]**2))
+    MAE = np.mean(np.abs(df_test["residuals"]))
+    r2 = np.corrcoef(df_test["target"], df_test["vals"])[0, 1]**2
+
+    bounds = (np.min([target_min, vals_min, residuals_min]),
+              np.max([target_max, vals_max, residuals_max]))
+
+    g1 = sns.jointplot(data=df_test, x="target", y="vals",
+                       ratio=3, marginal_ticks=True,
+                       kind="reg", marker="+")
+    g1.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
+    g1.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
+    g1.ax_joint.plot([bounds[0], bounds[1]],
+                     [bounds[0], bounds[1]], 'k--', linewidth=2)
+    g1.ax_marg_x.axvline(x=target_mean, c="k", linestyle="--")
+    g1.ax_marg_y.axhline(y=vals_mean, c="k", linestyle="--")
+
+    g1 = pw.load_seaborngrid(g1, label="g1")
+
+    g2 = sns.jointplot(data=df_test, x="target", y="residuals",
+                       ratio=3, marginal_ticks=True,
+                       kind="reg", marker="+")
+    g2.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
+    g2.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
+    g2.ax_joint.axhline(y=0, color="k", linestyle="--")
+    g2 = pw.load_seaborngrid(g2, label="g2")
+
+    g3 = sns.jointplot(data=df_test, x="residuals", y="vals",
+                       ratio=3, marginal_ticks=True,
+                       kind="reg", marker="+")
+    g3.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
+    g3.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
+    g3.ax_joint.axvline(x=0, color="k", linestyle="--")
+    g3 = pw.load_seaborngrid(g3, label="g3")
+
+    distax = pw.Brick(figsize=FIGSIZE)
+    distax.set_title(title)
+    _ = sns.kdeplot(data=df_test, x="target", color="blue",
+                    ax=distax, label="target")
+    _ = sns.kdeplot(data=df_test, x="vals", color="red",
+                    ax=distax, label="fit")
+
+    LABEL_SIZE = 20
+    val_string = f"mean: {vals_mean:.2f}\nstd: {vals_sd:.1f}"
+
+    distax.text(0.25, 0.7, val_string,
+                horizontalalignment='center', c="red",
+                bbox=dict(facecolor='white', alpha=0.5),
+                transform=distax.transAxes,
+                fontdict={"size": LABEL_SIZE})
+    target_string = f"mean: {target_mean:.2f}\nstd: {target_sd:.1f}"
+    distax.text(0.25, 0.5, target_string,
+                horizontalalignment='center', c="blue",
+                bbox=dict(facecolor='white', alpha=0.5),
+                transform=distax.transAxes,
+                fontdict={"size": LABEL_SIZE})
+
+    analysis_string = f"RMSE: {RMSE:.2f}\nMAE: {MAE:.2f}\nR2: {r2:.2f}"
+    distax.text(0.25, 0.3, analysis_string,
+                horizontalalignment='center', c="black",
+                bbox=dict(facecolor='white', alpha=0.5),
+                transform=distax.transAxes,
+                fontdict={"size": LABEL_SIZE})
+    distax.legend()
+
+    print("saving ", label)
+    final_plot = ((g2 | distax) / (g1 | g3))
+    final_plot.set_suptitle(label, loc="center")
+    final_plot.savefig(f"{label}.png", bbox_inches="tight")
