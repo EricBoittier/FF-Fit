@@ -163,7 +163,7 @@ def ff_fit(x, n=100):
     jaxloss = LJFF.get_loss_jax(LJFF.opt_parm)
     print(jaxloss)
     elec = LJFF.data[LJFF.elec]
-    targets = LJFF.targets
+    targets = LJFF["intE"]
     residuals = targets - jaxeval
     #  make the dataframe
     df_test = pd.DataFrame(

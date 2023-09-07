@@ -10,9 +10,17 @@ import numpy as np
 import patchworklib as pw
 
 
-def residuals_plot(df_test, label, title=""):
+def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
+    #  color by residuals
+    cmap = sns.color_palette("coolwarm", as_cmap=True)
+    norm = plt.Normalize(df_test["residuals"].min(),
+                         df_test["residuals"].max())
+    normabs = plt.Normalize(abs(df_test["residuals"]).min(),
+                            abs(df_test["residuals"]).max())
+
     pw.overwrite_axisgrid()
     FIGSIZE = (3, 3)
+    TITLE_SIZE = 10
 
     target_mean = df_test["target"].mean()
     residuals_mean = df_test["residuals"].mean()
@@ -27,12 +35,12 @@ def residuals_plot(df_test, label, title=""):
     residuals_min = df_test["residuals"].min()
     vals_min = df_test["vals"].min()
 
-    RMSE = np.sqrt(np.mean(df_test["residuals"]**2))
+    RMSE = np.sqrt(np.mean(df_test["residuals"] ** 2))
     MAE = np.mean(np.abs(df_test["residuals"]))
-    r2 = np.corrcoef(df_test["target"], df_test["vals"])[0, 1]**2
+    r2 = np.corrcoef(df_test["target"], df_test["vals"])[0, 1] ** 2
 
-    bounds = (np.min([target_min, vals_min, residuals_min]),
-              np.max([target_max, vals_max, residuals_max]))
+    bounds = (np.min([target_min, vals_min, ]),
+              np.max([target_max, vals_max, ]))
 
     g1 = sns.jointplot(data=df_test, x="target", y="vals",
                        ratio=3, marginal_ticks=True,
@@ -44,7 +52,14 @@ def residuals_plot(df_test, label, title=""):
     g1.ax_marg_x.axvline(x=target_mean, c="k", linestyle="--")
     g1.ax_marg_y.axhline(y=vals_mean, c="k", linestyle="--")
 
-    g1 = pw.load_seaborngrid(g1, label="g1")
+    analysis_string = f"RMSE: {RMSE:.2f}\nMAE: {MAE:.2f}\nR2: {r2:.2f}"
+    g1.ax_joint.text(0.25, 0.4, analysis_string,
+                     horizontalalignment='center', c="black",
+                     bbox=dict(facecolor='white', alpha=0.5),
+                     transform=g1.ax_joint.transAxes,
+                     fontdict={"size": LABEL_SIZE}
+                     )
+    g1 = pw.load_seaborngrid(g1, label="g1", figsize=FIGSIZE)
 
     g2 = sns.jointplot(data=df_test, x="target", y="residuals",
                        ratio=3, marginal_ticks=True,
@@ -52,7 +67,7 @@ def residuals_plot(df_test, label, title=""):
     g2.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
     g2.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
     g2.ax_joint.axhline(y=0, color="k", linestyle="--")
-    g2 = pw.load_seaborngrid(g2, label="g2")
+    g2 = pw.load_seaborngrid(g2, label="g2", figsize=FIGSIZE)
 
     g3 = sns.jointplot(data=df_test, x="residuals", y="vals",
                        ratio=3, marginal_ticks=True,
@@ -60,39 +75,62 @@ def residuals_plot(df_test, label, title=""):
     g3.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
     g3.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
     g3.ax_joint.axvline(x=0, color="k", linestyle="--")
-    g3 = pw.load_seaborngrid(g3, label="g3")
+    g3 = pw.load_seaborngrid(g3, label="g3", figsize=FIGSIZE)
 
-    distax = pw.Brick(figsize=FIGSIZE)
+    distax = pw.Brick(figsize=(FIGSIZE[0], FIGSIZE[1] * 3 / 4))
     distax.set_title(title)
     _ = sns.kdeplot(data=df_test, x="target", color="blue",
                     ax=distax, label="target")
     _ = sns.kdeplot(data=df_test, x="vals", color="red",
                     ax=distax, label="fit")
 
-    LABEL_SIZE = 20
-    val_string = f"mean: {vals_mean:.2f}\nstd: {vals_sd:.1f}"
-
-    distax.text(0.25, 0.7, val_string,
+    val_string = f"Fit\nmean: {vals_mean:.2f}\nstd: {vals_sd:.1f}"
+    distax.text(0.25, 0.8, val_string,
                 horizontalalignment='center', c="red",
                 bbox=dict(facecolor='white', alpha=0.5),
                 transform=distax.transAxes,
                 fontdict={"size": LABEL_SIZE})
-    target_string = f"mean: {target_mean:.2f}\nstd: {target_sd:.1f}"
-    distax.text(0.25, 0.5, target_string,
+
+    target_string = f"Target\nmean: {target_mean:.2f}\nstd: {target_sd:.1f}"
+    distax.text(0.25, 0.6, target_string,
                 horizontalalignment='center', c="blue",
                 bbox=dict(facecolor='white', alpha=0.5),
                 transform=distax.transAxes,
                 fontdict={"size": LABEL_SIZE})
+    # distax.legend()
 
-    analysis_string = f"RMSE: {RMSE:.2f}\nMAE: {MAE:.2f}\nR2: {r2:.2f}"
-    distax.text(0.25, 0.3, analysis_string,
-                horizontalalignment='center', c="black",
-                bbox=dict(facecolor='white', alpha=0.5),
-                transform=distax.transAxes,
-                fontdict={"size": LABEL_SIZE})
-    distax.legend()
+    x_vals = np.zeros(len(df_test) * 2)
+    y_vals = np.zeros(len(df_test) * 2)
+    x_vals[0::2] = df_test["target"]
+    x_vals[1::2] = df_test["vals"]
+    y_vals[1::2] = [1] * len(df_test)
+
+    para = pw.Brick(figsize=(FIGSIZE[0], FIGSIZE[1] / 4))
+    for i in range(len(df_test)):
+        res = df_test["residuals"].iloc[i]
+        normed = norm(res)
+        c = cmap(normed)
+        alph = normabs(abs(res))
+        para.plot(
+            x_vals[i * 2:i * 2 + 2],
+            y_vals[i * 2:i * 2 + 2],
+            alpha=alph * 0.5,
+            c=c
+        )
+    para.set_yticks([])
+    para.set_ylabel("")
+    para.set_xlabel("Value")
+    para.set_title("Change", loc="center")
 
     print("saving ", label)
-    final_plot = ((g2 | distax) / (g1 | g3))
-    final_plot.set_suptitle(label, loc="center")
+    rt = (distax / para)
+
+    g1.case.set_title('A. Regression', x=1.0, y=1.0, loc="right")
+    # g0.move_legend("upper left", bbox_to_anchor=(0.1, 1.0))
+    rt.case.set_title('B. Distribution learning', x=1.0, y=1.0, loc="right")
+    g2.case.set_title('C. Residuals vs. ground truth', x=1.0, y=1.0, loc="right")
+    g3.case.set_title('D. Residuals vs. fit', x=1.0, y=1.0, loc="right")
+
+    final_plot = ((g1 | rt) / (g2 | g3))
+    final_plot.set_suptitle(label, loc="left", fontsize=TITLE_SIZE)
     final_plot.savefig(f"{label}.png", bbox_inches="tight")
