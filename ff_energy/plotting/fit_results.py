@@ -10,6 +10,18 @@ import numpy as np
 import patchworklib as pw
 
 
+def residuals_from_keys(df, k1, k2, label="", title="", LABEL_SIZE=10):
+    #  make the dataframe
+    df_test = pd.DataFrame(
+        {
+            "target": df[k1],
+            "residuals": df[k1] - df[k2],
+            "vals": df[k2]
+        }
+    ).dropna()  # drop the nans
+    residuals_plot(df_test, label, title, LABEL_SIZE)
+
+
 def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
     #  color by residuals
     cmap = sns.color_palette("coolwarm", as_cmap=True)

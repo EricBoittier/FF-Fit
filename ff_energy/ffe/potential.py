@@ -242,24 +242,36 @@ def LJflat(dists, indexs, parms):
     n_types = n_parms // 2
     n_comb = n_types * (n_types + 1)
     #  above omits (ans/2) since the array is twice as long
+
     comb_parms = jnp.zeros(n_comb, dtype=jnp.float64)
+    count = 0
     for a in range(n_types):
         for b in range(n_types):
             if a >= b:
-                sumab = a + b
-                comb_parms = comb_parms.at[sumab].set(parms[a] + parms[b])
-                comb_parms = comb_parms.at[sumab + n_types].set(
-                    jnp.sqrt(parms[a] * parms[b])
+                comb_parms = comb_parms.at[count].set((parms[a] + parms[b]))
+                comb_parms = comb_parms.at[count + n_comb//2].set(
+                    jnp.sqrt(parms[a+n_types] * parms[b+n_types])
                 )
-    sigma = jnp.take(comb_parms, indexs, unique_indices=False)
-    eps = jnp.take(comb_parms, indexs + n_types, unique_indices=False)
-    LJE = lj(sigma, eps, dists)
+                count += 1
 
-    # jax.debug.print("comb_parms shape {x}", x=comb_parms.shape)
-    # jax.debug.print("sigma_s {x}", x=sigma.shape)
-    # jax.debug.print("sigma {x}", x=sigma)
-    # jax.debug.print("eps_s {x}", x=eps.shape)
-    # jax.debug.print("eps {x}", x=eps)
+    sigma = jnp.take(comb_parms, indexs,
+                     unique_indices=False)
+    eps = jnp.take(comb_parms, indexs + n_types,
+                   unique_indices=False)
+
+    #  run the flat LJ function
+    LJE = lj(sigma, eps, dists)
+    #  debugging
+    jax.debug.print("indexs shape {x}", x=indexs.shape)
+    # jax.debug.print("indexs {x}", x=indexs)
+    jax.debug.print("dists shape {x}", x=dists.shape)
+    # jax.debug.print("dists {x}", x=dists.dtype)
+    jax.debug.print("comb_parms shape {x}", x=comb_parms.shape)
+    jax.debug.print("comb_parms {x}", x=comb_parms)
+    jax.debug.print("sigma_s {x}", x=sigma.shape)
+    jax.debug.print("sigma {x}", x=sigma)
+    jax.debug.print("eps_s {x}", x=eps.shape)
+    jax.debug.print("eps {x}", x=eps)
 
     return LJE
 
@@ -291,14 +303,14 @@ def ecol_seg(outE, dcm_dists_labels, num_segments):
 def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
 
     # jax.debug.print("indexs {x}", x=indexs.shape)
-    # jax.debug.print(" {x}", x=indexs)
+    # # jax.debug.print(" {x}", x=indexs)
     # jax.debug.print("groups {x}", x=groups.shape)
-    # jax.debug.print(" {x}", x=groups)
+    # # jax.debug.print(" {x}", x=groups)
 
     RES =  LJRUN(dists, indexs, groups, parms, num_segments=num_segments)
     ERROR = RES - target
 
-    LOSS = jnp.nanmean(ERROR**2) #  TODO:  dangerous to use nanmean here
+    LOSS = jnp.nanmean(ERROR**2) #  TODO:  dangerous to use nanmean here?
     jax.debug.print("LOSS {x}", x=LOSS)
     return LOSS
 

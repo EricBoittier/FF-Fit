@@ -28,7 +28,8 @@ def valid_atom_key_pairs(atom_keys):
 
 
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT",
-             "C", "H", "Cl"]
+             "C", "H", "CL"]
+
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 
 atom_name_fix = {"CL": "Cl", "PO": "K"}
@@ -243,23 +244,10 @@ class Structure:
         for res_a, res_b in self.pairs:
             for i, akp in enumerate(atom_key_pairs):
                 a, b = akp
-                mask_a = self.chm_typ_mask[a]
-                res_mask_a = self.res_mask[res_a]
-                mask_b = self.chm_typ_mask[b]
-                res_mask_b = self.res_mask[res_b]
-                xyza_ = self.xyzs[mask_a * res_mask_a]
-                xyzb_ = self.xyzs[mask_b * res_mask_b]
-                xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
-                xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
-                #  case for same atom types
-                if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                    _d = _sqrt_einsum_T(xyza.T, xyzb.T)
-                    self.distances[i].append(_d)
-                    self.distances_pairs[i][(res_a, res_b)] = []
-                    self.distances_pairs[i][(res_a, res_b)].append(_d)
-                #  case for different atom types
-                if a != b:
-                    b, a = akp
+                #  exclude any missing keys
+                if a in self.chm_typ_mask.keys() \
+                        and b in self.chm_typ_mask.keys():
+                    #  get the mask for the atom types, residues
                     mask_a = self.chm_typ_mask[a]
                     res_mask_a = self.res_mask[res_a]
                     mask_b = self.chm_typ_mask[b]
@@ -268,10 +256,27 @@ class Structure:
                     xyzb_ = self.xyzs[mask_b * res_mask_b]
                     xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
                     xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                    #  case for same atom types
                     if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                         _d = _sqrt_einsum_T(xyza.T, xyzb.T)
                         self.distances[i].append(_d)
+                        self.distances_pairs[i][(res_a, res_b)] = []
                         self.distances_pairs[i][(res_a, res_b)].append(_d)
+                    #  case for different atom types
+                    if a != b:
+                        b, a = akp
+                        mask_a = self.chm_typ_mask[a]
+                        res_mask_a = self.res_mask[res_a]
+                        mask_b = self.chm_typ_mask[b]
+                        res_mask_b = self.res_mask[res_b]
+                        xyza_ = self.xyzs[mask_a * res_mask_a]
+                        xyzb_ = self.xyzs[mask_b * res_mask_b]
+                        xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
+                        xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                        if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
+                            _d = _sqrt_einsum_T(xyza.T, xyzb.T)
+                            self.distances[i].append(_d)
+                            self.distances_pairs[i][(res_a, res_b)].append(_d)
 
     def get_monomers(self):
         """returns list of monomers"""

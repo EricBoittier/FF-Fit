@@ -163,7 +163,7 @@ def fit_func(
         "chgpen": (ff.get_loss_chgpen, ff.eval_jax_chgpen),
     }
     print("loss: ", loss)
-    func, eval = whichLoss[loss]
+    func, _eval = whichLoss[loss]
     print(whichLoss[loss])
 
     # make a uniform random guess if no x0 value is provided
@@ -194,9 +194,8 @@ def fit_func(
         print("final_loss_fn: ", res.fun)
         print(res)
 
-    ff.opt_parm = res.x
     ff.opt_results.append(res)
-    ff.opt_results_df.append(eval(ff.opt_parm))
+    ff.opt_results_df.append(_eval(res.x))
 
     return res
 

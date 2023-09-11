@@ -22,34 +22,29 @@ from ff_energy.ffe.potential import (
 )
 from ff_energy.ffe.potential import ecol, ecol_seg
 
-
-sig_bound = (0.001, 2.5)
-ep_bound = (0.001, 2.5)
+sig_bound = (0.001, 5.5)
+ep_bound = (0.001, 5.5)
 chg_bound = (100, 2000)
 de_alpha_bound = (1, 8)
 de_beta_bound = (6, 20)
 
 
-
 class FF:
     def __init__(
-        self,
-        data, #  the data to fit, type: pd.DataFrame
-        dists, #  the distances to fit
-        func, #  the function to fit
-        bounds, #  the bounds for the function
-        structure, #  the structure to fit
-        nobj=4,
-        elec="ELEC", #  the name of the electrostatics column
-        intern="Exact", #  the name of the intern column
-        intE="intE",  #  the name of the internal energy column
-        jax=None,
+            self,
+            data,  # the data to fit, type: pd.DataFrame
+            dists,  # the distances to fit
+            func,  # the function to fit
+            bounds,  # the bounds for the function
+            structure,  # the structure to fit
+            elec="ELEC",  # the name of the electrostatics column
+            intern="Exact",  # the name of the intern column
+            intE="intE",
     ):
-        self.data = data
+        self.data = data.dropna()
         #  make a dummy zero column for the energy
-        self.data["DUMMY"] = len(self.data) * [0]
+        self.data["DUMMY"] = len(self.data) * [0.0]
         self.data_save = data.copy()
-
         self.structure = structure
         self.atom_types = list(
             set(
@@ -59,13 +54,11 @@ class FF:
                 ]
             )
         )
-
         self.atom_type_pairs = valid_atom_key_pairs(self.atom_types)
         self.df = data.copy()
         self.dists = dists
         self.name = f"{func.__name__}_{structure.system_name}_{elec}"
         self.func = func
-        self.nobj = nobj
         self.elec = elec
         self.intE = intE
         self.intern = intern
@@ -79,7 +72,6 @@ class FF:
         self.n_dists = []
         self.bounds = bounds
         self.out_dists = None
-
         #  for jax
         self.out_groups_dict = None
         self.out_es = None
@@ -101,9 +93,9 @@ class FF:
         self.coloumb_init = False
         self.num_segments = None
 
+        self.set_parm()
         self.sort_data()
         self.init_bounds()
-        self.set_parm()
         #  initialize the interaction energies
         self.set_intE()
         #  initialize the jax arrays
@@ -122,10 +114,11 @@ class FF:
     def set_parm(self):
         """Set the parameters for the function"""
         if len(self.opt_results) > 0:
+            print("setting parameters from opt_results")
             self.p = self.get_best_parm()
         else:
+            print("setting random parameters")
             self.p = self.get_random_parm()
-
 
     def init_bounds(self):
         #  initialize bounds
@@ -146,12 +139,14 @@ class FF:
         # Internal energies
         #  ab initio reference energies
         if self.intern == "Exact":
-            if pairs:
-                self.data["intE"] = self.data["P_intE"]
-            else:
-                self.data["intE"] = (
-                    self.data["C_ENERGY"] - self.data["M_ENERGY"]
-                ) * 627.509
+            # if pairs:
+            #     self.data["intE"] = self.data["P_intE"]
+            # else:
+            #     self.data["intE"] = (
+            #                                 self.data["C_ENERGY"] - self.data[
+            #                             "M_ENERGY"]
+            #                         ) * 627.509
+            pass
         #  harmonic fit
         elif self.intern == "harmonic":
             if pairs:
@@ -159,12 +154,17 @@ class FF:
                 self.data["intE"] = self.data["P_intE"]
             else:
                 self.data["intE"] = (
-                    self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
+                        self.data["C_ENERGY_kcalmol"] - self.data["p_m_E_tot"]
                 )
         #  error
         else:
             #  if the internal energy is not supported, raise an error
             raise ValueError(f"intern = {self.intern} not implemented")
+        #  print the internal energy
+
+        print("Interaction energy:")
+        print(self.data["intE"])
+        print(self.data["intE"].describe())
 
     def init_jax_col(self, col_dict):
         """Initialize jax arrays from a dictionary"""
@@ -190,17 +190,19 @@ class FF:
             out_ep,
         ) = self.eval_dist(p)
         self.out_dists = jnp.array(out_dists, dtype=jnp.float64)
+
         #  turn groups (str) into group_keys (int)
-        # group_key_dict = {g: str2int(g) for g in list(set(out_groups))}
         group_key_dict = {}
         idx = 0
         for g in out_groups:
             if g not in group_key_dict:
                 group_key_dict[g] = idx
                 idx += 1
-
         self.out_groups_dict = group_key_dict
-        out_groups = jnp.array([group_key_dict[g] for g in out_groups], dtype=jnp.int32)
+
+        out_groups = jnp.array([group_key_dict[g] for g in out_groups],
+                               dtype=jnp.int32)
+
         self.out_groups = jnp.array(out_groups, dtype=jnp.int32)
         self.out_es = jnp.array(out_es, dtype=jnp.float64)
         self.out_akps = jnp.array(out_akps, dtype=jnp.int32)
@@ -212,7 +214,8 @@ class FF:
             self.data[self.intE].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )
         self.nTargets = int(len(self.targets))
-        self.num_segments == self.nTargets
+        print("targets:")
+        print(self.targets)
         assert isinstance(self.nTargets, typing.Hashable) is True
 
     def get_coulomb(self, scale=1.0):
@@ -225,9 +228,8 @@ class FF:
         self.dists = dists
 
     def sort_data(self):
-        """Sort the data by some integer in the index"""
-        self.data["k"] = [int(re.sub("[^0-9]", "", i)) for i in self.data.index]
-        self.data = self.data.sort_values(by="k")
+        """ sort the data """
+        self.data = self.data.sort_index()
 
     def LJ_(self, epsilons=None, rminhalfs=None, DISTS=None, data=None, args=None):
         """pairwise interactions"""
@@ -259,6 +261,12 @@ class FF:
         # outputs
         #  calculate combination rules
         sig, ep = combination_rules(self.atom_type_pairs, epsilons, rminhalfs)
+        print("self.p", self.p)
+        print("sig", sig)
+        print("ep", ep)
+        print("epsilons", epsilons)
+        print("rminhalfs", rminhalfs)
+
         out_dists = []
         out_akps = []
         out_groups = []
@@ -266,7 +274,12 @@ class FF:
         out_es = []
         out_sig = []
         out_ep = []
+
+        print("ATP::", self.atom_type_pairs)
+
+        #  loop over the data frame by index
         for ik, k in enumerate(self.data.index):
+            # print(ik, k)
             # get the distance
             dists = DISTS[k]
             #  loop over atom pairs
@@ -313,9 +326,10 @@ class FF:
         s = {}
         e = {}
         for i, atp in enumerate(self.atom_types):
+            print(i, atp)
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
-        return func(e, s, args=x[len(self.atom_types) * 2 :])
+        return func(e, s, args=x[len(self.atom_types) * 2:])
 
     def eval_dist(self, x):
         """wrapper to evaluate the LJ potential and get the distances"""
@@ -508,6 +522,7 @@ class FF:
 
     def get_random_parm(self) -> list:
         """get a random set of parameters"""
+        print(f"Getting {len(self.bounds)} random parameters")
         return [np.random.uniform(low=a, high=b) for a, b in self.bounds]
 
     def get_best_parm(self) -> list:
@@ -521,3 +536,5 @@ class FF:
         tmp = self.eval_func(self.opt_parm, func=func)
         self.df = tmp
         return tmp
+
+

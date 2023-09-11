@@ -11,6 +11,7 @@ system_names = [
     "lithium",
     "ions",
     "dcm",
+    'dcmdimerscan/',
     "ions_ext",
 ]
 
@@ -22,10 +23,21 @@ pdbs = [
     "lithium/",
     "ions/",
     "dcm/",
+    'dcmdimerscan/',
     "ions_ext/",
 ]
 
-system_types = ["water", "water", "methanol", "water", "water", "water", "dcm", "water"]
+system_types = [
+    "water",
+    "water",
+    "methanol",
+    "water",
+    "water",
+    "water",
+    "dcm",
+    "dcm",
+    "water"
+]
 
 SYSTEMS = {
     k: {"system_name": k, "pdbs": p, "system_type": s}
@@ -46,8 +58,6 @@ dcm_kmdcm = [
     *[f"dcm_kern/coefs{i}.txt" for i in range(18)],
 ]
 
-
-
 MODELS = {
     "water": {
         "pc": DCM_STATES("pbe0_dz.pc"),
@@ -64,6 +74,7 @@ MODELS = {
         "mdcm": DCM_STATES("dcm_pbe0dz.mdcm"),
         "kmdcm": kMDCM_STATES("dcm_pbe0dz.kmdcm"),
     },
+
     "ions_ext": {
         "pc": DCM_STATES("ions_ext_pbe0dz.pc"),
         "mdcm": DCM_STATES("ions_ext_pbe0dz.mdcm"),
@@ -95,7 +106,7 @@ explicit,ri_basis=jkfit,df_basis=mp2fit,df_basis_exch=jkfit
 cfit,basis=mp2fit
 """,
         "m_method": "{df-hf,basis=jkfit}"
-        "\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
+                    "\n{df-mp2-f12,cabs_singles=-1}\n{pno-lccsd(t)-f12}",
         "m_memory": "950",
     },
 }
@@ -148,6 +159,13 @@ ATOM_TYPES = {
         ("TIP3", "H2"): "HT",
     },
     "dcm": {
+        ("DCM", "C"): "C",
+        ("DCM", "CL1"): "CL",
+        ("DCM", "CL2"): "H",
+        ("DCM", "H1"): "H",
+        ("DCM", "H2"): "H",
+    },
+    "dcmdimerscan": {
         ("DCM", "C"): "C",
         ("DCM", "CL1"): "CL",
         ("DCM", "CL2"): "H",
