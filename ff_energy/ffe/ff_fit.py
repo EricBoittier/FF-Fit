@@ -158,9 +158,9 @@ def fit_func(
         "standard": (ff.get_loss, ff.eval_func),
         "jax": (ff.get_loss_jax, ff.eval_jax),
         "jax_de": (ff.get_loss_jax_de, ff.eval_jax_de),
-        "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
-        "ecol": (ff.get_loss_coulomb, ff.eval_coulomb_nb),
-        "chgpen": (ff.get_loss_chgpen, ff.eval_jax_chgpen),
+        # "lj_ecol": (ff.get_loss_lj_coulomb, ff.eval_lj_coulomb),
+        # "ecol": (ff.get_loss_coulomb, ff.eval_coulomb_nb),
+        # "chgpen": (ff.get_loss_chgpen, ff.eval_jax_chgpen),
     }
     print("loss: ", loss)
     func, _eval = whichLoss[loss]

@@ -416,8 +416,11 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
 
     def gather_monomers(self, monomers_path=None):
         #  monomers data
+        print("name", self.name)
+        __ = self.name.split('/')[-1]
+        print(__)
         monomers_output = [
-            _ for _ in monomers_path.glob(f"{self.name}*out") if _.is_file()
+            _ for _ in monomers_path.glob(f"{__}*out") if _.is_file()
         ]
         monomers_data = {}
         monomers_df = None
@@ -458,9 +461,13 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
 
     def gather_cluster(self, cluster_path=None):
         # cluster data
+        print("name", self.name)
+        __ = self.name.split('/')[-1]
+        print(cluster_path)
         cluster_output = [
-            _ for _ in cluster_path.glob(f"{self.name}*out") if _.is_file()
+            _ for _ in cluster_path.glob(f"{__}*out") if _.is_file()
         ]
+        print("CO", cluster_output)
         cluster_data = {}
         for c in cluster_output:
             with open(c, "r") as f:
@@ -479,7 +486,10 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
     def gather_pairs(self, pairs_path, monomers_data):
         #  pairs data
         logger.info(f"Looking for pairs in {pairs_path}, {self.name}")
-        pairs_output = [_ for _ in pairs_path.glob(f"{self.name}*out") if _.is_file()]
+        print("name", self.name)
+        __ = self.name.split('/')[-1]
+        print(__)
+        pairs_output = [_ for _ in pairs_path.glob(f"{__}*out") if _.is_file()]
         pairs_data = {}
         for p in pairs_output:
             with open(p, "r") as f:
@@ -487,7 +497,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             #  split the path by underscores
             pathsplit = p.stem.split("_")
             #  find the index of the first string
-            str_idx = [i for i, x in enumerate(pathsplit) if x.isalpha()][0]
+            # str_idx = [i for i, x in enumerate(pathsplit) if x.isalpha()][0]
             #  get the key as the characters before the first string
             key = "_".join(pathsplit[:-2])
             #  get the pairs as the two characters after the first string
@@ -509,13 +519,14 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                         - pairs_data[p.stem]["p_m2_ENERGY"]
                 )
             except Exception as e:
+                print(e)
                 logger.warning(p.stem, e)
 
         pairs_df = pd.DataFrame(pairs_data).T
 
         pairs_sum_df = None
         if pairs_df is not None and len(pairs_df) > 0:
-            pd.DataFrame(
+            pairs_sum_df = pd.DataFrame(
                 {
                     "P_ENERGY": [pairs_df["p_ENERGY"].sum()],
                     "P_intE": [pairs_df["p_int_ENERGY"].sum()],
@@ -523,12 +534,19 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 },
                 index=[self.name],
             )
+
+        print("pairs_df", pairs_df)
+        print("pairs_sum_df", pairs_sum_df)
+
         return pairs_df, pairs_sum_df
 
     def gather_coloumb(self, coloumb_path=None):
+        print("name", self.name)
+        __ = self.name.split('/')[-1]
+        print(__)
         #  coloumb data
         coloumb_output = [
-            _ for _ in coloumb_path.glob(f"{self.name}*out") if _.is_file()
+            _ for _ in coloumb_path.glob(f"{__}*out") if _.is_file()
         ]
         coloumb_data = {}
         for c in coloumb_output:
@@ -629,6 +647,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
             "coloumb": coloumb_df,
             "coloumb_total": coloumb_total,
         }
+        print(output)
 
         self.pickle_output(output)
         return output

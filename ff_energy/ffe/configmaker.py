@@ -11,7 +11,7 @@ system_names = [
     "lithium",
     "ions",
     "dcm",
-    'dcmdimerscan/',
+    'dcmdimerscan',
     "ions_ext",
 ]
 
@@ -70,6 +70,11 @@ MODELS = {
         "mdcm": DCM_STATES("meoh_pbe0dz.pc"),
     },
     "dcm": {
+        "pc": DCM_STATES("dcm_pbe0dz.pc"),
+        "mdcm": DCM_STATES("dcm_pbe0dz.mdcm"),
+        "kmdcm": kMDCM_STATES("dcm_pbe0dz.kmdcm"),
+    },
+    "dcmdimerscan": {
         "pc": DCM_STATES("dcm_pbe0dz.pc"),
         "mdcm": DCM_STATES("dcm_pbe0dz.mdcm"),
         "kmdcm": kMDCM_STATES("dcm_pbe0dz.kmdcm"),
@@ -164,6 +169,7 @@ ATOM_TYPES = {
         ("DCM", "CL2"): "H",
         ("DCM", "H1"): "H",
         ("DCM", "H2"): "H",
+        ("DCM", "H"): "H",
     },
     "dcmdimerscan": {
         ("DCM", "C"): "C",
@@ -171,6 +177,7 @@ ATOM_TYPES = {
         ("DCM", "CL2"): "H",
         ("DCM", "H1"): "H",
         ("DCM", "H2"): "H",
+        ("DCM", "H"): "H",
     },
 }
 

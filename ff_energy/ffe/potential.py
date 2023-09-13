@@ -181,60 +181,6 @@ def DERUN(dists, indexs, groups, parms, num_segments):
     return OUT
 
 
-@partial(jit, static_argnames=["num_segments"])
-def CHGPENRUN(dists, indexs, groups, parms, num_segments):
-    CP = CHGPENflat(dists, indexs, parms)
-    OUT = jax.ops.segment_sum(CP, groups, num_segments=num_segments)
-    return OUT
-
-
-@jit
-def CHGPENflat(dists, indexs, p):
-    z2 = 18.0
-    z1 = 1.0
-    q2 = -0.67597213
-    q1 = 0.33798606
-    parms = p
-    scale = jnp.array([p[4]])
-    parms = jnp.array(
-        [
-            parms[0],
-            parms[0],
-            parms[1],
-            parms[0],
-            parms[1],
-            parms[1],
-            parms[2],
-            parms[2],
-            parms[3],
-            parms[2],
-            parms[3],
-            parms[3],
-            q1,
-            q1,
-            q2,
-            q1,
-            q2,
-            q2,
-            z1,
-            z1,
-            z2,
-            z1,
-            z2,
-            z2,
-        ]
-    )
-    a1s = jnp.take(parms, indexs + 3 * 0, unique_indices=False)
-    a2s = jnp.take(parms, indexs + 3 * 1, unique_indices=False)
-    b1s = jnp.take(parms, indexs + 3 * 2, unique_indices=False)
-    b2s = jnp.take(parms, indexs + 3 * 3, unique_indices=False)
-    q1s = jnp.take(parms, indexs + 3 * 4, unique_indices=False)
-    q2s = jnp.take(parms, indexs + 3 * 5, unique_indices=False)
-    z1s = jnp.take(parms, indexs + 3 * 6, unique_indices=False)
-    z2s = jnp.take(parms, indexs + 3 * 7, unique_indices=False)
-    #  add the scale factor and charge penetration
-    return scale[0] * charge_penetration(a1s, a2s, b1s, b2s, q1s, q2s, z1s, z2s, dists)
-
 
 @jit
 def LJflat(dists, indexs, parms):
@@ -242,36 +188,36 @@ def LJflat(dists, indexs, parms):
     n_types = n_parms // 2
     n_comb = n_types * (n_types + 1)
     #  above omits (ans/2) since the array is twice as long
-
     comb_parms = jnp.zeros(n_comb, dtype=jnp.float64)
     count = 0
     for a in range(n_types):
         for b in range(n_types):
             if a >= b:
-                comb_parms = comb_parms.at[count].set((parms[a] + parms[b]))
-                comb_parms = comb_parms.at[count + n_comb//2].set(
-                    jnp.sqrt(parms[a+n_types] * parms[b+n_types])
+                comb_parms = comb_parms.at[count ].set((parms[a] + parms[b]))
+                comb_parms = comb_parms.at[count + n_comb//2 ].set(
+                    jnp.sqrt( parms[a+n_types] * parms[b+n_types])
                 )
                 count += 1
 
     sigma = jnp.take(comb_parms, indexs,
                      unique_indices=False)
+
     eps = jnp.take(comb_parms, indexs + n_types,
                    unique_indices=False)
 
-    #  run the flat LJ function
+    # #  run the flat LJ function
     LJE = lj(sigma, eps, dists)
-    #  debugging
-    jax.debug.print("indexs shape {x}", x=indexs.shape)
-    # jax.debug.print("indexs {x}", x=indexs)
-    jax.debug.print("dists shape {x}", x=dists.shape)
-    # jax.debug.print("dists {x}", x=dists.dtype)
-    jax.debug.print("comb_parms shape {x}", x=comb_parms.shape)
-    jax.debug.print("comb_parms {x}", x=comb_parms)
-    jax.debug.print("sigma_s {x}", x=sigma.shape)
-    jax.debug.print("sigma {x}", x=sigma)
-    jax.debug.print("eps_s {x}", x=eps.shape)
-    jax.debug.print("eps {x}", x=eps)
+    # #  debugging
+    # jax.debug.print("indexs shape {x}", x=indexs.shape)
+    # # jax.debug.print("indexs {x}", x=indexs)
+    # jax.debug.print("dists shape {x}", x=dists.shape)
+    # # jax.debug.print("dists {x}", x=dists.dtype)
+    # jax.debug.print("comb_parms shape {x}", x=comb_parms.shape)
+    # jax.debug.print("comb_parms {x}", x=comb_parms)
+    # jax.debug.print("sigma_s {x}", x=sigma.shape)
+    # jax.debug.print("sigma {x}", x=sigma)
+    # jax.debug.print("eps_s {x}", x=eps.shape)
+    # jax.debug.print("eps {x}", x=eps)
 
     return LJE
 
@@ -308,10 +254,13 @@ def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
     # # jax.debug.print(" {x}", x=groups)
 
     RES =  LJRUN(dists, indexs, groups, parms, num_segments=num_segments)
+
+    assert RES.shape == target.shape
+
     ERROR = RES - target
 
-    LOSS = jnp.nanmean(ERROR**2) #  TODO:  dangerous to use nanmean here?
-    jax.debug.print("LOSS {x}", x=LOSS)
+    LOSS = jnp.mean(ERROR**2) #  TODO:  dangerous to use nanmean here?
+    # jax.debug.print("LOSS {x}", x=LOSS)
     return LOSS
 
 
@@ -321,10 +270,10 @@ def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments):
     return jnp.mean(ERROR**2)
 
 
-@partial(jit, static_argnames=["num_segments"])
-def CHGPEN_LOSS(dists, indexs, groups, parms, target, num_segments):
-    ERROR = CHGPENRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
-    return jnp.mean(ERROR**2)
+# @partial(jit, static_argnames=["num_segments"])
+# def CHGPEN_LOSS(dists, indexs, groups, parms, target, num_segments):
+#     ERROR = CHGPENRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
+#     return jnp.mean(ERROR**2)
 
 
 @partial(jit, static_argnames=["num_segments"])

@@ -9,6 +9,7 @@ from jax import grad
 import jax.numpy as jnp
 
 from ff_energy.ffe.structure import valid_atom_key_pairs
+
 from ff_energy.ffe.potential import (
     LJflat,
     LJRUN_LOSS,
@@ -17,8 +18,8 @@ from ff_energy.ffe.potential import (
     akp_indx,
     DERUN,
     DERUN_LOSS,
-    CHGPENRUN,
-    CHGPEN_LOSS,
+    # CHGPENRUN,
+    # CHGPEN_LOSS,
 )
 from ff_energy.ffe.potential import ecol, ecol_seg
 
@@ -41,7 +42,9 @@ class FF:
             intern="Exact",  # the name of the intern column
             intE="intE",
     ):
+        self.debug_df = None
         self.data = data.dropna()
+        self.data.reindex()
         #  make a dummy zero column for the energy
         self.data["DUMMY"] = len(self.data) * [0.0]
         self.data_save = data.copy()
@@ -54,7 +57,15 @@ class FF:
                 ]
             )
         )
+        print(f"Atom types: {self.atom_types}")
+        #  sort atom types
+        self.atom_types.sort()
+        print(f"Atom types: {self.atom_types}")
+
+
         self.atom_type_pairs = valid_atom_key_pairs(self.atom_types)
+        print(f"Atom types: {self.atom_types}")
+        print(f"Atom type pairs: {self.atom_type_pairs}")
         self.df = data.copy()
         self.dists = dists
         self.name = f"{func.__name__}_{structure.system_name}_{elec}"
@@ -100,6 +111,15 @@ class FF:
         self.set_intE()
         #  initialize the jax arrays
         self.jax_init()
+        eval = self.eval_jax_flat(self.p)
+
+        print(eval, np.sum(eval))
+        print(self.out_es, np.sum(self.out_es))
+        print(self.out_groups, np.sum(self.out_groups))
+
+        # assert np.isclose(self.out_es, eval).all()
+
+
 
     def __repr__(self):
         return (
@@ -139,13 +159,6 @@ class FF:
         # Internal energies
         #  ab initio reference energies
         if self.intern == "Exact":
-            # if pairs:
-            #     self.data["intE"] = self.data["P_intE"]
-            # else:
-            #     self.data["intE"] = (
-            #                                 self.data["C_ENERGY"] - self.data[
-            #                             "M_ENERGY"]
-            #                         ) * 627.509
             pass
         #  harmonic fit
         elif self.intern == "harmonic":
@@ -178,6 +191,7 @@ class FF:
         """Initialize the jax arrays"""
         if p is None:
             p = self.p
+        self.data.sort_index(inplace=True)
         #  Jax arrays
         self.set_targets()
         (
@@ -203,10 +217,31 @@ class FF:
         out_groups = jnp.array([group_key_dict[g] for g in out_groups],
                                dtype=jnp.int32)
 
+        ogr = {v: k for k, v in self.out_groups_dict.items()}
+        self.debug_df = pd.DataFrame(
+            {
+                "group": list(out_groups),
+                "es": list(out_es),
+                "akp": list(out_akps),
+                "idx": list(range(len(out_groups))),
+                "gname": [ogr[int(k)] for k in list(out_groups)],
+                "distances": list(out_dists),
+                "sigmas": list(out_sig),
+                "epsilons": list(out_ep),
+            }
+        )
+
         self.out_groups = jnp.array(out_groups, dtype=jnp.int32)
         self.out_es = jnp.array(out_es, dtype=jnp.float64)
         self.out_akps = jnp.array(out_akps, dtype=jnp.int32)
-        self.num_segments = len(out_es)
+        self.num_segments = len(self.targets)
+
+        print("out_es:")
+        print(self.out_es)
+        print("jax")
+        print(self.eval_jax_flat(self.p))
+
+
 
     def set_targets(self):
         """Set the targets for the objective function: intE - elec = targets"""
@@ -214,8 +249,7 @@ class FF:
             self.data[self.intE].to_numpy() - jnp.array(self.data[self.elec].to_numpy())
         )
         self.nTargets = int(len(self.targets))
-        print("targets:")
-        print(self.targets)
+        self.num_segments = self.nTargets
         assert isinstance(self.nTargets, typing.Hashable) is True
 
     def get_coulomb(self, scale=1.0):
@@ -223,9 +257,6 @@ class FF:
         outE = self.eval_coulomb(scale=scale)
         return ecol_seg(outE, self.cluster_labels, num_segments=self.nTargets)
 
-    def set_dists(self, dists):
-        """Overwrite distances"""
-        self.dists = dists
 
     def sort_data(self):
         """ sort the data """
@@ -261,6 +292,7 @@ class FF:
         # outputs
         #  calculate combination rules
         sig, ep = combination_rules(self.atom_type_pairs, epsilons, rminhalfs)
+
         print("self.p", self.p)
         print("sig", sig)
         print("ep", ep)
@@ -274,6 +306,7 @@ class FF:
         out_es = []
         out_sig = []
         out_ep = []
+        out_is = []
 
         print("ATP::", self.atom_type_pairs)
 
@@ -285,20 +318,42 @@ class FF:
             #  loop over atom pairs
             for i, akp in enumerate(self.atom_type_pairs):
                 #  if there are distances for this atom pair
-                if (akp in akp_indx.keys()) and (len(dists[akp_indx[akp]]) > 0):
-                    ddists = np.array(dists[akp_indx[akp]]).flatten()
-                    for d in ddists:
-                        out_dists.append(d)
-                        out_akps.append(i)
-                        out_groups.append(k)
-                        out_ks.append(ik)
-                        out_ep.append(ep[i])
-                        out_sig.append(sig[i])
-                        out_es.append(self.func(sig[i], ep[i], d, *args))
+                ddists = np.array(dists[akp_indx[akp]]).flatten()
+                for d in ddists:
+                    out_dists.append(d)
+                    out_akps.append(akp_indx[akp])
+                    out_is.append(i)
+                    out_groups.append(k)
+                    out_ks.append(ik)
+                    out_ep.append(ep[i])
+                    out_sig.append(sig[i])
+                    out_es.append(self.func(sig[i], ep[i], d, *args))
+
+
+        print(set(out_is))
+        print(set(out_groups))
+        print(set(out_akps))
+
+        # create the set of existing atom type pairs
+        tmp_akp_set = list(set(out_akps))
+        tmp_akp_set.sort()
+        print("tmp_akp_set", tmp_akp_set)
+        # renumber the atom type pairs from 0 to n
+        akp_dict = {k: v for k, v in zip(tmp_akp_set, range(len(tmp_akp_set)))}
+        out_akps = [akp_dict[_] for _ in out_akps]
+
         print("debug")
         print("groups")
         print(len(out_groups))
-        print(len(set(out_groups)))
+        print("og", set(out_groups))
+        print("outk", set(out_ks))
+        print("outakp", set(out_akps))
+        # print(out_akps)
+
+        assert len(set(out_groups)) == len(self.targets)
+        assert len(out_ks) == len(out_es)
+        assert len(out_akps) == len(out_es)
+
         print("dists")
         print(len(out_dists))
 
@@ -321,10 +376,12 @@ class FF:
         """convert the input x into the parameters for the LJ potential
         and run some function [default func is self.LJ_]
         """
+        self.p = x
         if func is None:
             func = self.LJ_
         s = {}
         e = {}
+        print(self.atom_types, x)
         for i, atp in enumerate(self.atom_types):
             print(i, atp)
             s[atp] = x[i]
@@ -346,13 +403,13 @@ class FF:
         loss = tmp["SE"].mean()
         return loss
 
-    def eval_jax_chgpen(self, x):
-        return CHGPENRUN(
-            self.out_dists,
-            self.out_akps,
-            self.out_groups,
-            x,
-        )
+    # def eval_jax_chgpen(self, x):
+    #     return CHGPENRUN(
+    #         self.out_dists,
+    #         self.out_akps,
+    #         self.out_groups,
+    #         x,
+    #     )
 
     def eval_jax(self, x):
         """evaluate the LJ potential"""
@@ -409,20 +466,20 @@ class FF:
             self.nTargets,
         )
 
-    def get_loss_chgpen(self, x) -> float:
-        """
-        get the mean squared error of the LJ potential
-        :param x:
-        :return:
-        """
-        return CHGPEN_LOSS(
-            self.out_dists,
-            self.out_akps,
-            self.out_groups,
-            x,
-            self.targets,
-            self.nTargets,
-        )
+    # def get_loss_chgpen(self, x) -> float:
+    #     """
+    #     get the mean squared error of the LJ potential
+    #     :param x:
+    #     :return:
+    #     """
+    #     return CHGPEN_LOSS(
+    #         self.out_dists,
+    #         self.out_akps,
+    #         self.out_groups,
+    #         x,
+    #         self.targets,
+    #         self.nTargets,
+    #     )
 
     def get_loss_coulomb(self, x) -> float:
         """

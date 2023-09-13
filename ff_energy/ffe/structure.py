@@ -29,8 +29,11 @@ def valid_atom_key_pairs(atom_keys):
 
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT",
              "C", "H", "CL"]
+atom_keys.sort()
 
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
+for i, _ in enumerate(atom_key_pairs):
+    print(i, _)
 
 atom_name_fix = {"CL": "Cl", "PO": "K"}
 
@@ -145,7 +148,7 @@ class Structure:
             )] for a, b in zip(self.restypes, self.atomnames)]
         )
         self.chm_typ_mask = {
-            ak: np.array([ak == _ for _ in self.chm_typ]) for ak in atom_keys
+            ak.upper(): np.array([ak.upper() == _ for _ in self.chm_typ]) for ak in atom_keys
         }
         self.res_mask = {
             r: np.array([r == _ for _ in self.resids]) for r in list(set(self.resids))
@@ -222,7 +225,7 @@ class Structure:
             H2M=H2M[0],
             H3M=H3M[0],
             H4M=H4M[0],
-            O="OH2", #  TODO: possible breaking change
+            O="OH2",  # TODO: possible breaking change
             H="H1",
             H1="H2",
             WATER=WATER,
@@ -245,8 +248,8 @@ class Structure:
             for i, akp in enumerate(atom_key_pairs):
                 a, b = akp
                 #  exclude any missing keys
-                if a in self.chm_typ_mask.keys() \
-                        and b in self.chm_typ_mask.keys():
+                if not np.all(self.chm_typ_mask[a]) \
+                        and not np.all(self.chm_typ_mask[b]):
                     #  get the mask for the atom types, residues
                     mask_a = self.chm_typ_mask[a]
                     res_mask_a = self.res_mask[res_a]
@@ -330,31 +333,52 @@ REMARK
         last_resid = self.resids[0]
         res_id_count = 1
 
+        res_ids_ = []
+
+
+
         for i, line in enumerate(self.atoms):
             AN = self.atomnames[i]
             RESNAME = self.restypes[i]
+
+
+
+
             print(i, RESNAME)
+
             if AN == "Cl":
                 print(i, line)
                 if self.atomnames[i - 1] == "Cl":
-                    AN = "Cl2"
+                    AN = "CL2"
                 else:
-                    AN = "Cl1"
+                    AN = "CL1"
                 print(self.atomnames[i], AN)
+
             if RESNAME == "CLA":
                 AN = "CLA"
+
+            if RESNAME == "DCM" and AN.__contains__("H"):
+
+                if self.atomnames[i - 1].__contains__("H"):
+                    print("H2")
+                    AN = "H2"
+                else:
+                    AN = "H1"
+                    print("H1")
+
 
             if self.resids[i] != last_resid:
                 res_id_count += 1
                 last_resid = self.resids[i]
 
+
             _1 = "ATOM"
             _2 = i + 1
-            _3 = AN
+            _3 = AN.upper()
             _4 = ""
-            _5 = self.restypes[i]
+            _5 = self.restypes[i].upper()
             _6 = ""
-            _7 = res_id_count  #  self.resids[i]
+            _7 = res_id_count  # self.resids[i]
             _8 = ""
             _9 = self.xyzs[i, 0]
             _10 = self.xyzs[i, 1]
@@ -403,8 +427,9 @@ REMARK
 if __name__ == "__main__":
     from ff_energy.utils.ffe_utils import read_from_pickle
     from ff_energy.ffe.constants import PKL_PATH, FFEPATH
+
     dcm_ = next(read_from_pickle(PKL_PATH / "structures" / "dcm.pkl"))
-    test_obj =  dcm_[0][0]
+    test_obj = dcm_[0][0]
 
     test_obj.read_pdb(FFEPATH / test_obj.path)
     test_obj.set_2body()

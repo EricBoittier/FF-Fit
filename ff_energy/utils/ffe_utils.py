@@ -13,6 +13,7 @@ sysname_to_res = {
     "water_cluster": "LIG",
     "dcm": "DCM",
     "ions_ext": "LIG",
+    "dcmdimerscan": "DCM",
 }
 
 
@@ -79,9 +80,12 @@ def get_structures(system_name, pdbpath=None):
     elif pdbpath is None:
         raise ValueError("pdbpath must be specified")
     else:
+        print("Structure/PDB does not exist, creating pickle",
+              f"structures/{system_name}.pkl",
+              "from", pdbpath)
         structures, pdbs = get_structures_pdbs(Path(pdbpath), system_name=system_name)
         pickle_output((structures, pdbs), name=f"structures/{system_name}")
-
+    print("Structures/PDBs loaded", len(structures), len(pdbs))
     return structures, pdbs
 
 

@@ -38,7 +38,7 @@ def set_style(no_latex=False):
     rcParams["xtick.minor.width"] = 2
     rcParams["ytick.minor.width"] = 2
     # set colors
-    rcParams["axes.prop_cycle"] = plt.cycler(color=plt.cm.Dark2.colors)
+    rcParams["axes.prop_cycle"] = plt.cycler(color=plt.cm.Set1.colors)
 
 
 def save_fig(fig, filename, path=None) -> Path:

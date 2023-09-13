@@ -32,7 +32,6 @@ atom_types = {
     ("HOH", "H2"): "HT",
     ("CLA", "CLA"): "CLA",
     ("POT", "POT"): "POT",
-
     ("CLA", "Cl"): "Cl",
     ("POT", "K"): "K",
     ("TIP3", "OH2"): "OT",
@@ -45,4 +44,5 @@ atom_types = {
     ("DCM", "Cl"): "CL",
     ("DCM", "H1"): "H",
     ("DCM", "H2"): "H",
+    ("DCM", "H"): "H",
 }

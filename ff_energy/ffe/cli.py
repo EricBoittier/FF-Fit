@@ -159,8 +159,10 @@ def data_jobs(CMS, molpro_small_path):
         logger.info("Molpro small path:", molpro_small_path)
     else:
         logger.warning("Molpro small path is None")
-
+    print("Molpro small path:", molpro_small_path)
+    print("CMS:", CMS)
     for cms in CMS:
+        logger.info("Job config:", cms)
         jm = MakeJob(
             f"{cms.system_name}/{cms.theory_name}_{cms.elec}",
             cms,

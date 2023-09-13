@@ -59,7 +59,8 @@ class JobMaker:
     def get_cluster_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
-            ID = p.split(".")[0]
+            print(p)
+            ID = p
             slurm_path = f"{homedir}/{self.jobdir}/{ID}/cluster/{ID}.sh"
             outfilename = f"{homedir}/{self.jobdir}/{ID}/cluster/{ID}.out"
             if os.path.exists(outfilename):
@@ -133,7 +134,9 @@ class JobMaker:
     def get_charmm_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
-            ID = p.split(".")[0]
+            # ID = p.split(".")[0]
+            ID = p
+            print(ID)
             slurm_path = f"{homedir}/{self.jobdir}/{ID}/charmm/{ID}.slurm"
             jobs.append(slurm_path)
         return jobs
@@ -141,7 +144,9 @@ class JobMaker:
     def get_esp_view_jobs(self, homedir):
         jobs = []
         for p in self.pdbs:
-            ID = p.split(".")[0]
+            # ID = p.split(".")[0]
+            ID = p
+            print(ID)
             slurm_path = f"{homedir}/{self.jobdir}/{ID}/charmm/{ID}.slurm"
             jobs.append(slurm_path)
         return jobs
@@ -175,12 +180,10 @@ class JobMaker:
             homedir = homedir[0]
         logger.info(f"Making data job for {p}")
 
-        ID = None
-        if isinstance(p, str):
-            ID = p.split(".")[0]
-        else:
-            if isinstance(p, Path):
-                ID = p.name.split(".")[0]
+        ID = str(Path(p).name)
+        if ID.endswith(".pdb"):
+            ID = ID[:-4]
+        print(ID)
 
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.gather_data(
@@ -221,7 +224,11 @@ class JobMaker:
     def make_molpro_job(self, p, s, homedir):
         if isinstance(homedir, tuple):
             homedir = homedir[0]
-        ID = p.split(".")[0]
+        if isinstance(p, str):
+            ID = p.split(".")[0]
+        elif str(p.name).endswith(".pdb"):
+            ID = p.name[:-4]
+
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_molpro()
         self.molpro_jobs[ID] = j

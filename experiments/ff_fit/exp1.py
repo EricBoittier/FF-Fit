@@ -1,26 +1,31 @@
 from pathlib import Path
 import pandas as pd
-import jax.numpy as jnp
+import jax; jax.config.update('jax_platform_name', 'cpu')
 import itertools as it
 import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
+
+from ff_energy.ffe.constants import PDB_PATH
 
 from ff_energy.ffe.potential import (
     LJ,
     DE,
+    lj
 )
 
 from ff_energy.ffe.ff import FF
+
 from ff_energy.plotting.fit_results import residuals_plot
 
 from ff_energy.plotting.ffe_plots import plot_energy_MSE, plot_ff_fit
+
 from ff_energy.ffe.ff_fit import (
     load_ff,
     fit_func,
     fit_repeat,
 )
-from ff_energy.utils.ffe_utils import pickle_output, read_from_pickle, str2int, PKL_PATH
+from ff_energy.utils.ffe_utils import pickle_output, read_from_pickle, str2int, \
+    PKL_PATH, get_structures
+
 from ff_energy.utils.json_utils import load_json
 
 structure_data = {
@@ -31,10 +36,9 @@ structure_data = {
 """
 Variables
 """
-sig_bound = (0.001, 5.5)
-ep_bound = (0.001, 5.5)
+sig_bound = (0.25, 2.5)
+ep_bound = (0.001, 1.0)
 chg_bound = (100, 2000)
-
 alpha_bound = (1, 8)
 beta_bound = (6, 20)
 
@@ -77,7 +81,7 @@ def make_ff_object(x):
         #  which structure
         if structure == "dcm":
             #  load the pickle file
-            pkl_file = PKL_PATH / "20230904_dcm.pkl.pkl"
+            pkl_file = PKL_PATH / "20230913_dcm.pkl.pkl"
             pkl_files.append(pkl_file)
 
         elif structure == "water_cluster":
@@ -85,55 +89,51 @@ def make_ff_object(x):
             pkl_file = PKL_PATH / "20230823_water_clusters.pkl.pkl"
             pkl_files.append(pkl_file)
             pair_dists = next(read_from_pickle(PKL_PATH / "water_pc_pairs.pkl"))
-            #  load the pair distances
-            # if elec in pc_charge_models:
-            #     pair_dists = next(read_from_pickle(PKL_PATH / "water_pc_pairs.pkl"))
-            # elif elec == "ELECk":
-            #     pair_dists = next(read_from_pickle(PKL_PATH / "water_kmdcm_pairs.pkl"))
-            # elif elec == "ELECm":
-            #     pair_dists = next(read_from_pickle(PKL_PATH / "water_mdcm_pairs.pkl"))
-            # else:
-            #     raise ValueError("Invalid elec type", elec)
 
         else:
             raise ValueError("Invalid structure")
 
         pkl_file = read_from_pickle(pkl_file)
         data = next(pkl_file)
-        print(data.keys())
-        print(data[elec])
 
-        stuct_data = read_from_pickle(PKL_PATH / "structures" / f"{structure}.pkl")
-        struct_data = next(stuct_data)
-        structs, pdbs = struct_data
-        # print(structs, pdbs)
+        structs, pdbs  = get_structures(structure,
+                                        pdbpath= PDB_PATH / structure)
+
         struct_data = structs[0]
-        print(struct_data)
-        print(pair_dists)
+
         #  set the 2body terms
         print("setting 2body")
         for _ in structs:
-            # print("struct name", _.name)
             _.set_2body()
 
         dists = {
             str(Path(_.name).stem).split(".")[0]:
                 _.distances for _ in structs
         }
-        print(dists.keys())
-        print(data.index)
 
+        """
+        FUNCTION TYPE
+        """
         if fit == "lj":
             FUNC = LJ
-            BOUNDS = 2 * len(set(struct_data.chm_typ)) * [sig_bound]
+            BOUNDS = []
+            for i in range(len(set(struct_data.chm_typ))):
+                BOUNDS.append(sig_bound)
+            for i in range(len(set(struct_data.chm_typ))):
+                BOUNDS.append(ep_bound)
         elif fit == "de":
             FUNC = DE
-            BOUNDS = 2 * len(set(struct_data.chm_typ)) * [sig_bound]
+            BOUNDS = []
+            for i in range(len(set(struct_data.chm_typ))):
+                BOUNDS.append(sig_bound)
+            for i in range(len(set(struct_data.chm_typ))):
+                BOUNDS.append(ep_bound)
             BOUNDS.append(alpha_bound)
             BOUNDS.append(beta_bound)
         else:
             raise ValueError("Invalid fit type")
 
+        print("bounds", BOUNDS)
         #  make the ff object
         ff = FF(
             data,
@@ -144,13 +144,15 @@ def make_ff_object(x):
             elec=elec,
         )
 
-        # ff.set_targets()
+        ff.num_segments = len(ff.data[elec].index)
+        ff.set_targets()
 
         #  pickle the ff object
         pickle_output(ff, f"{elec}_{structure}_{fit}")
 
         outes = ff.out_es
         print(ff.p, ff.opt_parm)
+
         flateval = ff.eval_jax_flat(ff.p)
         resids = outes - flateval
 
@@ -159,8 +161,12 @@ def make_ff_object(x):
         print("es shape", ff.out_es.shape)
         print("flat eval", flateval)
         print("flat eval shape", flateval.shape)
-        print("resids", resids)
-        print("resids shape", resids.shape)
+        # print("resids", set(resids))
+        # print("resids shape", resids.shape)
+        # print("dists", ff.dists)
+        # print("dists shape", ff.dists.shape)
+        print("dists", ff.out_dists)
+        print("dists shape", ff.out_dists.shape)
 
         #  make the dataframe
         df_test = pd.DataFrame(
@@ -170,34 +176,10 @@ def make_ff_object(x):
                 "vals": flateval
             }
         )  # drop the nans
-
+        print("DF TEST")
         print(df_test.describe())
-        #  plot the results
-        # residuals_plot(df_test, "flat_test")
-        # plt.clf()
-
-        # outes = ff.out_es
-        # flateval = ff.eval_jax_flat([ff.p[2], ff.p[3], ff.p[0], ff.p[1]])
-        # resids = outes - flateval
-        #
-        # print(ff.p)
-        # print("out es", outes)
-        # print("es shape", ff.out_es.shape)
-        # print("flat eval", flateval)
-        # print("flat eval shape", flateval.shape)
-        # print("resids", resids)
-        # print("resids shape", resids.shape)
-        #
-        # #  make the dataframe
-        # df_test = pd.DataFrame(
-        #     {
-        #         "target": outes,
-        #         "residuals": resids,
-        #         "vals": flateval
-        #     }
-        # )  # drop the nans
-        #
-        # print(df_test.describe())
+        print("DF DEBUG")
+        print(ff.debug_df)
         return ff
 
 
@@ -217,20 +199,16 @@ def ff_fit(x, n=100):
     print("data:", ff.data[[ff.intE, ff.elec, "VDW", "P_intE"]])
     print("targets:", ff.targets)
     print("nTargets:", ff.nTargets)
-
     ff.num_segments = ff.nTargets
     ff.set_targets()
-
     loss = "jax"
     LJFF = fit_repeat(
         ff, n, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss,
         quiet=False
     )
-
     print(LJFF.opt_results)
     pickle_output(LJFF, f"{ffpkl}_fitted")
     jaxeval = ff.eval_jax(LJFF.get_best_parm())
-
     print("eval_jax::", jaxeval)
     jaxloss = ff.get_loss_jax(LJFF.get_best_parm())
 
@@ -263,7 +241,6 @@ def ff_fit(x, n=100):
     #  plot the results
     residuals_plot(df_test, ffpkl + "_elec_jax")
     print(df_test.describe())
-
     plt.clf()
     print(ff.data)
     print(LJFF.data)
@@ -280,9 +257,9 @@ if __name__ == "__main__":
     parser.add_argument("--f", "-f", action='store_true', help="Fit the ff object")
     parser.add_argument("--n", "-n", type=int, help="Number of repeats", default=100)
     args = parser.parse_args()
-    print(args.x)
+    print("Running exp: ", args.x)
     job = jobs[args.x]
-    print(job)
+    print("Job: ", job)
 
     if args.m:
         print("Making ff object")
@@ -290,4 +267,4 @@ if __name__ == "__main__":
 
     if args.f:
         print("Fitting ff object, repeats = {}".format(args.n))
-        ff = ff_fit(job, n=args.n)
+        ff_fit(job, n=args.n)

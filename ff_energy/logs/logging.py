@@ -14,6 +14,12 @@ def hide_logs():
     logging.getLogger("dispatch").disabled = True
     logging.getLogger("jax").disabled = True
 
+    pil_logger = logging.getLogger('PIL')
+    pil_logger.setLevel(logging.INFO)
+
+    jax_logger = logging.getLogger('jax')
+    jax_logger.setLevel(logging.INFO)
+
     logger.propagate = False
 
 

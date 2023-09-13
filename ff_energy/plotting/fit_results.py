@@ -10,7 +10,9 @@ import numpy as np
 import patchworklib as pw
 
 
-def residuals_from_keys(df, k1, k2, label="", title="", LABEL_SIZE=10):
+def residuals_from_keys(df, k1, k2,
+                        xlabel=None, ylabel=None,
+                        label="", title="", LABEL_SIZE=10):
     #  make the dataframe
     df_test = pd.DataFrame(
         {
@@ -19,10 +21,18 @@ def residuals_from_keys(df, k1, k2, label="", title="", LABEL_SIZE=10):
             "vals": df[k2]
         }
     ).dropna()  # drop the nans
-    residuals_plot(df_test, label, title, LABEL_SIZE)
+    residuals_plot(df_test, label, title, LABEL_SIZE, xlabel, ylabel)
 
 
-def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
+def residuals_plot(df_test, label,
+                   title="", LABEL_SIZE=10,
+                   xlabel=None, ylabel=None):
+
+    if xlabel is None:
+        xlabel = "target"
+    if ylabel is None:
+        ylabel = "observation"
+
     #  color by residuals
     cmap = sns.color_palette("coolwarm", as_cmap=True)
     norm = plt.Normalize(df_test["residuals"].min(),
@@ -64,8 +74,16 @@ def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
     g1.ax_marg_x.axvline(x=target_mean, c="k", linestyle="--")
     g1.ax_marg_y.axhline(y=vals_mean, c="k", linestyle="--")
 
+    # JointGrid has a convenience function
+    g1.set_axis_labels(xlabel, ylabel, fontsize=16, fontweight='bold')
+
+    # # or set labels via the axes objects
+    # h.ax_joint.set_xlabel('new x label', fontweight='bold')
+
+
+
     analysis_string = f"RMSE: {RMSE:.2f}\nMAE: {MAE:.2f}\nR2: {r2:.2f}"
-    g1.ax_joint.text(0.25, 0.4, analysis_string,
+    g1.ax_joint.text(0.25, 0.8, analysis_string,
                      horizontalalignment='center', c="black",
                      bbox=dict(facecolor='white', alpha=0.5),
                      transform=g1.ax_joint.transAxes,
@@ -79,12 +97,18 @@ def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
     g2.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
     g2.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
     g2.ax_joint.axhline(y=0, color="k", linestyle="--")
+
+    g2.set_axis_labels(xlabel, "residuals", fontsize=16, fontweight='bold')
+
     g2 = pw.load_seaborngrid(g2, label="g2", figsize=FIGSIZE)
 
     g3 = sns.jointplot(data=df_test, x="residuals", y="vals",
                        ratio=3, marginal_ticks=True,
                        kind="reg", marker="+")
     g3.plot_joint(sns.kdeplot, color="r", zorder=0, levels=6)
+
+    g3.set_axis_labels("residuals", ylabel, fontsize=16, fontweight='bold')
+
     g3.plot_marginals(sns.rugplot, color="r", height=-.15, clip_on=True)
     g3.ax_joint.axvline(x=0, color="k", linestyle="--")
     g3 = pw.load_seaborngrid(g3, label="g3", figsize=FIGSIZE)
@@ -97,19 +121,21 @@ def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
                     ax=distax, label="fit")
 
     val_string = f"Fit\nmean: {vals_mean:.2f}\nstd: {vals_sd:.1f}"
-    distax.text(0.25, 0.8, val_string,
-                horizontalalignment='center', c="red",
+    distax.text(0.05, 0.8, val_string,
+                horizontalalignment='left', c="red",
                 bbox=dict(facecolor='white', alpha=0.5),
                 transform=distax.transAxes,
                 fontdict={"size": LABEL_SIZE})
 
+    distax.set_xlabel(xlabel)
+
+
     target_string = f"Target\nmean: {target_mean:.2f}\nstd: {target_sd:.1f}"
-    distax.text(0.25, 0.6, target_string,
-                horizontalalignment='center', c="blue",
+    distax.text(0.05, 0.6, target_string,
+                horizontalalignment='left', c="blue",
                 bbox=dict(facecolor='white', alpha=0.5),
                 transform=distax.transAxes,
                 fontdict={"size": LABEL_SIZE})
-    # distax.legend()
 
     x_vals = np.zeros(len(df_test) * 2)
     y_vals = np.zeros(len(df_test) * 2)
@@ -123,7 +149,7 @@ def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
         normed = norm(res)
         c = cmap(normed)
         alph = normabs(abs(res))
-        para.plot(
+        distax.plot(
             x_vals[i * 2:i * 2 + 2],
             y_vals[i * 2:i * 2 + 2],
             alpha=alph * 0.5,
@@ -135,8 +161,9 @@ def residuals_plot(df_test, label, title="", LABEL_SIZE=10):
     para.set_title("Change", loc="center")
 
     print("saving ", label)
-    rt = (distax / para)
-
+    # rt = (distax / para)
+    rt = distax
+    # rt.set_suptitle(label, loc="left", fontsize=TITLE_SIZE)
     g1.case.set_title('A. Regression', x=1.0, y=1.0, loc="right")
     # g0.move_legend("upper left", bbox_to_anchor=(0.1, 1.0))
     rt.case.set_title('B. Distribution learning', x=1.0, y=1.0, loc="right")

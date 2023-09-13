@@ -82,6 +82,9 @@ def concat_dataframes(dataframes: dict) -> pd.DataFrame:
     data = pd.DataFrame()
     for k, v in dataframes.items():
         if v is not None:
+            v = v.reset_index(drop=True)
+            print(k, v)
+            print(data)
             data = pd.concat([data, v], axis=1)
     return data
 
@@ -113,51 +116,60 @@ class Data:
         pairs_df = ddict["pairs"] if "pairs" in ddict.keys() else None
         monomer_df = ddict["monomers"] if "monomers" in ddict.keys() else None
         #  Unload the data
-        self.data = data
-        print("data", data)
+        self.data = data.drop_duplicates()
+        print("data", data.drop_duplicates())
         self.coloumb = col
         if (
-            "M_ENERGY" in data.keys()
-            and cluster_df is not None
-            and monomers_df is not None
+                "M_ENERGY" in data.keys()
+                and cluster_df is not None
+                and monomers_df is not None
         ):
             self.data["intE"] = (
-                self.data["C_ENERGY"] - self.data["M_ENERGY"]
-            ) * H2KCALMOL
+                                        self.data["C_ENERGY"] - self.data["M_ENERGY"]
+                                ) * H2KCALMOL
 
         self.ctot = ctot
         self.chm_df = chm_df
-        self.monomers_df = monomers_df
-        self.monomer_df = monomer_df
+        self.monomers_df = monomers_df  # .dropna()
+        self.monomer_df = monomer_df  # .dropna()
         self.cluster_df = cluster_df
-        self.pairs_df = pairs_df
+        self.pairs_df = pairs_df.drop_duplicates()
+
+        print(self.monomers_df)
 
         self.prepare_monomers(min_m_E=min_m_E)
 
         self.jax_data = None
         self.pair_ff_data = None
 
-
-
     def prepare_monomers(self, min_m_E=None):
         if self.monomers_df is not None:
-            self.monomers_df["key"] = [x.split("_")[-1] for x in self.monomers_df.index]
-
+            monomidx = list(self.monomers_df.index)
+            self.monomers_df["key"] = [x.split("_")[-1] for x in monomidx]
             self.monomers_df["monomer"] = [
-                int(x.split("_")[-1]) for x in self.monomers_df.index
+                monomidx.index(x) for x in self.monomers_df.index
             ]
-
             self.pairs_df["key"] = [
                 "_".join(_.split("_")[:-2]) for _ in self.pairs_df.index
             ]
-
             self.pairs_df["pair"] = [
                 (int(x.split("_")[-2]), int(x.split("_")[-1]))
                 for x in self.pairs_df.index
             ]
 
             sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
-            self.data["P_intE"] = [sum_pairs[i] * 627.5 for i in self.data.index]
+            print(len(sum_pairs))
+            print(sum_pairs)
+            df = self.data
+            df = df.loc[:,~df.columns.duplicated()].copy()
+            self.data = df
+            print(self.data["KEY"])
+            self.data["P_intE"] = [
+                sum_pairs.loc[i] * 627.5
+                if i in sum_pairs.keys()
+                else None
+                for i in self.data["KEY"]
+            ]
 
             self.structures, self.pdbs = get_structures(self.system,
                                                         pdbpath=PDB_PATH / self.system,
@@ -262,17 +274,16 @@ class Data:
             logger.warning("Data not available")
 
 
-
 def name_pair():
     pass
 
 
 def pairs_data(
-    dataobject,
-    system=None,
-    name=None,
-    dcm_path_=None,
-    dcm_charges_per_res=None,
+        dataobject,
+        system=None,
+        name=None,
+        dcm_path_=None,
+        dcm_charges_per_res=None,
 ):
     """    """
     if system is None or name is None or dcm_path_ is None:
@@ -366,10 +377,12 @@ def pairs_data(
 
 import pickle
 
+
 class CustomUnpickler(pickle.Unpickler):
     def find_class(self, module, name):
         if name == 'Manager':
-            from ff_energy.latex_writer.energydata.energy_data_report import EnergyReport
+            from ff_energy.latex_writer.energydata.energy_data_report import \
+                EnergyReport
             return EnergyReport
         return super().find_class(module, name)
 
