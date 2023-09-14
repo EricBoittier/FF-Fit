@@ -111,7 +111,7 @@ class FF:
         self.set_intE()
         #  initialize the jax arrays
         self.jax_init()
-        eval = self.eval_jax_flat(self.p)
+        eval, _, _ = self.eval_jax_flat(self.p)
 
         print(eval, np.sum(eval))
         print(self.out_es, np.sum(self.out_es))
@@ -240,8 +240,6 @@ class FF:
         print(self.out_es)
         print("jax")
         print(self.eval_jax_flat(self.p))
-
-
 
     def set_targets(self):
         """Set the targets for the objective function: intE - elec = targets"""

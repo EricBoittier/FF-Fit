@@ -102,9 +102,9 @@ def make_ff_object(x):
         struct_data = structs[0]
 
         #  set the 2body terms
-        print("setting 2body")
-        for _ in structs:
-            _.set_2body()
+        # print("setting 2body")
+        # for _ in structs:
+        #     _.set_2body()
 
         dists = {
             str(Path(_.name).stem).split(".")[0]:
@@ -143,30 +143,28 @@ def make_ff_object(x):
             struct_data,
             elec=elec,
         )
-
+        #  set the targets
         ff.num_segments = len(ff.data[elec].index)
         ff.set_targets()
-
-        #  pickle the ff object
-        pickle_output(ff, f"{elec}_{structure}_{fit}")
-
+        ##############################
         outes = ff.out_es
         print(ff.p, ff.opt_parm)
-
-        flateval = ff.eval_jax_flat(ff.p)
+        flateval, sigma, episolon = ff.eval_jax_flat(ff.p)
         resids = outes - flateval
-
+        # debugging
         print(ff.p)
         print("out es", outes)
         print("es shape", ff.out_es.shape)
         print("flat eval", flateval)
         print("flat eval shape", flateval.shape)
-        # print("resids", set(resids))
-        # print("resids shape", resids.shape)
-        # print("dists", ff.dists)
-        # print("dists shape", ff.dists.shape)
         print("dists", ff.out_dists)
         print("dists shape", ff.out_dists.shape)
+
+        print(sigma)
+        print(episolon)
+        ff.debug_df["sigmas2"] = sigma
+        ff.debug_df["epsilons2"] = episolon
+        print(ff.debug_df["sigmas"], ff.debug_df["epsilons"])
 
         #  make the dataframe
         df_test = pd.DataFrame(
@@ -179,7 +177,10 @@ def make_ff_object(x):
         print("DF TEST")
         print(df_test.describe())
         print("DF DEBUG")
+        ff.debug_df["jaxflat"] = flateval
         print(ff.debug_df)
+        #  pickle the ff object
+        pickle_output(ff, f"{elec}_{structure}_{fit}")
         return ff
 
 
@@ -208,7 +209,12 @@ def ff_fit(x, n=100):
     )
     print(LJFF.opt_results)
     pickle_output(LJFF, f"{ffpkl}_fitted")
-    jaxeval = ff.eval_jax(LJFF.get_best_parm())
+    jaxeval, sigma, epsilon = ff.eval_jax(LJFF.get_best_parm())
+
+    print("sigma::", sigma)
+    print("epsilon::", epsilon)
+
+
     print("eval_jax::", jaxeval)
     jaxloss = ff.get_loss_jax(LJFF.get_best_parm())
 
