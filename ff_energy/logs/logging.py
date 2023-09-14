@@ -20,6 +20,9 @@ def hide_logs():
     jax_logger = logging.getLogger('jax')
     jax_logger.setLevel(logging.INFO)
 
+    matplotlib_logger = logging.getLogger('matplotlib')
+    matplotlib_logger.setLevel(logging.INFO)
+
     logger.propagate = False
 
 

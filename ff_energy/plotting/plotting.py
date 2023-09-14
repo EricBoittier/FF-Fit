@@ -39,6 +39,7 @@ def set_style(no_latex=False):
     rcParams["ytick.minor.width"] = 2
     # set colors
     rcParams["axes.prop_cycle"] = plt.cycler(color=plt.cm.Set1.colors)
+    rcParams['font.family'] = 'sans-serif'
 
 
 def save_fig(fig, filename, path=None) -> Path:

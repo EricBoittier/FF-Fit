@@ -207,7 +207,6 @@ def LJflat(dists, indexs, parms):
                 # jax.debug.print("comb_parms: {c}", c=comb_parms)
                 count += 1
 
-
     sigma = jnp.take(comb_parms, indexs,
                      unique_indices=False)
 
