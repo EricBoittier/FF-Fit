@@ -64,13 +64,27 @@ def combination_rules(atom_key_pairs, epsilons=None, rminhalfs=None):
 
 def LJ(sig, ep, r):
     """
+    rmin = 2^(1/6) * sigma
+        https://de.wikipedia.org/wiki/Lennard-Jones-Potential
     Lennard-Jones potential for a pair of atoms
     """
     a = 6
     b = 2
-    c = 2
+    # sig = sig / (2 ** (1 / 6))
     r6 = (sig / r) ** a
-    return ep * (r6 ** b - c * r6)
+    return ep * (r6 ** b - 2 * r6)
+
+
+@jit
+def lj(sig, ep, r):
+    """Lennard-Jones potential for a pair of atoms"""
+
+    # sig = sig * (2 ** (1 / 6))
+
+    r6 = (sig / r) ** 6
+
+    return ep * (r6 ** 2 - 2 * r6)
+
 
 
 def freeLJ(sig, ep, r, a, b, c):
@@ -119,14 +133,6 @@ def ecol(q1, q2, r):
     return coloumns_constant * ((q1 * q2) / r)
 
 
-@jit
-def lj(sig, ep, r):
-    """Lennard-Jones potential for a pair of atoms"""
-    a = 6
-    b = 2
-    c = 2
-    r6 = (sig / r) ** a
-    return ep * (r6 ** b - c * r6)
 
 
 @jit

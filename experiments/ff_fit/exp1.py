@@ -116,6 +116,8 @@ def make_ff_object(x):
         """
         FUNCTION TYPE
         """
+        sig_bound = (0.25, 2.5)
+        ep_bound = (0.001, 1.0)
         if fit == "lj":
             FUNC = LJ
             BOUNDS = []

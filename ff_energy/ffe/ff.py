@@ -23,8 +23,8 @@ from ff_energy.ffe.potential import (
 )
 from ff_energy.ffe.potential import ecol, ecol_seg
 
-sig_bound = (0.001, 5.5)
-ep_bound = (0.001, 5.5)
+sig_bound = (0.1, 5.5)
+ep_bound = (0.001, 0.1)
 chg_bound = (100, 2000)
 de_alpha_bound = (1, 8)
 de_beta_bound = (6, 20)

@@ -257,14 +257,17 @@ class Structure:
                     res_mask_b = self.res_mask[res_b]
                     xyza_ = self.xyzs[mask_a * res_mask_a]
                     xyzb_ = self.xyzs[mask_b * res_mask_b]
+
                     xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
                     xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+
                     #  case for same atom types
                     if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                         _d = _sqrt_einsum_T(xyza.T, xyzb.T)
                         self.distances[i].append(_d)
                         self.distances_pairs[i][(res_a, res_b)] = []
                         self.distances_pairs[i][(res_a, res_b)].append(_d)
+
                     #  case for different atom types
                     if a != b:
                         b, a = akp
@@ -276,10 +279,11 @@ class Structure:
                         xyzb_ = self.xyzs[mask_b * res_mask_b]
                         xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
                         xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+
                         if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
                             _d = _sqrt_einsum_T(xyza.T, xyzb.T)
                             self.distances[i].append(_d)
-                            self.distances_pairs[i][(res_a, res_b)].append(_d)
+                            self.distances_pairs[i][(res_b, res_a)].append(_d)
 
     def get_monomers(self):
         """returns list of monomers"""
