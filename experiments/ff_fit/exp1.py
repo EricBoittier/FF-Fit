@@ -16,7 +16,9 @@ from ff_energy.ffe.ff import FF
 
 from ff_energy.plotting.fit_results import residuals_plot
 
-from ff_energy.plotting.ffe_plots import plot_energy_MSE, plot_ff_fit
+from ff_energy.plotting.ffe_plots import (
+    plot_energy_MSE, plot_ff_fit
+)
 
 from ff_energy.ffe.ff_fit import (
     load_ff,
@@ -210,14 +212,10 @@ def ff_fit(x, n=100):
     print(LJFF.opt_results)
     pickle_output(LJFF, f"{ffpkl}_fitted")
     jaxeval, sigma, epsilon = ff.eval_jax(LJFF.get_best_parm())
-
     print("sigma::", sigma)
     print("epsilon::", epsilon)
-
-
     print("eval_jax::", jaxeval)
     jaxloss = ff.get_loss_jax(LJFF.get_best_parm())
-
     print("jaxloss::", jaxloss)
     elec = ff.data[LJFF.elec]
     targets = ff.targets
@@ -235,7 +233,6 @@ def ff_fit(x, n=100):
     residuals_plot(df_test, ffpkl + "_targets")
     print(df_test.describe())
     plt.clf()
-
     #  make the dataframe
     df_test = pd.DataFrame(
         {
@@ -255,7 +252,6 @@ def ff_fit(x, n=100):
 if __name__ == "__main__":
     jobs = loop()
     import argparse
-
     #  argument for which experiment to run
     parser = argparse.ArgumentParser()
     parser.add_argument("--x", "-x", type=int, help="Experiment number")
@@ -266,11 +262,9 @@ if __name__ == "__main__":
     print("Running exp: ", args.x)
     job = jobs[args.x]
     print("Job: ", job)
-
     if args.m:
         print("Making ff object")
         make_ff_object(job)
-
     if args.f:
         print("Fitting ff object, repeats = {}".format(args.n))
         ff_fit(job, n=args.n)

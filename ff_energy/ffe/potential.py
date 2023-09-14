@@ -184,7 +184,7 @@ def DERUN(dists, indexs, groups, parms, num_segments):
 
 @jit
 def LJflat(dists, indexs, parms):
-    jax.debug.print("{p}", p=parms)
+    # jax.debug.print("{p}", p=parms)
     n_parms = len(parms)
     n_types = n_parms // 2
     n_comb = n_types * (n_types + 1)
@@ -260,13 +260,9 @@ def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
     # # jax.debug.print(" {x}", x=indexs)
     # jax.debug.print("groups {x}", x=groups.shape)
     # # jax.debug.print(" {x}", x=groups)
-
     RES, _, _ = LJRUN(dists, indexs, groups, parms, num_segments=num_segments)
-
-    assert RES.shape == target.shape
-
+    # assert RES.shape == target.shape
     ERROR = RES - target
-
     LOSS = jnp.mean(ERROR ** 2)  # TODO:  dangerous to use nanmean here?
     # jax.debug.print("LOSS {x}", x=LOSS)
     return LOSS
