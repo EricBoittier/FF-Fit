@@ -103,10 +103,10 @@ def make_ff_object(x):
 
         struct_data = structs[0]
 
-        #  set the 2body terms
-        # print("setting 2body")
-        # for _ in structs:
-        #     _.set_2body()
+         # set the 2body terms
+        print("setting 2body")
+        for _ in structs:
+            _.set_2body()
 
         dists = {
             str(Path(_.name).stem).split(".")[0]:

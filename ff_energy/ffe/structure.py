@@ -7,6 +7,8 @@ from ff_energy.ffe.templates import PSF
 import ff_energy as constants
 from ase.io import read
 
+from scipy.spatial import distance_matrix as DM
+
 
 def sqrt_einsum_T(data):
     a, b = data[1]
@@ -250,38 +252,74 @@ class Structure:
                 #  exclude any missing keys
                 if not np.all(self.chm_typ_mask[a]) \
                         and not np.all(self.chm_typ_mask[b]):
+
                     #  get the mask for the atom types, residues
                     mask_a = self.chm_typ_mask[a]
                     res_mask_a = self.res_mask[res_a]
                     mask_b = self.chm_typ_mask[b]
                     res_mask_b = self.res_mask[res_b]
-                    xyza_ = self.xyzs[mask_a * res_mask_a]
-                    xyzb_ = self.xyzs[mask_b * res_mask_b]
-
-                    xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
-                    xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                    xyza = self.xyzs[mask_a * res_mask_a]
+                    xyzb = self.xyzs[mask_b * res_mask_b]
+                    # xyza = np.repeat(xyza, xyza.shape[0], axis=0)
+                    # xyzb = np.repeat(xyzb_, xyzb_.shape[0], axis=0)
 
                     #  case for same atom types
                     if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                        _d = _sqrt_einsum_T(xyza.T, xyzb.T)
-                        self.distances[i].append(_d)
+                        _d = np.linalg.norm(xyza - xyzb, axis=1)
+                        # print("DM", DM(xyza, xyzb))
+                        # print("...", xyza.T, xyzb.T)
+                        # print("xyza", xyza)
+                        # print("xyzb", xyzb)
+                        # print(a, b, res_a, res_b, _d)
+
+                        _d = DM(xyza, xyzb)#.flatten()
+                        # print("DM", _d)
+
                         self.distances_pairs[i][(res_a, res_b)] = []
+
+                        self.distances[i].append(_d)
                         self.distances_pairs[i][(res_a, res_b)].append(_d)
 
-                    #  case for different atom types
+                    # #  get the mask for the atom types, residues
+                    # mask_a = self.chm_typ_mask[a]
+                    # res_mask_a = self.res_mask[res_a]
+                    # mask_b = self.chm_typ_mask[b]
+                    # res_mask_b = self.res_mask[res_b]
+                    # xyza_ = self.xyzs[mask_a * res_mask_a]
+                    # xyzb_ = self.xyzs[mask_b * res_mask_b]
+                    # xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
+                    # xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                    #
+                    # #  case for same atom types
+                    # if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
+                    #     _d = np.linalg.norm(xyza - xyzb, axis=1)
+                    #     print("XX..", xyza.T, xyzb.T)
+                    #     print("XX..", xyza, xyzb)
+                    #     print(a, b, res_a, res_b, _d)
+                    #     self.distances[i].append(_d)
+                    #     self.distances_pairs[i][(res_a, res_b)] = []
+                    #     self.distances_pairs[i][(res_a, res_b)].append(_d)
+
+                    # case for different atom types
                     if a != b:
-                        b, a = akp
+                        # b, a = akp
+                        res_b, res_a = res_a, res_b
                         mask_a = self.chm_typ_mask[a]
                         res_mask_a = self.res_mask[res_a]
                         mask_b = self.chm_typ_mask[b]
                         res_mask_b = self.res_mask[res_b]
-                        xyza_ = self.xyzs[mask_a * res_mask_a]
-                        xyzb_ = self.xyzs[mask_b * res_mask_b]
-                        xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
-                        xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                        xyza = self.xyzs[mask_a * res_mask_a]
+                        xyzb = self.xyzs[mask_b * res_mask_b]
+                        # xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
+                        # xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
 
                         if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                            _d = _sqrt_einsum_T(xyza.T, xyzb.T)
+                            # _d = _sqrt_einsum_T(xyza.T, xyzb.T)
+                            # _d = np.linalg.norm((xyza - xyzb), axis=1)
+
+                            _d = DM(xyza, xyzb)#.flatten()
+                            # print("DM", _d)
+                            # print(a, b, res_a, res_b, _d)
                             self.distances[i].append(_d)
                             self.distances_pairs[i][(res_b, res_a)].append(_d)
 

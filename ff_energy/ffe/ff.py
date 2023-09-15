@@ -379,9 +379,9 @@ class FF:
             func = self.LJ_
         s = {}
         e = {}
-        print(self.atom_types, x)
+        # print(self.atom_types, x)
         for i, atp in enumerate(self.atom_types):
-            print(i, atp)
+            # print(i, atp)
             s[atp] = x[i]
             e[atp] = x[i + len(self.atom_types)]
         return func(e, s, args=x[len(self.atom_types) * 2:])
