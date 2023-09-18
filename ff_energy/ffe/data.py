@@ -158,12 +158,12 @@ class Data:
             ]
 
             sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
-            print(len(sum_pairs))
-            print(sum_pairs)
+            print("len(sumpairs)", len(sum_pairs))
+            # print(sum_pairs)
             df = self.data
             df = df.loc[:,~df.columns.duplicated()].copy()
             self.data = df
-            print(self.data["KEY"])
+            # print(self.data["KEY"])
             self.data["P_intE"] = [
                 sum_pairs.loc[i] * 627.5
                 if i in sum_pairs.keys()
@@ -215,6 +215,7 @@ class Data:
         return self.data.copy()
 
     def get_internals_water(self, key, res):
+        print(key, res)
         mask = self.structure_key_pairs[key].res_mask[res]
         water_mol = self.structure_key_pairs[key].xyzs[mask]
         b1 = water_mol[0] - water_mol[1]
@@ -229,12 +230,13 @@ class Data:
         r1_s = []
         r2_s = []
         for r in self.monomers_df.iterrows():
-            key = r[1]["key"]
-            monomer = r[1]["monomer"]
+            key = r[1]["KEY"].split("_")[0] + ".xyz"
+            monomer = int(r[1]["key"])
             a, r1, r2 = self.get_internals_water(key, monomer)
             a_s.append(a)
             r1_s.append(r1)
             r2_s.append(r2)
+
         #  add to dataframe
         self.monomers_df["a"] = a_s
         self.monomers_df["r1"] = r1_s

@@ -1,6 +1,8 @@
 from pathlib import Path
 import pandas as pd
-import jax; jax.config.update('jax_platform_name', 'cpu')
+import jax;
+
+jax.config.update('jax_platform_name', 'cpu')
 import itertools as it
 import matplotlib.pyplot as plt
 
@@ -76,34 +78,32 @@ pc_charge_models = [
 def make_ff_object(x):
     """ " make the ff object from the json list"""
     if x:
+        print(x)
         structure = x[1]
         elec = x[2]
         fit = x[3]
-        pair_dists = None
+        target = x[4]
         #  which structure
         if structure == "dcm":
             #  load the pickle file
             pkl_file = PKL_PATH / "20230913_dcm.pkl.pkl"
             pkl_files.append(pkl_file)
-
         elif structure == "water_cluster":
             #  load the pickle files
             pkl_file = PKL_PATH / "20230823_water_clusters.pkl.pkl"
             pkl_files.append(pkl_file)
-            pair_dists = next(read_from_pickle(PKL_PATH / "water_pc_pairs.pkl"))
-
         else:
             raise ValueError("Invalid structure")
 
         pkl_file = read_from_pickle(pkl_file)
         data = next(pkl_file)
 
-        structs, pdbs  = get_structures(structure,
-                                        pdbpath= PDB_PATH / structure)
+        structs, _ = get_structures(structure,
+                                    pdbpath=PDB_PATH / structure)
 
         struct_data = structs[0]
 
-         # set the 2body terms
+        # set the 2body terms
         print("setting 2body")
         for _ in structs:
             _.set_2body()
@@ -137,7 +137,7 @@ def make_ff_object(x):
         else:
             raise ValueError("Invalid fit type")
 
-        print("bounds", BOUNDS)
+        # print("bounds", BOUNDS)
         #  make the ff object
         ff = FF(
             data,
@@ -146,6 +146,7 @@ def make_ff_object(x):
             BOUNDS,
             struct_data,
             elec=elec,
+            intE=target,
         )
         #  set the targets
         ff.num_segments = len(ff.data[elec].index)
@@ -156,19 +157,19 @@ def make_ff_object(x):
         flateval, sigma, episolon = ff.eval_jax_flat(ff.p)
         resids = outes - flateval
         # debugging
-        print(ff.p)
-        print("out es", outes)
-        print("es shape", ff.out_es.shape)
-        print("flat eval", flateval)
-        print("flat eval shape", flateval.shape)
-        print("dists", ff.out_dists)
-        print("dists shape", ff.out_dists.shape)
-
-        print(sigma)
-        print(episolon)
+        # print(ff.p)
+        # print("out es", outes)
+        # print("es shape", ff.out_es.shape)
+        # print("flat eval", flateval)
+        # print("flat eval shape", flateval.shape)
+        # print("dists", ff.out_dists)
+        # print("dists shape", ff.out_dists.shape)
+        #
+        # print(sigma)
+        # print(episolon)
         ff.debug_df["sigmas2"] = sigma
         ff.debug_df["epsilons2"] = episolon
-        print(ff.debug_df["sigmas"], ff.debug_df["epsilons"])
+        # print(ff.debug_df["sigmas"], ff.debug_df["epsilons"])
 
         #  make the dataframe
         df_test = pd.DataFrame(
@@ -184,7 +185,7 @@ def make_ff_object(x):
         ff.debug_df["jaxflat"] = flateval
         print(ff.debug_df)
         #  pickle the ff object
-        pickle_output(ff, f"{elec}_{structure}_{fit}")
+        pickle_output(ff, f"{elec}_{structure}_{fit}_{target}")
         return ff
 
 
@@ -192,10 +193,21 @@ def ff_fit(x, n=100):
     structure = x[1]
     elec = x[2]
     fit = x[3]
-    ffpkl = f"{elec}_{structure}_{fit}"
+    target = x[4]
+    ffpkl = f"{elec}_{structure}_{fit}_{target}"
     #  load_ff
-    ff = read_from_pickle(PKL_PATH / (ffpkl + ".pkl"))
-    ff = next(ff)
+    # if already fitted
+    if (PKL_PATH / (ffpkl + "_fitted.pkl")).exists():
+        ff = read_from_pickle(PKL_PATH / (ffpkl + "_fitted.pkl"))
+        ff = next(ff)
+    # if not fitted
+    elif (PKL_PATH / (ffpkl + ".pkl")).exists():
+        ff = read_from_pickle(PKL_PATH / (ffpkl + ".pkl"))
+        ff = next(ff)
+    # if not made
+    else:
+        ff = make_ff_object(x)
+
     print("FF:", ff)
     print("bounds:", ff.bounds)
     print("elec:", ff.elec)
@@ -232,6 +244,7 @@ def ff_fit(x, n=100):
         }
     ).dropna()  # drop the nans
     #  plot the results
+    df_test.to_csv(PKL_PATH / (ffpkl + "_targets.csv"))
     residuals_plot(df_test, ffpkl + "_targets")
     print(df_test.describe())
     plt.clf()
@@ -244,6 +257,7 @@ def ff_fit(x, n=100):
         }
     ).dropna()  # drop the nans
     #  plot the results
+    df_test.to_csv(PKL_PATH / (ffpkl + "_elec.csv"))
     residuals_plot(df_test, ffpkl + "_elec_jax")
     print(df_test.describe())
     plt.clf()
@@ -254,6 +268,7 @@ def ff_fit(x, n=100):
 if __name__ == "__main__":
     jobs = loop()
     import argparse
+
     #  argument for which experiment to run
     parser = argparse.ArgumentParser()
     parser.add_argument("--x", "-x", type=int, help="Experiment number")

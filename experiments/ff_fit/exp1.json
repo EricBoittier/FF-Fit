@@ -3,7 +3,6 @@
     "pbe0dz"
   ],
   "structure": [
-    "dcm",
     "water_cluster"
   ],
   "charge": [
@@ -11,9 +10,16 @@
     "ELECci",
     "ELECpol",
     "ELECm",
-    "ELECp"
+    "ELECmpol",
+    "ELECp",
+    "ELECppol",
+    "ELECk",
+    "ELECkpol"
   ],
   "ff": [
     "lj"
+  ],
+  "target": [
+    "MMintE"
   ]
 }

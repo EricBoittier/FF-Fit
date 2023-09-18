@@ -16,10 +16,10 @@ warnings.filterwarnings("ignore", module="matplotlib\..*")
 
 
 def set_style(no_latex=False):
-    if no_latex:
+    if True:
         plt.style.use(["science", "no-latex"])
-    else:
-        plt.style.use(["science", "bright"])
+    # else:
+    #     plt.style.use(["science", "bright"])
 
     rcParams["figure.figsize"] = 8, 6
     rcParams["axes.labelsize"] = 18
@@ -37,9 +37,24 @@ def set_style(no_latex=False):
     rcParams["ytick.major.width"] = 2
     rcParams["xtick.minor.width"] = 2
     rcParams["ytick.minor.width"] = 2
+    rcParams["xtick.major.size"] = 8
+    rcParams["ytick.major.size"] = 8
+    rcParams["xtick.minor.size"] = 4
+    rcParams["ytick.minor.size"] = 4
     # set colors
     rcParams["axes.prop_cycle"] = plt.cycler(color=plt.cm.Set1.colors)
     rcParams['font.family'] = 'sans-serif'
+
+    # import pylab as plt
+    # params = {'text.usetex': False, 'mathtext.fontset': 'stixsans'}
+    # plt.rcParams.update(params)
+    import matplotlib as mpl
+    mpl.rcParams['text.usetex'] = False
+    # mpl.rcParams['text.latex.preamble'] = [r'\usepackage[cm]{sfmath}']
+    # mpl.rcParams['font.family'] = 'sans-serif'
+    # mpl.rcParams['font.sans-serif'] = 'cm'
+
+
 
 
 def save_fig(fig, filename, path=None) -> Path:
@@ -82,9 +97,11 @@ def patchwork_grid(axes):
         cols = sqrt_n
     else:
         cols = sqrt_n + 1
+
     row_axes = [pw.stack(axes[i : i + cols], operator="|", margin=0.2)
                 for i in range(0, n, cols)]
     fig = pw.stack(row_axes, operator="/", margin=0.2)
+
     return fig
 
 
