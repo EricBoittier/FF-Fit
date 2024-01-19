@@ -43,7 +43,8 @@ name='{{NAME}}.molden'
 !  save xyz file
 TEXT,$name
 PUT,molden,$name,NEW
-
+!force
+!expec,type=relax,dm
 """
 )
 

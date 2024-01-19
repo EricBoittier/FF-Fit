@@ -11,9 +11,15 @@ from ff_energy.logs.logging import logger
 
 sysname_to_res = {
     "water_cluster": "LIG",
+    "water_dimer": "LIG",
+    "water_dimer2": "LIG",
     "dcm": "DCM",
     "ions_ext": "LIG",
     "dcmdimerscan": "DCM",
+    "water_test": "LIG",
+    "dcm_test": "DCM",
+    "cla_test": "LIG",
+    "pot_test": "LIG",
 }
 
 

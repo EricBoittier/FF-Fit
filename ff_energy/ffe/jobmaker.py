@@ -26,6 +26,7 @@ def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
     for p in pdbs:
         s_path = PDBPATH / p
         s = Structure(s_path, _atom_types=atom_types, system_name=system_name)
+        _ = s.get_pdb()
         s.set_2body()
         structures.append(s)
 
@@ -211,13 +212,19 @@ class JobMaker:
 
     def make_esp_view(self, p, s, args):
         homedir, charm_path = args
-        ID = p.split(".")[0]
+        if isinstance(Path, p):
+            ID = p.stem
+        else:
+            ID = p.split(".")[0]
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_esp_view(charmm_path=charm_path.format(ID))
 
     def make_coloumb_job(self, p, s, args):
         homedir, mp = args
-        ID = p.split(".")[0]
+        if isinstance(p, Path):
+            ID = p.stem
+        else:
+            ID = p.split(".")[0]
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_coloumb_interactions(monomers_path=Path(mp.format(ID)))
 

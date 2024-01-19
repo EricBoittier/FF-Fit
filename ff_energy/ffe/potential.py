@@ -9,7 +9,7 @@ import jax.numpy as jnp
 import jax.numpy as np
 
 """
-SimTK_COULOMB_CONSTANT_IN_KCAL_ANGSTROM   3.32063711e+2L
+SimTK_COULOMB_CONSTANT_IN_KCAL_ANGSTROM   2L
 Coulomb's constant kappa = 1/(4*pi*e0) in kcal-Angstroms/e^2.
 """
 coloumns_constant = 3.32063711e2
@@ -183,7 +183,7 @@ def LJRUN(dists, indexs, groups, parms, num_segments):
 
 @partial(jit, static_argnames=["num_segments"])
 def DERUN(dists, indexs, groups, parms, num_segments):
-    DEE = DEflat(dists, indexs, parms)
+    DEE,_,_ = DEflat(dists, indexs, parms)
     OUT = jax.ops.segment_sum(DEE, groups, num_segments=num_segments)
     return OUT
 
@@ -236,23 +236,54 @@ def LJflat(dists, indexs, parms):
     return LJE, sigma, eps
 
 
+# @jit
+# def DEflat(dists, indexs, parms):
+#     pparms = jnp.array(
+#         [
+#             2 * parms[0],
+#             parms[0] + parms[1],
+#             2 * parms[1],
+#             parms[2],
+#             jnp.sqrt((parms[2] * parms[3])),
+#             parms[3],
+#         ]
+#     )
+#     sigma = jnp.take(pparms, indexs, unique_indices=False)
+#     eps = jnp.take(pparms, indexs + 3, unique_indices=False)
+#     DEE = de(sigma, eps, parms[4], parms[5], dists)
+#     return DEE
+
 @jit
 def DEflat(dists, indexs, parms):
-    pparms = jnp.array(
-        [
-            2 * parms[0],
-            parms[0] + parms[1],
-            2 * parms[1],
-            parms[2],
-            jnp.sqrt((parms[2] * parms[3])),
-            parms[3],
-        ]
-    )
-    sigma = jnp.take(pparms, indexs, unique_indices=False)
-    eps = jnp.take(pparms, indexs + 3, unique_indices=False)
-    DEE = de(sigma, eps, parms[4], parms[5], dists)
-    return DEE
-
+    # jax.debug.print("{p}", p=parms)
+    n_parms = len(parms) - 2
+    n_types = n_parms // 2
+    n_comb = n_types * (n_types + 1)
+    #  above omits (ans/2) since the array is twice as long
+    comb_parms = jnp.zeros(n_comb, dtype=jnp.float64)
+    count = 0
+    for a in range(n_types):
+        for b in range(n_types):
+            # jax.debug.print("count: {c} a: {a} b: {b}", a=a, b=b, c=count)
+            if a <= b:
+                # jax.debug.print("+{d} +{e}", d=n_types, e=n_comb // 2)
+                comb_parms = comb_parms.at[count].set(
+                    parms[a] + parms[b]
+                )
+                comb_parms = comb_parms.at[count + (n_comb // 2)].set(
+                    jnp.sqrt(
+                        parms[a + n_types] * parms[b + n_types]
+                    )
+                )
+                # jax.debug.print("comb_parms: {c}", c=comb_parms)
+                count += 1
+    sigma = jnp.take(comb_parms, indexs,
+                     unique_indices=False)
+    eps = jnp.take(comb_parms, indexs + (n_comb // 2),
+                   unique_indices=False)
+    # #  run the flat function
+    DEE = de(sigma, eps, parms[-2], parms[-1], dists)
+    return DEE, sigma, eps
 
 @partial(jit, static_argnames=["num_segments"])
 def ecol_seg(outE, dcm_dists_labels, num_segments):
@@ -275,7 +306,18 @@ def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
 
 @partial(jit, static_argnames=["num_segments"])
 def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments):
-    ERROR = DERUN(dists, indexs, groups, parms, num_segments=num_segments) - target
+    # jax.debug.print("indexs {x}", x=indexs.shape)
+    # # jax.debug.print(" {x}", x=indexs)
+    # jax.debug.print("groups {x}", x=groups.shape)
+    # # jax.debug.print(" {x}", x=groups)
+    RES = DERUN(dists, indexs, groups, parms, num_segments=num_segments)
+    # assert RES.shape == target.shape
+    ERROR = RES - target
+    LOSS = jnp.mean(ERROR ** 2)  # TODO:  dangerous to use nanmean here?
+    # jax.debug.print("LOSS {x}", x=LOSS)
+    return LOSS
+    
+"""ERROR = DERUN(dists, indexs, groups, parms, num_segments=num_segments) - target
     return jnp.mean(ERROR ** 2)
 
 
@@ -283,7 +325,7 @@ def DERUN_LOSS(dists, indexs, groups, parms, target, num_segments):
 # def CHGPEN_LOSS(dists, indexs, groups, parms, target, num_segments):
 #     ERROR = CHGPENRUN(dists, indexs, groups, parms, num_segments=num_segments) - target
 #     return jnp.mean(ERROR**2)
-
+"""
 
 @partial(jit, static_argnames=["num_segments"])
 def LJRUN_LOSS_GRAD(dists, indexs, groups, parms, target, num_segments):

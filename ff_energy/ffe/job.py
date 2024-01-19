@@ -314,6 +314,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 ] = slurm_path
 
     def generate_cluster(self):
+        print(self.cluster_path)
         self.make_dir(self.cluster_path)
         XYZSTR = self.structure.get_cluster_xyz()
         CHARGE = self.structure.get_cluster_charge()
@@ -420,7 +421,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         __ = self.name.split('/')[-1]
         print(__)
         monomers_output = [
-            _ for _ in monomers_path.glob(f"{__}*out") if _.is_file()
+            _ for _ in monomers_path.glob(f"*out") if not str(_).startswith("slurm")
         ]
         monomers_data = {}
         monomers_df = None
@@ -433,6 +434,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 monomers_data[k] = {"m_ENERGY": float(lines[-3].split()[0]), "KEY": k}
                 monomers_df = pd.DataFrame(monomers_data).T
             except Exception as e:
+                print(e)
                 monomers_df = None
                 failed.append(k)
         n_fails = len(failed)
@@ -465,7 +467,7 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
         __ = self.name.split('/')[-1]
         print(cluster_path)
         cluster_output = [
-            _ for _ in cluster_path.glob(f"{__}*out") if _.is_file()
+            _ for _ in cluster_path.glob(f"*out") if not str(_).startswith("slurm")
         ]
         print("CO", cluster_output)
         cluster_data = {}

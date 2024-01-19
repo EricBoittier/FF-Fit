@@ -30,14 +30,15 @@ def valid_atom_key_pairs(atom_keys):
 
 
 atom_keys = ["OG311", "CG331", "HGP1", "HGA3", "OT", "HT",
-             "C", "H", "CL"]
+             "C", "H", "CL", "CLA", "POT"]
+
 atom_keys.sort()
 
 atom_key_pairs = valid_atom_key_pairs(atom_keys)
 for i, _ in enumerate(atom_key_pairs):
     print(i, _)
 
-atom_name_fix = {"CL": "Cl", "PO": "K"}
+atom_name_fix = {"CL": "Cl", "PO": "K", "CLA": "Cl", "POT": "K", "Pot": "K"}
 
 
 def get_atom_names(atoms):
@@ -249,79 +250,61 @@ class Structure:
         for res_a, res_b in self.pairs:
             for i, akp in enumerate(atom_key_pairs):
                 a, b = akp
-                #  exclude any missing keys
-                if not np.all(self.chm_typ_mask[a]) \
-                        and not np.all(self.chm_typ_mask[b]):
+                cond1 = a in self.chm_typ_mask.keys()
+                cond2 = b in self.chm_typ_mask.keys()
+                if cond1 and cond2:
+                    #  exclude any missing keys
+                    if not np.all(self.chm_typ_mask[a]) \
+                            and not np.all(self.chm_typ_mask[b]):
 
-                    #  get the mask for the atom types, residues
-                    mask_a = self.chm_typ_mask[a]
-                    res_mask_a = self.res_mask[res_a]
-                    mask_b = self.chm_typ_mask[b]
-                    res_mask_b = self.res_mask[res_b]
-                    xyza = self.xyzs[mask_a * res_mask_a]
-                    xyzb = self.xyzs[mask_b * res_mask_b]
-                    # xyza = np.repeat(xyza, xyza.shape[0], axis=0)
-                    # xyzb = np.repeat(xyzb_, xyzb_.shape[0], axis=0)
+                        print(a, b)
 
-                    #  case for same atom types
-                    if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                        _d = np.linalg.norm(xyza - xyzb, axis=1)
-                        # print("DM", DM(xyza, xyzb))
-                        # print("...", xyza.T, xyzb.T)
-                        # print("xyza", xyza)
-                        # print("xyzb", xyzb)
-                        # print(a, b, res_a, res_b, _d)
-
-                        _d = DM(xyza, xyzb)#.flatten()
-                        # print("DM", _d)
-
-                        self.distances_pairs[i][(res_a, res_b)] = []
-
-                        self.distances[i].append(_d)
-                        self.distances_pairs[i][(res_a, res_b)].append(_d)
-
-                    # #  get the mask for the atom types, residues
-                    # mask_a = self.chm_typ_mask[a]
-                    # res_mask_a = self.res_mask[res_a]
-                    # mask_b = self.chm_typ_mask[b]
-                    # res_mask_b = self.res_mask[res_b]
-                    # xyza_ = self.xyzs[mask_a * res_mask_a]
-                    # xyzb_ = self.xyzs[mask_b * res_mask_b]
-                    # xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
-                    # xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
-                    #
-                    # #  case for same atom types
-                    # if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                    #     _d = np.linalg.norm(xyza - xyzb, axis=1)
-                    #     print("XX..", xyza.T, xyzb.T)
-                    #     print("XX..", xyza, xyzb)
-                    #     print(a, b, res_a, res_b, _d)
-                    #     self.distances[i].append(_d)
-                    #     self.distances_pairs[i][(res_a, res_b)] = []
-                    #     self.distances_pairs[i][(res_a, res_b)].append(_d)
-
-                    # case for different atom types
-                    if a != b:
-                        # b, a = akp
-                        res_b, res_a = res_a, res_b
+                        #  get the mask for the atom types, residues
                         mask_a = self.chm_typ_mask[a]
                         res_mask_a = self.res_mask[res_a]
                         mask_b = self.chm_typ_mask[b]
                         res_mask_b = self.res_mask[res_b]
                         xyza = self.xyzs[mask_a * res_mask_a]
                         xyzb = self.xyzs[mask_b * res_mask_b]
-                        # xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
-                        # xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+                        # xyza = np.repeat(xyza, xyza.shape[0], axis=0)
+                        # xyzb = np.repeat(xyzb_, xyzb_.shape[0], axis=0)
 
+                        #  case for same atom types
                         if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                            # _d = _sqrt_einsum_T(xyza.T, xyzb.T)
-                            # _d = np.linalg.norm((xyza - xyzb), axis=1)
-
+                            print(".")
+                            # _d = np.linalg.norm(xyza - xyzb, axis=1)
                             _d = DM(xyza, xyzb)#.flatten()
-                            # print("DM", _d)
-                            # print(a, b, res_a, res_b, _d)
+                            self.distances_pairs[i][(res_a, res_b)] = []
+
                             self.distances[i].append(_d)
-                            self.distances_pairs[i][(res_b, res_a)].append(_d)
+                            self.distances_pairs[i][(res_a, res_b)].append(_d)
+
+
+                        # case for different atom types
+                        if a != b:
+                            # b, a = akp
+                            res_b, res_a = res_a, res_b
+                            mask_a = self.chm_typ_mask[a]
+                            res_mask_a = self.res_mask[res_a]
+                            mask_b = self.chm_typ_mask[b]
+                            res_mask_b = self.res_mask[res_b]
+                            xyza = self.xyzs[mask_a * res_mask_a]
+                            xyzb = self.xyzs[mask_b * res_mask_b]
+                            # xyza = np.repeat(xyza_, xyzb_.shape[0], axis=0)
+                            # xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
+
+                            if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
+                                print(".")
+                                # _d = _sqrt_einsum_T(xyza.T, xyzb.T)
+                                # _d = np.linalg.norm((xyza - xyzb), axis=1)
+
+                                _d = DM(xyza, xyzb)#.flatten()
+                                # print("DM", _d)
+                                # print(a, b, res_a, res_b, _d)
+                                self.distances[i].append(_d)
+                                if (res_b, res_a) not in self.distances_pairs[i].keys():
+                                    self.distances_pairs[i][(res_b, res_a)] = []
+                                self.distances_pairs[i][(res_b, res_a)].append(_d)
 
     def get_monomers(self):
         """returns list of monomers"""
@@ -355,7 +338,10 @@ class Structure:
         xyz_string = ""
         for i, atom in enumerate(atomnames):
             #  TODO: general way of getting around elements with two letters
-            a = atom[:2] if (atom.startswith("Cl")) else atom[:1]
+            a = atom[:2] if (atom.startswith("CL")) else atom[:1]
+            #  TODO: avoid this hack
+            if a == "P":
+                a = "K"
             xyz_string += "{} {:8.3f} {:8.3f} {:8.3f}\n".format(
                 a, xyz[i, 0], xyz[i, 1], xyz[i, 2]
             )
@@ -377,48 +363,72 @@ REMARK
 
         res_ids_ = []
 
-
-
         for i, line in enumerate(self.atoms):
             AN = self.atomnames[i]
             RESNAME = self.restypes[i]
-
-
-
 
             print(i, RESNAME)
 
             if AN == "Cl":
                 print(i, line)
-                if self.atomnames[i - 1] == "Cl":
+                if self.atomnames[i - 1] == "CL1":
                     AN = "CL2"
+                    self.atomnames[i] = "CL2"
                 else:
                     AN = "CL1"
+                    self.atomnames[i] = "CL1"
+
                 print(self.atomnames[i], AN)
 
             if RESNAME == "CLA":
                 AN = "CLA"
-
+                self.atomnames[i] = "CLA"
+            if RESNAME == "CLA":
+                AN = "CLA"
+                self.atomnames[i] = "CLA"
             if RESNAME == "DCM" and AN.__contains__("H"):
-
                 if self.atomnames[i - 1].__contains__("H"):
                     print("H2")
                     AN = "H2"
+                    self.atomnames[i] = "H" #"H2"
                 else:
                     AN = "H1"
+                    self.atomnames[i] = "H" #"H1"
                     print("H1")
 
+            if RESNAME == "TIP3":
+                if self.atomnames[i].startswith("H"):
+                    self.atomnames[i] = "HT"
+                    if i == 1 or i == 4:
+                        AN = "H1"
+                    else:
+                        AN = "H2"
+                    #  TODO: check if this is correct for ions, etc.
+                    if (i + 1) % 3:
+                        AN = "H1"
+                    else:
+                        AN = "H2"
+
+                if self.atomnames[i].startswith("O"):
+                    self.atomnames[i] = "OT"
+                    AN = "OH2"
 
             if self.resids[i] != last_resid:
                 res_id_count += 1
                 last_resid = self.resids[i]
+
+            RESTYPE = self.restypes[i].upper()
+            if AN == "K":
+                AN = "POT"
+                self.atomnames[i] = "POT"
+
 
 
             _1 = "ATOM"
             _2 = i + 1
             _3 = AN.upper()
             _4 = ""
-            _5 = self.restypes[i].upper()
+            _5 = RESTYPE
             _6 = ""
             _7 = res_id_count  # self.resids[i]
             _8 = ""

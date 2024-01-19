@@ -3,23 +3,22 @@
     "pbe0dz"
   ],
   "structure": [
+    "ions_ext",
+    "dcm",
     "water_cluster"
   ],
   "charge": [
-    "ELECnull",
     "ELECci",
     "ELECpol",
     "ELECm",
-    "ELECmpol",
-    "ELECp",
-    "ELECppol",
-    "ELECk",
-    "ELECkpol"
+    "ELECmpol"
+
   ],
   "ff": [
+    "de",
     "lj"
   ],
   "target": [
-    "MMintE"
+    "intE"
   ]
 }

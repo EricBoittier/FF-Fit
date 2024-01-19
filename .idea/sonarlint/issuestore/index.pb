@@ -1,52 +1,20 @@
 
 U
 %ff_energy/ffe/charmm_files/pbe0_dz.pc,7/2/72808f26c0f525059d013b780bb9b3f05d1750a7
-X
-(configs/pbe0dz-water_cluster-tip3.config,b/f/bf90d370a3d768325fc7952609a78d4ea72ffe67
 W
 'configs/hfdz-methanol_cluster-pc.config,f/2/f22b14993bc7a60983348139c60190dbe30d3b96
 _
 /notebooks/pycharmm/examples/Script_fad_water.py,7/3/731c5e72ab8685a538c6b731309038e05101aec5
-\
-,ff_energy/pycharmm_runner/output/dcm_box.psf,8/4/84d631f3799844defce0fed3a2f066e01e90a6f6
-a
-1ff_energy/pycharmm_runner/output/dcm_box_heat.psf,2/3/238834402ff53e0f4ae874ac954222ad1a48b9c1
-\
-,ff_energy/pycharmm_runner/output/dcm_box.pdb,6/3/630371d0af51725b192f32fa1fb062380b3c9bab
-Y
-)ff_energy/pycharmm_runner/output/prod.res,a/a/aa1fa97e67247c91123c1eeef856577285b16760
-a
-1ff_energy/pycharmm_runner/output/dcm_box_heat.pdb,9/c/9c6e2ea064132d2849ffa5ca8b18056b89cfedb8
-Y
-)ff_energy/pycharmm_runner/output/heat.res,6/b/6b13660d3cae0a3ef0ecded5117df68cd28ab7f3
 Q
 !ff_energy/pycharmm_runner/fort.98,e/d/eddb920d2765b7806159b19596c6c892aa189182
 Q
-!ff_energy/pycharmm_runner/fort.99,8/4/8414a55e6a4cfea5651394be7486aaf29c3c8aa3
-a
-1ff_energy/pycharmm_runner/output/dcm_box_prod.pdb,2/2/2222cb64cd3764e1e7d19d7034f69cf99d8e2fd2
-b
-2ff_energy/pycharmm_runner/output/dcm_box_equil.pdb,9/0/90d340a8a28e81378874e39d9a40513791df14e6
-a
-1ff_energy/pycharmm_runner/output/dcm_box_prod.psf,c/e/ced673daf1d103971741f5b89fc9588abfaf54a4
-b
-2ff_energy/pycharmm_runner/output/dcm_box_equil.psf,3/e/3efef39e307beeaabdbe3d4e85c744d46150c65e
-Q
 !notebooks/sampling/sampling.ipynb,2/7/27072e82e752740e7afc43870472852490691063
-Z
-*ff_energy/pycharmm_runner/output/equil.res,5/3/53a05b1034a891e1eebe86ba0786627e23de88d9
-S
-#ff_energy/pycharmm_runner/README.md,9/2/923c40f5813526b4b3b34380f4bc3099efd1259e
 U
 %notebooks/pycharmm/dcm/dcm_toppar.str,e/f/ef7a9ddaf55b31facfe0b087709f2754efd15236
 K
 ff_energy/packmol/input.inp,3/2/32dcc2a91178e1d1a2ebd65e9f4ad713aaa98908
 V
 &ff_energy/packmol/files/dcm_toppar.str,d/6/d674b90781c72e45812043ca3cf752ea32e75351
-\
-,ff_energy/pycharmm_runner/source/dcm/dcm.dcm,6/8/68fa6e0fa1af1ec0ea58398611427f0226460491
-L
-ff_energy/utils/sim_utils.py,3/1/31344515f511d4aff7a051f6cf7f94a685cf7e47
 M
 ff_energy/utils/json_utils.py,f/4/f45bbd41c57a0d2dda99257c12e15263c9ac5ac1
 H
@@ -458,8 +426,6 @@ N
 pdbs/ions_ext/37_7_POT_6_1.pdb,2/f/2f7e5abb12104e4f4cedbf6e33abe68aad4c7798
 P
  pdbs/ions_ext/37_11_CLA_13_1.pdb,8/9/8957f18c5bf8a06c7a716d12149acdd1fb380af9
-N
-pdbs/ions_ext/37_1_POT_0_1.pdb,6/e/6ef419a5c07df36f195539bd57ba917ad63539f6
 P
  pdbs/ions_ext/40_16_CLA_16_1.pdb,1/b/1bd779761837c4006b962f9844315c80a62be9fc
 P
@@ -700,8 +666,6 @@ Q
 !configs/pbe0dz-ions_ext-pc.config,4/d/4d4a5dd7c435393d5def9501076a74e153066753
 I
 ff_energy/sampling/nms.py,2/7/2756d0bec92a809ee178cb84e466439f3103627f
-Q
-!ff_energy/sampling/MD_sampling.py,6/f/6f5d716a67564317583fe57dbd04dedec036c250
 W
 'ff_energy/projections/dimensionality.py,e/3/e3d1b72d4aafe530389f21f9d03b4ad78bac9027
 Q
@@ -712,36 +676,22 @@ L
 ff_energy/pydcm/water_opt.py,4/f/4f48b80df6e61df65f79091a698881bbb324fa45
 N
 ff_energy/pydcm/data_helper.py,a/d/ad8390b714b1c919e284cf7585c6071b30202694
-Y
-)ff_energy/pycharmm_runner/nbonds_dicts.py,d/0/d0f9024b483140b71bb1af43ac17167ea7517294
 K
 ff_energy/pydcm/plotting.py,e/9/e9cdace93f37f15f4b73272aedc9200467cbc5bc
 P
  ff_energy/latex_writer/format.py,6/a/6a837a0c220255eb63f219a8bb6fedaadd6ab8db
-X
-(ff_energy/pycharmm_runner/input_dicts.py,c/4/c4de4ab9ccd2e8d68248c912dcfb0dc7fc1cfe34
 O
 ff_energy/plotting/ffe_plots.py,3/a/3a7f70183a96462583f174fd57de98970f46b5f8
-P
- ff_energy/pycharmm_runner/pyc.py,0/0/004eb3d2be1ce440454019ec7ab3e44215e79c4d
-W
-'ff_energy/pycharmm_runner/mini_dicts.py,3/4/34f22cc70a5d6aa4004b3bfd582466717d0e39a5
 G
 ff_energy/pydcm/scan.py,4/4/44bb1e0da091f3758fea58902e44a5cf2af2ccd3
 O
 ff_energy/pydcm/methanol_opt.py,7/f/7f6de64b80add4db49ae26ecb893c01d3a32e9a0
 [
 +ff_energy/pydcm/permutational_invariance.py,3/7/3786a5f5121e6b8dacdeeb88f8b0133c78fe1024
-N
-ff_energy/packmol/densities.py,a/b/ab9509ea014e6c9a86848a996ffe747679ee6d1f
 W
 'ff_energy/pycharmm_runner/ase_helper.py,e/c/ec1ac2a65fb100dc5e7121f1c1fcb048ae486ae6
 b
 2ff_energy/projections/tests/test_describe_utils.py,0/d/0dcc0f3f5c0d3a147002b453530ad65e6c07a937
-O
-ff_energy/simulations/dipole.py,a/a/aadfa41cf0537ee9c8203f61d53ab951023d918b
-N
-ff_energy/simulations/plots.py,6/f/6f673ea67645ae080de4cbd77acc321198000b44
 L
 ff_energy/simulations/cli.py,c/6/c61a294b97362091e5b9fbc1a46e2b640d11b1ce
 P
@@ -750,14 +700,10 @@ O
 ff_energy/simulations/charmm.py,8/7/87d580b3a767aa582abd261f9beed03666c254e0
 Q
 !ff_energy/simulations/plot_exp.py,2/4/241318bb41b06c255031b085f8850894c8826965
-X
-(ff_energy/simulations/parametrization.py,5/f/5fba3acc070a3a554349feab5694bca1c9ea58b6
 ^
 .ff_energy/uncertainty/latex_table_generator.py,5/8/58578bc16381f3ccc14d6bb25b0913f3cadec40a
 N
 ff_energy/uncertainty/bayes.py,c/8/c877a7b521fb1b50fe8ef116ff9d7015f3a91bc0
-L
-ff_energy/simulations/sim.py,b/e/beb6fd29de7e2f749cf3a96c067eb8f79a683f44
 S
 #ff_energy/uncertainty/dataloader.py,9/1/91e4c7be3637a2407d41f5e5a680b5a5457900e0
 R
@@ -780,10 +726,6 @@ P
  ff_energy/uncertainty/plotter.py,a/a/aa4e7f82468f9322720a96b288228592449e436a
 _
 /ff_energy/uncertainty/uncertainty_quantifier.py,c/7/c7faa33d2db1001812ffb02c33cd9e5733c708a3
-W
-'ff_energy/pycharmm_runner/dyna_dicts.py,3/0/30093eedd162231d5246783cefc1038fd283dd23
-V
-&ff_energy/projections/dscribe_utils.py,8/9/891b085342936639222fdec31cc74c43787beed0
 a
 1latex_reports/Report_PBE0dz/acs-Report_PBE0dz.bib,a/b/ab156d35866e6acc859795fff2144d601e2819a8
 _
@@ -796,38 +738,6 @@ I
 notebooks/povray/test.ini,0/d/0dbeb6ef3311d3c22196000b08088cd6944554aa
 Q
 !ff_energy/projections/plotting.py,e/b/ebc88c8ed4d9b0354fac78da89092929036374fe
-P
- pdbs/dcm/100_646_DCM_76_1117.pdb,e/0/e08f5c1f64297cbbcd21b554a2938923f76dab04
-Q
-!pdbs/dcm/100_2625_DCM_305_710.pdb,4/2/42c2daeda5f004b49a57b023d9d5d912e182f05a
-Q
-!pdbs/dcm/100_3502_DCM_408_572.pdb,6/f/6fba10718baaa7d1583134df980346153e70242a
-Q
-!pdbs/dcm/100_3451_DCM_402_111.pdb,e/a/ea690b4b84076408b281055982c8d09edb955b81
-Q
-!pdbs/dcm/100_3627_DCM_423_765.pdb,2/c/2c3d4691d2d8654fc68b5c09dc3a982be67540e8
-Q
-!pdbs/dcm/100_3649_DCM_425_245.pdb,7/3/73976c2aad3637c95c76eba6f5ad9ac0220afcd9
-O
-pdbs/dcm/100_1862_DCM_217_9.pdb,e/2/e23682453b4b44b646e3b79a92975bd3320407eb
-Q
-!pdbs/dcm/100_2606_DCM_304_962.pdb,c/6/c6f694df407be4a7e84dc2861492e8cc7547ca67
-Q
-!pdbs/dcm/100_3396_DCM_396_527.pdb,3/9/396210ea0d3945eb103179da477ce7281b506535
-R
-"pdbs/dcm/100_2990_DCM_349_1039.pdb,b/e/be9fd9b53c261b74cd17a2b052fa7b5841d564aa
-O
-pdbs/dcm/100_392_DCM_46_962.pdb,1/f/1f897b0566b09520d3bd6b0f2f48fa792042abb0
-Q
-!pdbs/dcm/100_2614_DCM_304_648.pdb,9/9/9913453305b16de080ac31cf74a302ac0a01ddce
-Q
-!pdbs/dcm/100_1774_DCM_207_229.pdb,e/3/e3f59e3e732e1e7b354b6040cb20980fb5a5eff3
-P
- pdbs/dcm/100_2760_DCM_321_82.pdb,b/1/b1bed4bd2e7a473abe025a571d36376cda737291
-R
-"pdbs/dcm/100_3730_DCM_434_1168.pdb,f/6/f6ca3076f3afa6a2d9ac32a5d13a820c5bb499dc
-Q
-!pdbs/dcm/100_4193_DCM_489_872.pdb,8/0/80fe2d4936a025a1bfe875066bed55fbed4c7943
 S
 #ff_energy/ffe/charmm_files/test.dcm,3/3/333ba6777135635ec74340fa1eacf04e75187197
 ]
@@ -903,10 +813,6 @@ Q
 Q
 !pdbs/dcm/100_3638_dcm_424_264.pdb,0/d/0dafe95fbb5efcd30d711acb6da8adbc82216914
 Q
-!pdbs/dcm/100_3770_DCM_439_744.pdb,a/f/af53147e593618d47ca745c9e478c2cd3a3ba9ff
-Q
-!pdbs/dcm/100_2737_DCM_318_667.pdb,b/3/b319a24bfb50c8912e4b988509868a11035e3609
-Q
 !pdbs/dcm/100_3157_dcm_368_445.pdb,e/3/e3664ae51bda39db7fbf19198c6c7900ece2b668
 P
  pdbs/dcm/100_1987_dcm_232_14.pdb,1/8/18c5dcdf9a84b6bc0d12bf77ab41ff3e40d41b34
@@ -914,488 +820,250 @@ Q
 !pdbs/dcm/100_1053_dcm_123_948.pdb,2/4/248182ae17b5573fb5d73dfaeadeff53bb504394
 N
 pdbs/dcm/100_240_dcm_29_59.pdb,a/d/ada378413c3b5a150ed8ba4b23dab85e28d99d3d
-P
- pdbs/dcm/100_3352_DCM_391_80.pdb,e/3/e33005202268ba2cf4a74ec14b1ef3dbc3e03e26
 Q
 !pdbs/dcm/100_1566_dcm_183_989.pdb,d/b/db68cafc6761a7956588b1227d0649d149a1d488
 Q
-!pdbs/dcm/100_4247_DCM_495_215.pdb,b/e/be47c5fc2bea8bcea2a2defc552dca8327477cb4
-R
-"pdbs/dcm/100_2233_DCM_261_1095.pdb,1/8/186d405571dc677a3d3ecb53690c6d638dc2345d
-Q
 !pdbs/dcm/100_2829_dcm_329_137.pdb,4/5/45967a2b6d9154cd852c5209ef5bb2ce33cf20d9
-O
-pdbs/dcm/100_801_DCM_95_801.pdb,1/4/148cc6bb40beb91ec6508827c3d36f7b949280f3
 P
  pdbs/dcm/100_986_dcm_116_989.pdb,0/3/03b93f6dfdbaf0ef6e69886b183eb612bdd97055
-O
-pdbs/dcm/100_983_DCM_116_25.pdb,a/6/a65d1873e1b17737fe1a714917fdb705a3ad35bd
 Q
 !pdbs/dcm/100_3220_dcm_375_217.pdb,e/6/e67e9f5d6dc4c05c1ebcbdc493f60d8d62634ab6
 Q
-!pdbs/dcm/100_1399_DCM_164_559.pdb,d/f/dff78c1d7685bd6633cd1fa02093b964a34c83e3
-Q
 !pdbs/dcm/100_3397_dcm_396_556.pdb,8/c/8ce695469f1b3c42afd4ac369399bc1ec05fffe2
-P
- pdbs/dcm/100_961_DCM_113_122.pdb,d/2/d2028ca7be16e43b3786d3eae5989873095bb4ba
 Q
 !pdbs/dcm/100_3151_dcm_367_781.pdb,4/b/4be81b7c0f17235417f87bf59c0240f79a8bef7a
 Q
 !pdbs/dcm/100_1019_dcm_120_565.pdb,c/f/cf1d017371e19dd569136fb223f0319b8ca7bebd
-R
-"pdbs/dcm/100_1292_DCM_151_1088.pdb,d/c/dc6d27d2a643d9d3d3b38bb108720bdf104f7eb1
 M
 pdbs/dcm/100_34_dcm_4_167.pdb,e/c/ecb3f2a77cecd4ca3733b28ea36b43962dece668
-Q
-!pdbs/dcm/100_3638_DCM_424_264.pdb,d/2/d2928846220806077733ced046a7e1364d54e0b4
-R
-"pdbs/dcm/100_1167_DCM_136_1261.pdb,5/b/5b2fe2b3eea9c9ac29162e57c202d5cbc9398d0e
 R
 "pdbs/dcm/100_3572_dcm_416_1180.pdb,e/c/ecf9c9b8a6575be68afc6eb1d8a4747ccded3a57
 O
-pdbs/dcm/100_534_DCM_62_847.pdb,a/e/ae22f2f7e88331ce5492d42cc96094b1b3fe2fbc
-O
 pdbs/dcm/100_761_dcm_90_525.pdb,c/2/c27c7fcf2df6f499e1ffadb734c250abc787a523
-O
-pdbs/dcm/100_782_DCM_92_432.pdb,f/e/fe80bdf94b0c38058158e750cbf5e66947647882
 R
 "pdbs/dcm/100_2330_dcm_272_1084.pdb,1/c/1c45e799601eadda012e7d37dca925f3e26bc226
 Q
 !pdbs/dcm/100_2242_dcm_262_349.pdb,2/1/21c6c6e41afbe6b37da6c21a4501b6a5fc3bf696
 R
-"pdbs/dcm/100_2923_DCM_340_1137.pdb,9/a/9a4a510e6b9822021411ad8a20e8782a69d22fcb
-O
-pdbs/dcm/100_213_DCM_26_766.pdb,e/7/e7c443f561e283d3dbd6818cbaeb232ef869f2c2
-R
 "pdbs/dcm/100_3575_dcm_416_1033.pdb,8/5/85f274b8f89cfc6aeb1bd0ab28aa6e20212d1e49
 P
  pdbs/dcm/100_1100_dcm_129_15.pdb,6/9/698a96174b4cb9a0a3682d7df18bfb387c328c15
-R
-"pdbs/dcm/100_2097_DCM_245_1085.pdb,8/d/8dbb149ff86bda88ac18432025918eb76c35a43d
 Q
 !pdbs/dcm/100_1149_dcm_135_575.pdb,a/e/aef11944376fd687d3e47bd57eb8c65c1984abd2
-Q
-!pdbs/dcm/100_1311_DCM_153_256.pdb,d/e/deec7a574e9869a714ed14765843b34f6face6dd
-Q
-!pdbs/dcm/100_1024_DCM_121_932.pdb,c/e/ce800bb106dadaa7b339b16539db076034082738
 Q
 !pdbs/dcm/100_3531_dcm_411_991.pdb,f/4/f4844687bc060d1a2c68f873955b0152c8607601
 O
 pdbs/dcm/100_740_dcm_87_598.pdb,0/d/0d2517c7c84bd2828372854745bdb413b61d8dc7
 Q
-!pdbs/dcm/100_1675_DCM_196_519.pdb,5/8/589817027e22911fca198efb37192ef4af0c1026
-P
- pdbs/dcm/100_979_DCM_115_117.pdb,3/9/39a62770ecccc9aa6597a799a2c20bb64c43452f
-Q
 !pdbs/dcm/100_2018_dcm_236_465.pdb,9/7/97066d092644190f53973deab44dbb8236c62c8b
-Q
-!pdbs/dcm/100_1430_DCM_167_437.pdb,c/e/cef8d184f9d4469a3907fc1fe04b34e25e1d19da
 Q
 !pdbs/dcm/100_3236_dcm_377_983.pdb,e/5/e574803782b3350aef8158db40f13df5367ace8a
 Q
 !pdbs/dcm/100_2276_dcm_266_608.pdb,7/4/74c15b4bda641bd9e2e33ff2bd5f1f9dc0178f88
-Q
-!pdbs/dcm/100_2368_DCM_276_925.pdb,d/e/dee2fd2e9eb191db35fa3ecc5919cbf20b4058cb
-P
- pdbs/dcm/100_938_DCM_111_558.pdb,4/9/49a3af4ccb77990fee814b0078316ae34c544c70
 O
 pdbs/dcm/100_1862_dcm_217_9.pdb,5/2/5248f71e32ccb2b90c084c0f0db4262020871515
 Q
 !pdbs/dcm/100_1294_dcm_151_334.pdb,7/f/7f6de0578b38ecb5e373d2a95c8ae9355a0e4f56
-Q
-!pdbs/dcm/100_2753_DCM_320_460.pdb,f/1/f1b6a4f17b8d0282e158a8d21970d20bd285be0c
 N
 pdbs/dcm/100_78_dcm_9_1170.pdb,8/7/871c213fbc10b47724d17dc1afaa52751fb2fecb
-R
-"pdbs/dcm/100_1594_DCM_187_1084.pdb,3/6/3608840b4d51782b83c965c5789dd8b065e5c49e
 Q
 !pdbs/dcm/100_2261_dcm_264_778.pdb,6/0/60ae4dd3b4c2dad9ac9b1fb1385e595497992c89
 Q
 !pdbs/dcm/100_2368_dcm_276_925.pdb,6/1/61d743f14966b0ae4e052596ff505c2c128f9ea6
 Q
-!pdbs/dcm/100_3964_DCM_461_390.pdb,2/f/2fa9e4c7d8b70c5bc55a090cc31f70c1e2e06cc1
-N
-pdbs/dcm/100_14_DCM_1_1073.pdb,9/5/958b0fc6607708702013fef4bdf707b743f13548
-Q
 !pdbs/dcm/100_3649_dcm_425_245.pdb,8/7/8710d4e9086a93a6e61ef4ae3cd14bbd13c5ffe2
-Q
-!pdbs/dcm/100_3157_DCM_368_445.pdb,3/c/3c3bd8a65ce3f5cdd81253813fadd5069493fb33
 Q
 !pdbs/dcm/100_4247_dcm_495_215.pdb,a/e/ae71ea2b4e8f48d42dab40d13760b8137089c648
 R
 "pdbs/dcm/100_3994_dcm_465_1089.pdb,c/8/c8cefdaa9af123a243b91a871ae7e4923bf3c4ba
-R
-"pdbs/dcm/100_4096_DCM_477_1221.pdb,1/4/14f75fef7d638d564aa0921562c2405894099a67
 Q
 !pdbs/dcm/100_1398_dcm_164_230.pdb,6/d/6d078ff370693f92de5b077a2a66e98ca01bac58
-P
- pdbs/dcm/100_1987_DCM_232_14.pdb,d/6/d667803714111abad80b049a7c8dd5daa397a54d
-Q
-!pdbs/dcm/100_2261_DCM_264_778.pdb,0/7/07ac12169c7d29a49a2a651e1ab0ee0dc6de1ada
 Q
 !pdbs/dcm/100_3729_dcm_434_267.pdb,1/4/14febc7c5291390b18baf8d938301a39f291ac24
-P
- pdbs/dcm/100_3362_DCM_392_48.pdb,8/6/869d61871529d77116f9c25188c594e3f0292403
 Q
 !pdbs/dcm/100_3752_dcm_437_248.pdb,5/e/5e05d4f9f3ad31eb5cd4e06f975eca6855099809
-Q
-!pdbs/dcm/100_1019_DCM_120_565.pdb,4/6/46aca785495be546a4c2de66173985252764d438
 Q
 !pdbs/dcm/100_2614_dcm_304_648.pdb,2/d/2d96d62010b56965dac929f5c0339c4a1b143abb
 P
  pdbs/dcm/100_1165_dcm_136_58.pdb,5/5/55849a39a10255e99dbc0bb3e91b607c001d16ba
 Q
-!pdbs/dcm/100_2358_DCM_275_336.pdb,0/0/00264a8a7f94ccdfdf0096e66b21342d69119a2e
-P
- pdbs/dcm/100_884_DCM_104_631.pdb,c/2/c26b689b5376387a1f37bb21f3def78ebbb4e07a
-Q
 !pdbs/dcm/100_3448_dcm_402_770.pdb,f/2/f22475cb5e97705585f57bd6bfe39dbb6137c2f6
-N
-pdbs/dcm/100_98_DCM_12_534.pdb,4/2/42601fdafbb0b53f67b8b4c3d5b06fa8c7ddf96b
 O
 pdbs/dcm/100_617_dcm_72_420.pdb,4/8/48df150adb0b4dca798a752aa2425fad35d31f44
 Q
 !pdbs/dcm/100_2756_dcm_320_711.pdb,5/a/5ab3896ab439f8fdeb35f8b41be2cd18eaf8974c
 Q
-!pdbs/dcm/100_3550_DCM_413_408.pdb,6/c/6ca3d93f18597ed8e5d0b1c425b1fdb99008acd0
-Q
 !pdbs/dcm/100_1399_dcm_164_559.pdb,8/f/8fd6ac525550cca55fc8b2d7963437c65573a030
-Q
-!pdbs/dcm/100_2881_DCM_335_766.pdb,0/8/08052c863f112004509e5558c7c4b688a25ec727
-N
-pdbs/dcm/100_94_DCM_11_711.pdb,1/c/1c5e98511dd674a426ff6d58d8bb61505f1c0221
 P
  pdbs/dcm/100_2677_dcm_311_23.pdb,2/e/2e2bcb9ceff5f449314be0f84338cc3eff51a8c1
 Q
 !pdbs/dcm/100_1774_dcm_207_229.pdb,c/0/c04419a210cf1953f4c56f8e926879b97a4a043e
 Q
-!pdbs/dcm/100_3367_DCM_393_850.pdb,8/7/873adf40fc9933504eda3e7894e04baabba54b80
-Q
-!pdbs/dcm/100_3752_DCM_437_248.pdb,d/b/db5195cd782241e09c415b5e31eb143b456b143e
-Q
 !pdbs/dcm/100_3916_dcm_456_603.pdb,f/3/f30cb1c882ca4441ddcfdce56febad497f90f3ab
-Q
-!pdbs/dcm/100_3349_DCM_391_870.pdb,8/d/8dc8d91417c7e4e0d5379f9e879f8cc978847aec
 R
 "pdbs/dcm/100_4087_dcm_476_1139.pdb,4/1/41c8327fb96a0165393e4c2229bd3988bb36cf7d
 Q
 !pdbs/dcm/100_1882_dcm_220_250.pdb,9/6/96a5bbed43b3c11f73b58318b22fc6007440516f
-Q
-!pdbs/dcm/100_3441_DCM_401_687.pdb,d/0/d0fc56910e896b5ae03264a489ac1a65f5d1c732
-Q
-!pdbs/dcm/100_1727_DCM_202_947.pdb,c/8/c88937b2ddf5fc2a43a38e9821238df0a17e05ef
 P
  pdbs/dcm/100_3352_dcm_391_80.pdb,9/3/936066ce3c24d1241123f0a0b42c2a1a4dc6f1b6
 M
 pdbs/dcm/100_46_dcm_5_865.pdb,7/f/7f7addf82d4b0ab30d2155d9fdec7960b965adf8
-R
-"pdbs/dcm/100_2225_DCM_260_1024.pdb,5/5/550648a15ccb1e63372147db92fcfe810df915ae
 Q
 !pdbs/dcm/100_3077_dcm_358_192.pdb,d/e/de7c970a31e10ffc4a7129721618a987f9c47dcf
 Q
-!pdbs/dcm/100_3675_DCM_428_858.pdb,b/d/bd576a2e0f9f1934a3798ffbb1b8566b6e58ee32
-Q
 !pdbs/dcm/100_3855_dcm_449_933.pdb,9/f/9fbb92700ad913513f77a1c2a4fe3c47ec03710e
-O
-pdbs/dcm/100_659_DCM_77_449.pdb,2/0/200185ce12b80ab8417a6d0278eac31c2048f658
 Q
 !pdbs/dcm/100_1756_dcm_205_212.pdb,c/7/c7a87355dd646a8884ba84452d3536b5aa619e04
-Q
-!pdbs/dcm/100_3591_DCM_418_520.pdb,9/9/99ddffcb7031068e7708fbad75de38b04f25f778
 Q
 !pdbs/dcm/100_3698_dcm_431_180.pdb,c/4/c468cf11ee08250715b3556df164b2ab6e9d1e9c
 P
  pdbs/dcm/100_1920_dcm_225_16.pdb,d/0/d014e06e890d0c4ea65ab977d789e3bfebbdff49
 Q
-!pdbs/dcm/100_3268_DCM_381_641.pdb,1/2/126c8d831c60dd47b8432b1a2cb84f9c50e0dc65
-Q
 !pdbs/dcm/100_3677_dcm_428_489.pdb,b/4/b4c263c2ecc2fcc4b9968587eff22ce5e3159b5a
 R
 "pdbs/dcm/100_2611_dcm_304_1090.pdb,3/4/347b920c20b30e580a52513bd7beb7c8a63bcce9
 Q
-!pdbs/dcm/100_4260_DCM_497_668.pdb,8/5/85f1c52833df58c5f6ef7f8a8da1668f500dadf5
-P
- pdbs/dcm/100_2580_DCM_300_17.pdb,a/b/abc6cfa0d579866b146941122d5c6505619ef197
-Q
 !pdbs/dcm/100_3451_dcm_402_111.pdb,d/b/db383144aedb8a0b72194f56fbabd3c8ab5757f2
-O
-pdbs/dcm/100_186_DCM_22_540.pdb,d/0/d054e9e84f4249c20a4af61b3327f6594d5175fb
 P
  pdbs/dcm/100_243_dcm_30_1008.pdb,f/d/fd8f0bb23ed3a91c38b2078ac44cdbce5cbf10ea
 Q
-!pdbs/dcm/100_2018_DCM_236_465.pdb,8/8/8892d94e85d62b22c7079b18a478c05ee412e200
-Q
 !pdbs/dcm/100_2583_dcm_301_263.pdb,d/b/db0ed13f7722a2cad6d2d8e39caa4a71e8f27c8b
 R
-"pdbs/dcm/100_2008_DCM_235_1221.pdb,a/8/a89bd29fd533da07b2ae4d4effd08e4c56e0dab8
-R
 "pdbs/dcm/100_3050_dcm_355_1200.pdb,5/9/59ae1d7e7e9c860095a244f68a47228c3047e809
-Q
-!pdbs/dcm/100_1849_DCM_216_299.pdb,c/0/c0c457acb1aa07f8b3611e563b0253d769871195
 P
  pdbs/dcm/100_2038_dcm_238_39.pdb,8/b/8b0cc015b92fc703b037f5dd35ffeb0a889def17
 O
 pdbs/dcm/100_392_dcm_46_962.pdb,d/9/d938b002c65956109d79f13cecfb9e3b780dce72
 Q
-!pdbs/dcm/100_3029_DCM_353_321.pdb,f/4/f4cb3c3e21599be634131f76a5ecbceb54133544
-Q
-!pdbs/dcm/100_2985_DCM_348_891.pdb,7/9/790a005da3454ac04d02b757f1061ed1aa84c346
-Q
 !pdbs/dcm/100_4021_dcm_468_881.pdb,3/c/3ce28ba33f98fa3e44b29a3812a9b364a7b843d4
-R
-"pdbs/dcm/100_1598_DCM_187_1186.pdb,f/0/f0d8597ca57b3eecfa21d692fbb700b60752e65a
 Q
 !pdbs/dcm/100_2121_dcm_248_916.pdb,9/9/99d9249763720c190eb51e42342bea70e3bd7f42
 Q
-!pdbs/dcm/100_2393_DCM_279_926.pdb,1/9/19efe76346903a01a7f449bb2cd544081b40258d
-Q
 !pdbs/dcm/100_3373_dcm_394_305.pdb,4/7/477b2a7603b05288a276ed5c8389c157a604172b
 Q
-!pdbs/dcm/100_3070_DCM_357_136.pdb,f/4/f4f37506bee5a90144ff6bcc2c65fbad2e838ac9
-Q
 !pdbs/dcm/100_3591_dcm_418_520.pdb,0/2/029436aceb1e1528b409734e3621023318b39d49
-Q
-!pdbs/dcm/100_2121_DCM_248_916.pdb,d/2/d25dfeb9b423cf8d83e19da0069b3f4ae9b26d69
 R
 "pdbs/dcm/100_3280_dcm_382_1167.pdb,e/3/e3d44a2209d2622f710a2afbaaf924a77a412990
 Q
 !pdbs/dcm/100_3070_dcm_357_136.pdb,3/b/3bba5f2dc7e2bcde8d5832580452ff965ad15831
 Q
-!pdbs/dcm/100_3717_DCM_433_693.pdb,b/6/b67a9bc01caaf4eb46590ac22ac5fa98f1e51bc1
-Q
 !pdbs/dcm/100_2353_dcm_274_350.pdb,6/9/69751104861d07b3363f1d58ee527b3b55bc21a3
-Q
-!pdbs/dcm/100_3077_DCM_358_192.pdb,d/a/daaae9056722064185519d05259843e3fd2a5bfa
-Q
-!pdbs/dcm/100_3856_DCM_449_273.pdb,b/8/b8c3d30477c56cdcbeda22bf46799cee39d0732a
 Q
 !pdbs/dcm/100_3911_dcm_455_283.pdb,a/6/a6a50f43d0f08a14c73e94a79f3a723db38de594
 Q
 !pdbs/dcm/100_3423_dcm_399_686.pdb,0/a/0a9ba40dd7d901d881a834299f1e34a83ac702b3
-Q
-!pdbs/dcm/100_3911_DCM_455_283.pdb,0/2/02fc7e51721e10b31205146181298ff609f54a3e
 P
  pdbs/dcm/100_2580_dcm_300_17.pdb,4/e/4ef570076d7c3b57b18d6ba8472d7e88dac36fac
 O
 pdbs/dcm/100_211_dcm_25_379.pdb,e/2/e2755622fabfaca8ed8f3fbb810a902aa8b7c746
-P
- pdbs/dcm/100_1165_DCM_136_58.pdb,8/7/87eda4fa48de09adc53f16e8639e75d59e749050
-P
- pdbs/dcm/100_941_DCM_111_580.pdb,1/4/143b5211a85a875883d954a42fad410d967cf4e9
 Q
 !pdbs/dcm/100_4229_dcm_493_872.pdb,e/f/ef9103fc64fff88bc665e158fefbfb5377a43c2e
 Q
-!pdbs/dcm/100_1488_DCM_174_715.pdb,f/2/f29a952a6dc11d5b3d8e4a3b163de6f3f4142fe7
-Q
 !pdbs/dcm/100_2620_dcm_305_234.pdb,4/f/4f25e871f06093ee9d15abf182337e38686f184d
 Q
-!pdbs/dcm/100_2896_DCM_337_400.pdb,3/6/36cf9987278f26720fc9242686c68bd7141a2d38
-Q
 !pdbs/dcm/100_3856_dcm_449_273.pdb,7/f/7fb9ad86891390d24cc535e8ffa4c8ba3d5f3bb3
-Q
-!pdbs/dcm/100_1398_DCM_164_230.pdb,9/0/90f1852f54ad7c9992257f48d5aa728bd8a70824
 R
 "pdbs/dcm/100_1594_dcm_187_1084.pdb,2/2/22ec49ce504b3938c92b4aef820f871c78fe5536
 Q
 !pdbs/dcm/100_3502_dcm_408_572.pdb,a/9/a99c9c820137bb64cfdbb8dddc4e8b7577e52871
-Q
-!pdbs/dcm/100_3612_DCM_421_210.pdb,1/d/1d02ca395477d07ba4ce614f2e34f32ebe8788b2
-P
- pdbs/dcm/100_2574_DCM_300_21.pdb,e/b/eb3fb648f8ba543b9220271d53c1e27a101e25b8
 R
 "pdbs/dcm/100_2698_dcm_314_1207.pdb,6/1/610623a12b06854e752492ef376812ee0d4f0d34
 Q
-!pdbs/dcm/100_2270_DCM_265_928.pdb,0/8/088806378327f40a5155258ac1b8e80d79ca6297
-Q
 !pdbs/dcm/100_3367_dcm_393_850.pdb,1/7/17a1743d150421cdaef0c3ed26db2b535a1523be
-P
- pdbs/dcm/100_2677_DCM_311_23.pdb,1/4/1477b8bf4537eeb0daa4d1ede8c5961c6d0f103b
 Q
 !pdbs/dcm/100_4056_dcm_472_500.pdb,f/5/f5a489e4fc6ac9dca25a8410c0066fab21b6644f
-Q
-!pdbs/dcm/100_2756_DCM_320_711.pdb,d/e/de6aecabb89e56ef06298cc68c6cf5406d377c2f
 Q
 !pdbs/dcm/100_3770_dcm_439_744.pdb,8/b/8baa13df1fb5ee064b813223912c93ed26729a80
 O
 pdbs/dcm/100_983_dcm_116_25.pdb,5/3/53b03fbb971a404e87f5b60f7751d93602c2a58e
-Q
-!pdbs/dcm/100_2829_DCM_329_137.pdb,3/c/3c908da57974f0b9d19cff55c598c954008cb2c3
-N
-pdbs/dcm/100_78_DCM_9_1170.pdb,3/b/3b33804e8d3c3d8636916cd9352a7908420d6074
 P
  pdbs/dcm/100_3362_dcm_392_48.pdb,2/a/2a44f387abc4421d2465507a812b96e92c1d2820
 Q
 !pdbs/dcm/100_3505_dcm_408_437.pdb,0/8/0894798628fc2c463c8fba5c2cc95077a0da5a8c
-Q
-!pdbs/dcm/100_4244_DCM_495_476.pdb,6/9/692959de3bf6d7ace30521c18013e7d136191e5b
 R
 "pdbs/dcm/100_2364_dcm_276_1213.pdb,9/7/976bef93dbc84ca1274fe4f84a6a1e04b4d6fd30
-Q
-!pdbs/dcm/100_3570_DCM_416_422.pdb,2/b/2bedbe7cdd2cf93916b6ff855b68abc9ae7d3475
-R
-"pdbs/dcm/100_2290_DCM_267_1037.pdb,6/c/6cd57f4a94938c76d0324913820674c7112dea68
 Q
 !pdbs/dcm/100_3284_dcm_383_995.pdb,b/4/b4b7e27be692088498083e148a18e2b48b79a9fd
 P
  pdbs/dcm/100_672_dcm_79_1162.pdb,2/5/25ea24f28c8d030e69435fcd981cf6ad5596d3e0
 Q
-!pdbs/dcm/100_3397_DCM_396_556.pdb,8/5/8591fb6545a6ba7f51017730504d791716116251
-M
-pdbs/dcm/100_34_DCM_4_167.pdb,2/1/21aac00755a00de2eef6bd0a834a9c718c09281b
-Q
 !pdbs/dcm/100_2402_dcm_280_895.pdb,4/7/47eff5e2cd8a244698e92a5c399fc3ccac460e47
 Q
 !pdbs/dcm/100_2673_dcm_311_998.pdb,d/7/d7272228cbe4df9f27c4cb67571705be935241c3
 Q
-!pdbs/dcm/100_4229_DCM_493_872.pdb,2/9/29ef05639871a6176e081a14f1e64d2a1e2cf732
-Q
 !pdbs/dcm/100_1145_dcm_134_647.pdb,d/0/d086c2e0950b9f3b54ec86f8e8bc9021e0acc155
-Q
-!pdbs/dcm/100_1566_DCM_183_989.pdb,2/5/251a3f025aa6c8cefd1526839c842ebc7d02119d
 O
 pdbs/dcm/100_410_dcm_48_226.pdb,6/8/68545155d555aee9db502135dc6e8bcd15d925f8
 Q
 !pdbs/dcm/100_2737_dcm_318_667.pdb,f/7/f7a2d8fcecbd9f9a850233b8250ab2ffd3fd7269
-R
-"pdbs/dcm/100_2793_DCM_325_1254.pdb,4/d/4d4f3c0396368ac6a7a8583211fd8ed7819e8d2a
 Q
 !pdbs/dcm/100_2753_dcm_320_460.pdb,e/0/e00f78e7af79156908a12dd2cdc5b856efce7f96
-Q
-!pdbs/dcm/100_2905_DCM_338_511.pdb,8/b/8b83cd33f63d46fd336ba96c20617ec035214e05
 R
 "pdbs/dcm/100_2923_dcm_340_1137.pdb,b/7/b75a68fce0800073ae4358c6f51293804371da06
-R
-"pdbs/dcm/100_3572_DCM_416_1180.pdb,5/8/580f3f1d35a47a211fd0ecd9550aa2b4b7f344b4
-R
-"pdbs/dcm/100_2364_DCM_276_1213.pdb,9/7/971812284256e1ec39dcc305c218811fe736df4b
 Q
 !pdbs/dcm/100_2510_dcm_293_538.pdb,c/b/cb5b50e9360918503325313f981423a1d45b3672
-O
-pdbs/dcm/100_617_DCM_72_420.pdb,1/9/19401ae57bb1683113cb36ca260844025d03f359
 R
 "pdbs/dcm/100_2233_dcm_261_1095.pdb,9/2/9279117e6507e0377f36a4f6036fdadfc730add1
 O
 pdbs/dcm/100_585_dcm_68_794.pdb,1/a/1aa348b2fb029fea3f7922bb60d4c933efb7dbb9
-O
-pdbs/dcm/100_141_DCM_17_992.pdb,e/9/e9812245aba6503813f3a619899b54602002f8be
 P
  pdbs/dcm/100_646_dcm_76_1117.pdb,c/5/c560afffb3b918df9408dfe17da5468995c5753a
-P
- pdbs/dcm/100_243_DCM_30_1008.pdb,6/7/67a901145d9cb2ce24314c49c78cb9146b1ea55a
 R
 "pdbs/dcm/100_2990_dcm_349_1039.pdb,4/3/43eba4dbf535029c8fa85a35e99367b7ef3b467e
-N
-pdbs/dcm/100_14_dcm_1_1073.pdb,9/7/9739c5f18df675dd1fd6ac3b70382d45f16cf062
-Q
-!pdbs/dcm/100_2120_DCM_248_555.pdb,6/b/6ba11369245a1e58106e779e3b9d70ab26959162
-Q
-!pdbs/dcm/100_2353_DCM_274_350.pdb,0/c/0cddced759195655c6c4bfd49e898e8202e4ad22
 Q
 !pdbs/dcm/100_2625_dcm_305_710.pdb,d/9/d908f48af3f9ae4a1ec1cdfb40c789309d85a7de
 Q
 !pdbs/dcm/100_1685_dcm_197_292.pdb,d/b/db4d4b6707ba6be401f98c817619c12c6f2989fd
 Q
-!pdbs/dcm/100_3373_DCM_394_305.pdb,b/e/be68e8ecd446fc15968d4fe91c30dcf894934b4a
-Q
-!pdbs/dcm/100_1237_DCM_145_421.pdb,6/7/67c8d12367e309624ce1aaf59d3735886baac304
-Q
 !pdbs/dcm/100_3612_dcm_421_210.pdb,3/7/37048b24a7281cee32898cf9860d96b5286c788c
-R
-"pdbs/dcm/100_1612_DCM_189_1176.pdb,2/1/210581fb7885af045a25c939cd6e451efc7c0f57
 Q
 !pdbs/dcm/100_3570_dcm_416_422.pdb,b/9/b92230035f0a1935a5044580b966d9c8560d7a5e
 Q
 !pdbs/dcm/100_1675_dcm_196_519.pdb,e/9/e965801331948a3b1cec13cc467e50908233bc0f
-Q
-!pdbs/dcm/100_1882_DCM_220_250.pdb,5/d/5dfd692923adb9bbca96bdc91cc724498670b3b7
-O
-pdbs/dcm/100_331_DCM_40_843.pdb,6/4/64ca090d13ed8fb5157c957ed9a43f0a18ee6f54
 R
 "pdbs/dcm/100_3730_dcm_434_1168.pdb,2/2/22e478d66ded82e0dab08b1369a308ecedac4c86
-Q
-!pdbs/dcm/100_1159_DCM_136_357.pdb,e/4/e4fda43848fc08310cc25da50520534e1fed0eec
 Q
 !pdbs/dcm/100_1315_dcm_153_444.pdb,3/2/32f77d60b8fc71b77cf9542817be8f8d8c6fdfe1
 R
 "pdbs/dcm/100_2008_dcm_235_1221.pdb,d/d/dd7b19a7e7e14c2b87ce90333db101f390044481
 R
-"pdbs/dcm/100_4087_DCM_476_1139.pdb,e/7/e729c1da3df1021bb13dabdea03a44fc83dab04f
-R
 "pdbs/dcm/100_2413_dcm_282_1216.pdb,b/c/bc9094995ccc433c189d25410abb1ecd826b806e
-Q
-!pdbs/dcm/100_2875_DCM_335_616.pdb,d/f/df5c580cc45c650a60adc55df8bfa03432ff6376
-Q
-!pdbs/dcm/100_2672_DCM_311_611.pdb,c/0/c0c159eab90c5e95bf5a5c83b8e8079a6b82ace1
 Q
 !pdbs/dcm/100_4322_dcm_499_988.pdb,1/3/134116b825254134dabc1eea97a607ece31b18cc
 O
 pdbs/dcm/100_659_dcm_77_449.pdb,c/5/c58fcbe676714a864483a9de38b7d2cb5cf307ae
 Q
-!pdbs/dcm/100_1878_DCM_219_912.pdb,f/5/f50fe1cff720d3ee21fff4be602c7da475b968bd
-P
- pdbs/dcm/100_672_DCM_79_1162.pdb,8/9/89accfcf1822aadb22fe3622184677b2158c0752
-Q
 !pdbs/dcm/100_2985_dcm_348_891.pdb,9/c/9cd75d15f2f68e1bd7547f3b544cdfdf5698023c
-Q
-!pdbs/dcm/100_1445_DCM_169_519.pdb,7/4/74f9c1a02ea7d74a1246c3fc9e2d6b4053042c56
 Q
 !pdbs/dcm/100_3431_dcm_400_472.pdb,9/1/9158732c7db7ac7ee6fe9ee090aefa4b7be92226
 P
  pdbs/dcm/100_884_dcm_104_631.pdb,4/8/48a2545bb86ee6aab95b8b4dbd2587e09b5217d0
-Q
-!pdbs/dcm/100_3284_DCM_383_995.pdb,7/2/7254a7bd758a2aeb6b4c60ca68407fd3f7a70cc5
 R
 "pdbs/dcm/100_2225_dcm_260_1024.pdb,6/2/6254c47811ebba7da65e680911e4482d71a49b68
-Q
-!pdbs/dcm/100_3729_DCM_434_267.pdb,d/7/d72b23afc11b5c402c444b4533bece6bc6d44cdf
 O
 pdbs/dcm/100_141_dcm_17_992.pdb,c/f/cfcac739b933e804ddbabf73ded08b6e8ca6b70e
 Q
-!pdbs/dcm/100_2673_DCM_311_998.pdb,b/6/b6c4b0a8a8b745633639806561eb3039bacbb1fc
-Q
 !pdbs/dcm/100_1237_dcm_145_421.pdb,5/2/52c47d86d47ecd56396345d2ded905126400adbd
-R
-"pdbs/dcm/100_2573_DCM_300_1224.pdb,e/f/ef523a7030a794613a4203f8b245e6d9d68575e4
-Q
-!pdbs/dcm/100_3855_DCM_449_933.pdb,6/c/6c3d0d55bb0981aecda7f063e431a8feb4481f87
 Q
 !pdbs/dcm/100_3890_dcm_453_221.pdb,2/9/293142dfc3d394b693ab7cdc6dbe52eb746af4a3
-O
-pdbs/dcm/100_301_DCM_36_536.pdb,7/6/76ef3ac2a9045a265a225e822d2fcc21fc495c09
 Q
 !pdbs/dcm/100_1849_dcm_216_299.pdb,6/1/6162782ac712828a6659538eb1928f0f7fd456a0
-Q
-!pdbs/dcm/100_2510_DCM_293_538.pdb,b/6/b67f70caabe49131304d6ff217a61a40f4bb3b0f
 Q
 !pdbs/dcm/100_3042_dcm_354_819.pdb,a/a/aa560debde1e96bbfee8142ac06f6c75a5938cba
 O
 pdbs/dcm/100_331_dcm_40_843.pdb,e/5/e5c4f18439265cbbe9d942e537aec9b20d0b707f
 Q
-!pdbs/dcm/100_4056_DCM_472_500.pdb,c/d/cd969723d2b5b221399fb7ee01bf97c5f7a6090e
-Q
-!pdbs/dcm/100_1018_DCM_120_967.pdb,8/0/808e5cfb46ea7af490c088f398eeb74c23465177
-Q
 !pdbs/dcm/100_3268_dcm_381_641.pdb,c/f/cff76dbb2d7211a411cfa957c6c1a3aa68728dd3
-P
- pdbs/dcm/100_766_DCM_90_1212.pdb,d/e/de32542385a26f27d9d8b222fb09fc7caf51497d
 Q
 !pdbs/dcm/100_3717_dcm_433_693.pdb,8/f/8f237c0170e81c7b16902484483267cc1ac0aebb
-Q
-!pdbs/dcm/100_1756_DCM_205_212.pdb,3/0/30d1945d73538649731fa3c1035d10389f7f6f4b
 Q
 !pdbs/dcm/100_1878_dcm_219_912.pdb,d/1/d14c7378967d282eee6f1efdc463f2448bef5f54
 Q
 !pdbs/dcm/100_1445_dcm_169_519.pdb,8/5/85bd67e8567ec3eca73d9365f02832139e53dbc8
 Q
-!pdbs/dcm/100_2583_DCM_301_263.pdb,f/1/f145f2dbba09d44db2b2bc1f0d074c1ea6458b88
-Q
-!pdbs/dcm/100_3448_DCM_402_770.pdb,d/d/dd089355d642eb280adbea665a9821f80f53ca8d
-Q
 !pdbs/dcm/100_4119_dcm_480_170.pdb,1/4/1406361b6ff07c02e67a77efab5036b381702b1b
 Q
 !pdbs/dcm/100_1488_dcm_174_715.pdb,a/b/ab8306828e0cf043f1efa71bb5e8771f6df8d30a
-Q
-!pdbs/dcm/100_3916_DCM_456_603.pdb,a/4/a4cc4bd7bce934883144c4b7d37c394484df3056
 Q
 !pdbs/dcm/100_3700_dcm_431_497.pdb,0/4/04acc3a917ad69f278fb94285c4bd114ecbfaa43
 P
@@ -1403,209 +1071,79 @@ P
 P
  pdbs/dcm/100_979_dcm_115_117.pdb,a/b/ab7c516552819fc65e446aea3e6758a970cb94ea
 Q
-!pdbs/dcm/100_2955_DCM_345_856.pdb,0/c/0cf1c4118a26875c004538313248d9e7d8e6884a
-P
- pdbs/dcm/100_1920_DCM_225_16.pdb,7/7/77b831da0d5afa083a0b4f5d75d4abf9a8b7cbf4
-Q
 !pdbs/dcm/100_4260_dcm_497_668.pdb,d/7/d7ceba7e54a68d3bab65d4edb1207c55857691af
 Q
-!pdbs/dcm/100_3505_DCM_408_437.pdb,c/b/cb060c3b36fca070b7972156181a539036c1fb69
-Q
 !pdbs/dcm/100_4244_dcm_495_476.pdb,2/b/2b0a256a058c71204f537258ebb2c85a7c336453
-P
- pdbs/dcm/100_992_DCM_117_761.pdb,7/c/7c9c7ba2b64b967cf1d5f7faa18761d051b9ccc4
 Q
 !pdbs/dcm/100_2120_dcm_248_555.pdb,6/3/63c2750cd3f18f8cca6e7c295212665c8316d93c
-Q
-!pdbs/dcm/100_1145_DCM_134_647.pdb,5/8/583b4d0bbf63c99e0a07af26d69000fc04bc7eba
 R
 "pdbs/dcm/100_4096_dcm_477_1221.pdb,6/4/64dd22ac4933a115312bddd4c7a9bbbe4fb02b33
-O
-pdbs/dcm/100_585_DCM_68_794.pdb,8/b/8b538ad71f98972226d73af754e8bd96d7f78801
 Q
 !pdbs/dcm/100_2896_dcm_337_400.pdb,1/f/1fc6817037dfb053020babc45c7b3657dda1da94
 R
 "pdbs/dcm/100_1167_dcm_136_1261.pdb,6/9/6975b1197108040782bc03f6a24d205494e6af18
 R
 "pdbs/dcm/100_2097_dcm_245_1085.pdb,9/a/9a251d6a54637e040297a45b15fd492efe4239fd
-Q
-!pdbs/dcm/100_4119_DCM_480_170.pdb,e/7/e7a69d5946e64665ce78a1392edfa72743533b22
 P
  pdbs/dcm/100_961_dcm_113_122.pdb,8/5/853d2f36dc6124705f25fed0acc416d2d991019d
-Q
-!pdbs/dcm/100_4021_DCM_468_881.pdb,b/9/b94b851031bbf8d6d7d9ca1aaf2872bf6db0e4a5
 O
 pdbs/dcm/100_801_dcm_95_801.pdb,d/b/db6b54c2383b246bdd01e995b3f17115ffd2c5a5
-Q
-!pdbs/dcm/100_2276_DCM_266_608.pdb,7/e/7e73cb9ef410c779aef629836a65689968af4302
-M
-pdbs/dcm/100_75_DCM_9_501.pdb,7/7/776b1df81ae3d9e1fd8d156c509faa9e257c8ebc
 Q
 !pdbs/dcm/100_2905_dcm_338_511.pdb,2/3/23d16c3f0d77b5a355f39a0102cd2fe2e751a402
 R
 "pdbs/dcm/100_2948_dcm_343_1089.pdb,8/9/890100715e201f236e72a1d1fdf86ccc86531d33
-Q
-!pdbs/dcm/100_3700_DCM_431_497.pdb,2/f/2ff704d03c4ca6eedb9034d936f461c8f022b930
-O
-pdbs/dcm/100_761_DCM_90_525.pdb,6/5/6559f6d7d8f0e855ec56122fadf3e0371a826eaa
 R
 "pdbs/dcm/100_1612_dcm_189_1176.pdb,0/d/0df1f7db4451e8cb095e2918525b840c2f6938af
-N
-pdbs/dcm/100_161_DCM_19_39.pdb,d/c/dcd17e54176e04596dbc711406341f75fff7ac83
 O
 pdbs/dcm/100_301_dcm_36_536.pdb,b/6/b6722dddb679d736a24ad4aa4ced023196cf7d2e
-Q
-!pdbs/dcm/100_2402_DCM_280_895.pdb,2/9/2927e8bffe6ba124a0124726ef3ee1c8498ba158
 R
 "pdbs/dcm/100_4227_dcm_493_1089.pdb,d/4/d4cfc7a18ac93b72876988b097413ab063cf2930
 O
 pdbs/dcm/100_782_dcm_92_432.pdb,7/4/748e8aab5167497b1f33796252e3213e39cadcc5
-P
- pdbs/dcm/100_1100_DCM_129_15.pdb,0/7/07e30a3f48c739cf6cf7c348786cb3f20c180f56
 R
 "pdbs/dcm/100_1292_dcm_151_1088.pdb,e/0/e0f9131d03dc3960d104ce26421075ce54054450
-R
-"pdbs/dcm/100_1290_DCM_151_1133.pdb,b/0/b0a362a56efa39962dfde4aecc1279b51226dbce
 Q
 !pdbs/dcm/100_3029_dcm_353_321.pdb,2/8/28a6a92d6f2b4bfac7d2d6480f5f5bed918c545b
-P
- pdbs/dcm/100_986_DCM_116_989.pdb,8/c/8ce71b562dc92a4bb47fd3af4f8212671a6165e2
 Q
 !pdbs/dcm/100_1018_dcm_120_967.pdb,9/a/9a1769cd0021de6578c104bd78c230e4fc24eb21
-Q
-!pdbs/dcm/100_1053_DCM_123_948.pdb,3/9/39e8563b508187ab029aca76422d098467cb94be
 Q
 !pdbs/dcm/100_3552_dcm_414_903.pdb,e/6/e6766816e19ed7f8fc68bcbd4dd8507c39eeb0c3
 Q
 !pdbs/dcm/100_1748_dcm_204_170.pdb,1/a/1ae815455d2a294453a60395ab69307a50354255
-P
- pdbs/dcm/100_2038_DCM_238_39.pdb,0/4/049dce3091b67b11b4fba32e45780451e8960ffa
 R
 "pdbs/dcm/100_3796_dcm_442_1045.pdb,d/3/d3ab37a8febc0057af09eab0b3527e0bbcc4301a
 Q
-!pdbs/dcm/100_3890_DCM_453_221.pdb,c/e/cefff1a416ffbaca97abc5dbc658d95d6d77d09d
-Q
 !pdbs/dcm/100_2955_dcm_345_856.pdb,8/a/8afea23017157c4e99c5eeaf630999aa52170094
-Q
-!pdbs/dcm/100_3677_DCM_428_489.pdb,9/0/9042757ac825f05c84ef6fe4c3324927782aac6c
-Q
-!pdbs/dcm/100_1748_DCM_204_170.pdb,4/c/4cfb023880e4ba005ded043245953c2d713452cd
 P
  pdbs/dcm/100_2760_dcm_321_82.pdb,5/1/51a0095de347be39d70759515bc9e0fd93b023f3
 Q
 !pdbs/dcm/100_3627_dcm_423_765.pdb,2/a/2a4a5e2ed3d5f7fab68e8fe7fee0effaaa302908
-Q
-!pdbs/dcm/100_3949_DCM_460_671.pdb,6/e/6ee0573431fe90c2ea52b3c39e942a02882b23b5
 O
 pdbs/dcm/100_186_dcm_22_540.pdb,8/5/856016977ae20bceb30b32d0b22901ba3cae0e38
 R
 "pdbs/dcm/100_1290_dcm_151_1133.pdb,e/c/ec80d84662228ed90816f8adecc7dd23324c9884
-Q
-!pdbs/dcm/100_1478_DCM_173_327.pdb,8/f/8f70e5a3030805976334097b45e3aac33669fc59
 N
 pdbs/dcm/100_94_dcm_11_711.pdb,5/8/5881d9ab4bc37092bb18c943750b2e696c815462
-Q
-!pdbs/dcm/100_1685_DCM_197_292.pdb,a/9/a974b39b7d62663312554a770269f32dcf56cc88
-Q
-!pdbs/dcm/100_2620_DCM_305_234.pdb,5/c/5c98cf99d3801887727c196311acb1a80665f42b
 R
 "pdbs/dcm/100_2793_dcm_325_1254.pdb,d/a/da26be5b802e2419275cb21dd0db223e5dd05821
 P
  pdbs/dcm/100_992_dcm_117_761.pdb,8/8/88abff3918841dbf26b1904b1a4d8e57023d4dca
 Q
 !pdbs/dcm/100_2270_dcm_265_928.pdb,7/a/7a1b94213d1d104998e618c4d13e50670d2cf430
-R
-"pdbs/dcm/100_2698_DCM_314_1207.pdb,e/c/ecec57f39637db61e82f4246b5c02b8fb198c517
-O
-pdbs/dcm/100_211_DCM_25_379.pdb,e/c/ec3dad4bdd88e8aff0842a797d417cd6b4f7d378
 P
  pdbs/dcm/100_941_dcm_111_580.pdb,c/d/cd2f7a93bc0e506a1b8479a9e53d2bc9e76354d3
 Q
 !pdbs/dcm/100_3396_dcm_396_527.pdb,d/d/dd046183663d07af911bffd225a82ae4d69eda36
 Q
-!pdbs/dcm/100_3698_DCM_431_180.pdb,6/f/6fe05af8b7c1307586246dad6ad71371506c042e
-Q
 !pdbs/dcm/100_1615_dcm_189_939.pdb,f/4/f443a23ce956d4e4252f3c17a5cd2ef018fb1d29
-P
- pdbs/dcm/100_3694_DCM_430_20.pdb,5/3/5389a062036670b1198a81eff78b137624fec7b5
 Q
 !pdbs/dcm/100_1478_dcm_173_327.pdb,7/2/726a0b310e3c16698e4eb743600897b39d0b263f
-R
-"pdbs/dcm/100_3050_DCM_355_1200.pdb,0/0/00988de2bf99188fb642b39cb69a68b8b597758f
-Q
-!pdbs/dcm/100_1149_DCM_135_575.pdb,4/3/43866b516fef254df34933406729211d14099ba4
 Q
 !pdbs/dcm/100_2393_dcm_279_926.pdb,5/4/543a9aed0e19c205f7b2208fab986349d0414244
-Q
-!pdbs/dcm/100_3296_DCM_384_447.pdb,2/2/22f48de371599807edb6416cdf7c9468c2981de7
 R
 "pdbs/dcm/100_1598_dcm_187_1186.pdb,5/9/59adf1f0e1fb2be5ddbdf0245cb9e18ae4f2bb69
-R
-"pdbs/dcm/100_3575_DCM_416_1033.pdb,6/1/615d7b64a29926e36d258811f9d59539823575cc
-R
-"pdbs/dcm/100_4227_DCM_493_1089.pdb,e/a/eaeef94f816358803e9fcb9df3b2b72c4c3dfeea
-M
-pdbs/dcm/100_46_DCM_5_865.pdb,2/2/227c632b49955ac59038a844c6b5d62181d43a44
-Q
-!pdbs/dcm/100_1294_DCM_151_334.pdb,c/9/c936686e272fc6a493a070c543df975fc1878464
 S
 #ff_energy/ffe/charmm_files/dcm8.xyz,b/4/b45ee279603c6090373aa6db8deaa0b1412bd35e
-Q
-!pdbs/dcm/100_3042_DCM_354_819.pdb,1/0/10a4a49945b0d5ea6687676fadd86b2a5c3a1f81
-R
-"pdbs/dcm/100_2611_DCM_304_1090.pdb,d/e/de815cd5d9e4e12ea64aff7610e645a79147736b
-Q
-!pdbs/dcm/100_1615_DCM_189_939.pdb,0/3/03c7f431d4cc84aafbe7912f41c56f3a845587d9
-O
-pdbs/dcm/100_740_DCM_87_598.pdb,9/f/9f47cca126a814a43b9031225a31972a901365db
-Q
-!pdbs/dcm/100_3140_DCM_365_926.pdb,6/d/6d276ddf08bd7f3e79567231869f1e723738ae87
-N
-pdbs/dcm/100_240_DCM_29_59.pdb,1/e/1e83c8a90aadb67f3ccbe5711539c308805d3b4b
-R
-"pdbs/dcm/100_3994_DCM_465_1089.pdb,7/7/77cfbbf8fc6dc4551c387b14b77188c8c4cab5de
-R
-"pdbs/dcm/100_2948_DCM_343_1089.pdb,9/3/93187c64e07aa817e0cbf8c61ab438ba9d37cb72
-Q
-!pdbs/dcm/100_3236_DCM_377_983.pdb,2/c/2c72fcf92aa40660180558e66b3adf2c5ddaa5eb
-R
-"pdbs/dcm/100_3796_DCM_442_1045.pdb,8/4/84462a6a705455e2c795e674b3cde58c4ca670ba
-O
-pdbs/dcm/100_805_DCM_95_541.pdb,7/c/7c1c1dd3fe103204716376ede9a36199b0513187
-O
-pdbs/dcm/100_821_DCM_97_703.pdb,5/8/58569b141fe497289289af7cb7db71e16ee4a61d
-Q
-!pdbs/dcm/100_3423_DCM_399_686.pdb,1/4/1498766e38d62ba1fd2418d4be4d43b5c7af8e52
-Q
-!pdbs/dcm/100_3220_DCM_375_217.pdb,9/7/976ce7e867d80e2a1cbef02f06030862e5f234ae
-P
- pdbs/dcm/100_745_DCM_88_1033.pdb,2/c/2c70baadb5c636cabaae5f212c0e3d7e60ce18fa
-Q
-!pdbs/dcm/100_1315_DCM_153_444.pdb,f/c/fce3e1a5679f556ec1dd898ef1dbbca9f92d90d7
-Q
-!pdbs/dcm/100_2761_DCM_321_860.pdb,9/d/9d4b24fbc6b86b7b3a792c42c89589a0eb73cdcd
-Q
-!pdbs/dcm/100_3531_DCM_411_991.pdb,0/0/0077fe5050854f254d49dd1d4a4c81982576387f
-Q
-!pdbs/dcm/100_2981_DCM_348_307.pdb,4/9/498c9be51bf5d0bcf8bf1cf46fb487d691b099e6
-R
-"pdbs/dcm/100_3280_DCM_382_1167.pdb,9/5/956e7e8b2cb47a3139ceea45a7a703e8533bbfce
-O
-pdbs/dcm/100_410_DCM_48_226.pdb,9/7/97bd9900a524a7be8cc410745139a3cf5e97beeb
-R
-"pdbs/dcm/100_2330_DCM_272_1084.pdb,c/0/c0985d43ea4d40b9539c312a05e23dba7a77383b
-Q
-!pdbs/dcm/100_3552_DCM_414_903.pdb,7/5/7574fccb1f0abf3588f396d1be79599d30603bf1
-Q
-!pdbs/dcm/100_3151_DCM_367_781.pdb,6/5/65a1df3c947a75982d7a68dd62a083f19d2699f0
-R
-"pdbs/dcm/100_2413_DCM_282_1216.pdb,e/6/e6748895d2eed4790a33e2c134145fd80b41290e
-Q
-!pdbs/dcm/100_2242_DCM_262_349.pdb,1/0/10c1783f524192581f8d575eba38c5c1d5527a4b
-Q
-!pdbs/dcm/100_3431_DCM_400_472.pdb,e/2/e2c288879294e793505622e9eb0cc7044f232a50
-Q
-!pdbs/dcm/100_4322_DCM_499_988.pdb,4/0/40d4a3c5d0c37a57c79517bdba17e2af91d3bf23
 N
 configs/pbe0dz-dcm-mdcm.config,e/f/ef6f9601b41c1e2355475de44c9f34bf59995340
 T
@@ -1618,14 +1156,10 @@ M
 ff_energy/pydcm/tests/test.sh,5/9/596ef5e2bffb8863a5c6670bc4291864e619d86c
 X
 (ff_energy/ffe/charmm_files/dcm_pbe0dz.pc,5/6/563bdd6a5b1722fe97773a177f8bc4b77c17bcb4
-S
-#ff_energy/ffe/charmm_files/dcm.mdcm,3/7/376b62c1845bdc382dea64cb05743bf52921e79d
 H
 ff_energy/pydcm/model.py,4/8/487fc20bbbe495f567b474c002ba7003c0d9bdad
 F
 ff_energy/pydcm/dcm.py,d/2/d2a3633aa30dcd1132b7cc3d919b71d780f06600
-c
-3ff_energy/pycharmm_runner/source/dcm/dcm_toppar.str,3/d/3d51819ba981c682186663987eaddc07d4673ca2
 E
 tests/test_reports.py,1/8/1883332e3f45468ac0db300f61481f84f5ef8c85
 Z
@@ -1657,8 +1191,6 @@ P
 P
  ff_energy/latex_writer/report.py,9/2/9250edc4aca46a7be64ac204ebc568b9d45f9b3c
 Q
-!experiments/kernel_fit/Data.ipynb,7/6/76ed150e7fedeca9ac9500671eddacd80cae330c
-Q
 !notebooks/povray/povraytest.ipynb,9/0/9027f41c786b0a637be26032a717ad104fdddfa1
 ]
 -ff_energy/latex_writer/energydata/__init__.py,d/d/dd8557e1ebf4436fb57995e1edb5995aa156e513
@@ -1674,24 +1206,16 @@ K
 reports/PAPERMILLS-FF.ipynb,8/2/826f42c5b48f1bebb36e38455eac5f3b9fa750cc
 ^
 .notebooks/working/data/mike_pol_dcm_intern.txt,c/d/cd70d8b50960af798d41fea4e950169d938c3824
-S
-#notebooks/working/data/ions_pol.txt,8/1/81ccc5ce6c608c3eaf7c40d9846ab0a58c9434d6
-O
-pdbs/ions_ext/35_1_POT_39_1.pdb,f/f/ffd694757a923cd4e6159ac1ba1542a77ef2fa19
 R
 "ff_energy/ffe/charmm_files/tip3.pc,3/c/3cf7c1240822889a3e18be25693e7f2d04a96865
 T
 $ff_energy/ffe/charmm_files/water.dcm,c/d/cd9459a1f872a6eeb0f23edc12057a03b84604c4
-P
- pdbs/ions_ext/37_30_pot_31_1.pdb,0/b/0b4afa0bf8d5f69b016bdeb0a1c019e94ed3a4ae
 P
  pdbs/ions_ext/40_31_cla_31_1.pdb,3/6/36f184a607b2c9dc25fb93018382231d9e1e26e0
 P
  pdbs/ions_ext/40_17_cla_17_1.pdb,1/a/1a8f918ee162c783e3f6b61976ae4e7260f1cccb
 P
  pdbs/ions_ext/40_24_cla_24_1.pdb,9/d/9d72a46da8506731ca257faed3c9a3167faf369d
-P
- pdbs/ions_ext/37_16_pot_16_1.pdb,e/0/e06bee6d5f47c7a14c802fcbc75e2d6163e91c30
 N
 pdbs/ions_ext/37_4_cla_3_1.pdb,a/2/a2268606394a5f54d6f9b1b450b55ec6dde34b83
 P
@@ -1700,14 +1224,8 @@ N
 pdbs/ions_ext/40_5_cla_5_1.pdb,7/e/7e05a51d211443fbb14cc1d962960f6e2ca07569
 P
  pdbs/ions_ext/37_37_cla_39_1.pdb,4/3/438fb81f3af922b5aecf289f2b840a5262db534d
-N
-pdbs/ions_ext/40_7_pot_7_1.pdb,9/7/97d0dc6f76d68bc023136f0aac8bc2a8502c4ecf
 P
  pdbs/ions_ext/37_25_cla_27_1.pdb,9/3/939b1e2b1d937f4d6d6c1f73008042cf62d6d618
-P
- pdbs/ions_ext/37_36_pot_37_1.pdb,a/a/aa8ab1272b3d6578076f19e87d5f5388cb8f79cc
-N
-pdbs/ions_ext/37_4_pot_3_1.pdb,4/2/42dd16e7c753850d17f26418f02b0ac779c88c08
 P
  pdbs/ions_ext/40_18_cla_18_1.pdb,3/4/34858984294bfa6b7810896029bf3a22fdd1e64f
 P
@@ -1715,61 +1233,25 @@ P
 P
  pdbs/ions_ext/37_31_cla_33_1.pdb,3/3/3321802c18cf7095a8eb740021a5e42496c8e82f
 P
- pdbs/ions_ext/37_19_pot_20_1.pdb,2/6/26a19d89e2c56b881a3ea6d858bae81460fb79ea
-P
  pdbs/ions_ext/40_30_cla_30_1.pdb,9/2/92c6233e9bb16ecd9d7b2b4a8b3c4d0f545b21f0
 P
  pdbs/ions_ext/40_23_cla_23_1.pdb,c/c/cce9d0f721b3f5cbc3fe8bbc17ac9eb1f7cb863d
-P
- pdbs/ions_ext/37_35_pot_36_1.pdb,7/5/7583c9349a8db32ac2bac58f1e994d1a8d88d64d
-P
- pdbs/ions_ext/40_31_pot_33_1.pdb,9/7/97b727a2bdeb0c8d2feaa0cd6feaf74ea91206db
-P
- pdbs/ions_ext/40_24_pot_26_1.pdb,e/7/e76685af579255cb30f48fdde52b37424d66ff6f
-P
- pdbs/ions_ext/40_28_pot_30_1.pdb,e/3/e3c54fbdfe6e0a4168eabbb4cab75609183b4f73
 N
 pdbs/ions_ext/40_7_cla_7_1.pdb,6/b/6b783bbca09c9e93d293e7ae6003923863f7bf37
 N
 pdbs/ions_ext/40_2_cla_1_1.pdb,4/c/4ca60fd59eefab3d79b5cee61becbfc6b394a8d2
 P
- pdbs/ions_ext/37_15_pot_15_1.pdb,0/7/0799599b678c84f5feb780e05d05c9a05d7a3412
-P
  pdbs/ions_ext/40_16_cla_16_1.pdb,7/5/755e5ce9707ddf84fd06a39b997d016bdb58ef91
 P
- pdbs/ions_ext/40_30_pot_32_1.pdb,a/c/ac20060a07b630235c4b554efafde934570e664c
-P
  pdbs/ions_ext/37_12_cla_14_1.pdb,2/3/23b37a1e44f8d3817f8b532d1806f9a0403c637b
-N
-pdbs/ions_ext/40_4_pot_3_1.pdb,8/3/83c528600087a29a005b9e5edc81142754a9daa2
-P
- pdbs/ions_ext/37_14_pot_13_1.pdb,b/8/b822553ebedb0b79099b69cae5bda6c13c0fa483
-P
- pdbs/ions_ext/40_23_pot_25_1.pdb,d/1/d16648caf7b8cef7bf6cc71b7a7f8c0abf7cb97f
-P
- pdbs/ions_ext/37_28_pot_29_1.pdb,3/1/318e91912f3e4c31708caabd43634154549d604d
 O
 pdbs/ions_ext/37_9_cla_10_1.pdb,a/a/aa79a45b9ee9fd17e084594739f05967e47e2718
-N
-pdbs/ions_ext/40_9_pot_9_1.pdb,c/e/ce6916ee4f8eebd20ad8911bab9024a10f4bd9f8
 P
  pdbs/ions_ext/37_33_cla_35_1.pdb,6/8/68a5e200b9fb045b99f4672bb19f74176a4d15f1
-N
-pdbs/ions_ext/37_8_pot_7_1.pdb,3/6/36923290627e297be103415fee731fe366f3e071
 P
  pdbs/ions_ext/37_30_cla_32_1.pdb,4/b/4bc09cdd4fed6a04792fee87a3f4c4a4f6df0761
-N
-pdbs/ions_ext/37_2_pot_1_1.pdb,d/0/d0534a21d1e1724ab162c3c30cf7787e233bd077
-P
- pdbs/ions_ext/37_22_pot_23_1.pdb,a/7/a717f44cfb158db53d1409dc6120b3b3baa6c524
-P
- pdbs/ions_ext/37_11_pot_10_1.pdb,f/c/fc09fd6cc177743c562e5b50af925c8416a95a65
-P
- pdbs/ions_ext/37_25_pot_26_1.pdb,d/1/d123c9810ef77bc7e2fe691ccb1db36c91fe2de9
 P
  pdbs/ions_ext/40_19_cla_19_1.pdb,c/7/c7bdebc67352b983008300a3493b8501bb8a59eb
-P
- pdbs/ions_ext/40_22_pot_24_1.pdb,e/0/e0e8661237b9786b4b7256c06703305e21742e4b
 P
  pdbs/ions_ext/40_33_cla_34_1.pdb,b/6/b6807510d028f6523611806072c134be4a641f18
 P
@@ -1778,124 +1260,50 @@ P
  pdbs/ions_ext/40_20_cla_20_1.pdb,4/d/4d9ebb9a2b7b5270f35adbfb3e3a0de07829cdb6
 P
  pdbs/ions_ext/40_32_cla_32_1.pdb,8/8/885a4b212e5a8637e6c554c7ba3fa6606cd90df8
-P
- pdbs/ions_ext/40_32_pot_34_1.pdb,2/a/2a51bdedfd6ae163ebf55a8afaa0a33e9f82cfd0
 N
 pdbs/ions_ext/40_6_cla_6_1.pdb,f/4/f4b7e601c7c4288ae9a4173a133f0b9be5cf09f0
-P
- pdbs/ions_ext/40_11_pot_11_1.pdb,4/0/401fc3b16b35dcca1e67d16369f63f30a4cd4baa
-P
- pdbs/ions_ext/40_12_pot_12_1.pdb,8/2/823c56abb19e7928cf1cc492afbb1e9c6bc32ce3
 N
 pdbs/ions_ext/37_5_cla_4_1.pdb,4/7/4720728364b2131f56342c8cc88e3fa50c2e0033
-P
- pdbs/ions_ext/40_20_pot_22_1.pdb,4/2/42ba666ea7b4d224fceef0609f686c3ba3a8f086
 N
 pdbs/ions_ext/40_1_cla_0_1.pdb,b/2/b2056b4f711f9850b17a4e840d39a2c16328b970
 P
- pdbs/ions_ext/37_24_pot_25_1.pdb,f/a/faf624816cc00935653362a644767d9214f4cdf7
-N
-pdbs/ions_ext/40_5_pot_4_1.pdb,b/9/b9fe874347d232817732038c5e31dbef298fe3da
-P
- pdbs/ions_ext/40_10_pot_10_1.pdb,d/a/da63a5a12fa50e73aac92100f2e4b072c25d1b0f
-O
-pdbs/ions_ext/35_1_pot_39_1.pdb,a/f/af29fbb79a330cdc7e47ef868c60350fee195e6a
-P
  pdbs/ions_ext/37_17_cla_19_1.pdb,b/2/b2c538727951af06f40eb7613e0439241863c7a4
-P
- pdbs/ions_ext/40_35_pot_37_1.pdb,7/a/7abe4a6f61ccd25cd0ffe932a3dd7fb624b9d27a
-P
- pdbs/ions_ext/37_23_pot_24_1.pdb,4/4/44ebfc1e7fb9253e85f0ce4ee7d965f83f640fcc
-N
-pdbs/ions_ext/37_9_pot_8_1.pdb,4/c/4c36be2349ffe6f34bb6a068eee9b1699036f4d0
-P
- pdbs/ions_ext/37_29_pot_30_1.pdb,9/0/900fb3a7b73f4076372d98b29b8c6e5f68b3c018
-N
-pdbs/ions_ext/37_3_pot_2_1.pdb,9/0/9004bd4a0f2f6463852f2fd9f810d1d567543a6b
-N
-pdbs/ions_ext/40_1_pot_0_1.pdb,2/d/2d00963ea67c22d6919efa15d2881b973dcebc3f
-P
- pdbs/ions_ext/37_26_pot_27_1.pdb,f/b/fb0a47761fe0cc53019493a141ae180c732e275a
-P
- pdbs/ions_ext/40_34_pot_36_1.pdb,8/2/828c11d58e7c1469f590ce9a9143df6473460f6a
 P
  pdbs/ions_ext/37_16_cla_18_1.pdb,d/d/dd13e2d8c236c69ae890a3a5bd48da36271a1633
 P
- pdbs/ions_ext/37_33_pot_34_1.pdb,6/b/6b6c8d9f87644aad6a85ab7e36c3886a086de636
-P
  pdbs/ions_ext/37_15_cla_17_1.pdb,d/4/d4d2eb588d24221f44b97a91537a0098b104f39a
-N
-pdbs/ions_ext/37_5_pot_4_1.pdb,8/7/87d16ff0d4ec30190ef9c8c3423bd8f30c9cdd1e
 P
  pdbs/ions_ext/37_22_cla_24_1.pdb,9/0/90a357ea2ca4a57a9d6b9061f50e82be2f983ca5
 P
- pdbs/ions_ext/40_33_pot_35_1.pdb,0/0/004120c384a6f904f8b21ea0f213db322110145d
-P
- pdbs/ions_ext/37_20_pot_21_1.pdb,9/a/9a8a2dbb42aedfd723017eb3ba3b7a62fb341457
-P
  pdbs/ions_ext/40_34_cla_35_1.pdb,2/3/238bc03387f98f551ec6c905ee6d8511227b9d5c
-N
-pdbs/ions_ext/40_6_pot_6_1.pdb,a/a/aa4b77a6bec341b9926a3e9549fdbd0d4a1f6e80
-P
- pdbs/ions_ext/40_14_pot_15_1.pdb,4/c/4c240d80be2449c9a717ae563d05d930d446b934
 N
 pdbs/ions_ext/37_3_cla_2_1.pdb,4/8/48562e4b1197f54346fd5ceb1292e226f222bb49
 P
  pdbs/ions_ext/37_19_cla_21_1.pdb,4/2/4212ce0a3fdbf60fec840d5fa07357c2d09c59b5
-P
- pdbs/ions_ext/37_13_pot_12_1.pdb,5/4/549250400cb7e16fd51f70aeb5f94f4f5539c08c
-P
- pdbs/ions_ext/40_21_pot_23_1.pdb,b/6/b6f5b9095fe6a39f0dc6db652bbe2622e4e073ce
 N
 pdbs/ions_ext/37_8_cla_9_1.pdb,e/8/e89631269aa9cf52b81f808bd24684060c087dc7
 P
  pdbs/ions_ext/40_21_cla_21_1.pdb,6/a/6ab8532d344444c573246da851d306f37f7584b3
 P
- pdbs/ions_ext/40_26_pot_28_1.pdb,3/a/3a391ae70a82be84ab39a15973e96608050fedd9
-P
- pdbs/ions_ext/37_21_pot_22_1.pdb,d/0/d017779e9f4d40c7f0a3d75eaa3d064eb8bcdb9a
-P
- pdbs/ions_ext/37_12_pot_11_1.pdb,f/b/fbc24f27b7659cee8fca64d30dfe7a85f42e7bec
-P
  pdbs/ions_ext/40_14_cla_14_1.pdb,f/e/fe10708b9f795b34373157d729819d72dd50a168
-P
- pdbs/ions_ext/40_13_pot_14_1.pdb,1/b/1bc1a9bfb5920eb237e0d74efe5c5e68e7c99640
 P
  pdbs/ions_ext/37_18_cla_20_1.pdb,5/e/5e4cf8cd26cbf214847c7c942cd58eb227223399
 P
  pdbs/ions_ext/37_35_cla_37_1.pdb,6/2/62a40e9883fa4db2a6bcbbe1a14c2058bb752b42
 P
- pdbs/ions_ext/40_29_pot_31_1.pdb,e/d/ed2b0b51f56a1780e2de58b3cbd62f610eef9a0f
-P
  pdbs/ions_ext/40_22_cla_22_1.pdb,b/3/b387a756c6e9cefc66e50855dd4bb12bb13f18b9
-N
-pdbs/ions_ext/40_8_pot_8_1.pdb,1/f/1fe9ddd76f94ba9f9da67e6297b49b905f9b9f95
 P
  pdbs/ions_ext/37_34_cla_36_1.pdb,2/8/280153c08cea22fde91a5a1f22c0944855f861cd
 P
  pdbs/ions_ext/40_15_cla_15_1.pdb,e/f/ef27afc9ccbd82c74edffd04b614bf752a13e902
 P
- pdbs/ions_ext/37_27_pot_28_1.pdb,5/c/5ca0bfdd684cb726a1a745e0ea2fd714e5ea80bf
-P
  pdbs/ions_ext/37_27_cla_29_1.pdb,2/a/2a95e30903e5b5a410e7085d99edeb9055802658
-O
-pdbs/ions_ext/38_1_pot_38_1.pdb,d/e/de0693aebe59697a09efac8d457d33a5ebc97af5
-P
- pdbs/ions_ext/37_34_pot_35_1.pdb,0/8/0880bfb2c1fd871bd129ff9f4ce717dd2a08336c
-N
-pdbs/ions_ext/40_3_pot_2_1.pdb,4/8/480db2af20bf2782e96a76f521036ea91f67c32e
-P
- pdbs/ions_ext/40_15_pot_16_1.pdb,6/7/675d3ec6c7ade2cf367e040fc871a161e2b320ab
-P
- pdbs/ions_ext/40_25_pot_27_1.pdb,5/f/5faa36eb8b2b1d55a371cb71cc27b5119a953525
 N
 pdbs/ions_ext/40_4_cla_4_1.pdb,4/b/4ba6daa85cc4c4163ae9d8223e1c028e26bacfe4
 P
  pdbs/ions_ext/40_35_cla_36_1.pdb,5/4/544745f727b3fb5007e3e078ba982af358c78ea3
 P
  pdbs/ions_ext/40_36_cla_38_1.pdb,6/8/6869ded2ea098f62b658ce05b37e7c2f2451a35f
-O
-pdbs/ions_ext/37_10_pot_9_1.pdb,3/a/3a8940d3151ec50fe879e6117f00176f96482d21
 P
  pdbs/ions_ext/40_13_cla_13_1.pdb,8/d/8da94efac139cd5e0d7eb8784f274fc0b1954ad5
 P
@@ -1910,46 +1318,26 @@ N
 pdbs/ions_ext/40_8_cla_8_1.pdb,d/1/d1f77d40b48e123be1828572be72392c0c0738bc
 P
  pdbs/ions_ext/37_21_cla_23_1.pdb,8/5/858f023fbfb91d2544c7363c9a20b3614837567d
-N
-pdbs/ions_ext/37_7_pot_6_1.pdb,7/7/77dd68cdc4a7954fcc2420526ddfb6a7997e0483
 P
  pdbs/ions_ext/37_26_cla_28_1.pdb,0/d/0d30b7e72522db76aa71ec32a691681299210c70
-P
- pdbs/ions_ext/37_18_pot_19_1.pdb,4/b/4bd1b5ccd17e6ffd25823a29ad6905f24895f326
 N
 pdbs/ions_ext/40_3_cla_2_1.pdb,a/7/a7ae5fbf363f51ab0ede3cdba6b3e1edc97b4e42
 P
  pdbs/ions_ext/37_36_cla_38_1.pdb,d/4/d47333c79b76b3de5ab88579b9b91a8a6bdfea02
 P
- pdbs/ions_ext/37_17_pot_17_1.pdb,e/3/e3f123d882d3a0566da070cbc71d6ca0ae3460df
-P
  pdbs/ions_ext/40_10_cla_10_1.pdb,b/1/b10a9e9e47b50509cc207944050347af462e8ffd
 N
 pdbs/ions_ext/40_9_cla_9_1.pdb,e/1/e191082f2ff8598e43314515a43a246e1695a7e3
-N
-pdbs/ions_ext/37_1_pot_0_1.pdb,c/2/c23f5df3e3b0645b0019344db852976aa5d55df3
-P
- pdbs/ions_ext/40_18_pot_19_1.pdb,6/6/66498c8d075e58ca0f2da06a435f76dd2210dd5e
 P
  pdbs/ions_ext/40_25_cla_25_1.pdb,c/b/cb05e67565bb4e34820cf354a5c1e6db031f8c2e
 P
- pdbs/ions_ext/40_19_pot_20_1.pdb,3/d/3da3dc99a60ce3fb39bd8795224cffc059966dc6
-P
  pdbs/ions_ext/40_29_cla_29_1.pdb,f/7/f72591faf9d5f85c46a699fca59ec2400e902f96
-P
- pdbs/ions_ext/37_32_pot_33_1.pdb,8/f/8fa2064cd2fa5e77d84eb81aa48f4710162033cb
 P
  pdbs/ions_ext/37_20_cla_22_1.pdb,4/6/46dc57d6ab224613fba0fa63b5b814f72b7ae43e
 P
  pdbs/ions_ext/37_29_cla_31_1.pdb,3/d/3d6b308abe0e73a4005b8d2cbeb7b410b10771a1
 P
  pdbs/ions_ext/40_11_cla_11_1.pdb,4/1/41fd8e4b2b885f2a78e540814f25b9e9bef2e635
-P
- pdbs/ions_ext/40_27_pot_29_1.pdb,8/2/82cd236ebe940a0e9c8b4af8ce36be7214907b7a
-P
- pdbs/ions_ext/40_17_pot_18_1.pdb,a/9/a92936c81f9bcaef5bddc440171df52fe3dcc154
-N
-pdbs/ions_ext/40_2_pot_1_1.pdb,3/8/3874bdc9ccc29cf617a752f084a06016d06831f6
 P
  pdbs/ions_ext/40_26_cla_26_1.pdb,b/4/b485b46fd662424cd62581eea6a2ae3f4c3179ce
 N
@@ -1961,8 +1349,6 @@ P
 P
  pdbs/ions_ext/37_23_cla_25_1.pdb,4/2/42f17e15300aeca860d834d4d885a9c8de84cd1d
 P
- pdbs/ions_ext/37_31_pot_32_1.pdb,b/7/b745b5d9d01454d2a619e377698670f556bbdb8f
-P
  pdbs/ions_ext/40_12_cla_12_1.pdb,5/5/552e4e0facaa341906bfb852323db0ad70a6479d
 P
  pdbs/ions_ext/40_27_cla_27_1.pdb,9/5/952aad8d5fa2b124545aefc77f00d16fa4794ebc
@@ -1970,14 +1356,10 @@ N
 pdbs/ions_ext/37_7_cla_7_1.pdb,b/6/b629056690b93e3c67345b2c9bcf9d536dda1af0
 P
  pdbs/ions_ext/40_37_cla_39_1.pdb,6/0/60623a7013462a2ec5f9134917f0c1d98df08965
-P
- pdbs/ions_ext/40_16_pot_17_1.pdb,b/0/b03d756d89ce3ee7adc9735c22c8a376f4d3ce04
 V
 &notebooks/working/20230821--elec.ipynb,2/7/27db3ad774d35282b587a8098b9a9c5b77dd2490
 P
  pdbs/ions_ext/37_10_cla_11_1.pdb,6/b/6bc6ac8cae3ca9f883a1c94f3846b8e490fb3766
-N
-pdbs/ions_ext/37_6_pot_5_1.pdb,b/3/b3ebbc0ceeeb848985dbc2576e706aab15b38927
 S
 #configs/pbe0dz-ions_ext-mdcm.config,f/c/fc8dae7442a6b6c857ae464d905aecad77c4c533
 V
@@ -1986,3 +1368,51 @@ T
 $ff_energy/ff_experiments/__init__.py,e/a/ea96d6ccf6c5e09057313ce52954c9202c0402c2
 T
 $ff_energy/ff_experiments/load_ffs.py,5/0/501213c0437acc0d0c92a539c06cfecc2bffc094
+S
+#notebooks/working/data/ions_pol.txt,8/1/81ccc5ce6c608c3eaf7c40d9846ab0a58c9434d6
+S
+#ff_energy/ffe/charmm_files/dcm.mdcm,3/7/376b62c1845bdc382dea64cb05743bf52921e79d
+L
+ff_energy/packmol/packmol.py,6/a/6a6e33f199e5c0390a85c3903ace19a2022c123d
+N
+ff_energy/packmol/densities.py,a/b/ab9509ea014e6c9a86848a996ffe747679ee6d1f
+M
+ff_energy/packmol/dcm_box.pdb,6/7/6724e87e75ffe2b33286a7571e28338bab8e66a6
+W
+'ff_energy/ffe/charmm_files/pbe0_dz.mdcm,0/8/08bc1a56e6ceaf20dc57ad360fa34eb3493b7468
+L
+ff_energy/simulations/sim.py,b/e/beb6fd29de7e2f749cf3a96c067eb8f79a683f44
+O
+ff_energy/simulations/dipole.py,a/a/aadfa41cf0537ee9c8203f61d53ab951023d918b
+X
+(ff_energy/simulations/parametrization.py,5/f/5fba3acc070a3a554349feab5694bca1c9ea58b6
+Y
+)ff_energy/ffe/charmm_files/meoh_pbe0dz.pc,c/b/cbdf7de77970900f17f5c87ce3d0fa5f601645b1
+L
+ff_energy/utils/sim_utils.py,3/1/31344515f511d4aff7a051f6cf7f94a685cf7e47
+[
++ff_energy/ffe/charmm_files/meoh_pbe0dz.mdcm,b/6/b6de6aae4895ffb2028bab034865e2c67108af2c
+X
+(ff_energy/ffe/charmm_files/meoh_old.mdcm,9/8/98ee2d18f826c35743a677e66e5ec4cad521b105
+N
+pdbs/dcm/100_14_dcm_1_1073.pdb,9/7/9739c5f18df675dd1fd6ac3b70382d45f16cf062
+=
+ERICREADME.md,e/f/efa281550837ffd780570fbfc0233f8d601c11bf
+G
+ff_energy/ffe/ff_fit.py,6/2/62aefc677214fd841d4fd317c1f5821d32eabad3
+S
+#ff_energy/pycharmm_runner/README.md,9/2/923c40f5813526b4b3b34380f4bc3099efd1259e
+H
+pdbs/pdbs4/test0.xyz.pdb,3/8/3833e968dfe83861640ad74cea5d3fb2a1de908d
+O
+pdbs/ions_ext/35_1_POT_39_1.pdb,f/f/ffd694757a923cd4e6159ac1ba1542a77ef2fa19
+N
+pdbs/ions_ext/37_1_POT_0_1.pdb,6/e/6ef419a5c07df36f195539bd57ba917ad63539f6
+E
+experiments/README.md,d/f/dfc2a61790097e881d0165b6cbe78b66e6c106ad
+I
+pdbs/cla_test/CLA_0_0.pdb,8/7/87d808dae6d3bf4411b4f0892a0034d0fe3342cf
+I
+pdbs/cla_test/cla_0_0.pdb,d/4/d445cdbf9aead82da43cdee2b25092030f2bb85f
+K
+pdbs/pot_test/pot_27_27.pdb,c/0/c0a4476a4bc61a0b780b71e219d19a154cd1377f

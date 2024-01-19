@@ -6,6 +6,8 @@ CONFIG_PATH = FFEPATH / "configs"
 REPORTS_PATH = FFEPATH / "latex_reports"
 PKL_PATH = FFEPATH / "pickles"
 PDB_PATH = FFEPATH / "pdbs"
+NB_PATH = FFEPATH / "notebooks"
+WORKINGDATA_PATH = FFEPATH / "notebooks" / "working" / "data"
 
 #  cluster details
 clusterBACH = ("ssh", "boittier@pc-bach")
@@ -31,10 +33,13 @@ atom_types = {
     ("HOH", "H1"): "HT",
     ("HOH", "H2"): "HT",
     ("CLA", "CLA"): "CLA",
+    ("CLA", "CL"): "CLA",
     ("POT", "POT"): "POT",
-    ("CLA", "Cl"): "Cl",
-    ("POT", "K"): "K",
+    ("CLA", "Cl"): "CLA",
+    ("POT", "K"): "POT",
     ("TIP3", "OH2"): "OT",
+    ("TIP3", "OT"): "OT",
+    ("TIP3", "HT"): "HT",
     ("TIP3", "H1"): "HT",
     ("TIP3", "H2"): "HT",
     ("DCM", "C"): "C",

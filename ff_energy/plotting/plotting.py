@@ -17,6 +17,7 @@ warnings.filterwarnings("ignore", module="matplotlib\..*")
 
 def set_style(no_latex=False):
     if True:
+        import matplotlib.pyplot as plt
         plt.style.use(["science", "no-latex"])
     # else:
     #     plt.style.use(["science", "bright"])
@@ -53,6 +54,20 @@ def set_style(no_latex=False):
     # mpl.rcParams['text.latex.preamble'] = [r'\usepackage[cm]{sfmath}']
     # mpl.rcParams['font.family'] = 'sans-serif'
     # mpl.rcParams['font.sans-serif'] = 'cm'
+
+    import matplotlib.pyplot as mpl
+
+    mpl.rcParams['text.latex.preamble'] = [
+        r'\usepackage{siunitx}',  # i need upright \micro symbols, but you need...
+        r'\sisetup{detect-all}',  # ...this to force siunitx to actually use your fonts
+        r'\usepackage{helvet}',  # set the normal font here
+        r'\usepackage{sansmath}',  # load up the sansmath so that math -> helvet
+        r'\sansmath'  # <- tricky! -- gotta actually tell tex to use!
+    ]
+
+    import pylab as plt
+    params = {'text.usetex': False, 'mathtext.fontset': 'stixsans'}
+    plt.rcParams.update(params)
 
 
 

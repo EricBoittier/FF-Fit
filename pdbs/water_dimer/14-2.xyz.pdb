@@ -1,0 +1,12 @@
+HEADER
+TITLE     Built manually
+REMARK   
+REMARK   
+REMARK
+ATOM      1 OH2  TIP3    1       0.000   0.000   0.000  0.00  0.00          OH2  
+ATOM      2  H1  TIP3    1       0.000   0.000   0.970  0.00  0.00          H1  
+ATOM      3  H2  TIP3    1       0.000   0.939  -0.243  0.00  0.00          H1  
+ATOM      4 OH2  TIP3    2       1.563  -0.903   5.633  0.00  0.00          OH2  
+ATOM      5  H1  TIP3    2       2.393  -1.382   5.782  0.00  0.00          H1  
+ATOM      6  H2  TIP3    2       1.037  -0.598   6.388  0.00  0.00          H1  
+END

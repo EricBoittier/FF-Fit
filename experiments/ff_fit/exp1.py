@@ -44,7 +44,7 @@ sig_bound = (0.25, 2.5)
 ep_bound = (0.001, 1.0)
 chg_bound = (100, 2000)
 alpha_bound = (1, 8)
-beta_bound = (6, 20)
+beta_bound = (2, 14)
 
 CHGPEN_bound = [(chg_bound), (chg_bound), (chg_bound), (chg_bound), (0, 2000)]
 LJ_bound = ((sig_bound), (sig_bound), (ep_bound), (ep_bound))
@@ -92,6 +92,10 @@ def make_ff_object(x):
             #  load the pickle files
             pkl_file = PKL_PATH / "20230823_water_clusters.pkl.pkl"
             pkl_files.append(pkl_file)
+        elif structure == "ions_ext":
+            #  load the pickle files
+            pkl_file = PKL_PATH / "20230919_ions_ext.pkl.pkl"
+            pkl_files.append(pkl_file)
         else:
             raise ValueError("Invalid structure")
 
@@ -103,10 +107,16 @@ def make_ff_object(x):
 
         struct_data = structs[0]
 
+        if structure == "ions_ext":
+            import numpy as np
+            struct_data.atomnames = np.append(struct_data.atomnames, "CLA")
+            struct_data.restypes = np.append(struct_data.restypes, "CLA")
+            struct_data.chm_typ = np.append(struct_data.chm_typ, "CLA")
+
         # set the 2body terms
-        print("setting 2body")
-        for _ in structs:
-            _.set_2body()
+        # print("setting 2body")
+        # for _ in structs:
+        #     _.set_2body()
 
         dists = {
             str(Path(_.name).stem).split(".")[0]:
@@ -149,7 +159,7 @@ def make_ff_object(x):
             intE=target,
         )
         #  set the targets
-        ff.num_segments = len(ff.data[elec].index)
+        ff.num_segments = len(ff.data)
         ff.set_targets()
         ##############################
         outes = ff.out_es
@@ -218,18 +228,22 @@ def ff_fit(x, n=100):
     print("nTargets:", ff.nTargets)
     ff.num_segments = ff.nTargets
     ff.set_targets()
-    loss = "jax"
+    loss = "jax" if "lj" in fit else "jax_de"
     LJFF = fit_repeat(
         ff, n, f"{ffpkl}_fitted", bounds=ff.bounds, loss=loss,
         quiet=False
     )
     print(LJFF.opt_results)
     pickle_output(LJFF, f"{ffpkl}_fitted")
-    jaxeval, sigma, epsilon = ff.eval_jax(LJFF.get_best_parm())
-    print("sigma::", sigma)
-    print("epsilon::", epsilon)
+    if fit == "lj":
+        jaxeval, sigma, epsilon = ff.eval_jax(LJFF.get_best_parm())
+    else:
+        jaxeval = ff.eval_jax_de(LJFF.get_best_parm())
     print("eval_jax::", jaxeval)
-    jaxloss = ff.get_loss_jax(LJFF.get_best_parm())
+    if fit == "lj":
+        jaxloss = ff.get_loss_jax(LJFF.get_best_parm())
+    else:
+        jaxloss = ff.get_loss_jax_de(LJFF.get_best_parm())
     print("jaxloss::", jaxloss)
     elec = ff.data[LJFF.elec]
     targets = ff.targets
@@ -258,6 +272,7 @@ def ff_fit(x, n=100):
     ).dropna()  # drop the nans
     #  plot the results
     df_test.to_csv(PKL_PATH / (ffpkl + "_elec.csv"))
+    pd.DataFrame(ff.opt_results).to_csv(PKL_PATH / (ffpkl + "_optres.csv"))
     residuals_plot(df_test, ffpkl + "_elec_jax")
     print(df_test.describe())
     plt.clf()

@@ -27,12 +27,12 @@ def hide_logs():
 
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.WARNING,
     format="%(asctime)s | %(levelname)s | %(module)s:%(funcName)s:%(lineno)d - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
         logging.FileHandler(filename="info.log"),
-        logging.StreamHandler(),
+        # logging.StreamHandler(),
     ],
 )
 

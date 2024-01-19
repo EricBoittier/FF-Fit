@@ -6,6 +6,7 @@ from pathlib import Path
 system_names = [
     "water_cluster",
     "water_dimer",
+    "water_dimer2",
     "methanol_cluster",
     "water_tests",
     "lithium",
@@ -13,11 +14,16 @@ system_names = [
     "dcm",
     'dcmdimerscan',
     "ions_ext",
+    "water_test",
+    "dcm_test",
+    "cla_test",
+    "pot_test",
 ]
 
 pdbs = [
     "pdbs4/",
     "dimer3d/",
+    "water_dimer2/",
     "pdbsclean/",
     "water_tests/",
     "lithium/",
@@ -25,9 +31,14 @@ pdbs = [
     "dcm/",
     'dcmdimerscan/',
     "ions_ext/",
+    "water_test/",
+    "dcm_test/",
+    "cla_test/",
+    "pot_test/",
 ]
 
 system_types = [
+    "water",
     "water",
     "water",
     "methanol",
@@ -36,7 +47,11 @@ system_types = [
     "water",
     "dcm",
     "dcm",
-    "water"
+    "water",
+    "water",
+    "dcm",
+    "water",
+    "water",
 ]
 
 SYSTEMS = {
@@ -128,6 +143,11 @@ ATOM_TYPES = {
         ("TIP3", "H1"): "HT",
         ("TIP3", "H2"): "HT",
     },
+    "water_dimer2": {
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
     "methanol_cluster": {
         ("LIG", "O"): "OG311",
         ("LIG", "C"): "CG331",
@@ -157,6 +177,7 @@ ATOM_TYPES = {
     "ions_ext": {
         ("CLA", "CLA"): "CLA",
         ("CLA", "Cl"): "CLA",
+        ("CLA", "CL"): "CLA",
         ("POT", "POT"): "POT",
         ("POT", "K"): "POT",
         ("TIP3", "OH2"): "OT",
@@ -178,6 +199,33 @@ ATOM_TYPES = {
         ("DCM", "H1"): "H",
         ("DCM", "H2"): "H",
         ("DCM", "H"): "H",
+    },
+    "water_test": {
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
+    "dcm_test": {
+        ("DCM", "C"): "C",
+        ("DCM", "CL1"): "CL",
+        ("DCM", "CL2"): "H",
+        ("DCM", "H1"): "H",
+        ("DCM", "H2"): "H",
+        ("DCM", "H"): "H",
+    },
+    "cla_test": {
+        ("CLA", "CLA"): "CLA",
+        ("POT", "POT"): "POT",
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
+    "pot_test": {
+        ("CLA", "CLA"): "CLA",
+        ("POT", "POT"): "POT",
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
     },
 }
 

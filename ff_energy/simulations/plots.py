@@ -3,7 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 import ff_energy
-from ff_energy import get_rdf_peaks
+from ff_energy.utils.sim_utils import get_rdf_peaks
 
 time_label = "$t$ (ps)"
 energy_label = "$E$ (kcal/mol)"
@@ -322,7 +322,8 @@ def plot_rdf_from_file(title, ax, label=None):
 def plot_rdf(ax, u, title=False, step=100):
     """Plot the rdf"""
     # get the rdf
-    irdf = ff_energy.simulations.utils.g_rdf(u, step=step)
+    irdf = ff_energy.utils.sim_utils.g_rdf(u, step=step)
+    #ff_energy.simulations.utils.g_rdf(u, step=step)
     peaks = get_rdf_peaks(irdf)
 
     # plot the rdf

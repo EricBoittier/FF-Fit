@@ -184,7 +184,7 @@ def data_jobs(CMS, molpro_small_path):
         jm.gather_data(
             HOMEDIR,
             MONOMERS,  # monomers
-            PCBACH,  # cluster
+            PCNCCR,  # cluster
             PAIRS,  # pairs
             COLOUMB,  # coulomb
             CHM,  # charmm
@@ -381,7 +381,8 @@ if __name__ == "__main__":
             if args.submit:
                 if args.verbose:
                     logger.info("Submitting Molpro Jobs")
-                molpro_submit_big(clusterBACH, jobmakers, max_jobs=400, Check=True)
+                # molpro_submit_big(clusterBACH, jobmakers, max_jobs=400, Check=True)
+                molpro_submit_big(clusterNCCR, jobmakers, max_jobs=400, Check=True)
 
         if args.molpro_small:
             if args.verbose:

@@ -1348,7 +1348,7 @@ module dcm_fortran
 
                         ! Convert charge from local to global axis system
                         x = mdcm_clcl(idxchrg + l - 1)      &
-                            *fatom_elcl(:, l, j, i)
+                            * fatom_elcl(:, l, j, i)
                         fatom_cxyz(idxchrg:idxchrg + 2) =   &
                             fatom_cxyz(idxchrg:idxchrg + 2) + x
 

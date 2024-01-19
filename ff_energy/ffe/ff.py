@@ -61,8 +61,6 @@ class FF:
         #  sort atom types
         self.atom_types.sort()
         print(f"Atom types: {self.atom_types}")
-
-
         self.atom_type_pairs = valid_atom_key_pairs(self.atom_types)
         print(f"Atom types: {self.atom_types}")
         print(f"Atom type pairs: {self.atom_type_pairs}")
@@ -312,6 +310,9 @@ class FF:
         for ik, k in enumerate(self.data.index):
             # print(ik, k)
             # get the distance
+            if "_dcm_" in k.lower():
+                k = k.lower()
+                print("lowered", k)
             dists = DISTS[k]
             #  loop over atom pairs
             for i, akp in enumerate(self.atom_type_pairs):
@@ -427,6 +428,7 @@ class FF:
             self.out_akps,
             self.out_groups,
             x,
+            num_segments=self.num_segments,
         )
         return LJE
 
@@ -434,6 +436,10 @@ class FF:
         """evaluate the LJ potential over all distances"""
         return LJflat(self.out_dists, self.out_akps, x)
 
+    def eval_jax_de_flat(self, x):
+        """evaluate the LJ potential over all distances"""
+        return DEflat(self.out_dists, self.out_akps, x)
+    
     def get_loss_jax(self, x) -> float:
         """
         get the mean squared error of the LJ potential

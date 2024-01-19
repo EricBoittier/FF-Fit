@@ -116,8 +116,9 @@ class Data:
         pairs_df = ddict["pairs"] if "pairs" in ddict.keys() else None
         monomer_df = ddict["monomers"] if "monomers" in ddict.keys() else None
         #  Unload the data
-        self.data = data.drop_duplicates()
-        print("data", data.drop_duplicates())
+        if self.data is not None:
+            self.data = data.drop_duplicates()
+            print("data", data.drop_duplicates())
         self.coloumb = col
         if (
                 "M_ENERGY" in data.keys()
@@ -133,9 +134,12 @@ class Data:
         self.monomers_df = monomers_df  # .dropna()
         self.monomer_df = monomer_df  # .dropna()
         self.cluster_df = cluster_df
-        self.pairs_df = pairs_df.drop_duplicates()
+        if pairs_df is not None:
+            self.pairs_df = pairs_df.drop_duplicates()
+        else:
+            self.pairs_df = None
 
-        print(self.monomers_df)
+        #print(self.monomers_df)
 
         self.prepare_monomers(min_m_E=min_m_E)
 
@@ -143,33 +147,38 @@ class Data:
         self.pair_ff_data = None
 
     def prepare_monomers(self, min_m_E=None):
+        if min_m_E is None:
+            min_m_E = -76.359922443809 # water pbe1pbe/augdz
+        sum_pairs = None
         if self.monomers_df is not None:
             monomidx = list(self.monomers_df.index)
             self.monomers_df["key"] = [x.split("_")[-1] for x in monomidx]
             self.monomers_df["monomer"] = [
                 monomidx.index(x) for x in self.monomers_df.index
             ]
-            self.pairs_df["key"] = [
-                "_".join(_.split("_")[:-2]) for _ in self.pairs_df.index
-            ]
-            self.pairs_df["pair"] = [
-                (int(x.split("_")[-2]), int(x.split("_")[-1]))
-                for x in self.pairs_df.index
-            ]
+            if self.pairs_df is not None:
+                self.pairs_df["key"] = [
+                    "_".join(_.split("_")[:-2]) for _ in self.pairs_df.index
+                ]
+                self.pairs_df["pair"] = [
+                    (int(x.split("_")[-2]), int(x.split("_")[-1]))
+                    for x in self.pairs_df.index
+                ]
 
-            sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
-            print("len(sumpairs)", len(sum_pairs))
+                sum_pairs = self.pairs_df.groupby("key")["p_int_ENERGY"].sum()
+                print("len(sumpairs)", len(sum_pairs))
             # print(sum_pairs)
             df = self.data
             df = df.loc[:,~df.columns.duplicated()].copy()
             self.data = df
             # print(self.data["KEY"])
-            self.data["P_intE"] = [
-                sum_pairs.loc[i] * 627.5
-                if i in sum_pairs.keys()
-                else None
-                for i in self.data["KEY"]
-            ]
+            if sum_pairs is not None:
+                self.data["P_intE"] = [
+                    sum_pairs.loc[i] * 627.5
+                    if i in sum_pairs.keys()
+                    else None
+                    for i in self.data["KEY"]
+                ]
 
             self.structures, self.pdbs = get_structures(self.system,
                                                         pdbpath=PDB_PATH / self.system,
@@ -180,7 +189,7 @@ class Data:
             if min_m_E is None:
                 self.min_m_E = self.monomer_df["m_ENERGY"].min()
 
-            if self.system.__contains__("water"):
+            if self.system.__contains__("water_cluster"):
                 self.add_internal_dof()
                 self.bonded_fit = FitBonded(self.monomers_df, self.min_m_E)
                 self.data["m_E_tot"] = self.bonded_fit.sum_monomer_df["m_E_tot"]
@@ -225,22 +234,95 @@ class Data:
         r2 = dist(b2)
         return a, r1, r2
 
-    def add_internal_dof(self) -> None:
-        a_s = []
-        r1_s = []
-        r2_s = []
-        for r in self.monomers_df.iterrows():
-            key = r[1]["KEY"].split("_")[0] + ".xyz"
-            monomer = int(r[1]["key"])
-            a, r1, r2 = self.get_internals_water(key, monomer)
-            a_s.append(a)
-            r1_s.append(r1)
-            r2_s.append(r2)
+    def get_internals_dcm(self, key, res):
+        print(key, res)
+        mask = self.structure_key_pairs[key].res_mask[res]
+        mol = self.structure_key_pairs[key].xyzs[mask]
 
-        #  add to dataframe
-        self.monomers_df["a"] = a_s
-        self.monomers_df["r1"] = r1_s
-        self.monomers_df["r2"] = r2_s
+        # array(['C', 'CL', 'CL', 'H', 'H'], dtype='<U2')
+        # bonds
+        b1 = mol[0] - mol[1] # C-Cl
+        b2 = mol[0] - mol[2] # C-Cl
+        b3 = mol[0] - mol[3] # C-H
+        b4 = mol[0] - mol[4] # C-H
+
+        r1 = dist(b1)
+        r2 = dist(b2)
+        r3 = dist(b3)
+        r4 = dist(b4)
+
+        a1 = angle(b1, b2) # Cl-C-Cl
+        a2 = angle(b1, b3) # Cl-C-H
+        a3 = angle(b1, b4) # Cl-C-H
+        a4 = angle(b2, b3) # Cl-C-H
+        a5 = angle(b2, b4) # Cl-C-H
+        a6 = angle(b3, b4) # H-C-H
+
+        return r1, r2, r3, r4, a1, a2, a3, a4, a5, a6
+
+    def add_internal_dof(self, res="water") -> None:
+
+        if res == "water":
+            a_s = []
+            r1_s = []
+            r2_s = []
+            for r in self.monomers_df.iterrows():
+                key = r[1]["KEY"].split("_")[0] + ".xyz"
+                monomer = int(r[1]["key"])
+
+                a, r1, r2 = self.get_internals_water(key, monomer)
+                a_s.append(a)
+                r1_s.append(r1)
+                r2_s.append(r2)
+
+            #  add to dataframe
+            self.monomers_df["a"] = a_s
+            self.monomers_df["r1"] = r1_s
+            self.monomers_df["r2"] = r2_s
+
+        elif res == "dcm":
+
+            a1 = []
+            a2 = []
+            a3 = []
+            a4 = []
+            a5 = []
+            a6 = []
+            r1 = []
+            r2 = []
+            r3 = []
+            r4 = []
+            for r in self.monomer_df.iterrows():
+                print(r)
+                key = "_".join(r[1]["KEY"].split("_")[:-1])
+                monomer = int(r[1]["KEY"].split("_")[-1])
+                print(key, monomer)
+                _r1, _r2, _r3, _r4, _a1, _a2, _a3, _a4, _a5, _a6 = \
+                    self.get_internals_dcm(key, monomer)
+                a1.append(_a1)
+                a2.append(_a2)
+                a3.append(_a3)
+                a4.append(_a4)
+                a5.append(_a5)
+                a6.append(_a6)
+                r1.append(_r1)
+                r2.append(_r2)
+                r3.append(_r3)
+                r4.append(_r4)
+
+            #  add to dataframe
+            self.monomer_df["a1"] = a1
+            self.monomer_df["a2"] = a2
+            self.monomer_df["a3"] = a3
+            self.monomer_df["a4"] = a4
+            self.monomer_df["a5"] = a5
+            self.monomer_df["a6"] = a6
+            self.monomer_df["r1"] = r1
+            self.monomer_df["r2"] = r2
+            self.monomer_df["r3"] = r3
+            self.monomer_df["r4"] = r4
+        else:
+            raise ValueError("res must be water or dcm")
 
     def plot_pair_monomer_E(self) -> None:
         _ = self.data[self.data["n_pairs"] == 190].copy()
