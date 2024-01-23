@@ -18,6 +18,7 @@ system_names = [
     "dcm_test",
     "cla_test",
     "pot_test",
+    "water_redo",
 ]
 
 pdbs = [
@@ -35,6 +36,7 @@ pdbs = [
     "dcm_test/",
     "cla_test/",
     "pot_test/",
+    "water_redo/",
 ]
 
 system_types = [
@@ -50,6 +52,7 @@ system_types = [
     "water",
     "water",
     "dcm",
+    "water",
     "water",
     "water",
 ]
@@ -201,6 +204,11 @@ ATOM_TYPES = {
         ("DCM", "H"): "H",
     },
     "water_test": {
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
+    "water_redo": {
         ("TIP3", "OH2"): "OT",
         ("TIP3", "H1"): "HT",
         ("TIP3", "H2"): "HT",

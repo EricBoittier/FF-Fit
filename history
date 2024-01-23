@@ -1,0 +1,1000 @@
+ 1070  cs
+ 1071  cd pcbach/
+ 1072  cs
+ 1073  cd kmdcm_water_sim_rkhs/
+ 1074  cs
+ 1075  vmd water.2000.mini.pdb water.2000.prod.1.dcd
+ 1076  cs
+ 1077  cd ..
+ 1078  cs
+ 1079  cd param2/methanol/kern/rkkk/t298.15/gas
+ 1080  cs
+ 1081  vmd test.xyz 
+ 1082  s
+ 1083  cs
+ 1084  cat job.inp 
+ 1085  vmd -e test.vmd 
+ 1086  cs
+ 1087  vi job.inp 
+ 1088  cscs
+ 1089  cs
+ 1090  cat test.xyz 
+ 1091  cs
+ 1092  vmd -e test.vmd 
+ 1093  cd
+ 1094  cs
+ 1095  scp boittier@pc-nccr-cluster:/home/unibas/boittier/FF-Energy/cubes/methanol/methanol_kern/*tga .
+ 1096  cs
+ 1097  display vmdscene.dat.tga
+ 1098  cs
+ 1099  cd pcbach/
+ 1100  cs
+ 1101  cd param2/methanol/kern/rkkk/t298.15/gas
+ 1102  cs
+ 1103  vmd -e test.xyz 
+ 1104  cs
+ 1105  pc-studix0 
+ 1106  pc-studix0 
+ 1107  exit
+ 1108  pc-nccr
+ 1109  cd
+ 1110  cs
+ 1111  scp boittier@pc-studix0:/home/boittier/PCProject/Ac-Ala3-NHMe-MD/models/*Ala*
+ 1112  scp boittier@pc-studix0:/home/boittier/PCProject/Ac-Ala3-NHMe-MD/models/*Ala* .
+ 1113  cs
+ 1114  pc-nccr 
+ 1115  cs
+ 1116  cd
+ 1117  cs
+ 1118  cd pcnccrdata/
+ 1119  cs
+ 1120  cd ..
+ 1121  cs
+ 1122  car sshfs.sh 
+ 1123  cat sshfs.sh 
+ 1124  sshfs boittier@pc-nccr-cluster:/home/unibas/boittier pcnccr
+ 1125  mkdir pcnccr
+ 1126  sshfs boittier@pc-nccr-cluster:/home/unibas/boittier pcnccr
+ 1127  cd pcnccr
+ 1128  cs
+ 1129  cd FF-Energy/
+ 1130  cs
+ 1131  cd cubes/
+ 1132  cs
+ 1133  cd shaked-methanol/
+ 1134  cs
+ 1135  cd shaked-methanol/
+ 1136  cs
+ 1137  pwd
+ 1138  rm pc.2501.out
+ 1139  cs
+ 1140  cd ..
+ 1141  cs
+ 1142  cd ..
+ 1143  cs
+ 1144  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1145  cs
+ 1146  cd pcbach/
+ 1147  cs
+ 1148  cd ..
+ 1149  cs
+ 1150  rmdir pcbach
+ 1151  rmdir pcnccr
+ 1152  bash sshfs.sh 
+ 1153  cs
+ 1154  cd pcbach/
+ 1155  cs
+ 1156  cd ..
+ 1157  cs
+ 1158  cat sshfs.sh 
+ 1159  sshfs boittier@pc-bach:/cluster/home/boittier pcbach
+ 1160  cd pcbach/
+ 1161  cs
+ 1162  cd kmdcm_water_sim_rkhs1
+ 1163  cs
+ 1164  vmd water.2000.heat.pdb water.2000.equi.dcd
+ 1165  cs
+ 1166  vmd water.2000.heat.pdb water.2000.equi.dcd
+ 1167  cs
+ 1168  cat dcm.xyz 
+ 1169  cs
+ 1170  vmd dcm.xyz 
+ 1171  cs
+ 1172  vi dynamics.inp 
+ 1173  cs
+ 1174  vi dynamics.log 
+ 1175  cs
+ 1176  pwd
+ 1177  cd ..
+ 1178  cs
+ 1179  cd chm-nn-water-2000
+ 1180  cs
+ 1181  cd
+ 1182  cs
+ 1183  cd pcbach
+ 1184  cs
+ 1185  cd chm_nn_water1
+ 1186  cs
+ 1187  vmd water.2000.prod.pdb water.2000.dyna.dcd
+ 1188  cs
+ 1189  cd ..
+ 1190  cs
+ 1191  cd shake/
+ 1192  cs
+ 1193  vmd water.2000.prod.pdb water.2000.dyna.dcd
+ 1194  cd ..
+ 1195  cs
+ 1196  cd kmdcm_water_sim_rkhs
+ 1197  cs
+ 1198  vmd test.xyz 
+ 1199  cs
+ 1200  cat ir.dat 
+ 1201  cs
+ 1202  vmd test.xyz 
+ 1203  cs
+ 1204  vmd water2000.psf water.2000.prod.1.dcd
+ 1205  cs
+ 1206  cd ../kmdcm_water_sim_rkhs_copy/
+ 1207  cs
+ 1208  cat ir.dat 
+ 1209  cs
+ 1210  cat ir.dat 
+ 1211  cs
+ 1212  cat ir.dat 
+ 1213  cs
+ 1214  cat ir.dat 
+ 1215  cs
+ 1216  cat ir.dat 
+ 1217  cs
+ 1218  cat ir.dat 
+ 1219  cs
+ 1220  cat ir.dat 
+ 1221  cs
+ 1222  cat ir.dat 
+ 1223  cs
+ 1224  cat ir.dat 
+ 1225  cs
+ 1226  cat ir.dat 
+ 1227  cs
+ 1228  vmd water2000.psf water.2000.prod.1.dcd
+ 1229  cs
+ 1230  cd ..
+ 1231  cs
+ 1232  cd kmdcm_water_sim_rkhs1
+ 1233  cs
+ 1234  vmd water.2000.mini.pdb c
+ 1235  cs
+ 1236  vmd water.2000.psf water.2000.heat.dcd
+ 1237  pip install iorder
+ 1238  vmd water.2000.psf water.2000.heat.dcd
+ 1239  cs
+ 1240  vi test-heat.xyz 
+ 1241  cs
+ 1242  pwd
+ 1243  cs
+ 1244  vmd water.2000.psf water.2000.prod.1.dcd
+ 1245  cs
+ 1246  vmd water.2000.psf water.2000.prod.1.dcd
+ 1247  cs
+ 1248  Q
+ 1249  htop
+ 1250  cs
+ 1251  cd
+ 1252  cs
+ 1253  history
+ 1254  cd param2/methanol/kern/rkkk/t298.15/gas
+ 1255  cd ..
+ 1256  cd param2/methanol/kern/rkkk/t298.15/gas
+ 1257  cs
+ 1258  vmd -e test-xyz.vmd 
+ 1259  cs
+ 1260  cp test.xyz shaketraj.xyz
+ 1261  cs
+ 1262  scp shaketraj.xyz boittier@pc-nccr-cluster:~
+ 1263  cd ~
+ 1264  ls
+ 1265  cs
+ 1266  cs
+ 1267  pc-nccr 
+ 1268  pc-nccr
+ 1269  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1270  cs
+ 1271  pc-beethoven 
+ 1272  exit
+ 1273  beethoven 
+ 1274  exit
+ 1275  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1276  cs
+ 1277  pcnccr
+ 1278  pc-nccr 
+ 1279  history
+ 1280  cs
+ 1281  cd ../t298
+ 1282  vmd min/int.psf heq/md_heq.dcd
+ 1283  exit
+ 1284  pcnccr
+ 1285  pc-nccr
+ 1286  pc-nccr 
+ 1287  pc-nccr 
+ 1288  cs
+ 1289  pc-nccr 
+ 1290  pc-nccr
+ 1291  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1292  cs
+ 1293  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1294  pc-nccr
+ 1295  pc-nccr 
+ 1296  pc-nccr
+ 1297  pc-nccr
+ 1298  cs
+ 1299  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1300  cs
+ 1301  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1302  cs
+ 1303  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1304  pc-nccr
+ 1305  cs
+ 1306  pc-nccr 
+ 1307  cs
+ 1308  cd charmm
+ 1309  cs
+ 1310  cd ..
+ 1311  cs
+ 1312  cd Documents/
+ 1313  cs
+ 1314  cd CHARMM/
+ 1315  cs
+ 1316  cd PhysNet_PyCHARMM/
+ 1317  cs
+ 1318  cat README 
+ 1319  cs
+ 1320  conda info --envs
+ 1321  conda activate /home/boittier/miniconda3/envs/pycharmm
+ 1322  cs
+ 1323  cd v0
+ 1324  cs
+ 1325  cd examples/
+ 1326  cs
+ 1327  cd F
+ 1328  cd FAD_water/
+ 1329  cs
+ 1330  python Script_fad_water.py 
+ 1331  cs
+ 1332  pc-bach
+ 1333  pc-bach
+ 1334  pc-bach
+ 1335  pcbach
+ 1336  pc-bach
+ 1337  pc-nccr
+ 1338  cs
+ 1339  pc-nccr
+ 1340  cs
+ 1341  ssh -CNL localhost:5678:localhost:5678  boittier@pc-nccr-cluster
+ 1342  cs
+ 1343  cs
+ 1344  cat sshfs.sh 
+ 1345  #/cluster/home/boittier/param2/methanol
+ 1346  sshfs boittier@pc-bach:/cluster/home/boittier pcbach
+ 1347  cd pcbach/
+ 1348  cs
+ 1349  cd /param2/methanol
+ 1350  cs
+ 1351  cd param2/methanol/kern/rkkk/t298.15
+ 1352  cs
+ 1353  vmd eq/md_eq1.dcd min/int.psf 
+ 1354  cs
+ 1355  vi job.out 
+ 1356  cs
+ 1357  vi job.inp 
+ 1358  cs
+ 1359  cat job.sh 
+ 1360  module load gcc/gcc-12.2.0-cmake-3.25.1-openmpi-4.1.4
+ 1361  CHARMM=~/dev-release-dcm/build/cmake/charmm
+ 1362  $CHARMM < job.inp
+ 1363  cs
+ 1364  cd
+ 1365  cs
+ 1366  cd pcbach/
+ 1367  cs
+ 1368  cd param2/methanol/kern/rkkk/t298.15
+ 1369  cs
+ 1370  vmd dcm.xyz 
+ 1371  cs
+ 1372  cd min/
+ 1373  cs
+ 1374  vmd int.pdb 
+ 1375  cs
+ 1376  cd ..
+ 1377  cs
+ 1378  cd t2
+ 1379  cd t298.15/
+ 1380  cs
+ 1381  vmd dcm.xyz 
+ 1382  cs
+ 1383  vmd dcm.xyz 
+ 1384  cs
+ 1385  vmd -e test.vmd 
+ 1386  cs
+ 1387  vmd min/int.pdb 
+ 1388  vmd -e test.vmd 
+ 1389  cs
+ 1390  cd heq/
+ 1391  cs
+ 1392  cd ..
+ 1393  cs
+ 1394  cd heq/
+ 1395  cs
+ 1396  vmd md_heq.pdb md_heq.dcd
+ 1397  cs
+ 1398  cd ..
+ 1399  cs
+ 1400  vmd min/int.psf heq/md_heq.dcd 
+ 1401  cs
+ 1402  Q
+ 1403  cs
+ 1404  vi min/
+ 1405  cs
+ 1406  cd min/
+ 1407  cs
+ 1408  vmd int.pdb 
+ 1409  cs
+ 1410  vmd int.pdb 
+ 1411  cs
+ 1412  cd ..
+ 1413  cs
+ 1414  vmd min/int.psf heq/md_heq.dcd 
+ 1415  cs
+ 1416  ls heq/
+ 1417  ls heq/ -rtlh
+ 1418  vmd min/int.psf heq/md_heq.dcd 
+ 1419  cs
+ 1420  vi job.inp 
+ 1421  cs
+ 1422  vmd min/int.psf heq/md_heq.dcd 
+ 1423  cs
+ 1424  ls -rlth heq/
+ 1425  cs
+ 1426  vmd min/int.psf heq/md_heq.dcd 
+ 1427  cs
+ 1428  ls -rlth heq/
+ 1429  cs
+ 1430  ls eq/
+ 1431  cs
+ 1432  ls -rtlh eq/
+ 1433  ls -rtlh min/
+ 1434  ls -rtlh eq/
+ 1435  ls -rtlh heq/
+ 1436  cs
+ 1437  vi job.out 
+ 1438  cs
+ 1439  Q
+ 1440  ls -rtlh heq/
+ 1441  cs
+ 1442  ls -rtlh heq/
+ 1443  vmd min/int.psf heq/md_heq.dcd 
+ 1444  cs
+ 1445  ls -rtlh heq/
+ 1446  vmd min/int.psf heq/md_heq.dcd 
+ 1447  cs
+ 1448  cd ../t298
+ 1449  vmd min/int.psf heq/md_heq.dcd 
+ 1450  cs
+ 1451  vmd min/int.psf heq/md_heq.dcd 
+ 1452  cd ../t298.15/
+ 1453  vmd min/int.psf heq/md_heq.dcd 
+ 1454  cs
+ 1455  vmd min/int.psf heq/md_heq.dcd 
+ 1456  cs
+ 1457  vmd min/int.psf heq/md_heq.dcd 
+ 1458  cs
+ 1459  ls eq/
+ 1460  vmd min/int.psf eq/md_eq1.dcd 
+ 1461  cs
+ 1462  vmd min/int.psf eq/md_eq1.dcd 
+ 1463  vi job.out 
+ 1464  cs
+ 1465  cat slurm-859015.out 
+ 1466  cs
+ 1467  cd
+ 1468  cs
+ 1469  cd packmol
+ 1470  cs
+ 1471  cd ..
+ 1472  cd packmol_examples/
+ 1473  cs
+ 1474  cd pure_methanol/
+ 1475  cs
+ 1476  vi pure_methanol.inp 
+ 1477  cs
+ 1478  ../../packmol/packmol < pure_methanol.inp 
+ 1479  vi pure_methanol.inp 
+ 1480  ../../packmol/packmol < pure_methanol.inp 
+ 1481  cs
+ 1482  vmd pure.pdb 
+ 1483  cs
+ 1484  cp pure.pdb ~/pcbach/input/puremethanol.pdb
+ 1485  cat pure.pdb 
+ 1486  cs
+ 1487  vmd min/int.psf heq/md_heq.dcd
+ 1488  cs
+ 1489  cd
+ 1490  cs
+ 1491  cat sshfs.sh 
+ 1492  sshfs boittier@pc-beethoven:/home/boittier/ homepcb
+ 1493  sshfs boittier@pc-nccr-cluster:/home/unibas/boittier pcnccr
+ 1494  cd ~/pcbach/
+ 1495  cs
+ 1496  cd kmdcm_water_sim_rkhs1
+ 1497  cs
+ 1498  vmd water.2000.nve.ir.1.pdb water.2000.prod.1.dcd
+ 1499  cs
+ 1500  pc-nccr 
+ 1501  cs
+ 1502  cat sshfs.sh 
+ 1503  bash on_start.sh 
+ 1504  cs
+ 1505  cd ..
+ 1506  cs
+ 1507  cd ..
+ 1508  cs
+ 1509  cd ..
+ 1510  cs
+ 1511  cd charmm/
+ 1512  cs
+ 1513  cd rk1.005_1.0_1.0_1.0_1.0
+ 1514  cs
+ 1515  cd t298.15/
+ 1516  cs
+ 1517  vmd min/int.psf heq/md_heq.dcd
+ 1518  cs
+ 1519  cd ..
+ 1520  cs
+ 1521  cd 
+ 1522  cs
+ 1523  cd pcbach/param2/methanol/kern/rkkk/t298c
+ 1524  cs
+ 1525  vmd min/int.psf heq/md_heq.dcd
+ 1526  cd ..
+ 1527  cd t298
+ 1528  cs
+ 1529  vmd min/int.psf heq/md_heq.dcd
+ 1530  cs
+ 1531  cs
+ 1532  cat on_start.sh 
+ 1533  bash /home/boittier/Desktop/clean/pycharm-2021.2.3/bin/pycharm.sh &
+ 1534  pc-beethoven 
+ 1535  cs
+ 1536  jupyter lab
+ 1537  cs
+ 1538  pcbach/
+ 1539  pc-bach 
+ 1540  cs
+ 1541  pcbach
+ 1542  pc-bach
+ 1543  cs
+ 1544  cd Documents/phd/
+ 1545  cs
+ 1546  cd pythonProject/
+ 1547  cs
+ 1548  git add all
+ 1549  git add --all
+ 1550  git commit -m "mdcm"
+ 1551  git push
+ 1552  cs
+ 1553  cd Documents/
+ 1554  cs
+ 1555  cd phd/
+ 1556  cs
+ 1557  cd pythonProject/
+ 1558  cs
+ 1559  git add --all
+ 1560  git commit -m "rdkit notebook"
+ 1561  git push
+ 1562  cs
+ 1563  pwd
+ 1564  cd
+ 1565  cs
+ 1566  bash on_start.sh 
+ 1567  pc-studix0 
+ 1568  cs
+ 1569  cd Documents/
+ 1570  cs
+ 1571  cd phd/
+ 1572  cs
+ 1573  git pull https://github.com/EricBoittier/pythonProject.git
+ 1574  git clone https://github.com/EricBoittier/pythonProject.git
+ 1575  cs
+ 1576  cd pythonProject/
+ 1577  cs
+ 1578  cs
+ 1579  pc-bach 
+ 1580  beethoven 
+ 1581  beethoven 
+ 1582  pc-beethoven 
+ 1583  cd
+ 1584  cs
+ 1585  jupyter lab
+ 1586  htop
+ 1587  pc-nccr 
+ 1588  vmd test.xyz 
+ 1589  cs
+ 1590  vmd test.xyz 
+ 1591  vmd test.xyz ../mdcm/charmm/dcm.xyz 
+ 1592  vmd -f test.xyz -f ../mdcm/charmm/dcm.xyz 
+ 1593  cs
+ 1594  cd ..
+ 1595  cs
+ 1596  git push
+ 1597  cs
+ 1598  git push
+ 1599  git pull
+ 1600  git push
+ 1601  cs
+ 1602  python setup.py install
+ 1603  cs
+ 1604  vi .gitignore
+ 1605  cs
+ 1606  git push 
+ 1607  cs
+ 1608  git pull
+ 1609  pwd
+ 1610  git pull
+ 1611  cs
+ 1612  cd project
+ 1613  cs
+ 1614  vmd -e testout.vmd 
+ 1615  c
+ 1616  cs
+ 1617  vi testout.xyz 
+ 1618  vi testout.vmd 
+ 1619  vmd -e testout.vmd 
+ 1620  head testout.
+ 1621  head testout.xyz 
+ 1622  cs
+ 1623  head testout.xyz 
+ 1624  cat testout.xyz 
+ 1625  vmd -e testout.vmd 
+ 1626  cat testout.xyz 
+ 1627  cs
+ 1628  git push
+ 1629  vmd -e testout.vmd 
+ 1630  cs
+ 1631  cat testout.xyz 
+ 1632  vmd -e testout.vmd 
+ 1633  cs
+ 1634  vmd -e testout.vmd 
+ 1635  cs
+ 1636  vmd -e testout.vmd 
+ 1637  cs
+ 1638  vmd -e testout.vmd 
+ 1639  cs
+ 1640  scp boittier@pc-nccr-cluster:~/test_jax/* .
+ 1641  scp boittier@pc-nccr-cluster:~/FF-Energy/cubes/test_jax/* .
+ 1642  cs
+ 1643  pip install skimage
+ 1644  pip install scikit-image
+ 1645  cs
+ 1646  cd ..
+ 1647  cs
+ 1648  cd ..
+ 1649  cs
+ 1650  git push
+ 1651  cs
+ 1652  ls
+ 1653  cd test_coords/
+ 1654  cs
+ 1655  cs
+ 1656  ls gly*pdb
+ 1657  vmd gly*pdb
+ 1658  cs
+ 1659  cs
+ 1660  pwd
+ 1661  cs
+ 1662  cd charmm/
+ 1663  cs
+ 1664  vmd dcm.xyz 
+ 1665  cs
+ 1666  cd Documents/phd/pythonProject/
+ 1667  cs
+ 1668  git add --all
+ 1669  git commit -m "equin"
+ 1670  git push
+ 1671  cs
+ 1672  cs
+ 1673  python MD_sampling.py -n 100 -r DCM -v -dl /home/boittier/Documents/phd/ff_energy/ff_energy/pycharmm_runner/output/prod.dcd -p /home/boittier/Documents/phd/ff_energy/ff_energy/pycharmm_runner/output/dcm_box_prod.psf
+ 1674  cs
+ 1675  cd test_coords/
+ 1676  cs
+ 1677  cd ..
+ 1678  cs
+ 1679  vmd 100_DCM.xyz 
+ 1680  cs
+ 1681  cat sampledDCM.pdb 
+ 1682  cs
+ 1683  rm -rf test_coords/*
+ 1684  cs
+ 1685  python MD_sampling.py -n 60 -r TIP3 -v -dl /home/boittier/pcbach/kmdcm_nn_water1/water.2000.dyna.dcd -p /home/boittier/pcbach/kmdcm_nn_water1/water.2000.dyna.dcd
+ 1686  python MD_sampling.py -n 60 -r TIP3 -v -dl /home/boittier/pcbach/kmdcm_water_sim_rkhs/water.2000.dyna.dcd -p /home/boittier/pcbach/kmdcm_water_sim_rkhs/water.2000.prod.1.res
+ 1687  python MD_sampling.py -n 60 -r TIP3 -v -dl /home/boittier/pcbach/kmdcm_water_sim_rkhs/water.2000.dyna.dcd -p /home/boittier/pcbach/kmdcm_water_sim_rkhs/water.2000.psf
+ 1688  cs
+ 1689  vmd 60_TIP3.xyz 
+ 1690  cs
+ 1691  python MD_sampling.py -n 60 -r TIP3 -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1692  python MD_sampling.py -n 36 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1693  cs
+ 1694  cat info.log 
+ 1695  python MD_sampling.py -n 36 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1696  cs
+ 1697  python MD_sampling.py -n 37 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1698  cs
+ 1699  tail info.log 
+ 1700  python MD_sampling.py -n 40 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1701  cs
+ 1702  python MD_sampling.py -n 31 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1703  cs
+ 1704  vmd 31_POT.xyz 
+ 1705  cs
+ 1706  python MD_sampling.py -n 34 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1707  cs
+ 1708  python MD_sampling.py -n 37 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1709  python MD_sampling.py -n 37 -r CLA -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1710  cs
+ 1711  cat 37_CLA.xyz 
+ 1712  cs
+ 1713  vmd 37_CLA.xyz 
+ 1714  cs
+ 1715  python MD_sampling.py -n 43 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1716  cs
+ 1717  python MD_sampling.py -n 42 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1718  python MD_sampling.py -n 40 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1719  cd test_coords/
+ 1720  cs
+ 1721  cd ..
+ 1722  cs
+ 1723  python MD_sampling.py -n 13 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_5.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1724  cs
+ 1725  vmd 13_POT.xyz 
+ 1726  python MD_sampling.py -n 13 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_4.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1727  cs
+ 1728  python MD_sampling.py -n 37 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_4.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1729  cs
+ 1730  vmd 37_POT.xyz 
+ 1731  python MD_sampling.py -n 37 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_4.dcd /home/boittier/pcbach/charmmions/step5_5.dcd /home/boittier/pcbach/charmmions/step5_3.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1732  cs
+ 1733  vmd 37_POT.xyz 
+ 1734  cs
+ 1735  vmd 37_CLA.xyz
+ 1736  cs
+ 1737  vmd 37_POT.xyz
+ 1738  cs
+ 1739  python MD_sampling.py -n 37 -r POT -v -dl /home/boittier/pcbach/charmmions/step5_4.dcd /home/boittier/pcbach/charmmions/step5_5.dcd /home/boittier/pcbach/charmmions/step5_3.dcd  /home/boittier/pcbach/charmmions/step5_1.dcd -p /home/boittier/pcbach/charmmions/step3_pbcsetup.psf
+ 1740  cs
+ 1741  vmd 37_POT.xyz
+ 1742  cs
+ 1743  vmd sampledDCM.pdb
+ 1744  cs
+ 1745  cd ..
+ 1746  cs
+ 1747  cd pycharmm_runner/
+ 1748  cs
+ 1749  python pyc.py 
+ 1750  cd ../..
+ 1751  cs
+ 1752  python setup.py 
+ 1753  python setup.py install
+ 1754  ls *glu*
+ 1755  vmd *glu*pdb
+ 1756  vmd *gly*pdb
+ 1757  cs
+ 1758  ls *gly*pdb
+ 1759  pc-bach
+ 1760  pc-bach
+ 1761  cs
+ 1762  cd Downloads/
+ 1763  cs
+ 1764  ls -lrth
+ 1765  cs
+ 1766  pc-nccr
+ 1767  exit
+ 1768  pc-nccr
+ 1769  cd
+ 1770  cs
+ 1771  pcnccr
+ 1772  pc-nccr 
+ 1773  pc-nccr
+ 1774  pc-nccr
+ 1775  exit
+ 1776  cs
+ 1777  vmd sampledTIP.xyz 
+ 1778  cs
+ 1779  pwd
+ 1780  cs
+ 1781  cd ..
+ 1782  cs
+ 1783  cp -rf pcbach/water_test/ pcnccr/water_test
+ 1784  cs
+ 1785  cp -rf pcbach/dcm_test/ pcnccr/dcm_test
+ 1786  cp -rf pcbach/cla_test/ pcnccr/cla_test
+ 1787  cp -rf pcbach/cla_test/ pcnccr/pot_test
+ 1788  cp -rf pcbach/pot_test/ pcnccr/pot_test
+ 1789  ls /home/boittier/pcnccr/water_test/pbe0dz/test9/cluster
+ 1790  ls /home/boittier/pcnccr/water_test/
+ 1791  ls /home/boittier/pcnccr/
+ 1792  cd pcnccr
+ 1793  cs
+ 1794  cd ..
+ 1795  cs
+ 1796  cat sshfs.sh 
+ 1797  sshfs boittier@pc-nccr-cluster:/home/unibas/boittier pcnccr
+ 1798  ls /home/boittier/pcnccr/water_test/
+ 1799  ls /home/boittier/pcnccr/water_test/pbe0dz/test9/cluster
+ 1800  cs
+ 1801  cd pcnccr
+ 1802  cs
+ 1803  cd 
+ 1804  cs
+ 1805  sshfs boittier@pc-nccr-cluster:/home/unibas/boittier pcnccr
+ 1806  cs
+ 1807  cd pcnccr
+ 1808  cs
+ 1809  cd ..
+ 1810  cs
+ 1811  sshfs boittier@pc-nccr-cluster:/home/unibas/boittier pcnccr
+ 1812  cp -rf pcbach/cla_test/ pcnccr/cla_test
+ 1813  cp -rf pcbach/pot_test/ pcnccr/pot_test
+ 1814  cs
+ 1815  cp -rf pcbach/dcm_test/ pcnccr/dcm_test
+ 1816  cp -rf pcbach/pot_test/ pcnccr/pot_test
+ 1817  cs
+ 1818  cd ..
+ 1819  ls
+ 1820  jupyter lab
+ 1821  cs
+ 1822  cd
+ 1823  cs
+ 1824  jupyter lab
+ 1825  cs
+ 1826  cd
+ 1827  cs
+ 1828  cd Documents/phd/ff_energy/
+ 1829  cs
+ 1830  cp notebooks/working/tmppdbs/* pdbs/water_test
+ 1831  cs
+ 1832  cd pdbs/
+ 1833  cs
+ 1834  cd water_test
+ 1835  cs
+ 1836  cd ..
+ 1837  cs
+ 1838  cd ..
+ 1839  cs
+ 1840  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -mj -s
+ 1841  conda activate pycharmm
+ 1842  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -mj -s
+ 1843  cp notebooks/working/tmppdbs/* pdbs/water_test
+ 1844  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -mj -s
+ 1845  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -mj 
+ 1846  cs
+ 1847  ls pickles/
+ 1848  ls pickles/ -lrth
+ 1849  ls pickles/structures/ -lrth
+ 1850  rm pickles/structures/water_test.pkl 
+ 1851  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -mj 
+ 1852  cs
+ 1853  cd pickles/
+ 1854  cs
+ 1855  pwd
+ 1856  cd ..
+ 1857  cs
+ 1858  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -mj 
+ 1859  cs
+ 1860  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -chmj
+ 1861  cs
+ 1862  rm pickles/structures/water_test.pkl 
+ 1863  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -chmj
+ 1864  cp notebooks/working/tmppdbs/* pdbs/water_test
+ 1865  rm pickles/structures/water_test.pkl 
+ 1866  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -chmj
+ 1867  cp notebooks/working/tmppdbs/* pdbs/water_test
+ 1868  rm pickles/structures/water_test.pkl 
+ 1869  vi pdbs/water_test/test0.pdb 
+ 1870  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -chmj
+ 1871  cs
+ 1872  cd pdbs/
+ 1873  cs
+ 1874  cd water_
+ 1875  cd water_test
+ 1876  cs
+ 1877  cat test0.pdb 
+ 1878  cs
+ 1879  cd ..
+ 1880  cs
+ 1881  cd ..
+ 1882  cs
+ 1883  cp notebooks/working/tmppdbs/* pdbs/water_test
+ 1884  cat pdbs/water_test/test0.pdb 
+ 1885  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e tip3 -chmj
+ 1886  cs
+ 1887  history
+ 1888  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e pc -mj 
+ 1889  mkdir pdbs/dcm_test
+ 1890  cp notebooks/working/tmppdbs/* pdbs/dcm_test
+ 1891  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e pc -mj 
+ 1892  rm pickles/structures/dcm_test.pkl 
+ 1893  cp notebooks/working/tmppdbs/* pdbs/dcm_test
+ 1894  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e pc -mj 
+ 1895  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e pc -chmj
+ 1896  rm pickles/structures/dcm_test.pkl 
+ 1897  cp notebooks/working/tmppdbs/* pdbs/dcm_test
+ 1898  cat pdbs/dcm_test/
+ 1899  cat pdbs/dcm_test/100_0_dcm_0_0.pdb 
+ 1900  cat pdbs/dcm_test/100_0_DCM_0_0.pdb 
+ 1901  cp notebooks/working/tmppdbs/* pdbs/dcm_test
+ 1902  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e pc -chmj
+ 1903  cs
+ 1904  mkdir pdbs/cla_test
+ 1905  cp notebooks/working/tmppdbs/* pdbs/cla_test
+ 1906  cs
+ 1907  python ff_energy/ffe/cli.py -m cla_test -t pbe0dz -e pc -mj 
+ 1908  python ff_energy/ffe/cli.py -m cla_test -t pbe0dz -e pc -chmj 
+ 1909  mkdir pdbs/pot_test
+ 1910  cp notebooks/working/tmppdbs/* pdbs/pot_test
+ 1911  cat pdbs/pot_test/*
+ 1912  cp notebooks/working/tmppdbs/* pdbs/pot_test
+ 1913  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e pc -mj 
+ 1914  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e pc -chmj 
+ 1915  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e pc -mj 
+ 1916  rm pickles/structures/pot_test.pkl 
+ 1917  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e pc -mj 
+ 1918  rm pickles/structures/pot_test.pkl 
+ 1919  rm pdbs/pot_test/*
+ 1920  cp notebooks/working/tmppdbs/* pdbs/pot_test
+ 1921  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e pc -mj 
+ 1922  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e pc -chmj 
+ 1923  cs
+ 1924  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e pc -chmj
+ 1925  python ff_energy/ffe/cli.py -m water_test -t pbe0dz -e mdcm -chmj
+ 1926  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e mdcm -chmj
+ 1927  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e mdcm -chmj
+ 1928  python ff_energy/ffe/cli.py -m cla_test -t pbe0dz -e mdcm -chmj
+ 1929  cs
+ 1930  python ff_energy/ffe/cli.py -m cla_test -t pbe0dz -e mdcm -chmj
+ 1931  cs
+ 1932  ls pickles/
+ 1933  ls -rlth pickles
+ 1934  python ff_energy/ffe/cli.py -m cla_test -t pbe0dz -e mdcm -mj
+ 1935  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e mdcm -mj
+ 1936  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e mdcm -mj
+ 1937  cs
+ 1938  python ff_energy/ffe/cli.py -m pot_test -t pbe0dz -e mdcm -mj
+ 1939  cs
+ 1940  cs
+ 1941  conda activate pycharmm
+ 1942  python ff_energy/ffe/cli.py -d -m water_cluster -t pbe0dz -e tip3 -msp ~/pcnccr -mbp ~/pcnccr
+ 1943  python ff_energy/ffe/cli.py -d -m water_test -t pbe0dz -e tip3 -msp ~/pcnccr -mbp ~/pcnccr
+ 1944  ls
+ 1945  cs
+ 1946  ls pickles/
+ 1947  ls pickles/ -rlth
+ 1948  python ff_energy/ffe/cli.py -d -m water_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1949  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1950  cs
+ 1951  rm pickles/structures/dcm_test.pkl 
+ 1952  ls pdbs/dcm_test/
+ 1953  rm pdbs/dcm_test/*dcm*
+ 1954  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1955  cs
+ 1956  python ff_energy/ffe/cli.py -d -m cla_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1957  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1958  cs
+ 1959  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 1960  python ff_energy/ffe/cli.py -d -m cla_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 1961  python ff_energy/ffe/cli.py -d -m water_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 1962  cs
+ 1963  python ff_energy/ffe/cli.py -d -m cla_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1964  cs
+ 1965  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1966  python ff_energy/ffe/cli.py -d -m cla_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1967  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 1968  cs
+ 1969  cd
+ 1970  cs
+ 1971  cd pcnccr
+ 1972  cs
+ 1973  cd ..
+ 1974  cs
+ 1975  cd mike/
+ 1976  cs
+ 1977  vmd sampledCLA.xyz
+ 1978  vmd sampledPOT.xyz
+ 1979  vmd sampledCLA.xyz
+ 1980  ls
+ 1981  cs
+ 1982  cs
+ 1983  cd
+ 1984  cs
+ 1985  cd ..
+ 1986  cs
+ 1987  scp -rf ff_energy boittier@pc-studix0:~
+ 1988  scp -r ff_energy boittier@pc-studix0:~
+ 1989  cs
+ 1990  ls
+ 1991  cs
+ 1992  cd
+ 1993  cs
+ 1994  beethoven 
+ 1995  pcbach
+ 1996  pc-bach 
+ 1997  pc-studix0 
+ 1998  htop
+ 1999  cs
+ 2000  bash on_start.sh 
+ 2001  cd Documents/phd/ff_energy/
+ 2002  cs
+ 2003  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2004  conda activate pycharmm
+ 2005  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2006  python ff_energy/ffe/cli.py -d -m pot_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 2007  python ff_energy/ffe/cli.py -d -m cla_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 2008  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 2009  python ff_energy/ffe/cli.py -m dcm_test -t pbe0dz -e mdcm -chmj
+ 2010  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2011  rm pickles/dcm_test_pbe0dz_pc.pkl 
+ 2012  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2013  rm pickles/dcm_test_pbe0dz_pc.pkl 
+ 2014  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2015  ls pdbs/dcm_test/
+ 2016  rm pdbs/dcm_test/*dcm*
+ 2017  rm pickles/dcm_test_pbe0dz_pc.pkl 
+ 2018  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2019  ls pdbs/dcm_test/
+ 2020  cs
+ 2021  ls ~/pcnccr
+ 2022  ls ~/pcnccr/dcm_test/
+ 2023  ls ~/pcnccr/dcm_test/pbe0dz/
+ 2024  ls ~/pcnccr/dcm_test/pbe0dz/100_9_DCM_9_9/
+ 2025  ls ~/pcnccr/dcm_test/pbe0dz/100_9_DCM_9_9/monomers/
+ 2026  cd pickles/
+ 2027  cs
+ 2028  cd dcm_test/
+ 2029  cs
+ 2030  cd pbe0dz/
+ 2031  cs
+ 2032  cd dcm_pbe0dz.pc/
+ 2033  cs
+ 2034  cd ..
+ 2035  cs
+ 2036  cd ..
+ 2037  cs
+ 2038  cd ..
+ 2039  cs
+ 2040  rm -rf dcm_test
+ 2041  cd ..
+ 2042  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e pc -msp ~/pcnccr -mbp ~/pcnccr
+ 2043  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 2044  cs
+ 2045  cd pickles/
+ 2046  cd dcm_test/
+ 2047  cs
+ 2048  cd pbe0dz/
+ 2049  cs
+ 2050  cd dcm_pbe0dz.mdcm/
+ 2051  cs
+ 2052  rm *
+ 2053  cs
+ 2054  cd ..
+ 2055  cs
+ 2056  cd ..
+ 2057  cs
+ 2058  cd ../..
+ 2059  python ff_energy/ffe/cli.py -d -m dcm_test -t pbe0dz -e mdcm -msp ~/pcnccr -mbp ~/pcnccr
+ 2060  ls pickles/
+ 2061  ls pickles/ -rlth
+ 2062  cs
+ 2063  ls pickles/
+ 2064  ls pickles/*de* -rlh
+ 2065  ls pickles/ELECp* -rlh
+ 2066  ls pickles/ELECp_* -rlh
+ 2067  ls pickles/*de* -rlh
+ 2068  ls pickles/*de*fitted* -rlh
+ 2069  history > history

@@ -20,6 +20,7 @@ sysname_to_res = {
     "dcm_test": "DCM",
     "cla_test": "LIG",
     "pot_test": "LIG",
+    "water_redo": "LIG",
 }
 
 

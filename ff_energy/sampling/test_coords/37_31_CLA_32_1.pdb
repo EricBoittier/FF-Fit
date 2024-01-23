@@ -1,0 +1,76 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   29.144   29.144   29.144  90.00  90.00  90.00 P 1           1
+ATOM      1  OH2 TIP3X  13       3.221  -3.763  -2.112  1.00  0.00      SOLV    
+ATOM      2  H1  TIP3X  13       3.333  -4.547  -1.553  1.00  0.00      SOLV    
+ATOM      3  H2  TIP3X  13       3.640  -4.153  -2.903  1.00  0.00      SOLV    
+ATOM      4  OH2 TIP3X 239       6.964   0.817   0.188  1.00  0.00      SOLV    
+ATOM      5  H1  TIP3X 239       6.310   0.874  -0.545  1.00  0.00      SOLV    
+ATOM      6  H2  TIP3X 239       6.466   1.348   0.830  1.00  0.00      SOLV    
+ATOM      7  OH2 TIP3X 289       6.325  -1.843  -4.576  1.00  0.00      SOLV    
+ATOM      8  H1  TIP3X 289       5.937  -1.518  -3.731  1.00  0.00      SOLV    
+ATOM      9  H2  TIP3X 289       5.556  -2.397  -4.934  1.00  0.00      SOLV    
+ATOM     10  OH2 TIP3X 290       6.946  -1.729   1.006  1.00  0.00      SOLV    
+ATOM     11  H1  TIP3X 290       6.571  -2.168   0.203  1.00  0.00      SOLV    
+ATOM     12  H2  TIP3X 290       6.947  -0.842   0.619  1.00  0.00      SOLV    
+ATOM     13  OH2 TIP3X 348       7.257   2.609  -2.425  1.00  0.00      SOLV    
+ATOM     14  H1  TIP3X 348       7.317   2.488  -3.376  1.00  0.00      SOLV    
+ATOM     15  H2  TIP3X 348       6.312   2.403  -2.323  1.00  0.00      SOLV    
+ATOM     16  OH2 TIP3X 446       8.066   0.220  -4.810  1.00  0.00      SOLV    
+ATOM     17  H1  TIP3X 446       7.474  -0.540  -4.976  1.00  0.00      SOLV    
+ATOM     18  H2  TIP3X 446       8.316   0.170  -3.840  1.00  0.00      SOLV    
+ATOM     19  OH2 TIP3X 642       3.847   0.430  -4.998  1.00  0.00      SOLV    
+ATOM     20  H1  TIP3X 642       4.013   0.558  -4.080  1.00  0.00      SOLV    
+ATOM     21  H2  TIP3X 642       4.728   0.455  -5.364  1.00  0.00      SOLV    
+ATOM     22  OH2 TIP3X 672       4.182   1.790   0.542  1.00  0.00      SOLV    
+ATOM     23  H1  TIP3X 672       3.956   1.007   0.002  1.00  0.00      SOLV    
+ATOM     24  H2  TIP3X 672       3.245   2.058   0.547  1.00  0.00      SOLV    
+ATOM     25  OH2 TIP3X 692       2.025  -1.585  -1.494  1.00  0.00      SOLV    
+ATOM     26  H1  TIP3X 692       2.454  -2.456  -1.744  1.00  0.00      SOLV    
+ATOM     27  H2  TIP3X 692       2.788  -0.993  -1.586  1.00  0.00      SOLV    
+ATOM     28  OH2 TIP3X 729       1.492   1.766  -0.816  1.00  0.00      SOLV    
+ATOM     29  H1  TIP3X 729       0.948   1.067  -1.185  1.00  0.00      SOLV    
+ATOM     30  H2  TIP3X 729       1.618   2.318  -1.597  1.00  0.00      SOLV    
+ATOM     31  OH2 TIP3X 741       6.190  -3.136  -1.395  1.00  0.00      SOLV    
+ATOM     32  H1  TIP3X 741       5.798  -4.013  -1.177  1.00  0.00      SOLV    
+ATOM     33  H2  TIP3X 741       5.364  -2.633  -1.630  1.00  0.00      SOLV    
+ATOM     34  OH2 TIP3X 814       8.329  -0.340  -2.104  1.00  0.00      SOLV    
+ATOM     35  H1  TIP3X 814       7.387  -0.343  -1.895  1.00  0.00      SOLV    
+ATOM     36  H2  TIP3X 814       8.771  -0.155  -1.226  1.00  0.00      SOLV    
+ATOM     37 CLA  CLA X   4       4.886  -0.087  -1.958  1.00  0.00      IONS    
+CONECT    1    2    3
+CONECT    2    1    3
+CONECT    3    1    2
+CONECT    4    5    6
+CONECT    5    4    6
+CONECT    6    4    5
+CONECT    7    8    9
+CONECT    8    7    9
+CONECT    9    7    8
+CONECT   10   11   12
+CONECT   11   10   12
+CONECT   12   10   11
+CONECT   13   14   15
+CONECT   14   13   15
+CONECT   15   13   14
+CONECT   16   17   18
+CONECT   17   16   18
+CONECT   18   16   17
+CONECT   19   20   21
+CONECT   20   19   21
+CONECT   21   19   20
+CONECT   22   23   24
+CONECT   23   22   24
+CONECT   24   22   23
+CONECT   25   26   27
+CONECT   26   25   27
+CONECT   27   25   26
+CONECT   28   29   30
+CONECT   29   28   30
+CONECT   30   28   29
+CONECT   31   32   33
+CONECT   32   31   33
+CONECT   33   31   32
+CONECT   34   35   36
+CONECT   35   34   36
+CONECT   36   34   35
+END

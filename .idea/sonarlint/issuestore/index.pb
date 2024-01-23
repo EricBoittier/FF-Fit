@@ -11,8 +11,6 @@ Q
 !notebooks/sampling/sampling.ipynb,2/7/27072e82e752740e7afc43870472852490691063
 U
 %notebooks/pycharmm/dcm/dcm_toppar.str,e/f/ef7a9ddaf55b31facfe0b087709f2754efd15236
-K
-ff_energy/packmol/input.inp,3/2/32dcc2a91178e1d1a2ebd65e9f4ad713aaa98908
 V
 &ff_energy/packmol/files/dcm_toppar.str,d/6/d674b90781c72e45812043ca3cf752ea32e75351
 M
@@ -1372,10 +1370,6 @@ S
 #notebooks/working/data/ions_pol.txt,8/1/81ccc5ce6c608c3eaf7c40d9846ab0a58c9434d6
 S
 #ff_energy/ffe/charmm_files/dcm.mdcm,3/7/376b62c1845bdc382dea64cb05743bf52921e79d
-L
-ff_energy/packmol/packmol.py,6/a/6a6e33f199e5c0390a85c3903ace19a2022c123d
-N
-ff_energy/packmol/densities.py,a/b/ab9509ea014e6c9a86848a996ffe747679ee6d1f
 M
 ff_energy/packmol/dcm_box.pdb,6/7/6724e87e75ffe2b33286a7571e28338bab8e66a6
 W

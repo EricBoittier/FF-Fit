@@ -451,13 +451,13 @@ python {self.name}_{monomer}_QMMM.py > {self.name}_{monomer}_QMMM.out
                 },
                 index=[self.name],
             )
-            if len(monomers_df) != len(list(set(self.structure.resids))):
-                logger.warning(
-                    f"Found {len(monomers_df)} monomer files,"
-                    f" but {len(list(set(self.structure.resids)))} residues,"
-                    f" setting monomers_sum_df to None"
-                )
-                monomers_sum_df = None
+            # if len(monomers_df) != len(list(set(self.structure.resids))):
+            #     logger.warning(
+            #         f"Found {len(monomers_df)} monomer files,"
+            #         f" but {len(list(set(self.structure.resids)))} residues,"
+            #         f" setting monomers_sum_df to None"
+            #     )
+            #     monomers_sum_df = None
 
         return monomers_data, monomers_df, monomers_sum_df
 
