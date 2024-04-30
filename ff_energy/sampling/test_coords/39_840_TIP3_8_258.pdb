@@ -1,0 +1,81 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   39.269   39.269   39.269  90.00  90.00  90.00 P 1           1
+ATOM      1  H   TIP3X  87      12.887   9.889 -13.756  1.00  0.00      TIP3    
+ATOM      2  O   TIP3X  87      13.329  10.290 -14.515  1.00  0.00      TIP3    
+ATOM      3  H1  TIP3X  87      13.876  10.953 -14.114  1.00  0.00      TIP3    
+ATOM      4  H   TIP3X 270      13.100  11.946 -11.196  1.00  0.00      TIP3    
+ATOM      5  O   TIP3X 270      13.628  12.578 -11.678  1.00  0.00      TIP3    
+ATOM      6  H1  TIP3X 270      13.068  13.380 -11.640  1.00  0.00      TIP3    
+ATOM      7  H   TIP3X 278      15.282  12.020 -12.017  1.00  0.00      TIP3    
+ATOM      8  O   TIP3X 278      16.051  11.730 -12.518  1.00  0.00      TIP3    
+ATOM      9  H1  TIP3X 278      16.812  12.220 -12.196  1.00  0.00      TIP3    
+ATOM     10  H   TIP3X 514       9.773  11.987 -10.634  1.00  0.00      TIP3    
+ATOM     11  O   TIP3X 514      10.250  12.385 -11.411  1.00  0.00      TIP3    
+ATOM     12  H1  TIP3X 514      10.137  11.824 -12.212  1.00  0.00      TIP3    
+ATOM     13  H   TIP3X 520      11.647  10.254 -10.053  1.00  0.00      TIP3    
+ATOM     14  O   TIP3X 520      12.608  10.402 -10.224  1.00  0.00      TIP3    
+ATOM     15  H1  TIP3X 520      12.909  10.776  -9.414  1.00  0.00      TIP3    
+ATOM     16  H   TIP3X 687      13.598   7.471 -13.291  1.00  0.00      TIP3    
+ATOM     17  O   TIP3X 687      12.802   7.877 -13.059  1.00  0.00      TIP3    
+ATOM     18  H1  TIP3X 687      12.167   7.201 -12.819  1.00  0.00      TIP3    
+ATOM     19  H   TIP3X 769      15.249   8.675 -16.340  1.00  0.00      TIP3    
+ATOM     20  O   TIP3X 769      15.406   9.303 -15.603  1.00  0.00      TIP3    
+ATOM     21  H1  TIP3X 769      14.524   9.534 -15.219  1.00  0.00      TIP3    
+ATOM     22  H   TIP3X 879      10.390   8.272  -9.695  1.00  0.00      TIP3    
+ATOM     23  O   TIP3X 879      10.422   8.365 -10.635  1.00  0.00      TIP3    
+ATOM     24  H1  TIP3X 879      11.038   7.675 -10.894  1.00  0.00      TIP3    
+ATOM     25  H   TIP3X 907      15.479  11.669 -15.525  1.00  0.00      TIP3    
+ATOM     26  O   TIP3X 907      15.187  12.333 -14.897  1.00  0.00      TIP3    
+ATOM     27  H1  TIP3X 907      15.591  11.960 -14.128  1.00  0.00      TIP3    
+ATOM     28  H   TIP3X1201      15.798   8.243 -12.558  1.00  0.00      TIP3    
+ATOM     29  O   TIP3X1201      15.505   7.673 -13.308  1.00  0.00      TIP3    
+ATOM     30  H1  TIP3X1201      15.485   8.296 -14.086  1.00  0.00      TIP3    
+ATOM     31  H   TIP3X1202      10.821  11.026 -14.590  1.00  0.00      TIP3    
+ATOM     32  O   TIP3X1202      10.265  11.082 -13.734  1.00  0.00      TIP3    
+ATOM     33  H1  TIP3X1202       9.931  10.212 -13.439  1.00  0.00      TIP3    
+ATOM     34  H   TIP3X1380      15.300   9.091 -10.618  1.00  0.00      TIP3    
+ATOM     35  O   TIP3X1380      16.128   9.440 -10.930  1.00  0.00      TIP3    
+ATOM     36  H1  TIP3X1380      16.049  10.180 -11.581  1.00  0.00      TIP3    
+ATOM     37  H   TIP3X1706      10.692  10.868 -16.812  1.00  0.00      TIP3    
+ATOM     38  O   TIP3X1706      11.467  11.347 -16.448  1.00  0.00      TIP3    
+ATOM     39  H1  TIP3X1706      12.162  10.753 -16.211  1.00  0.00      TIP3    
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2
+CONECT    4    5
+CONECT    5    4    6
+CONECT    6    5
+CONECT    7    8
+CONECT    8    7    9
+CONECT    9    8
+CONECT   10   11
+CONECT   11   10   12
+CONECT   12   11
+CONECT   13   14
+CONECT   14   13   15
+CONECT   15   14
+CONECT   16   17
+CONECT   17   16   18
+CONECT   18   17
+CONECT   19   20
+CONECT   20   19   21
+CONECT   21   20
+CONECT   22   23
+CONECT   23   22   24
+CONECT   24   23
+CONECT   25   26
+CONECT   26   25   27
+CONECT   27   26
+CONECT   28   29
+CONECT   29   28   30
+CONECT   30   29
+CONECT   31   32
+CONECT   32   31   33
+CONECT   33   32
+CONECT   34   35
+CONECT   35   34   36
+CONECT   36   35
+CONECT   37   38
+CONECT   38   37   39
+CONECT   39   38
+END

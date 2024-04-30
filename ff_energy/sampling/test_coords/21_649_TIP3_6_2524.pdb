@@ -1,0 +1,45 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   39.269   39.269   39.269  90.00  90.00  90.00 P 1           1
+ATOM      1  H   TIP3X 435      11.180   7.998  -3.193  1.00  0.00      TIP3    
+ATOM      2  O   TIP3X 435      11.490   8.317  -2.356  1.00  0.00      TIP3    
+ATOM      3  H1  TIP3X 435      10.828   8.014  -1.713  1.00  0.00      TIP3    
+ATOM      4  H   TIP3X 499      10.167  10.734  -3.159  1.00  0.00      TIP3    
+ATOM      5  O   TIP3X 499       9.429  10.297  -3.734  1.00  0.00      TIP3    
+ATOM      6  H1  TIP3X 499       9.116  11.066  -4.203  1.00  0.00      TIP3    
+ATOM      7  H   TIP3X 842      11.186  11.170  -1.068  1.00  0.00      TIP3    
+ATOM      8  O   TIP3X 842      11.460  10.954  -1.976  1.00  0.00      TIP3    
+ATOM      9  H1  TIP3X 842      11.510   9.958  -2.022  1.00  0.00      TIP3    
+ATOM     10  H   TIP3X1317       8.525  10.767  -2.248  1.00  0.00      TIP3    
+ATOM     11  O   TIP3X1317       8.315  11.291  -1.417  1.00  0.00      TIP3    
+ATOM     12  H1  TIP3X1317       8.718  10.801  -0.715  1.00  0.00      TIP3    
+ATOM     13  H   TIP3X1419      12.622  10.924  -5.839  1.00  0.00      TIP3    
+ATOM     14  O   TIP3X1419      12.722  11.084  -4.927  1.00  0.00      TIP3    
+ATOM     15  H1  TIP3X1419      11.980  10.789  -4.438  1.00  0.00      TIP3    
+ATOM     16  H   TIP3X1657      11.538  12.629   1.152  1.00  0.00      TIP3    
+ATOM     17  O   TIP3X1657      11.024  12.288   0.426  1.00  0.00      TIP3    
+ATOM     18  H1  TIP3X1657      11.373  12.864  -0.278  1.00  0.00      TIP3    
+ATOM     19  H   TIP3X1683      13.328  10.495  -2.630  1.00  0.00      TIP3    
+ATOM     20  O   TIP3X1683      14.267  10.240  -2.505  1.00  0.00      TIP3    
+ATOM     21  H1  TIP3X1683      14.149   9.522  -1.818  1.00  0.00      TIP3    
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2
+CONECT    4    5
+CONECT    5    4    6
+CONECT    6    5
+CONECT    7    8
+CONECT    8    7    9
+CONECT    9    8
+CONECT   10   11
+CONECT   11   10   12
+CONECT   12   11
+CONECT   13   14
+CONECT   14   13   15
+CONECT   15   14
+CONECT   16   17
+CONECT   17   16   18
+CONECT   18   17
+CONECT   19   20
+CONECT   20   19   21
+CONECT   21   20
+END

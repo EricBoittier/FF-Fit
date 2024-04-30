@@ -1,0 +1,75 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   39.269   39.269   39.269  90.00  90.00  90.00 P 1           1
+ATOM      1  H   TIP3X  49     -12.774  17.992  -0.584  1.00  0.00      TIP3    
+ATOM      2  O   TIP3X  49     -13.127  18.654   0.008  1.00  0.00      TIP3    
+ATOM      3  H1  TIP3X  49     -12.767  19.451  -0.444  1.00  0.00      TIP3    
+ATOM      4  H   TIP3X 269     -20.018  17.306  -3.328  1.00  0.00      TIP3    
+ATOM      5  O   TIP3X 269     -19.294  16.643  -3.316  1.00  0.00      TIP3    
+ATOM      6  H1  TIP3X 269     -18.933  16.729  -2.426  1.00  0.00      TIP3    
+ATOM      7  H   TIP3X 325     -13.019  15.472  -2.240  1.00  0.00      TIP3    
+ATOM      8  O   TIP3X 325     -13.793  14.994  -2.626  1.00  0.00      TIP3    
+ATOM      9  H1  TIP3X 325     -14.461  15.721  -2.624  1.00  0.00      TIP3    
+ATOM     10  H   TIP3X 513     -14.128  14.793  -4.396  1.00  0.00      TIP3    
+ATOM     11  O   TIP3X 513     -14.132  14.844  -5.381  1.00  0.00      TIP3    
+ATOM     12  H1  TIP3X 513     -13.198  14.624  -5.637  1.00  0.00      TIP3    
+ATOM     13  H   TIP3X 607     -15.165  17.740  -3.768  1.00  0.00      TIP3    
+ATOM     14  O   TIP3X 607     -15.625  17.261  -3.059  1.00  0.00      TIP3    
+ATOM     15  H1  TIP3X 607     -16.481  17.001  -3.370  1.00  0.00      TIP3    
+ATOM     16  H   TIP3X 636     -14.579  15.685  -0.269  1.00  0.00      TIP3    
+ATOM     17  O   TIP3X 636     -15.380  15.795   0.299  1.00  0.00      TIP3    
+ATOM     18  H1  TIP3X 636     -16.109  16.034  -0.302  1.00  0.00      TIP3    
+ATOM     19  H   TIP3X 656     -16.369  18.483   0.856  1.00  0.00      TIP3    
+ATOM     20  O   TIP3X 656     -16.085  18.972   0.092  1.00  0.00      TIP3    
+ATOM     21  H1  TIP3X 656     -15.167  18.782  -0.019  1.00  0.00      TIP3    
+ATOM     22  H   TIP3X1153     -17.871  14.522  -1.497  1.00  0.00      TIP3    
+ATOM     23  O   TIP3X1153     -17.178  13.882  -1.772  1.00  0.00      TIP3    
+ATOM     24  H1  TIP3X1153     -17.628  13.377  -2.451  1.00  0.00      TIP3    
+ATOM     25  H   TIP3X1334     -18.906  17.184  -5.502  1.00  0.00      TIP3    
+ATOM     26  O   TIP3X1334     -18.365  17.077  -6.292  1.00  0.00      TIP3    
+ATOM     27  H1  TIP3X1334     -17.801  16.302  -6.150  1.00  0.00      TIP3    
+ATOM     28  H   TIP3X1430     -15.325  18.725  -5.664  1.00  0.00      TIP3    
+ATOM     29  O   TIP3X1430     -14.532  18.637  -5.093  1.00  0.00      TIP3    
+ATOM     30  H1  TIP3X1430     -13.979  18.102  -5.616  1.00  0.00      TIP3    
+ATOM     31  H   TIP3X1866     -17.421  17.724  -0.613  1.00  0.00      TIP3    
+ATOM     32  O   TIP3X1866     -17.922  16.930  -0.751  1.00  0.00      TIP3    
+ATOM     33  H1  TIP3X1866     -18.657  16.996  -0.124  1.00  0.00      TIP3    
+ATOM     34  H   TIP3X1983     -15.771  15.057  -6.487  1.00  0.00      TIP3    
+ATOM     35  O   TIP3X1983     -16.727  14.801  -6.588  1.00  0.00      TIP3    
+ATOM     36  H1  TIP3X1983     -16.880  14.060  -6.045  1.00  0.00      TIP3    
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2
+CONECT    4    5
+CONECT    5    4    6
+CONECT    6    5
+CONECT    7    8
+CONECT    8    7    9
+CONECT    9    8
+CONECT   10   11
+CONECT   11   10   12
+CONECT   12   11
+CONECT   13   14
+CONECT   14   13   15
+CONECT   15   14
+CONECT   16   17
+CONECT   17   16   18
+CONECT   18   17
+CONECT   19   20
+CONECT   20   19   21
+CONECT   21   20
+CONECT   22   23
+CONECT   23   22   24
+CONECT   24   23
+CONECT   25   26
+CONECT   26   25   27
+CONECT   27   26
+CONECT   28   29
+CONECT   29   28   30
+CONECT   30   29
+CONECT   31   32
+CONECT   32   31   33
+CONECT   33   32
+CONECT   34   35
+CONECT   35   34   36
+CONECT   36   35
+END

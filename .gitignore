@@ -5,6 +5,8 @@ ff_energy/reports/out_pdfs
 ff_energy/reports/out_pdfs/*
 ff_energy/reports/out_notebooks/
 ff_energy/reports/out_notebooks/*
+ff_energy/sampling/test_coords/*
+ff_energy/sampling/*xyz
 *pdf
 # Byte-compiled / optimized / DLL files
 __pycache__/

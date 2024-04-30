@@ -1,0 +1,39 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   39.269   39.269   39.269  90.00  90.00  90.00 P 1           1
+ATOM      1  H   TIP3X 621       3.996   9.850 -11.593  1.00  0.00      TIP3    
+ATOM      2  O   TIP3X 621       4.845   9.769 -11.150  1.00  0.00      TIP3    
+ATOM      3  H1  TIP3X 621       5.398  10.381 -11.700  1.00  0.00      TIP3    
+ATOM      4  H   TIP3X1000       5.289  14.370 -10.823  1.00  0.00      TIP3    
+ATOM      5  O   TIP3X1000       5.331  13.395 -10.588  1.00  0.00      TIP3    
+ATOM      6  H1  TIP3X1000       4.437  13.219 -10.296  1.00  0.00      TIP3    
+ATOM      7  H   TIP3X1309       7.514  11.757 -12.055  1.00  0.00      TIP3    
+ATOM      8  O   TIP3X1309       6.583  11.560 -12.165  1.00  0.00      TIP3    
+ATOM      9  H1  TIP3X1309       6.142  12.324 -11.739  1.00  0.00      TIP3    
+ATOM     10  H   TIP3X1585       4.869  11.174 -14.967  1.00  0.00      TIP3    
+ATOM     11  O   TIP3X1585       5.089  10.344 -14.397  1.00  0.00      TIP3    
+ATOM     12  H1  TIP3X1585       5.887  10.565 -13.983  1.00  0.00      TIP3    
+ATOM     13  H   TIP3X1653       6.647  12.461  -9.487  1.00  0.00      TIP3    
+ATOM     14  O   TIP3X1653       7.205  12.313  -8.700  1.00  0.00      TIP3    
+ATOM     15  H1  TIP3X1653       6.767  11.742  -8.039  1.00  0.00      TIP3    
+ATOM     16  H   TIP3X1887       8.431  11.470 -14.435  1.00  0.00      TIP3    
+ATOM     17  O   TIP3X1887       7.907  11.314 -15.227  1.00  0.00      TIP3    
+ATOM     18  H1  TIP3X1887       7.970  10.432 -15.557  1.00  0.00      TIP3    
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2
+CONECT    4    5
+CONECT    5    4    6
+CONECT    6    5
+CONECT    7    8
+CONECT    8    7    9
+CONECT    9    8
+CONECT   10   11
+CONECT   11   10   12
+CONECT   12   11
+CONECT   13   14
+CONECT   14   13   15
+CONECT   15   14
+CONECT   16   17
+CONECT   17   16   18
+CONECT   18   17
+END

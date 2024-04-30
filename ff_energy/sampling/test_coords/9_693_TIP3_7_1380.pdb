@@ -1,0 +1,21 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   39.269   39.269   39.269  90.00  90.00  90.00 P 1           1
+ATOM      1  H   TIP3X 461     -16.787 -15.741  -3.947  1.00  0.00      TIP3    
+ATOM      2  O   TIP3X 461     -17.661 -15.374  -4.141  1.00  0.00      TIP3    
+ATOM      3  H1  TIP3X 461     -18.265 -16.157  -4.094  1.00  0.00      TIP3    
+ATOM      4  H   TIP3X1004     -18.643 -13.855  -1.428  1.00  0.00      TIP3    
+ATOM      5  O   TIP3X1004     -17.860 -14.154  -1.839  1.00  0.00      TIP3    
+ATOM      6  H1  TIP3X1004     -18.054 -14.582  -2.713  1.00  0.00      TIP3    
+ATOM      7  H   TIP3X1807     -14.683 -14.592  -4.344  1.00  0.00      TIP3    
+ATOM      8  O   TIP3X1807     -14.872 -15.373  -3.869  1.00  0.00      TIP3    
+ATOM      9  H1  TIP3X1807     -14.033 -15.633  -3.484  1.00  0.00      TIP3    
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2
+CONECT    4    5
+CONECT    5    4    6
+CONECT    6    5
+CONECT    7    8
+CONECT    8    7    9
+CONECT    9    8
+END

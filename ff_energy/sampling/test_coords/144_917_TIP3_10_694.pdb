@@ -1,0 +1,291 @@
+TITLE     MDANALYSIS FRAME 0: Created by PDBWriter
+CRYST1   39.269   39.269   39.269  90.00  90.00  90.00 P 1           1
+ATOM      1  H   TIP3X 115       2.735   9.431  -3.016  1.00  0.00      TIP3    
+ATOM      2  O   TIP3X 115       2.510   9.562  -3.974  1.00  0.00      TIP3    
+ATOM      3  H1  TIP3X 115       3.124   8.920  -4.461  1.00  0.00      TIP3    
+ATOM      4  H   TIP3X 128       3.651   4.996 -11.292  1.00  0.00      TIP3    
+ATOM      5  O   TIP3X 128       3.526   4.049 -11.025  1.00  0.00      TIP3    
+ATOM      6  H1  TIP3X 128       4.065   4.001 -10.194  1.00  0.00      TIP3    
+ATOM      7  H   TIP3X 197      -0.506   8.775  -6.078  1.00  0.00      TIP3    
+ATOM      8  O   TIP3X 197      -0.475   8.387  -6.950  1.00  0.00      TIP3    
+ATOM      9  H1  TIP3X 197      -0.980   9.053  -7.456  1.00  0.00      TIP3    
+ATOM     10  H   TIP3X 232       0.692   4.864  -8.038  1.00  0.00      TIP3    
+ATOM     11  O   TIP3X 232       1.498   4.922  -8.549  1.00  0.00      TIP3    
+ATOM     12  H1  TIP3X 232       1.295   4.765  -9.458  1.00  0.00      TIP3    
+ATOM     13  H   TIP3X 243       1.725   1.446  -4.531  1.00  0.00      TIP3    
+ATOM     14  O   TIP3X 243       1.574   2.418  -4.580  1.00  0.00      TIP3    
+ATOM     15  H1  TIP3X 243       0.749   2.541  -5.028  1.00  0.00      TIP3    
+ATOM     16  H   TIP3X 353       0.130   6.476 -14.051  1.00  0.00      TIP3    
+ATOM     17  O   TIP3X 353      -0.397   6.482 -13.236  1.00  0.00      TIP3    
+ATOM     18  H1  TIP3X 353       0.173   6.051 -12.582  1.00  0.00      TIP3    
+ATOM     19  H   TIP3X 354      -1.968   6.619 -12.750  1.00  0.00      TIP3    
+ATOM     20  O   TIP3X 354      -2.754   6.694 -12.188  1.00  0.00      TIP3    
+ATOM     21  H1  TIP3X 354      -3.495   6.474 -12.764  1.00  0.00      TIP3    
+ATOM     22  H   TIP3X 377       4.248   6.979  -4.377  1.00  0.00      TIP3    
+ATOM     23  O   TIP3X 377       4.020   7.632  -5.024  1.00  0.00      TIP3    
+ATOM     24  H1  TIP3X 377       3.963   7.204  -5.891  1.00  0.00      TIP3    
+ATOM     25  H   TIP3X 569       1.269   8.434 -11.205  1.00  0.00      TIP3    
+ATOM     26  O   TIP3X 569       1.291   8.604 -12.191  1.00  0.00      TIP3    
+ATOM     27  H1  TIP3X 569       0.470   8.192 -12.495  1.00  0.00      TIP3    
+ATOM     28  H   TIP3X 581       0.980   2.859 -14.280  1.00  0.00      TIP3    
+ATOM     29  O   TIP3X 581       0.399   3.523 -13.961  1.00  0.00      TIP3    
+ATOM     30  H1  TIP3X 581      -0.316   2.977 -13.567  1.00  0.00      TIP3    
+ATOM     31  H   TIP3X 621       3.397   9.955 -10.163  1.00  0.00      TIP3    
+ATOM     32  O   TIP3X 621       4.163   9.679 -10.686  1.00  0.00      TIP3    
+ATOM     33  H1  TIP3X 621       4.939  10.215 -10.352  1.00  0.00      TIP3    
+ATOM     34  H   TIP3X 634       5.403   3.765  -8.460  1.00  0.00      TIP3    
+ATOM     35  O   TIP3X 634       4.619   4.281  -8.634  1.00  0.00      TIP3    
+ATOM     36  H1  TIP3X 634       4.056   4.131  -7.871  1.00  0.00      TIP3    
+ATOM     37  H   TIP3X 691      -1.003   1.820  -7.969  1.00  0.00      TIP3    
+ATOM     38  O   TIP3X 691      -0.740   1.626  -8.890  1.00  0.00      TIP3    
+ATOM     39  H1  TIP3X 691      -1.423   0.989  -9.222  1.00  0.00      TIP3    
+ATOM     40  H   TIP3X 703       5.324   0.058  -8.845  1.00  0.00      TIP3    
+ATOM     41  O   TIP3X 703       5.581  -0.334  -9.713  1.00  0.00      TIP3    
+ATOM     42  H1  TIP3X 703       4.810  -0.159 -10.303  1.00  0.00      TIP3    
+ATOM     43  H   TIP3X 775       1.419   6.610  -8.647  1.00  0.00      TIP3    
+ATOM     44  O   TIP3X 775       1.703   7.550  -8.785  1.00  0.00      TIP3    
+ATOM     45  H1  TIP3X 775       1.236   8.120  -8.145  1.00  0.00      TIP3    
+ATOM     46  H   TIP3X 785       1.609   4.528  -1.815  1.00  0.00      TIP3    
+ATOM     47  O   TIP3X 785       1.327   3.602  -2.012  1.00  0.00      TIP3    
+ATOM     48  H1  TIP3X 785       1.381   3.596  -3.009  1.00  0.00      TIP3    
+ATOM     49  H   TIP3X 786       3.608   7.014 -11.260  1.00  0.00      TIP3    
+ATOM     50  O   TIP3X 786       3.793   6.474 -12.057  1.00  0.00      TIP3    
+ATOM     51  H1  TIP3X 786       2.994   6.384 -12.564  1.00  0.00      TIP3    
+ATOM     52  H   TIP3X 838       4.330   4.980 -13.845  1.00  0.00      TIP3    
+ATOM     53  O   TIP3X 838       4.926   4.432 -14.317  1.00  0.00      TIP3    
+ATOM     54  H1  TIP3X 838       5.774   4.760 -14.103  1.00  0.00      TIP3    
+ATOM     55  H   TIP3X 874      -2.140   9.758 -10.649  1.00  0.00      TIP3    
+ATOM     56  O   TIP3X 874      -2.286  10.482 -11.228  1.00  0.00      TIP3    
+ATOM     57  H1  TIP3X 874      -2.821  11.170 -10.697  1.00  0.00      TIP3    
+ATOM     58  H   TIP3X 967       2.647   5.691 -15.372  1.00  0.00      TIP3    
+ATOM     59  O   TIP3X 967       1.949   5.686 -14.703  1.00  0.00      TIP3    
+ATOM     60  H1  TIP3X 967       1.374   4.841 -14.829  1.00  0.00      TIP3    
+ATOM     61  H   TIP3X 981       1.698   4.483 -11.169  1.00  0.00      TIP3    
+ATOM     62  O   TIP3X 981       0.879   4.992 -11.193  1.00  0.00      TIP3    
+ATOM     63  H1  TIP3X 981       0.435   4.520 -11.928  1.00  0.00      TIP3    
+ATOM     64  H   TIP3X1051      -4.615   5.875  -6.365  1.00  0.00      TIP3    
+ATOM     65  O   TIP3X1051      -3.970   6.485  -5.959  1.00  0.00      TIP3    
+ATOM     66  H1  TIP3X1051      -3.495   5.942  -5.334  1.00  0.00      TIP3    
+ATOM     67  H   TIP3X1086       0.961   1.237  -9.582  1.00  0.00      TIP3    
+ATOM     68  O   TIP3X1086       1.623   0.771 -10.083  1.00  0.00      TIP3    
+ATOM     69  H1  TIP3X1086       2.375   1.374 -10.291  1.00  0.00      TIP3    
+ATOM     70  H   TIP3X1137      -1.449   7.355 -10.639  1.00  0.00      TIP3    
+ATOM     71  O   TIP3X1137      -0.888   7.993 -10.210  1.00  0.00      TIP3    
+ATOM     72  H1  TIP3X1137      -0.306   7.507  -9.566  1.00  0.00      TIP3    
+ATOM     73  H   TIP3X1163       7.408   2.505  -7.509  1.00  0.00      TIP3    
+ATOM     74  O   TIP3X1163       7.183   3.243  -8.095  1.00  0.00      TIP3    
+ATOM     75  H1  TIP3X1163       7.829   3.937  -7.873  1.00  0.00      TIP3    
+ATOM     76  H   TIP3X1170       3.972   1.176 -12.106  1.00  0.00      TIP3    
+ATOM     77  O   TIP3X1170       4.021   1.372 -11.139  1.00  0.00      TIP3    
+ATOM     78  H1  TIP3X1170       4.132   2.356 -11.149  1.00  0.00      TIP3    
+ATOM     79  H   TIP3X1175      -2.943   4.845  -9.761  1.00  0.00      TIP3    
+ATOM     80  O   TIP3X1175      -3.278   4.833  -8.869  1.00  0.00      TIP3    
+ATOM     81  H1  TIP3X1175      -3.798   5.576  -8.730  1.00  0.00      TIP3    
+ATOM     82  H   TIP3X1193      -3.440  10.433  -7.788  1.00  0.00      TIP3    
+ATOM     83  O   TIP3X1193      -2.691   9.743  -7.649  1.00  0.00      TIP3    
+ATOM     84  H1  TIP3X1193      -3.031   9.076  -7.090  1.00  0.00      TIP3    
+ATOM     85  H   TIP3X1200       6.865   0.883 -10.262  1.00  0.00      TIP3    
+ATOM     86  O   TIP3X1200       7.491   1.621 -10.334  1.00  0.00      TIP3    
+ATOM     87  H1  TIP3X1200       7.222   2.249  -9.662  1.00  0.00      TIP3    
+ATOM     88  H   TIP3X1238      -1.746   1.560 -12.667  1.00  0.00      TIP3    
+ATOM     89  O   TIP3X1238      -1.182   1.381 -13.417  1.00  0.00      TIP3    
+ATOM     90  H1  TIP3X1238      -0.553   0.668 -13.043  1.00  0.00      TIP3    
+ATOM     91  H   TIP3X1276       5.008   3.498  -5.320  1.00  0.00      TIP3    
+ATOM     92  O   TIP3X1276       4.154   3.307  -5.804  1.00  0.00      TIP3    
+ATOM     93  H1  TIP3X1276       3.471   3.089  -5.125  1.00  0.00      TIP3    
+ATOM     94  H   TIP3X1283       1.117   0.433 -11.828  1.00  0.00      TIP3    
+ATOM     95  O   TIP3X1283       0.821  -0.109 -12.610  1.00  0.00      TIP3    
+ATOM     96  H1  TIP3X1283       0.533  -0.999 -12.281  1.00  0.00      TIP3    
+ATOM     97  H   TIP3X1323       1.381   6.898  -2.467  1.00  0.00      TIP3    
+ATOM     98  O   TIP3X1323       1.260   6.315  -1.680  1.00  0.00      TIP3    
+ATOM     99  H1  TIP3X1323       0.508   6.707  -1.264  1.00  0.00      TIP3    
+ATOM    100  H   TIP3X1349      -1.905   2.271 -10.427  1.00  0.00      TIP3    
+ATOM    101  O   TIP3X1349      -2.404   1.772 -11.099  1.00  0.00      TIP3    
+ATOM    102  H1  TIP3X1349      -3.335   1.990 -11.127  1.00  0.00      TIP3    
+ATOM    103  H   TIP3X1374      -2.818   0.163  -8.186  1.00  0.00      TIP3    
+ATOM    104  O   TIP3X1374      -2.763  -0.468  -8.869  1.00  0.00      TIP3    
+ATOM    105  H1  TIP3X1374      -3.597  -0.902  -8.974  1.00  0.00      TIP3    
+ATOM    106  H   TIP3X1444       5.490   9.103  -8.639  1.00  0.00      TIP3    
+ATOM    107  O   TIP3X1444       6.018   8.617  -7.950  1.00  0.00      TIP3    
+ATOM    108  H1  TIP3X1444       5.435   7.925  -7.704  1.00  0.00      TIP3    
+ATOM    109  H   TIP3X1448      -3.671   7.611 -10.215  1.00  0.00      TIP3    
+ATOM    110  O   TIP3X1448      -4.060   7.810  -9.388  1.00  0.00      TIP3    
+ATOM    111  H1  TIP3X1448      -3.294   8.275  -8.907  1.00  0.00      TIP3    
+ATOM    112  H   TIP3X1496       6.295   7.148  -5.245  1.00  0.00      TIP3    
+ATOM    113  O   TIP3X1496       7.296   7.125  -5.040  1.00  0.00      TIP3    
+ATOM    114  H1  TIP3X1496       7.558   8.024  -5.039  1.00  0.00      TIP3    
+ATOM    115  H   TIP3X1664       5.123   8.017 -12.918  1.00  0.00      TIP3    
+ATOM    116  O   TIP3X1664       5.216   8.935 -13.046  1.00  0.00      TIP3    
+ATOM    117  H1  TIP3X1664       4.773   9.313 -12.243  1.00  0.00      TIP3    
+ATOM    118  H   TIP3X1754      -1.147   6.009  -6.655  1.00  0.00      TIP3    
+ATOM    119  O   TIP3X1754      -0.966   5.190  -7.136  1.00  0.00      TIP3    
+ATOM    120  H1  TIP3X1754      -1.741   5.168  -7.700  1.00  0.00      TIP3    
+ATOM    121  H   TIP3X1794       3.225   9.896 -14.264  1.00  0.00      TIP3    
+ATOM    122  O   TIP3X1794       2.732   9.086 -14.464  1.00  0.00      TIP3    
+ATOM    123  H1  TIP3X1794       2.321   8.801 -13.652  1.00  0.00      TIP3    
+ATOM    124  H   TIP3X1856       2.109  10.816  -7.942  1.00  0.00      TIP3    
+ATOM    125  O   TIP3X1856       2.275  10.827  -8.889  1.00  0.00      TIP3    
+ATOM    126  H1  TIP3X1856       2.076  11.739  -9.062  1.00  0.00      TIP3    
+ATOM    127  H   TIP3X1876       4.083   6.053  -8.317  1.00  0.00      TIP3    
+ATOM    128  O   TIP3X1876       4.040   6.796  -7.751  1.00  0.00      TIP3    
+ATOM    129  H1  TIP3X1876       3.261   7.283  -8.074  1.00  0.00      TIP3    
+ATOM    130  H   TIP3X1900      -1.963   4.961  -3.401  1.00  0.00      TIP3    
+ATOM    131  O   TIP3X1900      -2.186   5.477  -4.204  1.00  0.00      TIP3    
+ATOM    132  H1  TIP3X1900      -1.650   6.247  -4.133  1.00  0.00      TIP3    
+ATOM    133  H   TIP3X1912       4.895   0.066  -6.632  1.00  0.00      TIP3    
+ATOM    134  O   TIP3X1912       5.100   0.794  -7.281  1.00  0.00      TIP3    
+ATOM    135  H1  TIP3X1912       4.591   1.559  -7.045  1.00  0.00      TIP3    
+ATOM    136  H   TIP3X1915       0.885   9.208  -4.101  1.00  0.00      TIP3    
+ATOM    137  O   TIP3X1915      -0.037   8.935  -4.206  1.00  0.00      TIP3    
+ATOM    138  H1  TIP3X1915      -0.447   9.752  -4.033  1.00  0.00      TIP3    
+ATOM    139  H   TIP3X1961      -1.388   2.400  -5.306  1.00  0.00      TIP3    
+ATOM    140  O   TIP3X1961      -1.105   2.565  -6.252  1.00  0.00      TIP3    
+ATOM    141  H1  TIP3X1961      -1.287   3.464  -6.400  1.00  0.00      TIP3    
+ATOM    142  H   TIP3X1987       2.269  -0.513  -8.485  1.00  0.00      TIP3    
+ATOM    143  O   TIP3X1987       2.070  -1.361  -8.122  1.00  0.00      TIP3    
+ATOM    144  H1  TIP3X1987       1.400  -1.667  -8.739  1.00  0.00      TIP3    
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2
+CONECT    4    5
+CONECT    5    4    6
+CONECT    6    5
+CONECT    7    8
+CONECT    8    7    9
+CONECT    9    8
+CONECT   10   11
+CONECT   11   10   12
+CONECT   12   11
+CONECT   13   14
+CONECT   14   13   15
+CONECT   15   14
+CONECT   16   17
+CONECT   17   16   18
+CONECT   18   17
+CONECT   19   20
+CONECT   20   19   21
+CONECT   21   20
+CONECT   22   23
+CONECT   23   22   24
+CONECT   24   23
+CONECT   25   26
+CONECT   26   25   27
+CONECT   27   26
+CONECT   28   29
+CONECT   29   28   30
+CONECT   30   29
+CONECT   31   32
+CONECT   32   31   33
+CONECT   33   32
+CONECT   34   35
+CONECT   35   34   36
+CONECT   36   35
+CONECT   37   38
+CONECT   38   37   39
+CONECT   39   38
+CONECT   40   41
+CONECT   41   40   42
+CONECT   42   41
+CONECT   43   44
+CONECT   44   43   45
+CONECT   45   44
+CONECT   46   47
+CONECT   47   46   48
+CONECT   48   47
+CONECT   49   50
+CONECT   50   49   51
+CONECT   51   50
+CONECT   52   53
+CONECT   53   52   54
+CONECT   54   53
+CONECT   55   56
+CONECT   56   55   57
+CONECT   57   56
+CONECT   58   59
+CONECT   59   58   60
+CONECT   60   59
+CONECT   61   62
+CONECT   62   61   63
+CONECT   63   62
+CONECT   64   65
+CONECT   65   64   66
+CONECT   66   65
+CONECT   67   68
+CONECT   68   67   69
+CONECT   69   68
+CONECT   70   71
+CONECT   71   70   72
+CONECT   72   71
+CONECT   73   74
+CONECT   74   73   75
+CONECT   75   74
+CONECT   76   77
+CONECT   77   76   78
+CONECT   78   77
+CONECT   79   80
+CONECT   80   79   81
+CONECT   81   80
+CONECT   82   83
+CONECT   83   82   84
+CONECT   84   83
+CONECT   85   86
+CONECT   86   85   87
+CONECT   87   86
+CONECT   88   89
+CONECT   89   88   90
+CONECT   90   89
+CONECT   91   92
+CONECT   92   91   93
+CONECT   93   92
+CONECT   94   95
+CONECT   95   94   96
+CONECT   96   95
+CONECT   97   98
+CONECT   98   97   99
+CONECT   99   98
+CONECT  100  101
+CONECT  101  100  102
+CONECT  102  101
+CONECT  103  104
+CONECT  104  103  105
+CONECT  105  104
+CONECT  106  107
+CONECT  107  106  108
+CONECT  108  107
+CONECT  109  110
+CONECT  110  109  111
+CONECT  111  110
+CONECT  112  113
+CONECT  113  112  114
+CONECT  114  113
+CONECT  115  116
+CONECT  116  115  117
+CONECT  117  116
+CONECT  118  119
+CONECT  119  118  120
+CONECT  120  119
+CONECT  121  122
+CONECT  122  121  123
+CONECT  123  122
+CONECT  124  125
+CONECT  125  124  126
+CONECT  126  125
+CONECT  127  128
+CONECT  128  127  129
+CONECT  129  128
+CONECT  130  131
+CONECT  131  130  132
+CONECT  132  131
+CONECT  133  134
+CONECT  134  133  135
+CONECT  135  134
+CONECT  136  137
+CONECT  137  136  138
+CONECT  138  137
+CONECT  139  140
+CONECT  140  139  141
+CONECT  141  140
+CONECT  142  143
+CONECT  143  142  144
+CONECT  144  143
+END
