@@ -94,49 +94,51 @@ class Job:
     def generate_charmm(self, RES=None):
         if RES is None:
             raise ValueError("RES must be specified")
+        if not (self.path / "charmm").exists():
+            self.make_dir(self.charmm_path)
+            self.structure.atom_types = atom_types
+            self.structure.read_pdb(self.structure.path)
+            sname = self.structure.path.parents[0] / str(
+                self.structure.path.name
+            ).lower() # make filename lowercase
+            print(sname)
+            with open(sname, "w") as f:
+                f.write(self.structure.get_pdb())
+            #  move pdb file to charmm directory
+            copy(sname, self.charmm_path)
+            dcm_command = None
+            if self.kwargs["c_files"] is not None:
+                for file in self.kwargs["c_files"]:
+                    copy(CHM_FILES_PATH / file, self.charmm_path)
+                dcm_command = self.kwargs["c_dcm_command"]
+            #  render the charmm template
+            charmm_job = c_job_template.render(
+                NAME=str(self.name).lower(),
+                PAR=PAR,
+                RES=RES,
+                PDB=str(self.structure.name).lower(),
+                DCM_COMMAND=dcm_command,
+                PSF=self.structure.get_psf(),
+            )
+            charmm_file = self.path / "charmm" / f"{self.name}.inp"
+            with open(charmm_file, "w") as f:
+                f.write(charmm_job)
 
-        self.make_dir(self.charmm_path)
-        self.structure.atom_types = atom_types
-        self.structure.read_pdb(self.structure.path)
-        sname = self.structure.path.parents[0] / str(
-            self.structure.path.name
-        ).lower() # make filename lowercase
-        print(sname)
-        with open(sname, "w") as f:
-            f.write(self.structure.get_pdb())
-        #  move pdb file to charmm directory
-        copy(sname, self.charmm_path)
-        dcm_command = None
-        if self.kwargs["c_files"] is not None:
-            for file in self.kwargs["c_files"]:
-                copy(CHM_FILES_PATH / file, self.charmm_path)
-            dcm_command = self.kwargs["c_dcm_command"]
-        #  render the charmm template
-        charmm_job = c_job_template.render(
-            NAME=str(self.name).lower(),
-            PAR=PAR,
-            RES=RES,
-            PDB=str(self.structure.name).lower(),
-            DCM_COMMAND=dcm_command,
-            PSF=self.structure.get_psf(),
-        )
-        charmm_file = self.path / "charmm" / f"{self.name}.inp"
-        with open(charmm_file, "w") as f:
-            f.write(charmm_job)
-
-        command = f"$charmm < {charmm_file.name} > {charmm_file.name}.out"
-        #  render the slurm template
-        slurm_str = c_slurm_template.render(
-            NAME=self.name,
-            COMMAND=command,
-            CHARMMPATH=self.kwargs["chmpath"],
-            MODULES=self.kwargs["modules"],
-        )
-        #  make the slurm file
-        slurm_file = self.path / "charmm" / f"{self.name}.slurm"
-        with open(slurm_file, "w") as f:
-            f.write(slurm_str)
-            self.slurm_files["charmm"][self.name] = slurm_file
+            command = f"$charmm < {charmm_file.name} > {charmm_file.name}.out"
+            #  render the slurm template
+            slurm_str = c_slurm_template.render(
+                NAME=self.name,
+                COMMAND=command,
+                CHARMMPATH=self.kwargs["chmpath"],
+                MODULES=self.kwargs["modules"],
+            )
+            #  make the slurm file
+            slurm_file = self.path / "charmm" / f"{self.name}.slurm"
+            with open(slurm_file, "w") as f:
+                f.write(slurm_str)
+                self.slurm_files["charmm"][self.name] = slurm_file
+        # else:
+        #     print("CHARMM directory already exists")
 
     def generate_coloumb_interactions(self, monomers_path=None):
         self.make_dir(self.coloumb_path)

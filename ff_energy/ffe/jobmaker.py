@@ -27,7 +27,7 @@ def get_structures_pdbs(PDBPATH, atom_types=atom_types, system_name=None):
         s_path = PDBPATH / p
         s = Structure(s_path, _atom_types=atom_types, system_name=system_name)
         _ = s.get_pdb()
-        s.set_2body()
+        # s.set_2body()
         structures.append(s)
 
     return structures, pdbs
@@ -47,7 +47,7 @@ class JobMaker:
 
     def loop(self, func, args, **kwargs):
         # Create a thread pool
-        pool = Pool(processes=4)  # multiprocessing.Semaphore(4)
+        pool = Pool(processes=2)  # multiprocessing.Semaphore(4)
         # Start the jobs.py
         pool.starmap(
             func,
@@ -199,7 +199,6 @@ class JobMaker:
         #  check if the homedir is a tuple
         if isinstance(homedir, tuple):
             homedir = homedir[0]
-        ID = None
         if isinstance(p, str):
             ID = p.split(".")[0]
         elif isinstance(p, Path):
@@ -208,7 +207,7 @@ class JobMaker:
             raise Exception(f"Unknown type for p *job id* {p}")
         j = Job(ID, f"{homedir}/{self.jobdir}/{ID}", s, kwargs=self.kwargs)
         j.generate_charmm(RES=self.RES)
-        self.charmm_jobs[ID] = j
+        # self.charmm_jobs[ID] = j
 
     def make_esp_view(self, p, s, args):
         homedir, charm_path = args

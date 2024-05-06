@@ -310,8 +310,8 @@ PATC  FIRS NONE LAST NONE
 
 RESI {{WATER}}         0.000 ! tip3p water model, generate using noangle nodihedral
 GROUP
-ATOM {{O}}    OT     -0.834
 ATOM {{H}}    HT      0.417
+ATOM {{O}}    OT     -0.834
 ATOM {{H1}}   HT      0.417
 BOND {{O}} {{H}} {{O}} {{H1}} {{H}} {{H1}}    ! the last bond is needed for shake
 ANGLE {{H}} {{O}} {{H1}}             ! required

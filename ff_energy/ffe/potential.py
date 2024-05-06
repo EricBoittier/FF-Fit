@@ -203,7 +203,7 @@ def LJflat(dists, indexs, parms):
             if a <= b:
                 # jax.debug.print("+{d} +{e}", d=n_types, e=n_comb // 2)
                 comb_parms = comb_parms.at[count].set(
-                    parms[a] + parms[b]
+                    jnp.abs(parms[a]) + jnp.abs(parms[b])
                 )
                 comb_parms = comb_parms.at[count + (n_comb // 2)].set(
                     jnp.sqrt(
@@ -299,7 +299,7 @@ def LJRUN_LOSS(dists, indexs, groups, parms, target, num_segments):
     RES, _, _ = LJRUN(dists, indexs, groups, parms, num_segments=num_segments)
     # assert RES.shape == target.shape
     ERROR = RES - target
-    LOSS = jnp.mean(ERROR ** 2)  # TODO:  dangerous to use nanmean here?
+    LOSS = jnp.mean(ERROR**2) #jnp.mean(ERROR ** 2)  # TODO:  dangerous to use nanmean here?
     # jax.debug.print("LOSS {x}", x=LOSS)
     return LOSS
 

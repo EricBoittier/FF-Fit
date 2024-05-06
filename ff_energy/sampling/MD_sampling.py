@@ -6,7 +6,7 @@ from MDAnalysis import Writer
 
 from ff_energy.logs.logging import logger
 
-LIMIT = 2000
+LIMIT = 100
 
 
 def pdb_to_coords(pdb_path, n_atoms_per_res):
@@ -103,7 +103,6 @@ def save_N_atoms(
     print("resname: ", resname, "n-frames: ", len(u.trajectory))
     print("LIMIT: ", LIMIT)
     # logger.info(f"resname: {resname} n-frames: {len(u.trajectory)}")
-
     for i, t in enumerate(u.trajectory):
         res_sel1 = u.select_atoms(selectStringTypes, updating=False, periodic=False)
         nres_to_do = len(res_sel1)
@@ -176,6 +175,11 @@ def save_N_atoms(
                     pdb_paths.append(pdb_path)
                     #  write to the xyz writer
                     W.write(res)
+                print(xyz_counter)
+            if xyz_counter >= 1000:
+                break
+        if xyz_counter >= 1000:
+            break
 
     # close the file
     W.close()

@@ -174,7 +174,7 @@ def calc_spectra(total_dipole_vectors, NSKIP=0, filename=None, effective_timeste
     acv = acvx + acvy + acvz
 
     acv = acv * np.blackman(Nframes)
-    spectra = np.abs(np.fft.rfftn(acv)) * qcf
+    spectra = np.abs(np.fft.rfftn(acv)) #* qcf
 
     # save to csv
     if filename is not None:
@@ -200,7 +200,7 @@ def plot_spectra(
 ):
     if csv:
         df = pd.read_csv(csv)
-        df = df[df["freq"] > 800]
+        df = df[df["freq"] > 1]
         freq = df["freq"].values
         spectra = df["spectra"].values  # - df["spectra"].min()
     # else:
@@ -258,7 +258,7 @@ def plot_spectra(
         plt.savefig(filename, bbox_inches="tight")
 
     # plt.show()
-    return ax
+    return ax, freq, spectra
 
 
 def dipole_dcm(filename, dcm, NSKIP=0, effective_timestep=1.0, nsmooth=10):

@@ -134,16 +134,16 @@ class Structure:
         resids_old.sort()
         resids_new = list(range(1, len(resids_old) + 1))
 
-        print(self.resids)
+        # print(self.resids)
         self.resids = [resids_new[resids_old.index(_)] for _ in self.resids]
-        print(self.resids)
+        # print(self.resids)
 
         self.restypes = [_[16:21].strip() for _ in self.atoms]
         self.xyzs = np.array(
             [[float(_[30:38]), float(_[39:46]), float(_[47:55])] for _ in self.atoms]
         )
-        print(self.restypes, self.atomnames)
-        print(self.atom_types)
+        # print(self.restypes, self.atomnames)
+        # print(self.atom_types)
         self.chm_typ = np.array(
             [self.atom_types[(
                 a.upper(),
@@ -161,7 +161,7 @@ class Structure:
 
         for i, (resid, atmname) in enumerate(zip(self.restypes, self.atomnames)):
             if resid == "TIP3":
-                print("**", i, resid, atmname)
+                # print("**", i, resid, atmname)
                 if atmname == "H" and self.atomnames[i - 1] == "O":
                     self.atomnames[i] = "H1"
                     self.atomnames[i + 1] = "H2"
@@ -257,7 +257,7 @@ class Structure:
                     if not np.all(self.chm_typ_mask[a]) \
                             and not np.all(self.chm_typ_mask[b]):
 
-                        print(a, b)
+                        # print(a, b)
 
                         #  get the mask for the atom types, residues
                         mask_a = self.chm_typ_mask[a]
@@ -271,14 +271,13 @@ class Structure:
 
                         #  case for same atom types
                         if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                            print(".")
+                            # print(".")
                             # _d = np.linalg.norm(xyza - xyzb, axis=1)
                             _d = DM(xyza, xyzb)#.flatten()
                             self.distances_pairs[i][(res_a, res_b)] = []
 
                             self.distances[i].append(_d)
                             self.distances_pairs[i][(res_a, res_b)].append(_d)
-
 
                         # case for different atom types
                         if a != b:
@@ -294,7 +293,7 @@ class Structure:
                             # xyzb = np.repeat(xyzb_, xyza_.shape[0], axis=0)
 
                             if xyza.shape[0] > 0 and xyzb.shape[0] > 0:
-                                print(".")
+                                # print(".")
                                 # _d = _sqrt_einsum_T(xyza.T, xyzb.T)
                                 # _d = np.linalg.norm((xyza - xyzb), axis=1)
 
@@ -367,10 +366,10 @@ REMARK
             AN = self.atomnames[i]
             RESNAME = self.restypes[i]
 
-            print(i, RESNAME)
+            # print(i, RESNAME)
 
             if AN == "Cl":
-                print(i, line)
+                # print(i, line)
                 if self.atomnames[i - 1] == "CL1":
                     AN = "CL2"
                     self.atomnames[i] = "CL2"
@@ -378,7 +377,7 @@ REMARK
                     AN = "CL1"
                     self.atomnames[i] = "CL1"
 
-                print(self.atomnames[i], AN)
+                # print(self.atomnames[i], AN)
 
             if RESNAME == "CLA":
                 AN = "CLA"
@@ -388,13 +387,13 @@ REMARK
                 self.atomnames[i] = "CLA"
             if RESNAME == "DCM" and AN.__contains__("H"):
                 if self.atomnames[i - 1].__contains__("H"):
-                    print("H2")
+                    # print("H2")
                     AN = "H2"
                     self.atomnames[i] = "H" #"H2"
                 else:
                     AN = "H1"
                     self.atomnames[i] = "H" #"H1"
-                    print("H1")
+                    # print("H1")
 
             if RESNAME == "TIP3":
                 if self.atomnames[i].startswith("H"):

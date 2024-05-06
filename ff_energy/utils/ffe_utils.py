@@ -21,6 +21,8 @@ sysname_to_res = {
     "cla_test": "LIG",
     "pot_test": "LIG",
     "water_redo": "LIG",
+    "waternn": "LIG",
+    "waterdftnn": "LIG",
 }
 
 
@@ -60,7 +62,7 @@ def charmm_jobs(CMS):
         HOMEDIR = "/home/boittier/homeb/"
         f"/home/boittier/pcbach/{cms.system_name}/{cms.theory_name}"
         jm.make_charmm(HOMEDIR)
-        jobmakers.append(jm)
+        # jobmakers.append(jm)
     return jobmakers
 
 

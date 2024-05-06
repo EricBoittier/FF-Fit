@@ -205,7 +205,7 @@ def simple_residuals_plot(df_test, label,
     residuals_mean = df_test["residuals"].mean()
     vals_mean = df_test["vals"].mean()
     target_sd = df_test["target"].std()
-    residuals_sd = df_test["residuals"].std()
+    residuals_sd = df_test["residuals"].std(ddof=0)
     vals_sd = df_test["vals"].std()
     target_max = df_test["target"].max()
     residuals_max = df_test["residuals"].max()
@@ -266,6 +266,8 @@ def simple_residuals_plot(df_test, label,
     # ax.legend(loc='upper left')
     plot.set_xlabel(f'{xlabel}', fontdict=axisFont)
     plot.set_ylabel(f'{ylabel}', fontdict=axisFont)
+    if residuals_sd > rmseb:
+        residuals_sd = rmseb
     analysis_string = \
         '$r^{2}$:' + f"{r_valueb ** 2 :6.2f}\n" \
         + 'RMSE:' + f"{rmseb :6.2f}\n" \

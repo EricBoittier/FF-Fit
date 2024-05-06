@@ -19,6 +19,8 @@ system_names = [
     "cla_test",
     "pot_test",
     "water_redo",
+    "waternn",
+    "waterdftnn",
 ]
 
 pdbs = [
@@ -37,6 +39,8 @@ pdbs = [
     "cla_test/",
     "pot_test/",
     "water_redo/",
+    "waternn/",
+    "waterdftnn/"
 ]
 
 system_types = [
@@ -55,6 +59,8 @@ system_types = [
     "water",
     "water",
     "water",
+    "water",
+    "water",
 ]
 
 SYSTEMS = {
@@ -69,6 +75,14 @@ water_kmdcm = [
     *[f"water_kern/coefs{i}.txt" for i in range(18)],
 ]
 
+water_kmdcm_pol = [
+    "waterpol.mdcm",
+    "water_kern/water.kern",
+    "water_kern/x_fit.txt",
+    *[f"water_kern/coefs{i}.txt" for i in range(18)],
+]
+
+
 dcm_kmdcm = [
     "dcm_pbe0dz.kmdcm",
     "dcm_kern/dcm.kern",
@@ -81,7 +95,9 @@ MODELS = {
         "pc": DCM_STATES("pbe0_dz.pc"),
         "mdcm": DCM_STATES("pbe0_dz.mdcm"),
         "kmdcm": kMDCM_STATES(water_kmdcm),
+        "kmdcmpol": kMDCM_STATES(water_kmdcm_pol),
         "tip3": DCM_STATES("tip3.pc"),
+        "pol": DCM_STATES("waterpol.mdcm"),
     },
     "methanol": {
         "pc": DCM_STATES("meoh_pbe0dz.pc"),
@@ -142,6 +158,16 @@ ATOM_TYPES = {
         ("LIG", "H2"): "HT",
     },
     "water_dimer": {
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
+    "waternn": {
+        ("TIP3", "OH2"): "OT",
+        ("TIP3", "H1"): "HT",
+        ("TIP3", "H2"): "HT",
+    },
+    "waterdftnn": {
         ("TIP3", "OH2"): "OT",
         ("TIP3", "H1"): "HT",
         ("TIP3", "H2"): "HT",
