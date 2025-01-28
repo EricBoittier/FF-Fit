@@ -1,6 +1,20 @@
 # FF-Energy
 A package for calculating the energy of a system of particles using a force field.
 
+## Installation
+
+### Requirements
+Installation using conda is recommended.  The following packages are required:
+```bash
+conda env create --file environment.yml
+
+conda install -c conda-forge povray
+```
+
+### Simple (Python Only)
+```bash
+pip install -e .
+```
 
 ## A "minimal" example for setting up the force field fitting
 
@@ -115,20 +129,7 @@ ljpcff_fit.data["pred"] = ljpcff_fit.eval_jax(ljpcff_fit.get_best_parm())[0]
 
 
 
-## Installation
 
-### Requirements
-Installation using conda is recommended.  The following packages are required:
-```bash
-conda env create --file environment.yml
-
-conda install -c conda-forge povray
-```
-
-### Simple (Python Only)
-```bash
-pip install -e .
-```
 
 ### PyCHARMM (Energy Evaluations and MD in CHARMM)
 The python interface for the Havard Molecular Mechanics (CHARMM) program is required for the CHARMM energy calculations.  The PyCHARMM package is not available on PyPI and must be installed manually.
