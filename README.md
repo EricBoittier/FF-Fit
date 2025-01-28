@@ -1,6 +1,9 @@
 # FF-Energy
 A package for calculating the energy of a system of particles using a force field.
 
+
+## A "minimal" example for setting up the force field fitting
+
 ```python
 
 import numpy as np
