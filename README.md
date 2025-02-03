@@ -119,7 +119,7 @@ ljpcff_fit = fit_repeat(
 # make a new column in the data frame from the best parameters.
 ljpcff.data["pred"] = ljpcff.eval_jax(ljpcff_fit.get_best_parm())[0]
 ljpcff_fit.data["pred"] = ljpcff_fit.eval_jax(ljpcff_fit.get_best_parm())[0]
-                                                H-sig,   O-sig    H-rmin/2   O-rmin/2
+#                                               H-sig,   O-sig    H-rmin/2   O-rmin/2
 # ljpcff_fit.data["pred"] = ljpcff_fit.eval_jax([0.0230,  1.7653, -0.2470, -0.2275])[0]
 # OT     0.00  -0.2275  1.7653 ! ALLOW WAT
 # HT     0.00  -0.2470  0.0230 ! ALLOW WAT BO7
