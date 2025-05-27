@@ -1,6 +1,8 @@
 # FF-Energy
 A package for calculating the energy of a system of particles using a force field.
 
+Note, not all functions are functioning (depends on your definitions); use at your own risk.
+
 ## Installation
 
 ### Requirements
